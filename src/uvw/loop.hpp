@@ -5,10 +5,26 @@
 #include <memory>
 #include <utility>
 #include <uv.h>
+#include <type_traits>
 #include "error.hpp"
 
 
 namespace uvw {
+
+
+namespace details {
+
+
+template<typename T, typename... O>
+constexpr auto isBaseOfAny() {
+    bool ret = false;
+    int a[] = { (ret = ret || std::is_base_of<T, std::remove_cv_t<std::remove_reference_t<O>>>::value, 0)... };
+    (void)a;
+    return ret;
+}
+
+
+}
 
 
 class Loop;
@@ -18,7 +34,7 @@ template<typename R>
 class Handle {
     friend class Loop;
 
-    template<typename... Args>
+    template<typename... Args, std::enable_if_t<not details::isBaseOfAny<Handle<R>, Args...>()>* = nullptr>
     explicit constexpr Handle(Args&&... args)
         : res{std::make_shared<R>(std::forward<Args>(args)...)}
     { }
