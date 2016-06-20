@@ -5,7 +5,6 @@
 #include <memory>
 #include <utility>
 #include <uv.h>
-#include <type_traits>
 #include "error.hpp"
 
 
