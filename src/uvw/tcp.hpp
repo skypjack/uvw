@@ -5,14 +5,14 @@
 #include <chrono>
 #include <ratio>
 #include <uv.h>
-#include "resource.hpp"
+#include "stream.hpp"
 #include "error.hpp"
 
 
 namespace uvw {
 
 
-class Tcp final: public Resource<Tcp> {
+class Tcp final: public Stream<Tcp> {
     static void protoConnect(uv_connect_t* req, int status) {
         auto handle = req->handle;
         delete req;
@@ -25,7 +25,7 @@ public:
 
     enum { IPv4, IPv6 };
 
-    explicit Tcp(uv_loop_t *loop): Resource{&handle} {
+    explicit Tcp(uv_loop_t *loop): Stream<Tcp>{&handle} {
         uv_tcp_init(loop, &handle);
     }
 
