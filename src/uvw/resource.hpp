@@ -26,7 +26,7 @@ protected:
 public:
     using Callback = std::function<void(UVWError)>;
 
-    virtual ~Resource() = 0;
+    virtual ~Resource() { static_assert(std::is_base_of<Resource<T>, T>::value, "!"); }
 
     Resource(const Resource &) = delete;
     Resource(Resource &&) = delete;
@@ -50,11 +50,6 @@ private:
     uv_handle_t *handle;
     Callback callback;
 };
-
-template<typename T>
-Resource<T>::~Resource() {
-    static_assert(std::is_base_of<Resource<T>, T>::value, "!");
-}
 
 
 }

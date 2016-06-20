@@ -33,11 +33,11 @@ public:
         close([](UVWError){});
     }
 
-    bool noDelay(bool value = false) {
+    bool noDelay(bool value = false) noexcept {
         return (uv_tcp_nodelay(&handle, value ? 1 : 0) == 0);
     }
 
-    bool keepAlive(bool enable = false, Time time = Time{0}) {
+    bool keepAlive(bool enable = false, Time time = Time{0}) noexcept {
         return (uv_tcp_keepalive(&handle, enable ? 1 : 0, time.count()) == 0);
     }
 
