@@ -11,43 +11,67 @@
 namespace uvw {
 
 
-template<typename T>
-class Resource {
-protected:
-    template<typename U>
-    explicit Resource(U *u): handle{reinterpret_cast<uv_handle_t*>(u)} {
-        handle->data = this;
-    }
+template<typename>
+struct HandleType { };
 
+
+class Resource {
     static void proto(uv_handle_t* h) {
         static_cast<Resource*>(h->data)->callback(UVWError{});
+    }
+
+protected:
+    template<typename T>
+    explicit Resource(HandleType<T>, std::shared_ptr<Loop> r)
+        : ref{std::move(r)}, res{std::make_shared<T>()}
+    {
+        get<uv_handle_t>()->data = this;
+    }
+
+    template<typename T>
+    T* get() const noexcept { return reinterpret_cast<T*>(res.get()); }
+
+    uv_loop_t* parent() const noexcept { return ref->loop.get(); }
+
+    template<typename T, typename... Args>
+    Handle<T> spawn(Args&&... args) {
+        auto h = ref->handle<T>(std::forward<Args>(args)...);
+        static_cast<T&>(h).res = res;
+        return h;
+    }
+
+    template<typename T>
+    void reset() {
+        res = std::make_shared<T>();
+        get<uv_handle_t>()->data = this;
     }
 
 public:
     using Callback = std::function<void(UVWError)>;
 
-    virtual ~Resource() { static_assert(std::is_base_of<Resource<T>, T>::value, "!"); }
-
-    Resource(const Resource &) = delete;
-    Resource(Resource &&) = delete;
+    explicit Resource(const Resource &) = delete;
+    explicit Resource(Resource &&) = delete;
 
     void operator=(const Resource &) = delete;
     void operator=(Resource &&) = delete;
 
-    bool active() const noexcept { return !(uv_is_active(handle) == 0); }
-    bool closing() const noexcept { return !(uv_is_closing(handle) == 0); }
+    std::shared_ptr<Loop> loop() const noexcept { return ref; }
+
+    bool active() const noexcept { return !(uv_is_active(get<uv_handle_t>()) == 0); }
+    bool closing() const noexcept { return !(uv_is_closing(get<uv_handle_t>()) == 0); }
 
     void close(Callback cb) noexcept {
         callback = cb;
-        uv_close(handle, &proto);
+        uv_close(get<uv_handle_t>(), &proto);
     }
 
-    void reference() noexcept { uv_ref(handle); }
-    void unreference() noexcept { uv_ref(handle); }
-    bool referenced() const noexcept { return !(uv_has_ref(handle) == 0); }
+    void reference() noexcept { uv_ref(get<uv_handle_t>()); }
+    void unreference() noexcept { uv_ref(get<uv_handle_t>()); }
+    bool referenced() const noexcept { return !(uv_has_ref(get<uv_handle_t>()) == 0); }
 
 private:
-    uv_handle_t *handle;
+    std::shared_ptr<Loop> ref;
+    std::shared_ptr<void> res;
     Callback callback;
 };
 

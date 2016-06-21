@@ -11,6 +11,7 @@
 namespace uvw {
 
 
+class Resource;
 class Loop;
 
 
@@ -19,16 +20,20 @@ class Handle {
     friend class Loop;
 
     template<typename... Args>
-    explicit constexpr Handle(uv_loop_t *loop, Args&&... args)
-        : res{std::make_shared<R>(loop, std::forward<Args>(args)...)}
+    explicit constexpr Handle(std::shared_ptr<Loop>&& l, Args&&... args)
+        : res{std::make_shared<R>(std::move(l), std::forward<Args>(args)...)}
     { }
 
 public:
+    explicit constexpr Handle(): res{} { }
+
     constexpr Handle(const Handle &other): res{other.res} { }
     constexpr Handle(Handle &&other): res{std::move(other.res)} { }
 
     constexpr void operator=(const Handle &other) { res = other.res; }
     constexpr void operator=(Handle &&other) { res = std::move(other.res); }
+
+    constexpr explicit operator bool() { return static_cast<bool>(res); }
 
     constexpr operator R&() noexcept { return *res; }
     operator const R&() const noexcept { return *res; }
@@ -38,20 +43,43 @@ private:
 };
 
 
-class Loop final {
-public:
-    Loop(bool def = true)
-        : loop{def ? uv_default_loop() : new uv_loop_t, [def](uv_loop_t *l){ if(!def) delete l; }}
-    {
-        if(!def) {
-            auto err = uv_loop_init(loop.get());
+class Loop final: public std::enable_shared_from_this<Loop> {
+    friend class Resource;
 
-            if(err) {
-                throw UVWException{err};
-            }
-        } else if(!loop) {
-            throw std::bad_alloc{};
+    using Deleter = std::function<void(uv_loop_t *)>;
+
+    Loop(std::unique_ptr<uv_loop_t, Deleter> ptr): loop{std::move(ptr)} { }
+
+public:
+    static std::shared_ptr<Loop> create(bool def = true) {
+        auto ptr = std::unique_ptr<uv_loop_t, Deleter>{new uv_loop_t, [](uv_loop_t *l){ delete l; }};
+        auto loop = std::shared_ptr<Loop>(new Loop{std::move(ptr)});
+
+        if(!uv_loop_init(loop->loop.get())) {
+            loop = nullptr;
         }
+
+        return loop;
+    }
+
+    static std::shared_ptr<Loop> getDefault() {
+        static std::weak_ptr<Loop> ref;
+        std::shared_ptr<Loop> loop;
+
+        if(ref.expired()) {
+            auto def = uv_default_loop();
+
+            if(def) {
+                auto ptr = std::unique_ptr<uv_loop_t, Deleter>(def, [](uv_loop_t *){ });
+                loop = std::shared_ptr<Loop>(new Loop{std::move(ptr)});
+            }
+
+            ref = loop;
+        } else {
+            loop = ref.lock();
+        }
+
+        return loop;
     }
 
     Loop(const Loop &) = delete;
@@ -67,7 +95,7 @@ public:
 
     template<typename R, typename... Args>
     Handle<R> handle(Args&&... args) {
-        return Handle<R>{loop.get(), std::forward<Args>(args)...};
+        return Handle<R>{shared_from_this(), std::forward<Args>(args)...};
     }
 
     bool close() noexcept {
@@ -95,7 +123,6 @@ public:
     }
 
 private:
-    using Deleter = std::function<void(uv_loop_t *)>;
     std::unique_ptr<uv_loop_t, Deleter> loop;
 };
 
