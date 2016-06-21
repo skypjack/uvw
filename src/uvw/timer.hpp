@@ -22,13 +22,14 @@ public:
     using Callback = std::function<void(UVWError)>;
 
     explicit Timer(std::shared_ptr<Loop> ref)
-        : Resource{HandleType<uv_timer_t>{}, ref}
+        : Resource{HandleType<uv_timer_t>{}, std::move(ref)}
     {
-        uv_timer_init(parent(), get<uv_timer_t>());
+        initialized = (uv_timer_init(parent(), get<uv_timer_t>()) == 0);
     }
 
     void start(const Time &timeout, const Time &rep, Callback cb) noexcept {
         callback = cb;
+        get<uv_timer_t>()->data = this;
         auto err = uv_timer_start(get<uv_timer_t>(), &proto, timeout.count(), rep.count());
 
         if(err) {
@@ -36,13 +37,16 @@ public:
         }
     }
 
-    void stop() noexcept { uv_timer_stop(get<uv_timer_t>()); }
-    void again() noexcept { uv_timer_again(get<uv_timer_t>()); }
+    UVWError stop() noexcept { return UVWError{uv_timer_stop(get<uv_timer_t>())}; }
+    UVWError again() noexcept { return UVWError{uv_timer_again(get<uv_timer_t>())}; }
     void repeat(const Time &rep) noexcept { uv_timer_set_repeat(get<uv_timer_t>(), rep.count()); }
     Time repeat() const noexcept { return Time{uv_timer_get_repeat(get<uv_timer_t>())}; }
 
+    explicit operator bool() { return initialized; }
+
 private:
     Callback callback;
+    bool initialized;
 };
 
 

@@ -4,6 +4,7 @@
 #include <new>
 #include <memory>
 #include <utility>
+#include <type_traits>
 #include <uv.h>
 #include "error.hpp"
 
@@ -17,6 +18,9 @@ class Loop;
 
 template<typename R>
 class Handle {
+    template<typename>
+    friend class Handle;
+
     friend class Loop;
 
     template<typename... Args>
@@ -24,19 +28,30 @@ class Handle {
         : res{std::make_shared<R>(std::move(l), std::forward<Args>(args)...)}
     { }
 
+    explicit constexpr Handle(std::shared_ptr<R> ptr): res{std::move(ptr)} { }
+
 public:
     explicit constexpr Handle(): res{} { }
 
-    constexpr Handle(const Handle &other): res{other.res} { }
-    constexpr Handle(Handle &&other): res{std::move(other.res)} { }
+    template<typename T, std::enable_if_t<std::is_base_of<R, T>::value>* = nullptr>
+    constexpr Handle(const Handle<T> &other): res{other.res} { }
 
-    constexpr void operator=(const Handle &other) { res = other.res; }
-    constexpr void operator=(Handle &&other) { res = std::move(other.res); }
+    template<typename T, std::enable_if_t<std::is_base_of<R, T>::value>* = nullptr>
+    constexpr Handle(Handle<T> &&other): res{std::move(other.res)} { }
 
-    constexpr explicit operator bool() { return static_cast<bool>(res); }
+    template<typename T, std::enable_if_t<std::is_base_of<R, T>::value>* = nullptr>
+    constexpr void operator=(const Handle<T> &other) { res = other.res; }
+
+    template<typename T, std::enable_if_t<std::is_base_of<R, T>::value>* = nullptr>
+    constexpr void operator=(Handle<T> &&other) { res = std::move(other.res); }
+
+    constexpr explicit operator bool() const { return static_cast<bool>(res); }
 
     constexpr operator R&() noexcept { return *res; }
-    operator const R&() const noexcept { return *res; }
+    constexpr operator const R&() const noexcept { return *res; }
+
+    template<typename T, std::enable_if_t<std::is_base_of<T, R>::value>* = nullptr>
+    constexpr operator Handle<T>() { return Handle<T>{res}; }
 
 private:
     std::shared_ptr<R> res;
@@ -51,11 +66,11 @@ class Loop final: public std::enable_shared_from_this<Loop> {
     Loop(std::unique_ptr<uv_loop_t, Deleter> ptr): loop{std::move(ptr)} { }
 
 public:
-    static std::shared_ptr<Loop> create(bool def = true) {
+    static std::shared_ptr<Loop> create() {
         auto ptr = std::unique_ptr<uv_loop_t, Deleter>{new uv_loop_t, [](uv_loop_t *l){ delete l; }};
         auto loop = std::shared_ptr<Loop>(new Loop{std::move(ptr)});
 
-        if(!uv_loop_init(loop->loop.get())) {
+        if(uv_loop_init(loop->loop.get())) {
             loop = nullptr;
         }
 
@@ -98,8 +113,8 @@ public:
         return Handle<R>{shared_from_this(), std::forward<Args>(args)...};
     }
 
-    bool close() noexcept {
-        return (uv_loop_close(loop.get()) == 0);
+    UVWError close() noexcept {
+        return UVWError{uv_loop_close(loop.get())};
     }
 
     bool run() noexcept {

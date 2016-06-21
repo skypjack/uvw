@@ -24,27 +24,12 @@ protected:
     template<typename T>
     explicit Resource(HandleType<T>, std::shared_ptr<Loop> r)
         : ref{std::move(r)}, res{std::make_shared<T>()}
-    {
-        get<uv_handle_t>()->data = this;
-    }
+    { }
 
     template<typename T>
     T* get() const noexcept { return reinterpret_cast<T*>(res.get()); }
 
     uv_loop_t* parent() const noexcept { return ref->loop.get(); }
-
-    template<typename T, typename... Args>
-    Handle<T> spawn(Args&&... args) {
-        auto h = ref->handle<T>(std::forward<Args>(args)...);
-        static_cast<T&>(h).res = res;
-        return h;
-    }
-
-    template<typename T>
-    void reset() {
-        res = std::make_shared<T>();
-        get<uv_handle_t>()->data = this;
-    }
 
 public:
     using Callback = std::function<void(UVWError)>;
@@ -62,6 +47,7 @@ public:
 
     void close(Callback cb) noexcept {
         callback = cb;
+        get<uv_handle_t>()->data = this;
         uv_close(get<uv_handle_t>(), &proto);
     }
 

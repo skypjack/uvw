@@ -33,7 +33,8 @@ public:
 
 public:
     explicit operator bool() const noexcept { return !(ec == 0); }
-    const char* str() const noexcept { return uv_strerror(ec); }
+    operator const char *() const noexcept { return uv_strerror(ec); }
+    operator int() const noexcept { return ec; }
 
 private:
     int ec;
