@@ -8,9 +8,8 @@ void f(uvw::Loop &loop) {
     auto cb = [handle](uvw::UVWError err) mutable {
         std::cout << "---" << ((bool)err) << std::endl;
         uvw::Tcp &tcp = handle;
-        tcp.close([handle](uvw::UVWError err) mutable {
+        tcp.close([](uvw::UVWError err) mutable {
             std::cout << "---" << ((bool)err) << std::endl;
-            handle = uvw::Handle<uvw::Tcp>{};
         });
     };
 

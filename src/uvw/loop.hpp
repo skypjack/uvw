@@ -59,7 +59,8 @@ private:
 
 
 class Loop final: public std::enable_shared_from_this<Loop> {
-    friend class BaseResource;
+    template<typename>
+    friend class Resource;
 
     using Deleter = std::function<void(uv_loop_t *)>;
 
