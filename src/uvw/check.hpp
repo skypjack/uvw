@@ -31,7 +31,7 @@ public:
     }
 
     void start(Callback cb) noexcept {
-        callback = cb;
+        callback = std::move(cb);
         get<uv_check_t>()->data = this;
         auto err = uv_check_start(get<uv_check_t>(), &proto);
 

@@ -42,7 +42,7 @@ public:
     // TODO shutdown
 
     void listen(int backlog, CallbackListen cb) noexcept {
-        listenCallback = cb;
+        listenCallback = std::move(cb);
         this->template get<uv_stream_t>()->data = this;
         auto err = uv_listen(this->template get<uv_stream_t>(), backlog, &protoListen);
 

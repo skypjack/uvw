@@ -34,7 +34,7 @@ public:
     }
 
     void start(const Time &timeout, const Time &rep, Callback cb) noexcept {
-        callback = cb;
+        callback = std::move(cb);
         get<uv_timer_t>()->data = this;
         auto err = uv_timer_start(get<uv_timer_t>(), &proto, timeout.count(), rep.count());
 

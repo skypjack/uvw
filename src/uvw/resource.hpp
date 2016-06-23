@@ -62,7 +62,7 @@ public:
     using Callback = std::function<void(UVWError)>;
 
     void close(Callback cb) noexcept {
-        callback = cb;
+        callback = std::move(cb);
         get<uv_handle_t>()->data = this;
         uv_close(get<uv_handle_t>(), &proto);
     }
