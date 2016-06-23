@@ -14,8 +14,10 @@ namespace uvw {
 
 
 class Timer final: public Resource<Timer> {
-    static void proto(uv_timer_t* h) {
-        static_cast<Timer*>(h->data)->callback(UVWError{});
+    static Timer* startCallback(uv_timer_t* h) {
+        Timer *timer = static_cast<Timer*>(h->data);
+        timer->startCb(UVWError{});
+        return timer;
     }
 
     explicit Timer(std::shared_ptr<Loop> ref)
@@ -26,20 +28,21 @@ class Timer final: public Resource<Timer> {
 
 public:
     using Time = std::chrono::duration<uint64_t, std::milli>;
-    using Callback = std::function<void(UVWError)>;
 
     template<typename... Args>
     static std::shared_ptr<Timer> create(Args&&... args) {
         return std::shared_ptr<Timer>{new Timer{std::forward<Args>(args)...}};
     }
 
-    void start(const Time &timeout, const Time &rep, Callback cb) noexcept {
-        callback = std::move(cb);
-        get<uv_timer_t>()->data = this;
-        auto err = uv_timer_start(get<uv_timer_t>(), &proto, timeout.count(), rep.count());
+    void start(const Time &timeout, const Time &rep, std::function<void(UVWError)> cb) noexcept {
+        using UVCB = UVCallback<uv_timer_t*>;
+        auto func = UVCB::get<Timer, &startCallback>(this);
+        startCb = std::move(cb);
+        auto err = uv_timer_start(get<uv_timer_t>(), func, timeout.count(), rep.count());
 
         if(err) {
-            callback(UVWError{err});
+            startCb(UVWError{err});
+            reset();
         }
     }
 
@@ -51,7 +54,7 @@ public:
     explicit operator bool() { return initialized; }
 
 private:
-    Callback callback;
+    std::function<void(UVWError)> startCb;
     bool initialized;
 };
 
