@@ -55,6 +55,7 @@ protected:
     U* get() const noexcept { return reinterpret_cast<U*>(handle.get()); }
 
     uv_loop_t* parent() const noexcept { return pLoop->loop.get(); }
+    void reset() noexcept { ref = nullptr; }
 
 public:
     explicit Resource(const Resource &) = delete;
