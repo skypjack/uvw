@@ -12,7 +12,7 @@
 namespace uvw {
 
 
-class Resource;
+class BaseResource;
 class Loop;
 
 
@@ -25,7 +25,7 @@ class Handle {
 
     template<typename... Args>
     explicit constexpr Handle(std::shared_ptr<Loop>&& l, Args&&... args)
-        : res{std::make_shared<R>(std::move(l), std::forward<Args>(args)...)}
+        : res{R::create(std::move(l), std::forward<Args>(args)...)}
     { }
 
     explicit constexpr Handle(std::shared_ptr<R> ptr): res{std::move(ptr)} { }
@@ -59,7 +59,7 @@ private:
 
 
 class Loop final: public std::enable_shared_from_this<Loop> {
-    friend class Resource;
+    friend class BaseResource;
 
     using Deleter = std::function<void(uv_loop_t *)>;
 

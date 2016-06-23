@@ -15,14 +15,10 @@ template<typename>
 struct HandleType { };
 
 
-class Resource {
-    static void proto(uv_handle_t* h) {
-        static_cast<Resource*>(h->data)->callback(UVWError{});
-    }
-
+class BaseResource {
 protected:
     template<typename T>
-    explicit Resource(HandleType<T>, std::shared_ptr<Loop> r)
+    explicit BaseResource(HandleType<T>, std::shared_ptr<Loop> r)
         : ref{std::move(r)}, res{std::make_shared<T>()}
     { }
 
@@ -32,24 +28,16 @@ protected:
     uv_loop_t* parent() const noexcept { return ref->loop.get(); }
 
 public:
-    using Callback = std::function<void(UVWError)>;
+    explicit BaseResource(const BaseResource &) = delete;
+    explicit BaseResource(BaseResource &&) = delete;
 
-    explicit Resource(const Resource &) = delete;
-    explicit Resource(Resource &&) = delete;
-
-    void operator=(const Resource &) = delete;
-    void operator=(Resource &&) = delete;
+    void operator=(const BaseResource &) = delete;
+    void operator=(BaseResource &&) = delete;
 
     std::shared_ptr<Loop> loop() const noexcept { return ref; }
 
     bool active() const noexcept { return !(uv_is_active(get<uv_handle_t>()) == 0); }
     bool closing() const noexcept { return !(uv_is_closing(get<uv_handle_t>()) == 0); }
-
-    void close(Callback cb) noexcept {
-        callback = cb;
-        get<uv_handle_t>()->data = this;
-        uv_close(get<uv_handle_t>(), &proto);
-    }
 
     void reference() noexcept { uv_ref(get<uv_handle_t>()); }
     void unreference() noexcept { uv_ref(get<uv_handle_t>()); }
@@ -58,6 +46,28 @@ public:
 private:
     std::shared_ptr<Loop> ref;
     std::shared_ptr<void> res;
+};
+
+
+template<typename T>
+class Resource: public std::enable_shared_from_this<T>, public BaseResource {
+    static void proto(uv_handle_t* h) {
+        static_cast<Resource<T>*>(h->data)->callback(UVWError{});
+    }
+
+protected:
+    using BaseResource::BaseResource;
+
+public:
+    using Callback = std::function<void(UVWError)>;
+
+    void close(Callback cb) noexcept {
+        callback = cb;
+        get<uv_handle_t>()->data = this;
+        uv_close(get<uv_handle_t>(), &proto);
+    }
+
+private:
     Callback callback;
 };
 

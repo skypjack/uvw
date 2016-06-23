@@ -1,8 +1,9 @@
 #pragma once
 
 
-#include <string>
+#include <utility>
 #include <cstdint>
+#include <string>
 #include <memory>
 #include <chrono>
 #include <ratio>
@@ -14,7 +15,7 @@
 namespace uvw {
 
 
-class Tcp final: public Stream {
+class Tcp final: public Stream<Tcp> {
     static void protoConnect(uv_connect_t* req, int status) {
         Tcp *tcp = static_cast<Tcp*>(req->handle->data);
         tcp->connCb(UVWError{status});
@@ -31,12 +32,6 @@ class Tcp final: public Stream {
         return handle;
     }
 
-public:
-    using Time = std::chrono::duration<uint64_t>;
-    using CallbackConnect = std::function<void(UVWError)>;
-
-    enum { IPv4, IPv6 };
-
     explicit Tcp(std::shared_ptr<Loop> ref)
         : Stream{HandleType<uv_tcp_t>{}, std::move(ref)},
           conn{std::make_unique<uv_connect_t>()}
@@ -46,6 +41,17 @@ public:
 
     explicit Tcp(std::shared_ptr<Loop> ref, uv_stream_t *srv): Tcp{ref} {
         initialized = initialized || (uv_accept(srv, get<uv_stream_t>()) == 0);
+    }
+
+public:
+    using Time = std::chrono::duration<uint64_t>;
+    using CallbackConnect = std::function<void(UVWError)>;
+
+    enum { IPv4, IPv6 };
+
+    template<typename... Args>
+    static std::shared_ptr<Tcp> create(Args&&... args) {
+        return std::shared_ptr<Tcp>{new Tcp{std::forward<Args>(args)...}};
     }
 
     UVWError noDelay(bool value = false) noexcept {

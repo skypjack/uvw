@@ -9,7 +9,8 @@
 namespace uvw {
 
 
-class Stream: public Resource {
+template<typename T>
+class Stream: public Resource<T> {
     static void protoListen(uv_stream_t* srv, int status) {
         Stream &stream = *(static_cast<Stream*>(srv->data));
 
@@ -33,7 +34,7 @@ class Stream: public Resource {
     virtual Handle<Stream> accept() const noexcept = 0;
 
 protected:
-    using Resource::Resource;
+    using Resource<T>::Resource;
 
 public:
     using CallbackListen = std::function<void(UVWError)>;
@@ -42,8 +43,8 @@ public:
 
     void listen(int backlog, CallbackListen cb) noexcept {
         listenCallback = cb;
-        get<uv_stream_t>()->data = this;
-        auto err = uv_listen(get<uv_stream_t>(), backlog, &protoListen);
+        this->template get<uv_stream_t>()->data = this;
+        auto err = uv_listen(this->template get<uv_stream_t>(), backlog, &protoListen);
 
         if(err) {
             listenCallback(UVWError{err});
@@ -56,11 +57,11 @@ public:
     // TODO tryWrite
 
     bool readable() const noexcept {
-        return (uv_is_readable(get<uv_stream_t>()) == 1);
+        return (uv_is_readable(this->template get<uv_stream_t>()) == 1);
     }
 
     bool writable() const noexcept {
-        return (uv_is_writable(get<uv_stream_t>()) == 1);
+        return (uv_is_writable(this->template get<uv_stream_t>()) == 1);
     }
 
 private:

@@ -2,6 +2,7 @@
 
 
 #include <cstdint>
+#include <utility>
 #include <chrono>
 #include <ratio>
 #include <uv.h>
@@ -12,19 +13,24 @@
 namespace uvw {
 
 
-class Timer final: public Resource {
+class Timer final: public Resource<Timer> {
     static void proto(uv_timer_t* h) {
         static_cast<Timer*>(h->data)->callback(UVWError{});
+    }
+
+    explicit Timer(std::shared_ptr<Loop> ref)
+        : Resource{HandleType<uv_timer_t>{}, std::move(ref)}
+    {
+        initialized = (uv_timer_init(parent(), get<uv_timer_t>()) == 0);
     }
 
 public:
     using Time = std::chrono::duration<uint64_t, std::milli>;
     using Callback = std::function<void(UVWError)>;
 
-    explicit Timer(std::shared_ptr<Loop> ref)
-        : Resource{HandleType<uv_timer_t>{}, std::move(ref)}
-    {
-        initialized = (uv_timer_init(parent(), get<uv_timer_t>()) == 0);
+    template<typename... Args>
+    static std::shared_ptr<Timer> create(Args&&... args) {
+        return std::shared_ptr<Timer>{new Timer{std::forward<Args>(args)...}};
     }
 
     void start(const Time &timeout, const Time &rep, Callback cb) noexcept {
