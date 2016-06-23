@@ -11,49 +11,98 @@
 namespace uvw {
 
 
+template<typename>
+struct HandleType { };
+
+
+template<typename>
+class Resource;
+
+
+template<typename>
+struct UVCallback;
+
+
+template<typename... Args>
+struct UVCallback<Args...> {
+    template<typename T, T*(*F)(Args...)>
+    static auto get(T *res);
+
+private:
+    template<typename T, T*(*F)(Args...)>
+    static void proto(Args... args);
+};
+
+
 template<typename T>
-class Resource {
+class Resource: public std::enable_shared_from_this<T> {
+    template<typename>
+    friend struct UVCallback;
+
+    static Resource<T>* closeCallback(uv_handle_t* h) {
+        auto ptr = static_cast<Resource<T>*>(h->data);
+        ptr->closeCb(UVWError{});
+        return ptr;
+    }
+
 protected:
     template<typename U>
-    explicit Resource(U *u): handle{reinterpret_cast<uv_handle_t*>(u)} {
-        handle->data = this;
-    }
+    explicit Resource(HandleType<U>, std::shared_ptr<Loop> r)
+        : pLoop{std::move(r)}, handle{std::make_shared<U>()}
+    { }
 
-    static void proto(uv_handle_t* h) {
-        static_cast<Resource*>(h->data)->callback(UVWError{});
-    }
+    template<typename U>
+    U* get() const noexcept { return reinterpret_cast<U*>(handle.get()); }
+
+    uv_loop_t* parent() const noexcept { return pLoop->loop.get(); }
+    void reset() noexcept { ref = nullptr; }
 
 public:
-    using Callback = std::function<void(UVWError)>;
+    explicit Resource(const Resource &) = delete;
+    explicit Resource(Resource &&) = delete;
 
-    virtual ~Resource() = 0;
-
-    Resource(const Resource &) = delete;
-    Resource(Resource &&) = delete;
+    ~Resource() { static_assert(std::is_base_of<Resource<T>, T>::value, "!"); }
 
     void operator=(const Resource &) = delete;
     void operator=(Resource &&) = delete;
 
-    bool active() const noexcept { return !(uv_is_active(handle) == 0); }
-    bool closing() const noexcept { return !(uv_is_closing(handle) == 0); }
+    std::shared_ptr<Loop> loop() const noexcept { return pLoop; }
 
-    void close(Callback cb) noexcept {
-        callback = cb;
-        uv_close(handle, &proto);
+    bool active() const noexcept { return !(uv_is_active(get<uv_handle_t>()) == 0); }
+    bool closing() const noexcept { return !(uv_is_closing(get<uv_handle_t>()) == 0); }
+
+    void reference() noexcept { uv_ref(get<uv_handle_t>()); }
+    void unreference() noexcept { uv_ref(get<uv_handle_t>()); }
+    bool referenced() const noexcept { return !(uv_has_ref(get<uv_handle_t>()) == 0); }
+
+    void close(std::function<void(UVWError)> cb) noexcept {
+        using UVCB = UVCallback<uv_handle_t*>;
+        auto func = UVCB::get<Resource<T>, &closeCallback>(this);
+        closeCb = std::move(cb);
+        uv_close(get<uv_handle_t>(), func);
     }
 
-    void reference() noexcept { uv_ref(handle); }
-    void unreference() noexcept { uv_ref(handle); }
-    bool referenced() const noexcept { return !(uv_has_ref(handle) == 0); }
-
 private:
-    uv_handle_t *handle;
-    Callback callback;
+    std::function<void(UVWError)> closeCb;
+    std::shared_ptr<Loop> pLoop;
+    std::shared_ptr<void> handle;
+    std::shared_ptr<void> ref;
 };
 
-template<typename T>
-Resource<T>::~Resource() {
-    static_assert(std::is_base_of<Resource<T>, T>::value, "!");
+
+template<typename... Args>
+template<typename T, T*(*F)(Args...)>
+void UVCallback<Args...>::proto(Args... args) {
+    T *res = F(std::forward<Args>(args)...);
+    res->ref = nullptr;
+}
+
+template<typename... Args>
+template<typename T, T*(*F)(Args...)>
+auto UVCallback<Args...>::get(T *res) {
+    res->template get<uv_handle_t>()->data = res;
+    res->ref = res->shared_from_this();
+    return &proto<T, F>;
 }
 
 

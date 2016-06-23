@@ -4,6 +4,7 @@
 #include <new>
 #include <memory>
 #include <utility>
+#include <type_traits>
 #include <uv.h>
 #include "error.hpp"
 
@@ -11,47 +12,90 @@
 namespace uvw {
 
 
+class BaseResource;
 class Loop;
 
 
 template<typename R>
 class Handle {
+    template<typename>
+    friend class Handle;
+
     friend class Loop;
 
     template<typename... Args>
-    explicit constexpr Handle(Args&&... args)
-        : res{std::make_shared<R>(std::forward<Args>(args)...)}
+    explicit constexpr Handle(std::shared_ptr<Loop>&& l, Args&&... args)
+        : res{R::create(std::move(l), std::forward<Args>(args)...)}
     { }
 
-public:
-    constexpr Handle(const Handle &other): res{other.res} { }
-    constexpr Handle(Handle &&other): res{std::move(other.res)} { }
+    explicit constexpr Handle(std::shared_ptr<R> ptr): res{std::move(ptr)} { }
 
-    constexpr void operator=(const Handle &other) { res = other.res; }
-    constexpr void operator=(Handle &&other) { res = std::move(other.res); }
+public:
+    explicit constexpr Handle(): res{} { }
+
+    template<typename T, std::enable_if_t<std::is_base_of<R, T>::value>* = nullptr>
+    constexpr Handle(const Handle<T> &other): res{other.res} { }
+
+    template<typename T, std::enable_if_t<std::is_base_of<R, T>::value>* = nullptr>
+    constexpr Handle(Handle<T> &&other): res{std::move(other.res)} { }
+
+    template<typename T, std::enable_if_t<std::is_base_of<R, T>::value>* = nullptr>
+    constexpr void operator=(const Handle<T> &other) { res = other.res; }
+
+    template<typename T, std::enable_if_t<std::is_base_of<R, T>::value>* = nullptr>
+    constexpr void operator=(Handle<T> &&other) { res = std::move(other.res); }
+
+    constexpr explicit operator bool() const { return static_cast<bool>(res); }
 
     constexpr operator R&() noexcept { return *res; }
-    operator const R&() const noexcept { return *res; }
+    constexpr operator const R&() const noexcept { return *res; }
+
+    template<typename T, std::enable_if_t<std::is_base_of<T, R>::value>* = nullptr>
+    constexpr operator Handle<T>() { return Handle<T>{res}; }
 
 private:
     std::shared_ptr<R> res;
 };
 
 
-class Loop final {
-public:
-    Loop(bool def = true)
-        : loop{def ? uv_default_loop() : new uv_loop_t, [def](uv_loop_t *l){ if(!def) delete l; }}
-    {
-        if(!def) {
-            auto err = uv_loop_init(loop.get());
+class Loop final: public std::enable_shared_from_this<Loop> {
+    template<typename>
+    friend class Resource;
 
-            if(err) {
-                throw UVWException{err};
-            }
-        } else if(!loop) {
-            throw std::bad_alloc{};
+    using Deleter = std::function<void(uv_loop_t *)>;
+
+    Loop(std::unique_ptr<uv_loop_t, Deleter> ptr): loop{std::move(ptr)} { }
+
+public:
+    static std::shared_ptr<Loop> create() {
+        auto ptr = std::unique_ptr<uv_loop_t, Deleter>{new uv_loop_t, [](uv_loop_t *l){ delete l; }};
+        auto loop = std::shared_ptr<Loop>(new Loop{std::move(ptr)});
+
+        if(uv_loop_init(loop->loop.get())) {
+            loop = nullptr;
         }
+
+        return loop;
+    }
+
+    static std::shared_ptr<Loop> getDefault() {
+        static std::weak_ptr<Loop> ref;
+        std::shared_ptr<Loop> loop;
+
+        if(ref.expired()) {
+            auto def = uv_default_loop();
+
+            if(def) {
+                auto ptr = std::unique_ptr<uv_loop_t, Deleter>(def, [](uv_loop_t *){ });
+                loop = std::shared_ptr<Loop>(new Loop{std::move(ptr)});
+            }
+
+            ref = loop;
+        } else {
+            loop = ref.lock();
+        }
+
+        return loop;
     }
 
     Loop(const Loop &) = delete;
@@ -67,11 +111,11 @@ public:
 
     template<typename R, typename... Args>
     Handle<R> handle(Args&&... args) {
-        return Handle<R>{loop.get(), std::forward<Args>(args)...};
+        return Handle<R>{shared_from_this(), std::forward<Args>(args)...};
     }
 
-    bool close() noexcept {
-        return (uv_loop_close(loop.get()) == 0);
+    UVWError close() noexcept {
+        return UVWError{uv_loop_close(loop.get())};
     }
 
     bool run() noexcept {
@@ -95,7 +139,6 @@ public:
     }
 
 private:
-    using Deleter = std::function<void(uv_loop_t *)>;
     std::unique_ptr<uv_loop_t, Deleter> loop;
 };
 

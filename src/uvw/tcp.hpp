@@ -1,7 +1,10 @@
 #pragma once
 
 
+#include <utility>
 #include <cstdint>
+#include <string>
+#include <memory>
 #include <chrono>
 #include <ratio>
 #include <uv.h>
@@ -14,9 +17,30 @@ namespace uvw {
 
 class Tcp final: public Stream<Tcp> {
     static void protoConnect(uv_connect_t* req, int status) {
-        auto handle = req->handle;
-        delete req;
-        static_cast<Tcp*>(handle->data)->connCb(UVWError{status});
+        Tcp *tcp = static_cast<Tcp*>(req->handle->data);
+        tcp->connCb(UVWError{status});
+        tcp->connCb = nullptr;
+    }
+
+    Handle<Stream> accept() const noexcept override {
+        auto handle = loop()->handle<Tcp>(get<uv_stream_t>());
+
+        if(!handle || !static_cast<Tcp&>(handle)) {
+            handle = Handle<Tcp>{};
+        }
+
+        return handle;
+    }
+
+    explicit Tcp(std::shared_ptr<Loop> ref)
+        : Stream{HandleType<uv_tcp_t>{}, std::move(ref)},
+          conn{std::make_unique<uv_connect_t>()}
+    {
+        initialized = (uv_tcp_init(parent(), get<uv_tcp_t>()) == 0);
+    }
+
+    explicit Tcp(std::shared_ptr<Loop> ref, uv_stream_t *srv): Tcp{ref} {
+        initialized = initialized || (uv_accept(srv, get<uv_stream_t>()) == 0);
     }
 
 public:
@@ -25,51 +49,52 @@ public:
 
     enum { IPv4, IPv6 };
 
-    explicit Tcp(uv_loop_t *loop): Stream<Tcp>{&handle} {
-        uv_tcp_init(loop, &handle);
+    template<typename... Args>
+    static std::shared_ptr<Tcp> create(Args&&... args) {
+        return std::shared_ptr<Tcp>{new Tcp{std::forward<Args>(args)...}};
     }
 
-    ~Tcp() {
-        close([](UVWError){});
+    UVWError noDelay(bool value = false) noexcept {
+        return UVWError{uv_tcp_nodelay(get<uv_tcp_t>(), value ? 1 : 0)};
     }
 
-    bool noDelay(bool value = false) {
-        return (uv_tcp_nodelay(&handle, value ? 1 : 0) == 0);
-    }
-
-    bool keepAlive(bool enable = false, Time time = Time{0}) {
-        return (uv_tcp_keepalive(&handle, enable ? 1 : 0, time.count()) == 0);
+    UVWError keepAlive(bool enable = false, Time time = Time{0}) noexcept {
+        return UVWError{uv_tcp_keepalive(get<uv_tcp_t>(), enable ? 1 : 0, time.count())};
     }
 
     template<int>
     void connect(std::string, int, CallbackConnect) noexcept;
 
+    explicit operator bool() { return initialized; }
+
 private:
+    std::unique_ptr<uv_connect_t> conn;
     CallbackConnect connCb;
-    uv_tcp_t handle;
+    bool initialized;
 };
 
 
 template<>
 void Tcp::connect<Tcp::IPv4>(std::string ip, int port, CallbackConnect cb) noexcept {
-    uv_connect_t *conn = new uv_connect_t;
     sockaddr_in addr;
     uv_ip4_addr(ip.c_str(), port, &addr);
-    connCb = cb;
-    auto err = uv_tcp_connect(conn, &handle, reinterpret_cast<const sockaddr*>(&addr), &protoConnect);
+    connCb = std::move(cb);
+    get<uv_tcp_t>()->data = this;
+    auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), &protoConnect);
 
     if(err) {
         connCb(UVWError{err});
     }
 }
 
+
 template<>
 void Tcp::connect<Tcp::IPv6>(std::string ip, int port, CallbackConnect cb) noexcept {
-    uv_connect_t *conn = new uv_connect_t;
     sockaddr_in6 addr;
     uv_ip6_addr(ip.c_str(), port, &addr);
-    connCb = cb;
-    auto err = uv_tcp_connect(conn, &handle, reinterpret_cast<const sockaddr*>(&addr), &protoConnect);
+    connCb = std::move(cb);
+    get<uv_tcp_t>()->data = this;
+    auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), &protoConnect);
 
     if(err) {
         connCb(UVWError{err});
