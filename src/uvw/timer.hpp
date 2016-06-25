@@ -35,8 +35,8 @@ public:
     }
 
     void start(const Time &timeout, const Time &rep, std::function<void(UVWError)> cb) noexcept {
-        using UVCB = UVCallback<uv_timer_t*>;
-        auto func = UVCB::get<Timer, &startCallback>(this);
+        using UVCB = UVCallback<Timer, uv_timer_t*>;
+        auto func = UVCB::get<&Timer::startCallback>(this);
         startCb = std::move(cb);
         auto err = uv_timer_start(get<uv_timer_t>(), func, timeout.count(), rep.count());
 

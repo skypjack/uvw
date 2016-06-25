@@ -19,24 +19,24 @@ template<typename>
 class Resource;
 
 
-template<typename... Args>
+template<typename T, typename... Args>
 struct UVCallback {
-    template<typename T, T*(*F)(Args...)>
+    template<T*(*F)(Args...)>
     static auto get(T *res);
 
 private:
-    template<typename T, T*(*F)(Args...)>
+    template<T*(*F)(Args...)>
     static void proto(Args... args);
 };
 
 
 template<typename T>
 class Resource: public std::enable_shared_from_this<T> {
-    template<typename...>
+    template<typename, typename...>
     friend struct UVCallback;
 
     static Resource<T>* closeCallback(uv_handle_t* h) {
-        auto ptr = static_cast<Resource<T>*>(h->data);
+        auto *ptr = static_cast<Resource<T>*>(h->data);
         ptr->closeCb(UVWError{});
         return ptr;
     }
@@ -72,8 +72,8 @@ public:
     bool referenced() const noexcept { return !(uv_has_ref(get<uv_handle_t>()) == 0); }
 
     void close(std::function<void(UVWError)> cb) noexcept {
-        using UVCB = UVCallback<uv_handle_t*>;
-        auto func = UVCB::get<Resource<T>, &closeCallback>(this);
+        using UVCB = UVCallback<Resource<T>, uv_handle_t*>;
+        auto func = UVCB::template get<&Resource<T>::closeCallback>(this);
         closeCb = std::move(cb);
         uv_close(get<uv_handle_t>(), func);
     }
@@ -86,19 +86,19 @@ private:
 };
 
 
-template<typename... Args>
-template<typename T, T*(*F)(Args...)>
-void UVCallback<Args...>::proto(Args... args) {
+template<typename T, typename... Args>
+template<T*(*F)(Args...)>
+void UVCallback<T, Args...>::proto(Args... args) {
     T *res = F(std::forward<Args>(args)...);
     res->ref = nullptr;
 }
 
-template<typename... Args>
-template<typename T, T*(*F)(Args...)>
-auto UVCallback<Args...>::get(T *res) {
+template<typename T, typename... Args>
+template<T*(*F)(Args...)>
+auto UVCallback<T, Args...>::get(T *res) {
     res->template get<uv_handle_t>()->data = res;
     res->ref = res->shared_from_this();
-    return &proto<T, F>;
+    return &UVCallback<T, Args...>::proto<F>;
 }
 
 

@@ -31,8 +31,8 @@ public:
     }
 
     void start(std::function<void(UVWError)> cb) noexcept {
-        using UVCB = UVCallback<uv_check_t*>;
-        auto func = UVCB::get<Check, &startCallback>(this);
+        using UVCB = UVCallback<Check, uv_check_t*>;
+        auto func = UVCB::get<&Check::startCallback>(this);
         startCb = std::move(cb);
         auto err = uv_check_start(get<uv_check_t>(), func);
 
