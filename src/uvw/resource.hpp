@@ -19,12 +19,8 @@ template<typename>
 class Resource;
 
 
-template<typename>
-struct UVCallback;
-
-
 template<typename... Args>
-struct UVCallback<Args...> {
+struct UVCallback {
     template<typename T, T*(*F)(Args...)>
     static auto get(T *res);
 
@@ -36,7 +32,7 @@ private:
 
 template<typename T>
 class Resource: public std::enable_shared_from_this<T> {
-    template<typename>
+    template<typename...>
     friend struct UVCallback;
 
     static Resource<T>* closeCallback(uv_handle_t* h) {
