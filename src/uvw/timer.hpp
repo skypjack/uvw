@@ -14,7 +14,7 @@ namespace uvw {
 
 
 class Timer final: public Resource<Timer> {
-    static void startCallback(Timer &ref, uv_timer_t* h) {
+    static void startCallback(Timer &ref, uv_timer_t*) {
         ref.startCb(UVWError{});
         ref.startCb = nullptr;
     }

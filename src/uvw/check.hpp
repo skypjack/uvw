@@ -12,7 +12,7 @@ namespace uvw {
 
 
 class Check final: public Resource<Check> {
-    static void startCallback(Check &ref, uv_check_t* h) {
+    static void startCallback(Check &ref, uv_check_t*) {
         ref.startCb(UVWError{});
         ref.startCb = nullptr;
     }
