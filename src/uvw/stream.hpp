@@ -11,43 +11,27 @@ namespace uvw {
 
 template<typename T>
 class Stream: public Resource<T> {
-    static void protoListen(uv_stream_t* srv, int status) {
-        Stream &stream = *(static_cast<Stream*>(srv->data));
-
-        if(status) {
-            stream.listenCallback(UVWError{status});
-        } else {
-            stream.tryAccept();
-        }
+    static void listenCallback(T &ref, uv_stream_t* srv, int status) {
+        ref.listenCb(UVWError{status});
+        ref.listenCb = nullptr;
     }
-
-    void tryAccept() const noexcept {
-        Handle<Stream> handle = accept();
-
-        if(handle) {
-            // TODO invoke cb with handle
-        } else {
-            // TODO invoke cb with error
-        }
-    }
-
-    virtual Handle<Stream> accept() const noexcept = 0;
 
 protected:
     using Resource<T>::Resource;
 
 public:
-    using CallbackListen = std::function<void(UVWError)>;
-
     // TODO shutdown
 
-    void listen(int backlog, CallbackListen cb) noexcept {
-        listenCallback = std::move(cb);
-        this->template get<uv_stream_t>()->data = this;
-        auto err = uv_listen(this->template get<uv_stream_t>(), backlog, &protoListen);
+    void listen(int backlog, std::function<void(UVWError)> cb) noexcept {
+        using CB = typename Resource<T>::template Callback<void(uv_stream_t*, int)>;
+
+        auto func = CB::get<&Stream<T>::listenCallback>(*static_cast<T*>(this));
+        auto err = uv_listen(this->template get<uv_stream_t>(), backlog, func);
 
         if(err) {
-            listenCallback(UVWError{err});
+            listenCb(UVWError{err});
+        } else {
+            listenCb = std::move(cb);
         }
     }
 
@@ -65,7 +49,7 @@ public:
     }
 
 private:
-    CallbackListen listenCallback;
+    std::function<void(UVWError)> listenCb;
 };
 
 

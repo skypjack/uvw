@@ -49,7 +49,7 @@ class Resource: public std::enable_shared_from_this<T> {
     template<typename, typename>
     friend struct details::UVCallback;
 
-    static void closeCallback(T &ref, uv_handle_t* h) {
+    static void closeCallback(T &ref, uv_handle_t*) {
         Resource<T> &res = ref;
         res.closeCb(UVWError{});
         res.closeCb = nullptr;
@@ -117,9 +117,10 @@ template<typename T, typename H, typename... Args>
 template<void(*F)(T &, H, Args...)>
 void UVCallback<T, void(H, Args...)>::proto(H handle, Args... args) {
     T &ref = *(static_cast<T*>(details::get(handle)));
-    F(ref, handle, std::forward<Args>(args)...);
+    auto ptr = ref.leak;
     ref.leak.reset();
-
+    F(ref, handle, std::forward<Args>(args)...);
+    (void)ptr;
 }
 
 

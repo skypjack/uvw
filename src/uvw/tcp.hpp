@@ -22,16 +22,6 @@ class Tcp final: public Stream<Tcp> {
         tcp->connCb = nullptr;
     }
 
-    Handle<Stream> accept() const noexcept override {
-        auto handle = loop()->handle<Tcp>(get<uv_stream_t>());
-
-        if(!handle || !static_cast<Tcp&>(handle)) {
-            handle = Handle<Tcp>{};
-        }
-
-        return handle;
-    }
-
     explicit Tcp(std::shared_ptr<Loop> ref)
         : Stream{HandleType<uv_tcp_t>{}, std::move(ref)},
           conn{std::make_unique<uv_connect_t>()}
@@ -45,7 +35,6 @@ class Tcp final: public Stream<Tcp> {
 
 public:
     using Time = std::chrono::duration<uint64_t>;
-    using CallbackConnect = std::function<void(UVWError)>;
 
     enum { IPv4, IPv6 };
 
@@ -63,19 +52,19 @@ public:
     }
 
     template<int>
-    void connect(std::string, int, CallbackConnect) noexcept;
+    void connect(std::string, int, std::function<void(UVWError)>) noexcept;
 
     explicit operator bool() { return initialized; }
 
 private:
     std::unique_ptr<uv_connect_t> conn;
-    CallbackConnect connCb;
+    std::function<void(UVWError)> connCb;
     bool initialized;
 };
 
 
 template<>
-void Tcp::connect<Tcp::IPv4>(std::string ip, int port, CallbackConnect cb) noexcept {
+void Tcp::connect<Tcp::IPv4>(std::string ip, int port, std::function<void(UVWError)> cb) noexcept {
     sockaddr_in addr;
     uv_ip4_addr(ip.c_str(), port, &addr);
     connCb = std::move(cb);
@@ -89,7 +78,7 @@ void Tcp::connect<Tcp::IPv4>(std::string ip, int port, CallbackConnect cb) noexc
 
 
 template<>
-void Tcp::connect<Tcp::IPv6>(std::string ip, int port, CallbackConnect cb) noexcept {
+void Tcp::connect<Tcp::IPv6>(std::string ip, int port, std::function<void(UVWError)> cb) noexcept {
     sockaddr_in6 addr;
     uv_ip6_addr(ip.c_str(), port, &addr);
     connCb = std::move(cb);
