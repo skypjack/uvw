@@ -12,10 +12,9 @@ namespace uvw {
 
 
 class Check final: public Resource<Check> {
-    static Check* startCallback(uv_check_t* h) {
-        Check *check = static_cast<Check*>(h->data);
-        check->startCb(UVWError{});
-        return check;
+    static void startCallback(Check &ref, uv_check_t* h) {
+        ref.startCb(UVWError{});
+        ref.startCb = nullptr;
     }
 
     explicit Check(std::shared_ptr<Loop> ref)
@@ -31,14 +30,13 @@ public:
     }
 
     void start(std::function<void(UVWError)> cb) noexcept {
-        using UVCB = UVCallback<Check, uv_check_t*>;
-        auto func = UVCB::get<&Check::startCallback>(this);
-        startCb = std::move(cb);
+        auto func = Callback<void(uv_check_t*)>::get<&Check::startCallback>(*this);
         auto err = uv_check_start(get<uv_check_t>(), func);
 
         if(err) {
             startCb(UVWError{err});
-            reset();
+        } else {
+            startCb = std::move(cb);
         }
     }
 
