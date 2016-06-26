@@ -14,9 +14,8 @@ namespace uvw {
 
 
 class Timer final: public Resource<Timer> {
-    static void startCallback(Timer &ref, uv_timer_t*) {
-        ref.startCb(UVWError{});
-        ref.startCb = nullptr;
+    static void startCallback(Timer &, std::function<void(UVWError)> &cb, uv_timer_t*) {
+        cb(UVWError{});
     }
 
     explicit Timer(std::shared_ptr<Loop> ref)
@@ -34,14 +33,10 @@ public:
     }
 
     void start(const Time &timeout, const Time &rep, std::function<void(UVWError)> cb) noexcept {
-        auto func = Callback<void(uv_timer_t*)>::get<&Timer::startCallback>(*this);
+        using CB = Callback<void(uv_timer_t*)>;
+        auto func = CB::on<&Timer::startCallback>(*this, cb);
         auto err = uv_timer_start(get<uv_timer_t>(), func, timeout.count(), rep.count());
-
-        if(err) {
-            startCb(UVWError{err});
-        } else {
-            startCb = std::move(cb);
-        }
+        if(err) { cb(UVWError{err}); }
     }
 
     UVWError stop() noexcept { return UVWError{uv_timer_stop(get<uv_timer_t>())}; }

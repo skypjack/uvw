@@ -65,6 +65,7 @@ private:
 
 template<>
 void Tcp::connect<Tcp::IPv4>(std::string ip, int port, std::function<void(UVWError)> cb) noexcept {
+    // TODO switch to the Callback model
     sockaddr_in addr;
     uv_ip4_addr(ip.c_str(), port, &addr);
     connCb = std::move(cb);
@@ -79,6 +80,7 @@ void Tcp::connect<Tcp::IPv4>(std::string ip, int port, std::function<void(UVWErr
 
 template<>
 void Tcp::connect<Tcp::IPv6>(std::string ip, int port, std::function<void(UVWError)> cb) noexcept {
+    // TODO switch to the Callback model
     sockaddr_in6 addr;
     uv_ip6_addr(ip.c_str(), port, &addr);
     connCb = std::move(cb);
