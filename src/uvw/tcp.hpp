@@ -34,7 +34,7 @@ class Tcp final: public Stream<Tcp> {
 public:
     using Time = std::chrono::duration<uint64_t>;
 
-    enum { IPv4, IPv6 };
+    enum IP { IPv4, IPv6 };
 
     template<typename... Args>
     static std::shared_ptr<Tcp> create(Args&&... args) {
@@ -49,8 +49,15 @@ public:
         return UVWError{uv_tcp_keepalive(get<uv_tcp_t>(), enable ? 1 : 0, time.count())};
     }
 
-    template<int>
-    void connect(std::string, int, std::function<void(UVWError, Tcp &)>) noexcept;
+    template<IP>
+    UVWError bind(std::string, unsigned int, bool = false);
+
+    template<IP>
+    void connect(std::string, unsigned int, std::function<void(UVWError, Tcp &)>) noexcept;
+
+    UVWError accept(Tcp &tcp) {
+        return UVWError{uv_accept(get<uv_stream_t>(), tcp.get<uv_stream_t>())};
+    }
 
     explicit operator bool() { return initialized; }
 
@@ -61,24 +68,41 @@ private:
 
 
 template<>
-void Tcp::connect<Tcp::IPv4>(std::string ip, int port, std::function<void(UVWError, Tcp &)> cb) noexcept {
+UVWError Tcp::bind<Tcp::IPv4>(std::string ip, unsigned int port, bool ipv6only) {
+    sockaddr_in addr;
+    uv_ip4_addr(ip.c_str(), port, &addr);
+    unsigned int flags = ipv6only ? UV_TCP_IPV6ONLY : 0;
+    return UVWError(uv_tcp_bind(get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), flags));}
+
+
+template<>
+UVWError Tcp::bind<Tcp::IPv6>(std::string ip, unsigned int port, bool ipv6only) {
+    sockaddr_in6 addr;
+    uv_ip6_addr(ip.c_str(), port, &addr);
+    unsigned int flags = ipv6only ? UV_TCP_IPV6ONLY : 0;
+    return UVWError(uv_tcp_bind(get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), flags));
+}
+
+
+template<>
+void Tcp::connect<Tcp::IPv4>(std::string ip, unsigned int port, std::function<void(UVWError, Tcp &)> cb) noexcept {
     sockaddr_in addr;
     uv_ip4_addr(ip.c_str(), port, &addr);
     using CBF = CallbackFactory<void(uv_connect_t *, int)>;
     auto func = CBF::template once<&Tcp::connectCallback>(*this, cb);
     auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), func);
-    if(err) { cb(UVWError{err}, *this); }
+    if(err) { error(err); }
 }
 
 
 template<>
-void Tcp::connect<Tcp::IPv6>(std::string ip, int port, std::function<void(UVWError, Tcp &)> cb) noexcept {
+void Tcp::connect<Tcp::IPv6>(std::string ip, unsigned int port, std::function<void(UVWError, Tcp &)> cb) noexcept {
     sockaddr_in6 addr;
     uv_ip6_addr(ip.c_str(), port, &addr);
     using CBF = CallbackFactory<void(uv_connect_t *, int)>;
     auto func = CBF::template once<&Tcp::connectCallback>(*this, cb);
     auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), func);
-    if(err) { cb(UVWError{err}, *this); }
+    if(err) { error(err); }
 }
 
 

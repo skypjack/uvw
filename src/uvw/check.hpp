@@ -32,7 +32,7 @@ public:
         using CBF = CallbackFactory<void(uv_check_t *)>;
         auto func = CBF::on<&Check::startCallback>(*this, cb);
         auto err = uv_check_start(get<uv_check_t>(), func);
-        if(err) { cb(UVWError{err}, *this); }
+        if(err) { error(err); }
     }
 
     UVWError stop() noexcept { return UVWError{uv_check_stop(get<uv_check_t>())}; }

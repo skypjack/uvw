@@ -11,6 +11,8 @@ namespace uvw {
 
 template<typename T>
 class Stream: public Resource<T> {
+    static constexpr unsigned int DEFAULT_BACKLOG = 128;
+
     static void listenCallback(T &t, std::function<void(UVWError, T &)> &cb, uv_stream_t *, int status) {
         cb(UVWError{status}, t);
     }
@@ -21,11 +23,15 @@ protected:
 public:
     // TODO shutdown
 
+    void listen(std::function<void(UVWError, T &)> cb) noexcept {
+        listen(DEFAULT_BACKLOG, std::move(cb));
+    }
+
     void listen(int backlog, std::function<void(UVWError, T &)> cb) noexcept {
         using CBF = typename Resource<T>::template CallbackFactory<void(uv_stream_t *, int)>;
-        auto func = CBF::on<&Stream<T>::listenCallback>(*static_cast<T*>(this), cb);
+        auto func = CBF::template on<&Stream<T>::listenCallback>(*static_cast<T*>(this), cb);
         auto err = uv_listen(this->template get<uv_stream_t>(), backlog, func);
-        if(err) { cb(UVWError{err}, *static_cast<T*>(this)); }
+        if(err) { Stream<T>::error(err); }
     }
 
     // TODO read

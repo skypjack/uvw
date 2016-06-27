@@ -36,7 +36,7 @@ public:
         using CBF = CallbackFactory<void(uv_timer_t *)>;
         auto func = CBF::on<&Timer::startCallback>(*this, cb);
         auto err = uv_timer_start(get<uv_timer_t>(), func, timeout.count(), rep.count());
-        if(err) { cb(UVWError{err}, *this); }
+        if(err) { error(err); }
     }
 
     UVWError stop() noexcept { return UVWError{uv_timer_stop(get<uv_timer_t>())}; }

@@ -67,11 +67,18 @@ protected:
 
     template<typename U>
     explicit Resource(HandleType<U>, std::shared_ptr<Loop> r)
-        : pLoop{std::move(r)}, handle{std::make_shared<U>()}
+        : uvHandle{std::make_shared<U>()}, pLoop{std::move(r)}
     { }
 
+    void error(int error) {
+        auto ptr = std::static_pointer_cast<T>(leak);
+        auto cb = std::move(callback);
+        leak.reset();
+        cb(UVWError{error}, *ptr);
+    }
+
     template<typename U>
-    U* get() const noexcept { return reinterpret_cast<U*>(handle.get()); }
+    U* get() const noexcept { return reinterpret_cast<U*>(uvHandle.get()); }
 
     uv_loop_t* parent() const noexcept { return pLoop->loop.get(); }
 
@@ -84,7 +91,8 @@ public:
     void operator=(const Resource &) = delete;
     void operator=(Resource &&) = delete;
 
-    std::shared_ptr<Loop> loop() const noexcept { return pLoop; }
+    Handle<T> handle() noexcept { return pLoop->handle(Resource<T>::shared_from_this()); }
+    Loop& loop() const noexcept { return *pLoop; }
 
     bool active() const noexcept { return !(uv_is_active(get<uv_handle_t>()) == 0); }
     bool closing() const noexcept { return !(uv_is_closing(get<uv_handle_t>()) == 0); }
@@ -100,8 +108,8 @@ public:
     }
 
 private:
+    std::shared_ptr<void> uvHandle;
     std::shared_ptr<Loop> pLoop;
-    std::shared_ptr<void> handle;
     std::shared_ptr<void> leak;
     std::function<void(UVWError, T &)> callback;
 };
@@ -134,7 +142,7 @@ template<typename T, typename H, typename... Args>
 template<void(*F)(T &, std::function<void(UVWError, T &)> &, H, Args...)>
 void UVCallbackFactory<T, void(H, Args...)>::protoOnce(H handle, Args... args) {
     T &ref = *(static_cast<T*>(details::get(handle)));
-    std::shared_ptr<T> ptr = std::static_pointer_cast<T>(ref.leak);
+    auto ptr = std::static_pointer_cast<T>(ref.leak);
     auto cb = std::move(ref.callback);
     ref.leak.reset();
     F(*ptr, cb, handle, std::forward<Args>(args)...);

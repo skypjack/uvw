@@ -12,7 +12,6 @@
 namespace uvw {
 
 
-class BaseResource;
 class Loop;
 
 
@@ -49,9 +48,6 @@ public:
 
     constexpr operator R&() noexcept { return *res; }
     constexpr operator const R&() const noexcept { return *res; }
-
-    template<typename T, std::enable_if_t<std::is_base_of<T, R>::value>* = nullptr>
-    constexpr operator Handle<T>() { return Handle<T>{res}; }
 
 private:
     std::shared_ptr<R> res;
@@ -107,6 +103,11 @@ public:
         if(loop) {
             close();
         }
+    }
+
+    template<typename R>
+    Handle<R> handle(std::shared_ptr<R> ptr) {
+        return Handle<R>{std::move(ptr)};
     }
 
     template<typename R, typename... Args>
