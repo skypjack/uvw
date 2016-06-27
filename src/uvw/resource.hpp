@@ -116,7 +116,7 @@ auto UVCallbackFactory<T, void(H, Args...)>::once(T &ref, std::function<void(UVW
     Resource<T> &res = ref;
     res.callback = std::move(cb);
     res.leak = res.shared_from_this();
-    res.template get<uv_handle_t>()->data = static_cast<void*>(&ref);
+    res.template get<uv_handle_t>()->data = &ref;
     return &UVCallbackFactory<T, void(H, Args...)>::protoOnce<F>;
 }
 
@@ -126,7 +126,7 @@ auto UVCallbackFactory<T, void(H, Args...)>::on(T &ref, std::function<void(UVWEr
     Resource<T> &res = ref;
     res.callback = std::move(cb);
     res.leak = res.shared_from_this();
-    res.template get<uv_handle_t>()->data = static_cast<void*>(&ref);
+    res.template get<uv_handle_t>()->data = &ref;
     return &UVCallbackFactory<T, void(H, Args...)>::protoOn<F>;
 }
 
