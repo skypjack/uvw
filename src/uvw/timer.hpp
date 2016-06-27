@@ -44,7 +44,7 @@ public:
     void repeat(const Time &rep) noexcept { uv_timer_set_repeat(get<uv_timer_t>(), rep.count()); }
     Time repeat() const noexcept { return Time{uv_timer_get_repeat(get<uv_timer_t>())}; }
 
-    explicit operator bool() { return initialized; }
+    explicit operator bool() const noexcept { return initialized; }
 
 private:
     std::function<void(UVWError)> startCb;

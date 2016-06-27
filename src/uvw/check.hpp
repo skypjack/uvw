@@ -37,7 +37,7 @@ public:
 
     UVWError stop() noexcept { return UVWError{uv_check_stop(get<uv_check_t>())}; }
 
-    explicit operator bool() { return initialized; }
+    explicit operator bool() const noexcept { return initialized; }
 
 private:
     bool initialized;
