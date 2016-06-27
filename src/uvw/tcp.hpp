@@ -31,6 +31,28 @@ class Tcp final: public Stream<Tcp> {
         initialized = initialized || (uv_accept(srv, get<uv_stream_t>()) == 0);
     }
 
+    template<typename I, typename F, typename..., typename Traits = details::IpTraits<I>>
+    UVWOptionalData<Addr> address(F &&f) {
+        sockaddr_storage addr;
+        int len = sizeof(addr);
+        char name[sizeof(addr)];
+
+        int err = std::forward<F>(f)(get<uv_tcp_t>(), reinterpret_cast<sockaddr *>(&addr), &len);
+
+        if(!err) {
+            typename Traits::Type *aptr = reinterpret_cast<typename Traits::Type *>(&addr);
+            err = Traits::NameFunc(aptr, name, len);
+
+            if(!err) {
+                Addr address{ std::string{name}, ntohs(aptr->sin_port) };
+
+                return UVWOptionalData<Addr>{std::move(address)};
+            }
+        }
+
+        return UVWOptionalData<Addr>{UVWError{err}};
+    }
+
 public:
     using Time = std::chrono::duration<uint64_t>;
 
@@ -55,12 +77,22 @@ public:
         typename Traits::Type addr;
         Traits::AddrFunc(ip.c_str(), port, &addr);
         unsigned int flags = ipv6only ? UV_TCP_IPV6ONLY : 0;
-        return UVWError(uv_tcp_bind(get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), flags));
+        return UVWError(uv_tcp_bind(get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags));
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
     UVWError bind(Addr addr, bool ipv6only = false) noexcept {
-        return bind<I>(addr.ip, addr.port, ipv6only);
+        return bind<I>(addr.first, addr.second, ipv6only);
+    }
+
+    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    UVWOptionalData<Addr> address() {
+        return address<I>(uv_tcp_getsockname);
+    }
+
+    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    UVWOptionalData<Addr> remote() {
+        return address<I>(uv_tcp_getpeername);
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
@@ -69,13 +101,13 @@ public:
         Traits::AddrFunc(ip.c_str(), port, &addr);
         using CBF = CallbackFactory<void(uv_connect_t *, int)>;
         auto func = CBF::template once<&Tcp::connectCallback>(*this, cb);
-        auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), func);
+        auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), func);
         if(err) { error(err); }
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
     void connect(Addr addr, std::function<void(UVWError, Tcp &)> cb) noexcept {
-        connect<I>(addr.ip, addr.port, cb);
+        connect<I>(addr.first, addr.second, cb);
     }
 
     UVWError accept(Tcp &tcp) noexcept {

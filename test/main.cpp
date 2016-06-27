@@ -15,6 +15,20 @@ void listen(uvw::Loop &loop) {
             err = srv.accept(client);
             std::cout << "accept: " << ((bool)err) << std::endl;
 
+            auto local = srv.address<uvw::Tcp::IPv4>();
+
+            if(local) {
+                const uvw::Addr &ref = local;
+                std::cout << "local: " << ref.first << " " << ref.second << std::endl;
+            }
+
+            auto remote = client.remote<uvw::Tcp::IPv4>();
+
+            if(remote) {
+                const uvw::Addr &ref = remote;
+                std::cout << "remote: " << ref.first << " " << ref.second << std::endl;
+            }
+
             if(!err) {
                 client.close([handle = srv.handle()](uvw::UVWError err, uvw::Tcp &) mutable {
                     std::cout << "close: " << ((bool)err) << std::endl;
