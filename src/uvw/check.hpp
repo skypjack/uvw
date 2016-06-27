@@ -12,8 +12,8 @@ namespace uvw {
 
 
 class Check final: public Resource<Check> {
-    static void startCallback(Check &, std::function<void(UVWError)> &cb, uv_check_t*) {
-        cb(UVWError{});
+    static void startCallback(Check &check, std::function<void(UVWError, Check &)> &cb, uv_check_t *) {
+        cb(UVWError{}, check);
     }
 
     explicit Check(std::shared_ptr<Loop> ref)
@@ -28,11 +28,11 @@ public:
         return std::shared_ptr<Check>{new Check{std::forward<Args>(args)...}};
     }
 
-    void start(std::function<void(UVWError)> cb) noexcept {
-        using CB = Callback<void(uv_check_t*)>;
+    void start(std::function<void(UVWError, Check &)> cb) noexcept {
+        using CB = Callback<void(uv_check_t *)>;
         auto func = CB::on<&Check::startCallback>(*this, cb);
         auto err = uv_check_start(get<uv_check_t>(), func);
-        if(err) { cb(UVWError{err}); }
+        if(err) { cb(UVWError{err}, *this); }
     }
 
     UVWError stop() noexcept { return UVWError{uv_check_stop(get<uv_check_t>())}; }

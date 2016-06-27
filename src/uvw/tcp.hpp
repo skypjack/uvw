@@ -16,10 +16,8 @@ namespace uvw {
 
 
 class Tcp final: public Stream<Tcp> {
-    static void protoConnect(uv_connect_t* req, int status) {
-        Tcp *tcp = static_cast<Tcp*>(req->handle->data);
-        tcp->connCb(UVWError{status});
-        tcp->connCb = nullptr;
+    static void connectCallback(Tcp &tcp, std::function<void(UVWError, Tcp &)> &cb, uv_connect_t *, int status) {
+        cb(UVWError{status}, tcp);
     }
 
     explicit Tcp(std::shared_ptr<Loop> ref)
@@ -52,44 +50,35 @@ public:
     }
 
     template<int>
-    void connect(std::string, int, std::function<void(UVWError)>) noexcept;
+    void connect(std::string, int, std::function<void(UVWError, Tcp &)>) noexcept;
 
     explicit operator bool() { return initialized; }
 
 private:
     std::unique_ptr<uv_connect_t> conn;
-    std::function<void(UVWError)> connCb;
     bool initialized;
 };
 
 
 template<>
-void Tcp::connect<Tcp::IPv4>(std::string ip, int port, std::function<void(UVWError)> cb) noexcept {
-    // TODO switch to the Callback model
+void Tcp::connect<Tcp::IPv4>(std::string ip, int port, std::function<void(UVWError, Tcp &)> cb) noexcept {
     sockaddr_in addr;
     uv_ip4_addr(ip.c_str(), port, &addr);
-    connCb = std::move(cb);
-    get<uv_tcp_t>()->data = this;
-    auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), &protoConnect);
-
-    if(err) {
-        connCb(UVWError{err});
-    }
+    using CB = Callback<void(uv_connect_t *, int)>;
+    auto func = CB::template once<&Tcp::connectCallback>(*this, cb);
+    auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), func);
+    if(err) { cb(UVWError{err}, *this); }
 }
 
 
 template<>
-void Tcp::connect<Tcp::IPv6>(std::string ip, int port, std::function<void(UVWError)> cb) noexcept {
-    // TODO switch to the Callback model
+void Tcp::connect<Tcp::IPv6>(std::string ip, int port, std::function<void(UVWError, Tcp &)> cb) noexcept {
     sockaddr_in6 addr;
     uv_ip6_addr(ip.c_str(), port, &addr);
-    connCb = std::move(cb);
-    get<uv_tcp_t>()->data = this;
-    auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), &protoConnect);
-
-    if(err) {
-        connCb(UVWError{err});
-    }
+    using CB = Callback<void(uv_connect_t *, int)>;
+    auto func = CB::template once<&Tcp::connectCallback>(*this, cb);
+    auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), func);
+    if(err) { cb(UVWError{err}, *this); }
 }
 
 

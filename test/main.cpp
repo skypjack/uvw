@@ -5,10 +5,9 @@
 void f(uvw::Loop &loop) {
     uvw::Handle<uvw::Tcp> handle = loop.handle<uvw::Tcp>();
 
-    auto cb = [handle](uvw::UVWError err) mutable {
+    auto cb = [](uvw::UVWError err, uvw::Tcp &tcp) mutable {
         std::cout << "---" << ((bool)err) << std::endl;
-        uvw::Tcp &tcp = handle;
-        tcp.close([](uvw::UVWError err) mutable {
+        tcp.close([](uvw::UVWError err, uvw::Tcp &) mutable {
             std::cout << "---" << ((bool)err) << std::endl;
         });
     };
