@@ -29,8 +29,8 @@ public:
     }
 
     void start(std::function<void(UVWError, Check &)> cb) noexcept {
-        using CB = Callback<void(uv_check_t *)>;
-        auto func = CB::on<&Check::startCallback>(*this, cb);
+        using CBF = CallbackFactory<void(uv_check_t *)>;
+        auto func = CBF::on<&Check::startCallback>(*this, cb);
         auto err = uv_check_start(get<uv_check_t>(), func);
         if(err) { cb(UVWError{err}, *this); }
     }

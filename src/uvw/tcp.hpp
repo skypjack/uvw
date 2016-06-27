@@ -64,8 +64,8 @@ template<>
 void Tcp::connect<Tcp::IPv4>(std::string ip, int port, std::function<void(UVWError, Tcp &)> cb) noexcept {
     sockaddr_in addr;
     uv_ip4_addr(ip.c_str(), port, &addr);
-    using CB = Callback<void(uv_connect_t *, int)>;
-    auto func = CB::template once<&Tcp::connectCallback>(*this, cb);
+    using CBF = CallbackFactory<void(uv_connect_t *, int)>;
+    auto func = CBF::template once<&Tcp::connectCallback>(*this, cb);
     auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), func);
     if(err) { cb(UVWError{err}, *this); }
 }
@@ -75,8 +75,8 @@ template<>
 void Tcp::connect<Tcp::IPv6>(std::string ip, int port, std::function<void(UVWError, Tcp &)> cb) noexcept {
     sockaddr_in6 addr;
     uv_ip6_addr(ip.c_str(), port, &addr);
-    using CB = Callback<void(uv_connect_t *, int)>;
-    auto func = CB::template once<&Tcp::connectCallback>(*this, cb);
+    using CBF = CallbackFactory<void(uv_connect_t *, int)>;
+    auto func = CBF::template once<&Tcp::connectCallback>(*this, cb);
     auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), func);
     if(err) { cb(UVWError{err}, *this); }
 }

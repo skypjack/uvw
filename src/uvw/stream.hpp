@@ -22,8 +22,8 @@ public:
     // TODO shutdown
 
     void listen(int backlog, std::function<void(UVWError, T &)> cb) noexcept {
-        using CB = typename Resource<T>::template Callback<void(uv_stream_t *, int)>;
-        auto func = CB::on<&Stream<T>::listenCallback>(*static_cast<T*>(this), cb);
+        using CBF = typename Resource<T>::template CallbackFactory<void(uv_stream_t *, int)>;
+        auto func = CBF::on<&Stream<T>::listenCallback>(*static_cast<T*>(this), cb);
         auto err = uv_listen(this->template get<uv_stream_t>(), backlog, func);
         if(err) { cb(UVWError{err}, *static_cast<T*>(this)); }
     }

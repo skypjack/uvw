@@ -29,11 +29,11 @@ void* get(uv_connect_t *conn) { return conn->handle->data; }
 
 
 template<typename T, typename F>
-struct UVCallback;
+struct UVCallbackFactory;
 
 
 template<typename T,typename H,  typename... Args>
-struct UVCallback<T, void(H, Args...)> {
+struct UVCallbackFactory<T, void(H, Args...)> {
     template<void(*F)(T &, std::function<void(UVWError, T &)> &, H, Args...)>
     static auto once(T &, std::function<void(UVWError, T &)>);
 
@@ -55,7 +55,7 @@ private:
 template<typename T>
 class Resource: public std::enable_shared_from_this<T> {
     template<typename, typename>
-    friend struct details::UVCallback;
+    friend struct details::UVCallbackFactory;
 
     static void closeCallback(T &t, std::function<void(UVWError, T &)> &cb, uv_handle_t*) {
         cb(UVWError{}, t);
@@ -63,7 +63,7 @@ class Resource: public std::enable_shared_from_this<T> {
 
 protected:
     template<typename F>
-    using Callback = details::UVCallback<T, F>;
+    using CallbackFactory = details::UVCallbackFactory<T, F>;
 
     template<typename U>
     explicit Resource(HandleType<U>, std::shared_ptr<Loop> r)
@@ -94,8 +94,8 @@ public:
     bool referenced() const noexcept { return !(uv_has_ref(get<uv_handle_t>()) == 0); }
 
     void close(std::function<void(UVWError, T &)> cb) noexcept {
-        using CB = Callback<void(uv_handle_t*)>;
-        auto func = CB::template once<&Resource<T>::closeCallback>(*static_cast<T*>(this), std::move(cb));
+        using CBF = CallbackFactory<void(uv_handle_t*)>;
+        auto func = CBF::template once<&Resource<T>::closeCallback>(*static_cast<T*>(this), std::move(cb));
         uv_close(get<uv_handle_t>(), func);
     }
 
@@ -112,27 +112,27 @@ namespace details {
 
 template<typename T, typename H, typename... Args>
 template<void(*F)(T &, std::function<void(UVWError, T &)> &, H, Args...)>
-auto UVCallback<T, void(H, Args...)>::once(T &ref, std::function<void(UVWError, T &)> cb) {
+auto UVCallbackFactory<T, void(H, Args...)>::once(T &ref, std::function<void(UVWError, T &)> cb) {
     Resource<T> &res = ref;
     res.callback = std::move(cb);
     res.leak = res.shared_from_this();
     res.template get<uv_handle_t>()->data = static_cast<void*>(&ref);
-    return &UVCallback<T, void(H, Args...)>::protoOnce<F>;
+    return &UVCallbackFactory<T, void(H, Args...)>::protoOnce<F>;
 }
 
 template<typename T, typename H, typename... Args>
 template<void(*F)(T &, std::function<void(UVWError, T &)> &, H, Args...)>
-auto UVCallback<T, void(H, Args...)>::on(T &ref, std::function<void(UVWError, T &)> cb) {
+auto UVCallbackFactory<T, void(H, Args...)>::on(T &ref, std::function<void(UVWError, T &)> cb) {
     Resource<T> &res = ref;
     res.callback = std::move(cb);
     res.leak = res.shared_from_this();
     res.template get<uv_handle_t>()->data = static_cast<void*>(&ref);
-    return &UVCallback<T, void(H, Args...)>::protoOn<F>;
+    return &UVCallbackFactory<T, void(H, Args...)>::protoOn<F>;
 }
 
 template<typename T, typename H, typename... Args>
 template<void(*F)(T &, std::function<void(UVWError, T &)> &, H, Args...)>
-void UVCallback<T, void(H, Args...)>::protoOnce(H handle, Args... args) {
+void UVCallbackFactory<T, void(H, Args...)>::protoOnce(H handle, Args... args) {
     T &ref = *(static_cast<T*>(details::get(handle)));
     std::shared_ptr<T> ptr = std::static_pointer_cast<T>(ref.leak);
     auto cb = std::move(ref.callback);
@@ -142,7 +142,7 @@ void UVCallback<T, void(H, Args...)>::protoOnce(H handle, Args... args) {
 
 template<typename T, typename H, typename... Args>
 template<void(*F)(T &, std::function<void(UVWError, T &)> &, H, Args...)>
-void UVCallback<T, void(H, Args...)>::protoOn(H handle, Args... args) {
+void UVCallbackFactory<T, void(H, Args...)>::protoOn(H handle, Args... args) {
     T &ref = *(static_cast<T*>(details::get(handle)));
     F(ref, ref.callback, handle, std::forward<Args>(args)...);
 }
