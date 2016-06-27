@@ -15,6 +15,37 @@
 namespace uvw {
 
 
+namespace details {
+
+
+struct IPv4 { };
+struct IPv6 { };
+
+
+template<typename>
+struct IpTraits;
+
+template<>
+struct IpTraits<IPv4> {
+    using Type = sockaddr_in;
+    using FuncType = int(*)(const char *, int, sockaddr_in *);
+    static const FuncType AddrFunc;
+};
+
+template<>
+struct IpTraits<IPv6> {
+    using Type = sockaddr_in6;
+    using FuncType = int(*)(const char *, int, sockaddr_in6 *);
+    static const FuncType AddrFunc;
+};
+
+const IpTraits<IPv4>::FuncType IpTraits<IPv4>::AddrFunc = uv_ip4_addr;
+const IpTraits<IPv6>::FuncType IpTraits<IPv6>::AddrFunc = uv_ip6_addr;
+
+
+}
+
+
 class Tcp final: public Stream<Tcp> {
     static void connectCallback(Tcp &tcp, std::function<void(UVWError, Tcp &)> &cb, uv_connect_t *, int status) {
         cb(UVWError{status}, tcp);
@@ -34,7 +65,8 @@ class Tcp final: public Stream<Tcp> {
 public:
     using Time = std::chrono::duration<uint64_t>;
 
-    enum IP { IPv4, IPv6 };
+    using IPv4 = details::IPv4;
+    using IPv6 = details::IPv6;
 
     template<typename... Args>
     static std::shared_ptr<Tcp> create(Args&&... args) {
@@ -49,92 +81,44 @@ public:
         return UVWError{uv_tcp_keepalive(get<uv_tcp_t>(), enable ? 1 : 0, time.count())};
     }
 
-    template<IP>
-    UVWError bind(std::string, unsigned int, bool = false) noexcept;
+    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    UVWError bind(std::string ip, unsigned int port, bool ipv6only = false) noexcept {
+        typename Traits::Type addr;
+        Traits::AddrFunc(ip.c_str(), port, &addr);
+        unsigned int flags = ipv6only ? UV_TCP_IPV6ONLY : 0;
+        return UVWError(uv_tcp_bind(get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), flags));
+    }
 
-    template<IP>
-    UVWError bind(Addr, bool = false) noexcept;
+    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    UVWError bind(Addr addr, bool ipv6only = false) noexcept {
+        return bind<I>(addr.ip, addr.port, ipv6only);
+    }
 
-    template<IP>
-    void connect(std::string, unsigned int, std::function<void(UVWError, Tcp &)>) noexcept;
+    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    void connect(std::string ip, unsigned int port, std::function<void(UVWError, Tcp &)> cb) noexcept {
+        typename Traits::Type addr;
+        Traits::AddrFunc(ip.c_str(), port, &addr);
+        using CBF = CallbackFactory<void(uv_connect_t *, int)>;
+        auto func = CBF::template once<&Tcp::connectCallback>(*this, cb);
+        auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), func);
+        if(err) { error(err); }
+    }
 
-    template<IP>
-    void connect(Addr addr, std::function<void(UVWError, Tcp &)>) noexcept;
+    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    void connect(Addr addr, std::function<void(UVWError, Tcp &)> cb) noexcept {
+        connect<I>(addr.ip, addr.port, cb);
+    }
 
-    UVWError accept(Tcp &tcp) {
+    UVWError accept(Tcp &tcp) noexcept {
         return UVWError{uv_accept(get<uv_stream_t>(), tcp.get<uv_stream_t>())};
     }
 
-    explicit operator bool() { return initialized; }
+    explicit operator bool() const noexcept { return initialized; }
 
 private:
     std::unique_ptr<uv_connect_t> conn;
     bool initialized;
 };
-
-
-template<>
-UVWError Tcp::bind<Tcp::IPv4>(std::string ip, unsigned int port, bool ipv6only) noexcept {
-    sockaddr_in addr;
-    uv_ip4_addr(ip.c_str(), port, &addr);
-    unsigned int flags = ipv6only ? UV_TCP_IPV6ONLY : 0;
-    return UVWError(uv_tcp_bind(get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), flags));
-}
-
-
-template<>
-UVWError Tcp::bind<Tcp::IPv6>(std::string ip, unsigned int port, bool ipv6only) noexcept {
-    sockaddr_in6 addr;
-    uv_ip6_addr(ip.c_str(), port, &addr);
-    unsigned int flags = ipv6only ? UV_TCP_IPV6ONLY : 0;
-    return UVWError(uv_tcp_bind(get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), flags));
-}
-
-
-template<>
-UVWError Tcp::bind<Tcp::IPv4>(Addr addr, bool ipv6only) noexcept {
-    return bind<Tcp::IPv4>(addr.ip, addr.port, ipv6only);
-}
-
-
-template<>
-UVWError Tcp::bind<Tcp::IPv6>(Addr addr, bool ipv6only) noexcept {
-    return bind<Tcp::IPv6>(addr.ip, addr.port, ipv6only);
-}
-
-
-template<>
-void Tcp::connect<Tcp::IPv4>(std::string ip, unsigned int port, std::function<void(UVWError, Tcp &)> cb) noexcept {
-    sockaddr_in addr;
-    uv_ip4_addr(ip.c_str(), port, &addr);
-    using CBF = CallbackFactory<void(uv_connect_t *, int)>;
-    auto func = CBF::template once<&Tcp::connectCallback>(*this, cb);
-    auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), func);
-    if(err) { error(err); }
-}
-
-
-template<>
-void Tcp::connect<Tcp::IPv6>(std::string ip, unsigned int port, std::function<void(UVWError, Tcp &)> cb) noexcept {
-    sockaddr_in6 addr;
-    uv_ip6_addr(ip.c_str(), port, &addr);
-    using CBF = CallbackFactory<void(uv_connect_t *, int)>;
-    auto func = CBF::template once<&Tcp::connectCallback>(*this, cb);
-    auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr*>(&addr), func);
-    if(err) { error(err); }
-}
-
-
-template<>
-void Tcp::connect<Tcp::IPv4>(Addr addr, std::function<void(UVWError, Tcp &)> cb) noexcept {
-    connect<Tcp::IPv4>(addr.ip, addr.port, cb);
-}
-
-
-template<>
-void Tcp::connect<Tcp::IPv6>(Addr addr, std::function<void(UVWError, Tcp &)> cb) noexcept {
-    connect<Tcp::IPv6>(addr.ip, addr.port, cb);
-}
 
 
 }
