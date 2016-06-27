@@ -6,7 +6,7 @@
 #include <utility>
 #include <type_traits>
 #include <uv.h>
-#include "error.hpp"
+#include "util.hpp"
 
 
 namespace uvw {

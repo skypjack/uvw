@@ -7,7 +7,7 @@
 #include <ratio>
 #include <uv.h>
 #include "resource.hpp"
-#include "error.hpp"
+#include "util.hpp"
 
 
 namespace uvw {

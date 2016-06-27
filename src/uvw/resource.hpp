@@ -7,7 +7,7 @@
 #include <memory>
 #include <uv.h>
 #include "loop.hpp"
-#include "error.hpp"
+#include "util.hpp"
 
 
 namespace uvw {
