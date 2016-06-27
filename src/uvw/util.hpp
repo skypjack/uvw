@@ -9,6 +9,37 @@
 namespace uvw {
 
 
+namespace details {
+
+
+struct IPv4 { };
+struct IPv6 { };
+
+
+template<typename>
+struct IpTraits;
+
+template<>
+struct IpTraits<IPv4> {
+    using Type = sockaddr_in;
+    using FuncType = int(*)(const char *, int, sockaddr_in *);
+    static const FuncType AddrFunc;
+};
+
+template<>
+struct IpTraits<IPv6> {
+    using Type = sockaddr_in6;
+    using FuncType = int(*)(const char *, int, sockaddr_in6 *);
+    static const FuncType AddrFunc;
+};
+
+const IpTraits<IPv4>::FuncType IpTraits<IPv4>::AddrFunc = uv_ip4_addr;
+const IpTraits<IPv6>::FuncType IpTraits<IPv6>::AddrFunc = uv_ip6_addr;
+
+
+}
+
+
 class UVWException final: std::runtime_error {
 public:
     explicit UVWException(int code)
