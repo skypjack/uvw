@@ -36,6 +36,11 @@ public:
 
     // TODO read
     // TODO stop
+
+    UVWError stop() noexcept {
+        return UVWError{uv_read_stop(this->template get<uv_stream_t>())};
+    }
+
     // TODO write
     // TODO tryWrite
 
