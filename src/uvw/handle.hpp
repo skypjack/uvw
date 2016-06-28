@@ -98,7 +98,7 @@ public:
     bool closing() const noexcept { return !(uv_is_closing(get<uv_handle_t>()) == 0); }
 
     void reference() noexcept { uv_ref(get<uv_handle_t>()); }
-    void unreference() noexcept { uv_ref(get<uv_handle_t>()); }
+    void unreference() noexcept { uv_unref(get<uv_handle_t>()); }
     bool referenced() const noexcept { return !(uv_has_ref(get<uv_handle_t>()) == 0); }
 
     void close(std::function<void(UVWError, T &)> cb) noexcept {
