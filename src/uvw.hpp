@@ -1,4 +1,5 @@
 #include "uvw/check.hpp"
+#include "uvw/idle.hpp"
 #include "uvw/loop.hpp"
 #include "uvw/prepare.hpp"
 #include "uvw/stream.hpp"
