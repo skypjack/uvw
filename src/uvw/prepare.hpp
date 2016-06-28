@@ -4,20 +4,20 @@
 #include <utility>
 #include <memory>
 #include <uv.h>
-#include "resource.hpp"
+#include "handle.hpp"
 #include "util.hpp"
 
 
 namespace uvw {
 
 
-class Prepare final: public Resource<Prepare> {
+class Prepare final: public Handle<Prepare> {
     static void startCallback(Prepare &prepare, std::function<void(UVWError, Prepare &)> &cb, uv_prepare_t *) {
         cb(UVWError{}, prepare);
     }
 
     explicit Prepare(std::shared_ptr<Loop> ref)
-        : Resource{HandleType<uv_prepare_t>{}, std::move(ref)}
+        : Handle{HandleType<uv_prepare_t>{}, std::move(ref)}
     {
         initialized = (uv_prepare_init(parent(), get<uv_prepare_t>()) == 0);
     }

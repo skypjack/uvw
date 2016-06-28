@@ -2,7 +2,7 @@
 
 
 #include <uv.h>
-#include "resource.hpp"
+#include "handle.hpp"
 #include "loop.hpp"
 
 
@@ -10,7 +10,7 @@ namespace uvw {
 
 
 template<typename T>
-class Stream: public Resource<T> {
+class Stream: public Handle<T> {
     static constexpr unsigned int DEFAULT_BACKLOG = 128;
 
     static void listenCallback(T &t, std::function<void(UVWError, T &)> &cb, uv_stream_t *, int status) {
@@ -18,7 +18,7 @@ class Stream: public Resource<T> {
     }
 
 protected:
-    using Resource<T>::Resource;
+    using Handle<T>::Handle;
 
 public:
     // TODO shutdown
@@ -28,7 +28,7 @@ public:
     }
 
     void listen(int backlog, std::function<void(UVWError, T &)> cb) noexcept {
-        using CBF = typename Resource<T>::template CallbackFactory<void(uv_stream_t *, int)>;
+        using CBF = typename Handle<T>::template CallbackFactory<void(uv_stream_t *, int)>;
         auto func = CBF::template on<&Stream<T>::listenCallback>(*static_cast<T*>(this), cb);
         auto err = uv_listen(this->template get<uv_stream_t>(), backlog, func);
         if(err) { Stream<T>::error(err); }

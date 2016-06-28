@@ -16,33 +16,33 @@ class Loop;
 
 
 template<typename R>
-class Handle {
+class Resource {
     template<typename>
-    friend class Handle;
+    friend class Resource;
 
     friend class Loop;
 
     template<typename... Args>
-    explicit constexpr Handle(std::shared_ptr<Loop>&& l, Args&&... args)
+    explicit constexpr Resource(std::shared_ptr<Loop>&& l, Args&&... args)
         : res{R::create(std::move(l), std::forward<Args>(args)...)}
     { }
 
-    explicit constexpr Handle(std::shared_ptr<R> ptr): res{std::move(ptr)} { }
+    explicit constexpr Resource(std::shared_ptr<R> ptr): res{std::move(ptr)} { }
 
 public:
-    explicit constexpr Handle(): res{} { }
+    explicit constexpr Resource(): res{} { }
 
     template<typename T, std::enable_if_t<std::is_base_of<R, T>::value>* = nullptr>
-    constexpr Handle(const Handle<T> &other): res{other.res} { }
+    constexpr Resource(const Resource<T> &other): res{other.res} { }
 
     template<typename T, std::enable_if_t<std::is_base_of<R, T>::value>* = nullptr>
-    constexpr Handle(Handle<T> &&other): res{std::move(other.res)} { }
+    constexpr Resource(Resource<T> &&other): res{std::move(other.res)} { }
 
     template<typename T, std::enable_if_t<std::is_base_of<R, T>::value>* = nullptr>
-    constexpr void operator=(const Handle<T> &other) { res = other.res; }
+    constexpr void operator=(const Resource<T> &other) { res = other.res; }
 
     template<typename T, std::enable_if_t<std::is_base_of<R, T>::value>* = nullptr>
-    constexpr void operator=(Handle<T> &&other) { res = std::move(other.res); }
+    constexpr void operator=(Resource<T> &&other) { res = std::move(other.res); }
 
     constexpr explicit operator bool() const { return static_cast<bool>(res); }
 
@@ -56,7 +56,7 @@ private:
 
 class Loop final: public std::enable_shared_from_this<Loop> {
     template<typename>
-    friend class Resource;
+    friend class Handle;
 
     using Deleter = std::function<void(uv_loop_t *)>;
 
@@ -106,13 +106,13 @@ public:
     }
 
     template<typename R>
-    Handle<R> handle(std::shared_ptr<R> ptr) {
-        return Handle<R>{std::move(ptr)};
+    Resource<R> resource(std::shared_ptr<R> ptr) {
+        return Resource<R>{std::move(ptr)};
     }
 
     template<typename R, typename... Args>
-    Handle<R> handle(Args&&... args) {
-        return Handle<R>{shared_from_this(), std::forward<Args>(args)...};
+    Resource<R> resource(Args&&... args) {
+        return Resource<R>{shared_from_this(), std::forward<Args>(args)...};
     }
 
     UVWError close() noexcept {

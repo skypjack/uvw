@@ -3,14 +3,14 @@
 
 
 void listen(uvw::Loop &loop) {
-    uvw::Handle<uvw::Tcp> handle = loop.handle<uvw::Tcp>();
+    uvw::Resource<uvw::Tcp> resource = loop.resource<uvw::Tcp>();
 
     auto cb = [](uvw::UVWError err, uvw::Tcp &srv) mutable {
         std::cout << "listen: " << ((bool)err) << std::endl;
 
         if(!err) {
-            uvw::Handle<uvw::Tcp> handle = srv.loop().handle<uvw::Tcp>();
-            uvw::Tcp &client = handle;
+            uvw::Resource<uvw::Tcp> resource = srv.loop().resource<uvw::Tcp>();
+            uvw::Tcp &client = resource;
 
             err = srv.accept(client);
             std::cout << "accept: " << ((bool)err) << std::endl;
@@ -30,10 +30,10 @@ void listen(uvw::Loop &loop) {
             }
 
             if(!err) {
-                client.close([handle = srv.handle()](uvw::UVWError err, uvw::Tcp &) mutable {
+                client.close([resource = srv.resource()](uvw::UVWError err, uvw::Tcp &) mutable {
                     std::cout << "close: " << ((bool)err) << std::endl;
 
-                    uvw::Tcp &srv = handle;
+                    uvw::Tcp &srv = resource;
                     srv.close([](uvw::UVWError err, uvw::Tcp &) mutable {
                         std::cout << "close: " << ((bool)err) << std::endl;
                     });
@@ -42,7 +42,7 @@ void listen(uvw::Loop &loop) {
         }
     };
 
-    uvw::Tcp &tcp = handle;
+    uvw::Tcp &tcp = resource;
     uvw::UVWError err = tcp.bind<uvw::Tcp::IPv4>("127.0.0.1", 4242);
     std::cout << "bind: " << ((bool)err) << std::endl;
 
@@ -57,7 +57,7 @@ void listen(uvw::Loop &loop) {
 
 
 void conn(uvw::Loop &loop) {
-    uvw::Handle<uvw::Tcp> handle = loop.handle<uvw::Tcp>();
+    uvw::Resource<uvw::Tcp> resource = loop.resource<uvw::Tcp>();
 
     auto cb = [](uvw::UVWError err, uvw::Tcp &tcp) mutable {
         std::cout << "connect: " << ((bool)err) << std::endl;
@@ -69,7 +69,7 @@ void conn(uvw::Loop &loop) {
         tcp.close(cb);
     };
 
-    uvw::Tcp &tcp = handle;
+    uvw::Tcp &tcp = resource;
     tcp.connect<uvw::Tcp::IPv4>(std::string{"127.0.0.1"}, 4242, cb);
 }
 

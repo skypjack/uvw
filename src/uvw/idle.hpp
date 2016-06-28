@@ -4,20 +4,20 @@
 #include <utility>
 #include <memory>
 #include <uv.h>
-#include "resource.hpp"
+#include "handle.hpp"
 #include "util.hpp"
 
 
 namespace uvw {
 
 
-class Idle final: public Resource<Idle> {
+class Idle final: public Handle<Idle> {
     static void startCallback(Idle &idle, std::function<void(UVWError, Idle &)> &cb, uv_idle_t *) {
         cb(UVWError{}, idle);
     }
 
     explicit Idle(std::shared_ptr<Loop> ref)
-        : Resource{HandleType<uv_idle_t>{}, std::move(ref)}
+        : Handle{HandleType<uv_idle_t>{}, std::move(ref)}
     {
         initialized = (uv_idle_init(parent(), get<uv_idle_t>()) == 0);
     }

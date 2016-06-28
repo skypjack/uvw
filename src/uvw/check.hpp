@@ -4,20 +4,20 @@
 #include <utility>
 #include <memory>
 #include <uv.h>
-#include "resource.hpp"
+#include "handle.hpp"
 #include "util.hpp"
 
 
 namespace uvw {
 
 
-class Check final: public Resource<Check> {
+class Check final: public Handle<Check> {
     static void startCallback(Check &check, std::function<void(UVWError, Check &)> &cb, uv_check_t *) {
         cb(UVWError{}, check);
     }
 
     explicit Check(std::shared_ptr<Loop> ref)
-        : Resource{HandleType<uv_check_t>{}, std::move(ref)}
+        : Handle{HandleType<uv_check_t>{}, std::move(ref)}
     {
         initialized = (uv_check_init(parent(), get<uv_check_t>()) == 0);
     }

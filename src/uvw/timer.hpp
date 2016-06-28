@@ -6,20 +6,20 @@
 #include <chrono>
 #include <ratio>
 #include <uv.h>
-#include "resource.hpp"
+#include "handle.hpp"
 #include "util.hpp"
 
 
 namespace uvw {
 
 
-class Timer final: public Resource<Timer> {
+class Timer final: public Handle<Timer> {
     static void startCallback(Timer &timer, std::function<void(UVWError, Timer &)> &cb, uv_timer_t *) {
         cb(UVWError{}, timer);
     }
 
     explicit Timer(std::shared_ptr<Loop> ref)
-        : Resource{HandleType<uv_timer_t>{}, std::move(ref)}
+        : Handle{HandleType<uv_timer_t>{}, std::move(ref)}
     {
         initialized = (uv_timer_init(parent(), get<uv_timer_t>()) == 0);
     }
