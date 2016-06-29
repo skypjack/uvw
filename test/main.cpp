@@ -62,7 +62,18 @@ void conn(uvw::Loop &loop) {
     auto cb = [](uvw::UVWError err, uvw::Tcp &tcp) mutable {
         std::cout << "connect: " << ((bool)err) << std::endl;
 
-        auto cb = [](uvw::UVWError err, uvw::Tcp &tcp) mutable {
+        auto data = std::unique_ptr<char[]>(new char[1]);
+        data[0] = 42;
+        uvw::Buffer buf{std::move(data), 1};
+        uvw::UVWOptionalData<int> bw = tcp.tryWrite(std::move(buf));
+
+        if(bw) {
+            std::cout << "written: " << ((int)bw) << std::endl;
+        } else {
+            std::cout << "written err: " << ((int)bw) << std::endl;
+        }
+
+        auto cb = [](uvw::UVWError err, uvw::Tcp &) mutable {
             std::cout << "close: " << ((bool)err) << std::endl;
         };
 
