@@ -30,7 +30,7 @@ public:
 
     void start(std::function<void(UVWError, Prepare &)> cb) noexcept {
         using CBF = CallbackFactory<void(uv_prepare_t *)>;
-        auto func = CBF::on<&Prepare::startCallback>(*this, cb);
+        auto func = CBF::on<&Prepare::startCallback>(*this, std::move(cb));
         auto err = uv_prepare_start(get<uv_prepare_t>(), func);
         if(err) { error(err); }
     }

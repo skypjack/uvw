@@ -34,7 +34,7 @@ public:
 
     void start(const Time &timeout, const Time &rep, std::function<void(UVWError, Timer &)> cb) noexcept {
         using CBF = CallbackFactory<void(uv_timer_t *)>;
-        auto func = CBF::on<&Timer::startCallback>(*this, cb);
+        auto func = CBF::on<&Timer::startCallback>(*this, std::move(cb));
         auto err = uv_timer_start(get<uv_timer_t>(), func, timeout.count(), rep.count());
         if(err) { error(err); }
     }

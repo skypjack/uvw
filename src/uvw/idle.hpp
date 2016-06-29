@@ -30,7 +30,7 @@ public:
 
     void start(std::function<void(UVWError, Idle &)> cb) noexcept {
         using CBF = CallbackFactory<void(uv_idle_t *)>;
-        auto func = CBF::on<&Idle::startCallback>(*this, cb);
+        auto func = CBF::on<&Idle::startCallback>(*this, std::move(cb));
         auto err = uv_idle_start(get<uv_idle_t>(), func);
         if(err) { error(err); }
     }

@@ -100,7 +100,7 @@ public:
         typename Traits::Type addr;
         Traits::AddrFunc(ip.c_str(), port, &addr);
         using CBF = CallbackFactory<void(uv_connect_t *, int)>;
-        auto func = CBF::template once<&Tcp::connectCallback>(*this, cb);
+        auto func = CBF::template once<&Tcp::connectCallback>(*this, std::move(cb));
         auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), func);
         if(err) { error(err); }
     }
