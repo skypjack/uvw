@@ -2,12 +2,11 @@
 
 
 #include <utility>
-#include <cstdint>
-#include <string>
 #include <memory>
+#include <string>
 #include <chrono>
-#include <ratio>
 #include <uv.h>
+#include "event.hpp"
 #include "stream.hpp"
 #include "util.hpp"
 
@@ -16,19 +15,17 @@ namespace uvw {
 
 
 class Tcp final: public Stream<Tcp> {
-    static void connectCallback(Tcp &tcp, std::function<void(UVWError, Tcp &)> &cb, uv_connect_t *, int status) {
-        cb(UVWError{status}, tcp);
+    static void connectCallback(Tcp &tcp, uv_connect_t *, int status) {
+        ConnectEvent event;
+        event.error = UVWError{status};
+        tcp.publish(std::move(event));
     }
 
     explicit Tcp(std::shared_ptr<Loop> ref)
-        : Stream{HandleType<uv_tcp_t>{}, std::move(ref)},
+        : Stream{ResourceType<uv_tcp_t>{}, std::move(ref)},
           conn{std::make_unique<uv_connect_t>()}
     {
         initialized = (uv_tcp_init(parent(), get<uv_tcp_t>()) == 0);
-    }
-
-    explicit Tcp(std::shared_ptr<Loop> ref, uv_stream_t *srv): Tcp{ref} {
-        initialized = initialized || (uv_accept(srv, get<uv_stream_t>()) == 0);
     }
 
     template<typename I, typename F, typename..., typename Traits = details::IpTraits<I>>
@@ -54,7 +51,7 @@ class Tcp final: public Stream<Tcp> {
     }
 
 public:
-    using Time = std::chrono::duration<uint64_t>;
+    using Time = std::chrono::seconds;
 
     using IPv4 = details::IPv4;
     using IPv6 = details::IPv6;
@@ -96,18 +93,17 @@ public:
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    void connect(std::string ip, unsigned int port, std::function<void(UVWError, Tcp &)> cb) noexcept {
+    UVWError connect(std::string ip, unsigned int port) noexcept {
         typename Traits::Type addr;
         Traits::AddrFunc(ip.c_str(), port, &addr);
         using CBF = CallbackFactory<void(uv_connect_t *, int)>;
-        auto func = CBF::template once<&Tcp::connectCallback>(*this, std::move(cb));
-        auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), func);
-        if(err) { error(err); }
+        auto func = CBF::create<&Tcp::connectCallback>(*this);
+        return UVWError{uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), func)};
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    void connect(Addr addr, std::function<void(UVWError, Tcp &)> cb) noexcept {
-        connect<I>(addr.first, addr.second, cb);
+    UVWError connect(Addr addr) noexcept {
+        return connect<I>(addr.first, addr.second);
     }
 
     UVWError accept(Tcp &tcp) noexcept {

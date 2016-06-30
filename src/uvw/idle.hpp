@@ -12,12 +12,12 @@ namespace uvw {
 
 
 class Idle final: public Handle<Idle> {
-    static void startCallback(Idle &idle, std::function<void(UVWError, Idle &)> &cb, uv_idle_t *) {
-        cb(UVWError{}, idle);
+    static void startCallback(Idle &idle, uv_idle_t *) {
+        idle.publish(IdleEvent{});
     }
 
     explicit Idle(std::shared_ptr<Loop> ref)
-        : Handle{HandleType<uv_idle_t>{}, std::move(ref)}
+        : Handle{ResourceType<uv_idle_t>{}, std::move(ref)}
     {
         initialized = (uv_idle_init(parent(), get<uv_idle_t>()) == 0);
     }
@@ -28,14 +28,15 @@ public:
         return std::shared_ptr<Idle>{new Idle{std::forward<Args>(args)...}};
     }
 
-    void start(std::function<void(UVWError, Idle &)> cb) noexcept {
+    UVWError start() {
         using CBF = CallbackFactory<void(uv_idle_t *)>;
-        auto func = CBF::on<&Idle::startCallback>(*this, std::move(cb));
-        auto err = uv_idle_start(get<uv_idle_t>(), func);
-        if(err) { error(err); }
+        auto func = CBF::create<&Idle::startCallback>(*this);
+        return UVWError{uv_idle_start(get<uv_idle_t>(), func)};
     }
 
-    UVWError stop() noexcept { return UVWError{uv_idle_stop(get<uv_idle_t>())}; }
+    UVWError stop() {
+        return UVWError{uv_idle_stop(get<uv_idle_t>())};
+    }
 
     explicit operator bool() const noexcept { return initialized; }
 

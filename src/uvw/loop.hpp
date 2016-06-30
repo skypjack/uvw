@@ -12,48 +12,6 @@
 namespace uvw {
 
 
-class Loop;
-
-
-template<typename R>
-class Resource {
-    template<typename>
-    friend class Resource;
-
-    friend class Loop;
-
-    template<typename... Args>
-    explicit constexpr Resource(std::shared_ptr<Loop>&& l, Args&&... args)
-        : res{R::create(std::move(l), std::forward<Args>(args)...)}
-    { }
-
-    explicit constexpr Resource(std::shared_ptr<R> ptr): res{std::move(ptr)} { }
-
-public:
-    explicit constexpr Resource(): res{} { }
-
-    template<typename T, std::enable_if_t<std::is_base_of<R, T>::value>* = nullptr>
-    constexpr Resource(const Resource<T> &other): res{other.res} { }
-
-    template<typename T, std::enable_if_t<std::is_base_of<R, T>::value>* = nullptr>
-    constexpr Resource(Resource<T> &&other): res{std::move(other.res)} { }
-
-    template<typename T, std::enable_if_t<std::is_base_of<R, T>::value>* = nullptr>
-    constexpr void operator=(const Resource<T> &other) { res = other.res; }
-
-    template<typename T, std::enable_if_t<std::is_base_of<R, T>::value>* = nullptr>
-    constexpr void operator=(Resource<T> &&other) { res = std::move(other.res); }
-
-    constexpr explicit operator bool() const { return static_cast<bool>(res); }
-
-    constexpr operator R&() noexcept { return *res; }
-    constexpr operator const R&() const noexcept { return *res; }
-
-private:
-    std::shared_ptr<R> res;
-};
-
-
 class Loop final: public std::enable_shared_from_this<Loop> {
     template<typename>
     friend class Handle;
@@ -105,14 +63,9 @@ public:
         }
     }
 
-    template<typename R>
-    Resource<R> resource(std::shared_ptr<R> ptr) {
-        return Resource<R>{std::move(ptr)};
-    }
-
     template<typename R, typename... Args>
-    Resource<R> resource(Args&&... args) {
-        return Resource<R>{shared_from_this(), std::forward<Args>(args)...};
+    std::shared_ptr<R> resource(Args&&... args) {
+        return R::create(shared_from_this(), std::forward<Args>(args)...);
     }
 
     UVWError close() noexcept {

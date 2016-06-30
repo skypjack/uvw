@@ -1,10 +1,9 @@
 #pragma once
 
 
-#include <cstdint>
 #include <utility>
+#include <memory>
 #include <chrono>
-#include <ratio>
 #include <uv.h>
 #include "handle.hpp"
 #include "util.hpp"
@@ -14,40 +13,49 @@ namespace uvw {
 
 
 class Timer final: public Handle<Timer> {
-    static void startCallback(Timer &timer, std::function<void(UVWError, Timer &)> &cb, uv_timer_t *) {
-        cb(UVWError{}, timer);
+    static void startCallback(Timer &timer, uv_timer_t *) {
+        timer.publish(TimerEvent{});
     }
 
     explicit Timer(std::shared_ptr<Loop> ref)
-        : Handle{HandleType<uv_timer_t>{}, std::move(ref)}
+        : Handle{ResourceType<uv_timer_t>{}, std::move(ref)}
     {
         initialized = (uv_timer_init(parent(), get<uv_timer_t>()) == 0);
     }
 
 public:
-    using Time = std::chrono::duration<uint64_t, std::milli>;
+    using Time = std::chrono::milliseconds;
 
     template<typename... Args>
     static std::shared_ptr<Timer> create(Args&&... args) {
         return std::shared_ptr<Timer>{new Timer{std::forward<Args>(args)...}};
     }
 
-    void start(const Time &timeout, const Time &rep, std::function<void(UVWError, Timer &)> cb) noexcept {
+    UVWError start(Time timeout, Time repeat) {
         using CBF = CallbackFactory<void(uv_timer_t *)>;
-        auto func = CBF::on<&Timer::startCallback>(*this, std::move(cb));
-        auto err = uv_timer_start(get<uv_timer_t>(), func, timeout.count(), rep.count());
-        if(err) { error(err); }
+        auto func = CBF::create<&Timer::startCallback>(*this);
+        return UVWError{uv_timer_start(get<uv_timer_t>(), func, timeout.count(), repeat.count())};
     }
 
-    UVWError stop() noexcept { return UVWError{uv_timer_stop(get<uv_timer_t>())}; }
-    UVWError again() noexcept { return UVWError{uv_timer_again(get<uv_timer_t>())}; }
-    void repeat(const Time &rep) noexcept { uv_timer_set_repeat(get<uv_timer_t>(), rep.count()); }
-    Time repeat() const noexcept { return Time{uv_timer_get_repeat(get<uv_timer_t>())}; }
+    UVWError stop() {
+        return UVWError{uv_timer_stop(get<uv_timer_t>())};
+    }
+
+    UVWError again() {
+        return UVWError{uv_timer_again(get<uv_timer_t>())};
+    }
+
+    void repeat(Time repeat) {
+        uv_timer_set_repeat(get<uv_timer_t>(), repeat.count());
+    }
+
+    Time repeat() {
+        return Time{uv_timer_get_repeat(get<uv_timer_t>())};
+    }
 
     explicit operator bool() const noexcept { return initialized; }
 
 private:
-    std::function<void(UVWError)> startCb;
     bool initialized;
 };
 

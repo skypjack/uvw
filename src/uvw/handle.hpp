@@ -1,24 +1,15 @@
 #pragma once
 
 
-#include <type_traits>
-#include <functional>
-#include <utility>
 #include <memory>
 #include <uv.h>
+#include "emitter.hpp"
+#include "resource.hpp"
+#include "self.hpp"
 #include "loop.hpp"
-#include "util.hpp"
 
 
 namespace uvw {
-
-
-template<typename>
-struct HandleType { };
-
-
-template<typename>
-class Handle;
 
 
 namespace details {
@@ -28,24 +19,17 @@ template<typename T> void* get(T *handle) { return handle->data; }
 void* get(uv_connect_t *conn) { return conn->handle->data; }
 
 
-template<typename T, typename F>
+template<typename, typename>
 struct UVCallbackFactory;
 
-
-template<typename T,typename H,  typename... Args>
+template<typename T, typename H,  typename... Args>
 struct UVCallbackFactory<T, void(H, Args...)> {
-    template<void(*F)(T &, std::function<void(UVWError, T &)> &, H, Args...)>
-    static auto once(T &, std::function<void(UVWError, T &)>);
-
-    template<void(*F)(T &, std::function<void(UVWError, T &)> &, H, Args...)>
-    static auto on(T &, std::function<void(UVWError, T &)>);
+    template<void(*F)(T &, H, Args...)>
+    static auto create(T &) noexcept;
 
 private:
-    template<void(*F)(T &, std::function<void(UVWError, T &)> &, H, Args...)>
-    static void protoOnce(H, Args...);
-
-    template<void(*F)(T &, std::function<void(UVWError, T &)> &, H, Args...)>
-    static void protoOn(H, Args...);
+    template<void(*F)(T &, H, Args...)>
+    static void proto(H, Args...) noexcept;
 };
 
 
@@ -53,12 +37,12 @@ private:
 
 
 template<typename T>
-class Handle: public std::enable_shared_from_this<T> {
+class Handle: public Emitter<T>, public Self<T>, public ResourceWrapper {
     template<typename, typename>
     friend struct details::UVCallbackFactory;
 
-    static void closeCallback(T &t, std::function<void(UVWError, T &)> &cb, uv_handle_t*) {
-        cb(UVWError{}, t);
+    static void closeCallback(T &ref, uv_handle_t *) {
+        ref.publish(CloseEvent{});
     }
 
 protected:
@@ -66,32 +50,17 @@ protected:
     using CallbackFactory = details::UVCallbackFactory<T, F>;
 
     template<typename U>
-    explicit Handle(HandleType<U>, std::shared_ptr<Loop> r)
-        : uvHandle{std::make_shared<U>()}, pLoop{std::move(r)}
+    explicit Handle(ResourceType<U> rt, std::shared_ptr<Loop> ref)
+        : Emitter<T>{}, Self<T>{}, ResourceWrapper{std::move(rt)}, pLoop{std::move(ref)}
     { }
-
-    void error(int error) {
-        auto ptr = std::static_pointer_cast<T>(leak);
-        auto cb = std::move(callback);
-        leak.reset();
-        cb(UVWError{error}, *ptr);
-    }
-
-    template<typename U>
-    U* get() const noexcept { return reinterpret_cast<U*>(uvHandle.get()); }
 
     uv_loop_t* parent() const noexcept { return pLoop->loop.get(); }
 
 public:
-    explicit Handle(const Handle &) = delete;
-    explicit Handle(Handle &&) = delete;
+    virtual ~Handle() {
+        static_assert(std::is_base_of<Handle<T>, T>::value, "!");
+    }
 
-    ~Handle() { static_assert(std::is_base_of<Handle<T>, T>::value, "!"); }
-
-    void operator=(const Handle &) = delete;
-    void operator=(Handle &&) = delete;
-
-    Resource<T> resource() noexcept { return pLoop->resource(Handle<T>::shared_from_this()); }
     Loop& loop() const noexcept { return *pLoop; }
 
     bool active() const noexcept { return !(uv_is_active(get<uv_handle_t>()) == 0); }
@@ -101,58 +70,47 @@ public:
     void unreference() noexcept { uv_unref(get<uv_handle_t>()); }
     bool referenced() const noexcept { return !(uv_has_ref(get<uv_handle_t>()) == 0); }
 
-    void close(std::function<void(UVWError, T &)> cb) noexcept {
-        using CBF = CallbackFactory<void(uv_handle_t*)>;
-        auto func = CBF::template once<&Handle<T>::closeCallback>(*static_cast<T*>(this), std::move(cb));
-        uv_close(get<uv_handle_t>(), func);
+    void close() noexcept {
+        auto handle = get<uv_handle_t>();
+
+        if(!uv_is_closing(handle)) {
+            using CBF = CallbackFactory<void(uv_handle_t *)>;
+            T &ref = *static_cast<T*>(this);
+            auto func = CBF::template create<&Handle<T>::closeCallback>(ref);
+            uv_close(handle, func);
+        }
     }
 
 private:
-    std::shared_ptr<void> uvHandle;
     std::shared_ptr<Loop> pLoop;
-    std::shared_ptr<void> leak;
-    std::function<void(UVWError, T &)> callback;
 };
 
 
 namespace details {
 
 
-template<typename T, typename H, typename... Args>
-template<void(*F)(T &, std::function<void(UVWError, T &)> &, H, Args...)>
-auto UVCallbackFactory<T, void(H, Args...)>::once(T &ref, std::function<void(UVWError, T &)> cb) {
-    Handle<T> &res = ref;
-    res.callback = std::move(cb);
-    res.leak = res.shared_from_this();
-    res.template get<uv_handle_t>()->data = &ref;
-    return &UVCallbackFactory<T, void(H, Args...)>::protoOnce<F>;
+template<typename T, typename H,  typename... Args>
+template<void(*F)(T &, H, Args...)>
+auto UVCallbackFactory<T, void(H, Args...)>::create(T &ref) noexcept {
+    Handle<T> &handle = ref;
+    handle.leak();
+    handle.template get<uv_handle_t>()->data = &ref;
+    return &UVCallbackFactory<T, void(H, Args...)>::proto<F>;
 }
 
-template<typename T, typename H, typename... Args>
-template<void(*F)(T &, std::function<void(UVWError, T &)> &, H, Args...)>
-auto UVCallbackFactory<T, void(H, Args...)>::on(T &ref, std::function<void(UVWError, T &)> cb) {
-    Handle<T> &res = ref;
-    res.callback = std::move(cb);
-    res.leak = res.shared_from_this();
-    res.template get<uv_handle_t>()->data = &ref;
-    return &UVCallbackFactory<T, void(H, Args...)>::protoOn<F>;
-}
 
-template<typename T, typename H, typename... Args>
-template<void(*F)(T &, std::function<void(UVWError, T &)> &, H, Args...)>
-void UVCallbackFactory<T, void(H, Args...)>::protoOnce(H handle, Args... args) {
+template<typename T, typename H,  typename... Args>
+template<void(*F)(T &, H, Args...)>
+void UVCallbackFactory<T, void(H, Args...)>::proto(H handle, Args... args) noexcept {
     T &ref = *(static_cast<T*>(details::get(handle)));
-    auto ptr = std::static_pointer_cast<T>(ref.leak);
-    auto cb = std::move(ref.callback);
-    ref.leak.reset();
-    F(*ptr, cb, handle, std::forward<Args>(args)...);
-}
 
-template<typename T, typename H, typename... Args>
-template<void(*F)(T &, std::function<void(UVWError, T &)> &, H, Args...)>
-void UVCallbackFactory<T, void(H, Args...)>::protoOn(H handle, Args... args) {
-    T &ref = *(static_cast<T*>(details::get(handle)));
-    F(ref, ref.callback, handle, std::forward<Args>(args)...);
+    if(0 == uv_is_active(ref.template get<uv_handle_t>())) {
+        auto ptr = ref.shared_from_this();
+        ref.reset();
+        F(*ptr, handle, args...);
+    } else {
+        F(ref, handle, args...);
+    }
 }
 
 

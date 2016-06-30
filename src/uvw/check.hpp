@@ -12,12 +12,12 @@ namespace uvw {
 
 
 class Check final: public Handle<Check> {
-    static void startCallback(Check &check, std::function<void(UVWError, Check &)> &cb, uv_check_t *) {
-        cb(UVWError{}, check);
+    static void startCallback(Check &check, uv_check_t *) {
+        check.publish(CheckEvent{});
     }
 
     explicit Check(std::shared_ptr<Loop> ref)
-        : Handle{HandleType<uv_check_t>{}, std::move(ref)}
+        : Handle{ResourceType<uv_check_t>{}, std::move(ref)}
     {
         initialized = (uv_check_init(parent(), get<uv_check_t>()) == 0);
     }
@@ -28,14 +28,15 @@ public:
         return std::shared_ptr<Check>{new Check{std::forward<Args>(args)...}};
     }
 
-    void start(std::function<void(UVWError, Check &)> cb) noexcept {
+    UVWError start() {
         using CBF = CallbackFactory<void(uv_check_t *)>;
-        auto func = CBF::on<&Check::startCallback>(*this, std::move(cb));
-        auto err = uv_check_start(get<uv_check_t>(), func);
-        if(err) { error(err); }
+        auto func = CBF::create<&Check::startCallback>(*this);
+        return UVWError{uv_check_start(get<uv_check_t>(), func)};
     }
 
-    UVWError stop() noexcept { return UVWError{uv_check_stop(get<uv_check_t>())}; }
+    UVWError stop() {
+        return UVWError{uv_check_stop(get<uv_check_t>())};
+    }
 
     explicit operator bool() const noexcept { return initialized; }
 
