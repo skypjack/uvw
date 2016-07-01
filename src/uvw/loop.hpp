@@ -6,13 +6,14 @@
 #include <utility>
 #include <type_traits>
 #include <uv.h>
+#include "emitter.hpp"
 #include "util.hpp"
 
 
 namespace uvw {
 
 
-class Loop final: public std::enable_shared_from_this<Loop> {
+class Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop> {
     template<typename>
     friend class Handle;
 
@@ -68,8 +69,9 @@ public:
         return R::create(shared_from_this(), std::forward<Args>(args)...);
     }
 
-    UVWError close() noexcept {
-        return UVWError{uv_loop_close(loop.get())};
+    void close() noexcept {
+        auto err = uv_loop_close(loop.get());
+        if(err) publish(ErrorEvent{err});
     }
 
     bool run() noexcept {

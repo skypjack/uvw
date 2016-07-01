@@ -4,6 +4,7 @@
 #include <utility>
 #include <memory>
 #include <uv.h>
+#include "event.hpp"
 #include "handle.hpp"
 #include "util.hpp"
 
@@ -28,14 +29,16 @@ public:
         return std::shared_ptr<Prepare>{new Prepare{std::forward<Args>(args)...}};
     }
 
-    UVWError start() {
+    void start() {
         using CBF = CallbackFactory<void(uv_prepare_t *)>;
         auto func = CBF::create<&Prepare::startCallback>(*this);
-        return UVWError{uv_prepare_start(get<uv_prepare_t>(), func)};
+        auto err = uv_prepare_start(get<uv_prepare_t>(), func);
+        if(err) publish(ErrorEvent{err});
     }
 
-    UVWError stop() {
-        return UVWError{uv_prepare_stop(get<uv_prepare_t>())};
+    void stop() {
+        auto err = uv_prepare_stop(get<uv_prepare_t>());
+        if(err) publish(ErrorEvent{err});
     }
 
     explicit operator bool() const noexcept { return initialized; }

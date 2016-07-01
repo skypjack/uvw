@@ -5,6 +5,7 @@
 #include <memory>
 #include <chrono>
 #include <uv.h>
+#include "error.h"
 #include "handle.hpp"
 #include "util.hpp"
 
@@ -31,18 +32,21 @@ public:
         return std::shared_ptr<Timer>{new Timer{std::forward<Args>(args)...}};
     }
 
-    UVWError start(Time timeout, Time repeat) {
+    void start(Time timeout, Time repeat) {
         using CBF = CallbackFactory<void(uv_timer_t *)>;
         auto func = CBF::create<&Timer::startCallback>(*this);
-        return UVWError{uv_timer_start(get<uv_timer_t>(), func, timeout.count(), repeat.count())};
+        auto err = uv_timer_start(get<uv_timer_t>(), func, timeout.count(), repeat.count());
+        if(err) publish(ErrorEvent{err});
     }
 
-    UVWError stop() {
-        return UVWError{uv_timer_stop(get<uv_timer_t>())};
+    void stop() {
+        auto err = uv_timer_stop(get<uv_timer_t>());
+        if(err) publish(ErrorEvent{err});
     }
 
-    UVWError again() {
-        return UVWError{uv_timer_again(get<uv_timer_t>())};
+    void again() {
+        auto err = uv_timer_again(get<uv_timer_t>());
+        if(err) publish(ErrorEvent{err});
     }
 
     void repeat(Time repeat) {

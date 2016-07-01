@@ -67,40 +67,6 @@ private:
 };
 
 
-class UVWError {
-public:
-    explicit UVWError(int code = 0): ec(code) { }
-
-public:
-    explicit operator bool() const noexcept { return !(ec == 0); }
-    operator const char *() const noexcept { return uv_strerror(ec); }
-    operator int() const noexcept { return ec; }
-
-private:
-    int ec;
-};
-
-
-template<typename T>
-class UVWOptionalData {
-public:
-    UVWOptionalData(UVWError e): err{e}, value{} { }
-    UVWOptionalData(T t): err{}, value{std::move(t)} { }
-
-    const UVWError & error() const noexcept { return err; }
-    const T & data() const noexcept { return value; }
-
-    operator const UVWError &() const noexcept { return error(); }
-    operator const T &() const noexcept { return data(); }
-
-    explicit operator bool() const noexcept { return !err; }
-
-private:
-    UVWError err;
-    T value;
-};
-
-
 using Addr = std::pair<std::string, unsigned int>;
 
 

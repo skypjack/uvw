@@ -4,6 +4,7 @@
 #include <utility>
 #include <memory>
 #include <uv.h>
+#include "event.hpp"
 #include "handle.hpp"
 #include "util.hpp"
 
@@ -28,14 +29,16 @@ public:
         return std::shared_ptr<Idle>{new Idle{std::forward<Args>(args)...}};
     }
 
-    UVWError start() {
+    void start() {
         using CBF = CallbackFactory<void(uv_idle_t *)>;
         auto func = CBF::create<&Idle::startCallback>(*this);
-        return UVWError{uv_idle_start(get<uv_idle_t>(), func)};
+        auto err = uv_idle_start(get<uv_idle_t>(), func);
+        if(err) publish(ErrorEvent{err});
     }
 
-    UVWError stop() {
-        return UVWError{uv_idle_stop(get<uv_idle_t>())};
+    void stop() {
+        auto err = uv_idle_stop(get<uv_idle_t>());
+        if(err) publish(ErrorEvent{err});
     }
 
     explicit operator bool() const noexcept { return initialized; }

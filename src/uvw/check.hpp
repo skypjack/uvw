@@ -4,6 +4,7 @@
 #include <utility>
 #include <memory>
 #include <uv.h>
+#include "event.hpp"
 #include "handle.hpp"
 #include "util.hpp"
 
@@ -28,14 +29,16 @@ public:
         return std::shared_ptr<Check>{new Check{std::forward<Args>(args)...}};
     }
 
-    UVWError start() {
+    void start() {
         using CBF = CallbackFactory<void(uv_check_t *)>;
         auto func = CBF::create<&Check::startCallback>(*this);
-        return UVWError{uv_check_start(get<uv_check_t>(), func)};
+        auto err = uv_check_start(get<uv_check_t>(), func);
+        if(err) publish(ErrorEvent{err});
     }
 
-    UVWError stop() {
-        return UVWError{uv_check_stop(get<uv_check_t>())};
+    void stop() {
+        auto err = uv_check_stop(get<uv_check_t>());
+        if(err) publish(ErrorEvent{err});
     }
 
     explicit operator bool() const noexcept { return initialized; }

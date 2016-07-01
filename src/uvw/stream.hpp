@@ -49,15 +49,13 @@ class Stream: public Handle<T> {
     static constexpr unsigned int DEFAULT_BACKLOG = 128;
 
     static void shutdownCallback(T &ref, uv_shutdown_t *, int status) {
-        ShutdownEvent event;
-        event.error = UVWError{status};
-        ref.publish(std::move(event));
+        if(status) ref.publish(ErrorEvent{status});
+        else ref.publish(ShutdownEvent{});
     }
 
     static void listenCallback(T &ref, uv_stream_t *, int status) {
-        ListenEvent event;
-        event.error = UVWError{status};
-        ref.publish(std::move(event));
+        if(status) ref.publish(ErrorEvent{status});
+        else ref.publish(ListenEvent{});
     }
 
 protected:
@@ -67,42 +65,43 @@ protected:
     { }
 
 public:
-    UVWError shutdown() noexcept {
+    void shutdown() noexcept {
         using CBF = typename Handle<T>::template CallbackFactory<void(uv_shutdown_t *, int)>;
         auto func = CBF::template create<&Stream<T>::shutdownCallback>(*static_cast<T*>(this));
-        return UVWError{uv_shutdown(sdown.get(), this->template get<uv_stream_t>(), func)};
+        auto err = uv_shutdown(sdown.get(), this->template get<uv_stream_t>(), func);
+        if(err) this->publish(ErrorEvent{err});
     }
 
-    UVWError listen(int backlog) noexcept {
+    void listen(int backlog) noexcept {
         using CBF = typename Handle<T>::template CallbackFactory<void(uv_stream_t *, int)>;
         auto func = CBF::template create<&Stream<T>::listenCallback>(*static_cast<T*>(this));
-        return UVWError{uv_listen(this->template get<uv_stream_t>(), backlog, func)};
+        auto err = uv_listen(this->template get<uv_stream_t>(), backlog, func);
+        if(err) this->publish(ErrorEvent{err});
     }
 
-    UVWError listen() noexcept {
+    void listen() noexcept {
         listen(DEFAULT_BACKLOG);
     }
 
     // TODO read
 
-    UVWError stop() noexcept {
-        return UVWError{uv_read_stop(this->template get<uv_stream_t>())};
+    void stop() noexcept {
+        auto err = uv_read_stop(this->template get<uv_stream_t>());
+        if(err) this->publish(ErrorEvent{err});
     }
 
     // TODO write
 
-    UVWOptionalData<int> tryWrite(Buffer buf) noexcept {
-        Buffer data[] = { std::move(buf) };
-        return tryWrite(std::begin(data), std::end(data));
-    }
+    int tryWrite(Buffer buf) noexcept {
+        uv_buf_t data[] = { buf.uvBuf() };
+        auto bw = uv_try_write(this->template get<uv_stream_t>(), data, 1);
 
-    template<typename It>
-    UVWOptionalData<int> tryWrite(It first, It last) noexcept {
-        uv_buf_t data[last - first];
-        std::size_t pos = 0;
-        while(first != last) { data[pos++] = (first++)->uvBuf(); }
-        auto bw = uv_try_write(this->template get<uv_stream_t>(), data, pos);
-        return (bw >= 0 ? bw : UVWError{bw});
+        if(bw < 0) {
+            this->publish(ErrorEvent{bw});
+            bw = 0;
+        }
+
+        return bw;
     }
 
     bool readable() const noexcept {

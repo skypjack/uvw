@@ -8,74 +8,61 @@
 void listen(uvw::Loop &loop) {
     std::shared_ptr<uvw::Tcp> tcp = loop.resource<uvw::Tcp>();
 
-    uvw::UVWError err = tcp->bind<uvw::Tcp::IPv4>("127.0.0.1", 4242);
-    std::cout << "bind: " << ((bool)err) << std::endl;
+    tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::Tcp &) {
+        std::cout << "error " << std::endl;
+    });
 
     tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &event, uvw::Tcp &srv) mutable {
-        std::cout << "listen: " << ((bool)event.error) << std::endl;
+        std::cout << "listen" << std::endl;
 
-        if(!event.error) {
-            std::shared_ptr<uvw::Tcp> client = srv.loop().resource<uvw::Tcp>();
+        std::shared_ptr<uvw::Tcp> client = srv.loop().resource<uvw::Tcp>();
 
-            auto err = srv.accept(*client);
-            std::cout << "accept: " << ((bool)err) << std::endl;
+        client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::Tcp &) {
+            std::cout << "error " << std::endl;
+        });
 
-            auto local = srv.address<uvw::Tcp::IPv4>();
+        client->on<uvw::CloseEvent>([resource = srv.shared_from_this()](uvw::CloseEvent, uvw::Tcp &) mutable {
+            std::cout << "close" << std::endl;
 
-            if(local) {
-                const uvw::Addr &ref = local;
-                std::cout << "local: " << ref.first << " " << ref.second << std::endl;
-            }
+            uvw::Tcp &srv = *resource;
+            srv.close();
+        });
 
-            auto remote = client->remote<uvw::Tcp::IPv4>();
+        srv.accept(*client);
 
-            if(remote) {
-                const uvw::Addr &ref = remote;
-                std::cout << "remote: " << ref.first << " " << ref.second << std::endl;
-            }
+        uvw::Addr local = srv.address<uvw::Tcp::IPv4>();
+        std::cout << "local: " << local.first << " " << local.second << std::endl;
 
-            client->on<uvw::CloseEvent>([resource = srv.shared_from_this()](uvw::CloseEvent, uvw::Tcp &) mutable {
-                std::cout << "close" << std::endl;
+        uvw::Addr remote = client->remote<uvw::Tcp::IPv4>();
+        std::cout << "remote: " << remote.first << " " << remote.second << std::endl;
 
-                uvw::Tcp &srv = *resource;
-                srv.close();
-            });
-
-            if(!err) {
-                client->close();
-            }
-        }
+        client->close();
     });
 
     tcp->once<uvw::CloseEvent>([](const uvw::CloseEvent &, uvw::Tcp &) mutable {
         std::cout << "close" << std::endl;
     });
 
-    if(err) {
-        tcp->close();
-    } else {
-        tcp->listen(0);
-    }
+    tcp->bind<uvw::Tcp::IPv4>("127.0.0.1", 4242);
+    tcp->listen();
 }
 
 
 void conn(uvw::Loop &loop) {
     auto tcp = loop.resource<uvw::Tcp>();
 
+    tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::Tcp &) {
+        std::cout << "error " << std::endl;
+    });
+
     tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &event, uvw::Tcp &tcp) mutable {
-        std::cout << "connect: " << ((bool)event.error) << std::endl;
+        std::cout << "connect" << std::endl;
 
         auto data = std::unique_ptr<char[]>(new char[1]);
         data[0] = 42;
         uvw::Buffer buf{std::move(data), 1};
-        uvw::UVWOptionalData<int> bw = tcp.tryWrite(std::move(buf));
-
-        if(bw) {
-            std::cout << "written: " << ((int)bw) << std::endl;
-        } else {
-            std::cout << "written err: " << ((int)bw) << std::endl;
-        }
-
+        int bw = tcp.tryWrite(std::move(buf));
+        std::cout << "written: " << ((int)bw) << std::endl;
         tcp.close();
     });
 
@@ -83,8 +70,7 @@ void conn(uvw::Loop &loop) {
         std::cout << "close" << std::endl;
     });
 
-    auto err = tcp->connect<uvw::Tcp::IPv4>(std::string{"127.0.0.1"}, 4242);
-    std::cout << "connect: " << ((bool)err) << std::endl;
+    tcp->connect<uvw::Tcp::IPv4>(std::string{"127.0.0.1"}, 4242);
 }
 
 void g() {

@@ -16,9 +16,8 @@ namespace uvw {
 
 class Tcp final: public Stream<Tcp> {
     static void connectCallback(Tcp &tcp, uv_connect_t *, int status) {
-        ConnectEvent event;
-        event.error = UVWError{status};
-        tcp.publish(std::move(event));
+        if(status) tcp.publish(ErrorEvent{status});
+        else tcp.publish(ConnectEvent{});
     }
 
     explicit Tcp(std::shared_ptr<Loop> ref)
@@ -29,25 +28,28 @@ class Tcp final: public Stream<Tcp> {
     }
 
     template<typename I, typename F, typename..., typename Traits = details::IpTraits<I>>
-    UVWOptionalData<Addr> address(F &&f) {
-        sockaddr_storage addr;
-        int len = sizeof(addr);
-        char name[sizeof(addr)];
+    Addr address(F &&f) {
+        sockaddr_storage ssto;
+        int len = sizeof(ssto);
+        char name[sizeof(ssto)];
+        Addr addr{ "", 0 };
 
-        int err = std::forward<F>(f)(get<uv_tcp_t>(), reinterpret_cast<sockaddr *>(&addr), &len);
+        int err = std::forward<F>(f)(get<uv_tcp_t>(), reinterpret_cast<sockaddr *>(&ssto), &len);
 
-        if(!err) {
-            typename Traits::Type *aptr = reinterpret_cast<typename Traits::Type *>(&addr);
+        if(err) {
+            publish(ErrorEvent{err});
+        } else {
+            typename Traits::Type *aptr = reinterpret_cast<typename Traits::Type *>(&ssto);
             err = Traits::NameFunc(aptr, name, len);
 
-            if(!err) {
-                Addr address{ std::string{name}, ntohs(aptr->sin_port) };
-
-                return UVWOptionalData<Addr>{std::move(address)};
+            if(err) {
+                publish(ErrorEvent{err});
+            } else {
+                addr = { std::string{name}, ntohs(aptr->sin_port) };
             }
         }
 
-        return UVWOptionalData<Addr>{UVWError{err}};
+        return addr;
     }
 
 public:
@@ -61,53 +63,58 @@ public:
         return std::shared_ptr<Tcp>{new Tcp{std::forward<Args>(args)...}};
     }
 
-    UVWError noDelay(bool value = false) noexcept {
-        return UVWError{uv_tcp_nodelay(get<uv_tcp_t>(), value ? 1 : 0)};
+    void noDelay(bool value = false) noexcept {
+        auto err = uv_tcp_nodelay(get<uv_tcp_t>(), value ? 1 : 0);
+        if(err) publish(ErrorEvent{err});
     }
 
-    UVWError keepAlive(bool enable = false, Time time = Time{0}) noexcept {
-        return UVWError{uv_tcp_keepalive(get<uv_tcp_t>(), enable ? 1 : 0, time.count())};
+    void keepAlive(bool enable = false, Time time = Time{0}) noexcept {
+        auto err = uv_tcp_keepalive(get<uv_tcp_t>(), enable ? 1 : 0, time.count());
+        if(err) publish(ErrorEvent{err});
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    UVWError bind(std::string ip, unsigned int port, bool ipv6only = false) noexcept {
+    void bind(std::string ip, unsigned int port, bool ipv6only = false) noexcept {
         typename Traits::Type addr;
         Traits::AddrFunc(ip.c_str(), port, &addr);
         unsigned int flags = ipv6only ? UV_TCP_IPV6ONLY : 0;
-        return UVWError(uv_tcp_bind(get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags));
+        auto err = uv_tcp_bind(get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags);
+        if(err) publish(ErrorEvent{err});
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    UVWError bind(Addr addr, bool ipv6only = false) noexcept {
-        return bind<I>(addr.first, addr.second, ipv6only);
+    void bind(Addr addr, bool ipv6only = false) noexcept {
+        bind<I>(addr.first, addr.second, ipv6only);
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    UVWOptionalData<Addr> address() {
+    Addr address() {
         return address<I>(uv_tcp_getsockname);
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    UVWOptionalData<Addr> remote() {
+    Addr remote() {
         return address<I>(uv_tcp_getpeername);
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    UVWError connect(std::string ip, unsigned int port) noexcept {
+    void connect(std::string ip, unsigned int port) noexcept {
         typename Traits::Type addr;
         Traits::AddrFunc(ip.c_str(), port, &addr);
         using CBF = CallbackFactory<void(uv_connect_t *, int)>;
         auto func = CBF::create<&Tcp::connectCallback>(*this);
-        return UVWError{uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), func)};
+        auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), func);
+        if(err) publish(ErrorEvent{err});
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    UVWError connect(Addr addr) noexcept {
-        return connect<I>(addr.first, addr.second);
+    void connect(Addr addr) noexcept {
+        connect<I>(addr.first, addr.second);
     }
 
-    UVWError accept(Tcp &tcp) noexcept {
-        return UVWError{uv_accept(get<uv_stream_t>(), tcp.get<uv_stream_t>())};
+    void accept(Tcp &tcp) noexcept {
+        auto err = uv_accept(get<uv_stream_t>(), tcp.get<uv_stream_t>());
+        if(err) publish(ErrorEvent{err});
     }
 
     explicit operator bool() const noexcept { return initialized; }

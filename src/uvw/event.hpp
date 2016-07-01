@@ -2,6 +2,7 @@
 
 
 #include <cstddef>
+#include <uv.h>
 #include "util.hpp"
 
 
@@ -29,11 +30,22 @@ struct Event: BaseEvent {
 
 struct CheckEvent: Event<CheckEvent> { };
 struct CloseEvent: Event<CloseEvent> { };
-struct ConnectEvent: Event<ConnectEvent> { UVWError error; };
+struct ConnectEvent: Event<ConnectEvent> { };
+
+struct ErrorEvent: Event<ErrorEvent> {
+    explicit ErrorEvent(int code = 0): ec(code) { }
+
+    operator const char *() const noexcept { return uv_strerror(ec); }
+    operator int() const noexcept { return ec; }
+
+private:
+    int ec;
+};
+
 struct IdleEvent: Event<IdleEvent> { };
-struct ListenEvent: Event<ListenEvent> { UVWError error; };
+struct ListenEvent: Event<ListenEvent> { };
 struct PrepareEvent: Event<PrepareEvent> { };
-struct ShutdownEvent: Event<ShutdownEvent> { UVWError error; };
+struct ShutdownEvent: Event<ShutdownEvent> { };
 struct TimerEvent: Event<TimerEvent> { };
 
 
