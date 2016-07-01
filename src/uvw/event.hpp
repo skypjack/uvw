@@ -32,6 +32,12 @@ struct CheckEvent: Event<CheckEvent> { };
 struct CloseEvent: Event<CloseEvent> { };
 struct ConnectEvent: Event<ConnectEvent> { };
 
+struct DataEvent: Event<DataEvent> {
+    Buffer buffer{};
+};
+
+struct EndEvent: Event<EndEvent> { };
+
 struct ErrorEvent: Event<ErrorEvent> {
     explicit ErrorEvent(int code = 0): ec(code) { }
 
@@ -47,6 +53,8 @@ struct ListenEvent: Event<ListenEvent> { };
 struct PrepareEvent: Event<PrepareEvent> { };
 struct ShutdownEvent: Event<ShutdownEvent> { };
 struct TimerEvent: Event<TimerEvent> { };
+struct UninitializedEvent: Event<UninitializedEvent> { };
+struct WriteEvent: Event<WriteEvent> { };
 
 
 }

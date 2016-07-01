@@ -17,11 +17,7 @@ class Prepare final: public Handle<Prepare> {
         prepare.publish(PrepareEvent{});
     }
 
-    explicit Prepare(std::shared_ptr<Loop> ref)
-        : Handle{ResourceType<uv_prepare_t>{}, std::move(ref)}
-    {
-        initialized = (uv_prepare_init(parent(), get<uv_prepare_t>()) == 0);
-    }
+    using Handle<Prepare>::Handle;
 
 public:
     template<typename... Args>
@@ -29,9 +25,13 @@ public:
         return std::shared_ptr<Prepare>{new Prepare{std::forward<Args>(args)...}};
     }
 
+    bool init() {
+        return Handle<Prepare>::init<uv_prepare_t>(&uv_prepare_init);
+    }
+
     void start() {
         using CBF = CallbackFactory<void(uv_prepare_t *)>;
-        auto func = CBF::create<&Prepare::startCallback>(*this);
+        auto func = &CBF::template proto<&Prepare::startCallback>;
         auto err = uv_prepare_start(get<uv_prepare_t>(), func);
         if(err) publish(ErrorEvent{err});
     }
@@ -40,11 +40,6 @@ public:
         auto err = uv_prepare_stop(get<uv_prepare_t>());
         if(err) publish(ErrorEvent{err});
     }
-
-    explicit operator bool() const noexcept { return initialized; }
-
-private:
-    bool initialized;
 };
 
 

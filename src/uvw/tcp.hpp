@@ -21,11 +21,9 @@ class Tcp final: public Stream<Tcp> {
     }
 
     explicit Tcp(std::shared_ptr<Loop> ref)
-        : Stream{ResourceType<uv_tcp_t>{}, std::move(ref)},
+        : Stream{HandleType<uv_tcp_t>{}, std::move(ref)},
           conn{std::make_unique<uv_connect_t>()}
-    {
-        initialized = (uv_tcp_init(parent(), get<uv_tcp_t>()) == 0);
-    }
+    { }
 
     template<typename I, typename F, typename..., typename Traits = details::IpTraits<I>>
     Addr address(F &&f) {
@@ -61,6 +59,10 @@ public:
     template<typename... Args>
     static std::shared_ptr<Tcp> create(Args&&... args) {
         return std::shared_ptr<Tcp>{new Tcp{std::forward<Args>(args)...}};
+    }
+
+    bool init() {
+        return Stream<Tcp>::init<uv_tcp_t>(&uv_tcp_init);
     }
 
     void noDelay(bool value = false) noexcept {
@@ -102,7 +104,7 @@ public:
         typename Traits::Type addr;
         Traits::AddrFunc(ip.c_str(), port, &addr);
         using CBF = CallbackFactory<void(uv_connect_t *, int)>;
-        auto func = CBF::create<&Tcp::connectCallback>(*this);
+        auto func = &CBF::proto<&Tcp::connectCallback>;
         auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), func);
         if(err) publish(ErrorEvent{err});
     }

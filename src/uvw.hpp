@@ -5,7 +5,7 @@
 #include "uvw/idle.hpp"
 #include "uvw/loop.hpp"
 #include "uvw/prepare.hpp"
-#include "uvw/resource.hpp"
+#include "uvw/request.hpp"
 #include "uvw/self.hpp"
 #include "uvw/stream.hpp"
 #include "uvw/tcp.hpp"
