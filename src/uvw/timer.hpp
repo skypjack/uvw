@@ -5,7 +5,9 @@
 #include <memory>
 #include <chrono>
 #include <uv.h>
-#include "error.h"
+#if not defined(__APPLE__)
+ #include "error.h"
+#endif
 #include "handle.hpp"
 #include "util.hpp"
 
