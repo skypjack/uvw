@@ -28,7 +28,7 @@ class Stream: public Handle<T> {
 
         if(nread == UV_EOF) {
             ref.publish(EndEvent{});
-            delete buf->base;
+            delete[] buf->base;
         } else if(nread > 0) {
             std::unique_ptr<char[]> data{buf->base};
             DataEvent event;
@@ -36,7 +36,7 @@ class Stream: public Handle<T> {
             ref.publish(std::move(event));
         } else {
             ref.publish(ErrorEvent(nread));
-            delete buf->base;
+            delete[] buf->base;
         }
 
         buf->base = nullptr;
