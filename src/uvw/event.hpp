@@ -34,6 +34,7 @@ struct CheckEvent: Event<CheckEvent> { };
 struct CloseEvent: Event<CloseEvent> { };
 struct ConnectEvent: Event<ConnectEvent> { };
 
+
 struct DataEvent: Event<DataEvent> {
     explicit DataEvent(std::unique_ptr<const char[]> ptr, ssize_t l)
         : dt{std::move(ptr)}, len{l}
@@ -47,7 +48,9 @@ private:
     ssize_t len;
 };
 
+
 struct EndEvent: Event<EndEvent> { };
+
 
 struct ErrorEvent: Event<ErrorEvent> {
     explicit ErrorEvent(int code = 0): ec(code) { }
@@ -59,10 +62,23 @@ private:
     int ec;
 };
 
+
 struct IdleEvent: Event<IdleEvent> { };
 struct ListenEvent: Event<ListenEvent> { };
 struct PrepareEvent: Event<PrepareEvent> { };
 struct ShutdownEvent: Event<ShutdownEvent> { };
+
+
+struct SignalEvent: Event<SignalEvent> {
+    explicit SignalEvent(int sig): signum(sig) { }
+
+    operator int() const noexcept { return signum; }
+
+private:
+    int signum;
+};
+
+
 struct TimerEvent: Event<TimerEvent> { };
 struct UninitializedEvent: Event<UninitializedEvent> { };
 struct WriteEvent: Event<WriteEvent> { };
