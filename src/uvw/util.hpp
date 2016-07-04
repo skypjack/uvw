@@ -70,33 +70,4 @@ private:
 using Addr = std::pair<std::string, unsigned int>;
 
 
-class Buffer final {
-    template<typename>
-    friend class Stream;
-
-    uv_buf_t uvBuf() const noexcept {
-        return uv_buf_init(data.get(), size);
-    }
-
-public:
-    Buffer(): data{}, size{} { }
-
-    Buffer(std::unique_ptr<char[]> dt, std::size_t s)
-        : data{std::move(dt)}, size{s}
-    { }
-
-    Buffer(Buffer &&) = default;
-    Buffer& operator=(Buffer &&) = default;
-
-    void reset(std::unique_ptr<char[]> dt, std::size_t s) noexcept {
-        data.swap(dt);
-        size = s;
-    }
-
-private:
-    std::unique_ptr<char[]> data;
-    std::size_t size;
-};
-
-
 }

@@ -19,29 +19,21 @@ class Stream: public Handle<T> {
     static constexpr unsigned int DEFAULT_BACKLOG = 128;
 
     static void allocCallback(uv_handle_t *, std::size_t suggested, uv_buf_t *buf) {
-        buf->base = new char[suggested];
-        buf->len = suggested;
+        *buf = uv_buf_init(new char[suggested], suggested);
     }
 
-    static void readCallback(uv_stream_t *handle, ssize_t nread, const uv_buf_t *cbuf) {
+    static void readCallback(uv_stream_t *handle, ssize_t nread, const uv_buf_t *buf) {
         T &ref = *(static_cast<T*>(handle->data));
-        uv_buf_t *buf = const_cast<uv_buf_t *>(cbuf);
+        // data will be destroyed no matter of what the value of nread is
+        std::unique_ptr<const char[]> data{buf->base};
 
         if(nread == UV_EOF) {
             ref.publish(EndEvent{});
-            delete[] buf->base;
         } else if(nread > 0) {
-            std::unique_ptr<char[]> data{buf->base};
-            DataEvent event;
-            event.buffer.reset(std::move(data), nread);
-            ref.publish(std::move(event));
+            ref.publish(DataEvent{std::move(data), nread});
         } else {
             ref.publish(ErrorEvent(nread));
-            delete[] buf->base;
         }
-
-        buf->base = nullptr;
-        buf->len = 0;
     }
 
     static void writeCallback(uv_write_t *req, int status) {
@@ -90,19 +82,21 @@ public:
         this->invoke(&uv_read_stop, this->template get<uv_stream_t>());
     }
 
-    void write(Buffer buf) {
-        uv_buf_t data[] = { buf.uvBuf() };
+    void write(std::unique_ptr<char[]> data, ssize_t length) {
+        uv_buf_t bufs[] = { uv_buf_init(data.get(), length) };
         uv_write_t *req = new uv_write_t;
-        auto err = uv_write(req, this->template get<uv_stream_t>(), data, 1, &Stream<T>::writeCallback);
+
+        auto err = uv_write(req, this->template get<uv_stream_t>(), bufs, 1, &Stream<T>::writeCallback);
+
         if(err) {
             delete req;
             this->publish(ErrorEvent{err});
         }
     }
 
-    int tryWrite(Buffer buf) noexcept {
-        uv_buf_t data[] = { buf.uvBuf() };
-        auto bw = uv_try_write(this->template get<uv_stream_t>(), data, 1);
+    int tryWrite(std::unique_ptr<char[]> data, ssize_t length) noexcept {
+        uv_buf_t bufs[] = { uv_buf_init(data.get(), length) };
+        auto bw = uv_try_write(this->template get<uv_stream_t>(), bufs, 1);
 
         if(bw < 0) {
             this->publish(ErrorEvent{bw});
