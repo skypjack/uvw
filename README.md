@@ -1,5 +1,7 @@
 # uvw
 
+**Please, note that `uvw` is still a work in progress**.
+
 `uvw` is a header-only, event based, tiny and easy to use C++ wrapper for *libuv*.  
 The basic idea is to hide completely the *C-ish* interace of *libuv* behind a graceful C++ API. Currently, no *uv_***_t* data structure is actually exposed by the library.  
 Note that `uvw` stays true to the API of *libuv* and it doesn't add anything to its interface. For the same reason, users of the library must follow the same rules who are used to follow with *libuv*.  
