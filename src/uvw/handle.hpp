@@ -38,7 +38,8 @@ class Handle: public Emitter<T>, public Self<T> {
     };
 
     static void closeCallback(uv_handle_t *handle) {
-        T &ref = *(static_cast<T*>(handle->data));
+        Handle<T> &ref = *(static_cast<T*>(handle->data));
+        ref.initialized = false;
         ref.publish(CloseEvent{});
         ref.reset();
     }
@@ -48,7 +49,8 @@ protected:
     explicit Handle(HandleType<U>, std::shared_ptr<Loop> ref)
         : Emitter<T>{}, Self<T>{},
           wrapper{std::make_unique<Wrapper<U>>()},
-          pLoop{std::move(ref)}
+          pLoop{std::move(ref)},
+          initialized{false}
     {
         this->template get<uv_handle_t>()->data = static_cast<T*>(this);
     }
@@ -62,13 +64,14 @@ protected:
     bool initialize(F &&f) {
         bool ret = true;
 
-        if(!active()) {
+        if(!initialized) {
             auto err = std::forward<F>(f)(parent(), get<U>());
 
             if(err) {
                 this->publish(ErrorEvent{err});
                 ret = false;
             } else {
+                initialized = true;
                 this->leak();
             }
         }
@@ -105,6 +108,7 @@ public:
 private:
     std::unique_ptr<BaseWrapper> wrapper;
     std::shared_ptr<Loop> pLoop;
+    bool initialized;
 };
 
 
