@@ -82,8 +82,8 @@ public:
         this->invoke(&uv_read_stop, this->template get<uv_stream_t>());
     }
 
-    void write(std::unique_ptr<char[]> data, ssize_t length) {
-        uv_buf_t bufs[] = { uv_buf_init(data.get(), length) };
+    void write(char *data, ssize_t length) {
+        uv_buf_t bufs[] = { uv_buf_init(data, length) };
         uv_write_t *req = new uv_write_t;
 
         auto err = uv_write(req, this->template get<uv_stream_t>(), bufs, 1, &Stream<T>::writeCallback);
@@ -94,8 +94,12 @@ public:
         }
     }
 
-    int tryWrite(std::unique_ptr<char[]> data, ssize_t length) noexcept {
-        uv_buf_t bufs[] = { uv_buf_init(data.get(), length) };
+    void write(std::unique_ptr<char[]> data, ssize_t length) {
+        write(data.get(), length);
+    }
+
+    int tryWrite(char *data, ssize_t length) noexcept {
+        uv_buf_t bufs[] = { uv_buf_init(data, length) };
         auto bw = uv_try_write(this->template get<uv_stream_t>(), bufs, 1);
 
         if(bw < 0) {
@@ -104,6 +108,10 @@ public:
         }
 
         return bw;
+    }
+
+    int tryWrite(std::unique_ptr<char[]> data, ssize_t length) noexcept {
+        return tryWrite(data.get(), length);
     }
 
     bool readable() const noexcept {
