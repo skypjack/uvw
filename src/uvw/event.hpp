@@ -2,6 +2,7 @@
 
 
 #include <cstddef>
+#include <memory>
 #include <uv.h>
 #include "util.hpp"
 
@@ -10,7 +11,16 @@ namespace uvw {
 
 
 struct BaseEvent {
+    BaseEvent() = default;
+
+    BaseEvent(const BaseEvent &) = delete;
+    BaseEvent(BaseEvent &&) = delete;
+
+    void operator=(const BaseEvent &) = delete;
+    void operator=(BaseEvent &&) = delete;
+
     virtual ~BaseEvent() = 0;
+
     static std::size_t next() noexcept {
         static std::size_t cnt = 0;
         return cnt++;
@@ -33,7 +43,16 @@ struct CloseEvent: Event<CloseEvent> { };
 struct ConnectEvent: Event<ConnectEvent> { };
 
 struct DataEvent: Event<DataEvent> {
-    Buffer buffer{};
+    explicit DataEvent(std::unique_ptr<const char[]> ptr, ssize_t l)
+        : dt{std::move(ptr)}, len{l}
+    { }
+
+    const char * data() const noexcept { return dt.get(); }
+    ssize_t length() const noexcept { return len; }
+
+private:
+    std::unique_ptr<const char[]> dt;
+    ssize_t len;
 };
 
 struct EndEvent: Event<EndEvent> { };

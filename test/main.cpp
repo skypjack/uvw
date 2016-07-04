@@ -21,7 +21,7 @@ void listen(uvw::Loop &loop) {
             std::cout << "error " << std::endl;
         });
 
-        client->on<uvw::CloseEvent>([resource = srv.shared_from_this()](uvw::CloseEvent, uvw::Tcp &) mutable {
+        client->on<uvw::CloseEvent>([resource = srv.shared_from_this()](const uvw::CloseEvent &, uvw::Tcp &) mutable {
             std::cout << "close" << std::endl;
 
             uvw::Tcp &srv = *resource;
@@ -37,7 +37,8 @@ void listen(uvw::Loop &loop) {
         std::cout << "remote: " << remote.first << " " << remote.second << std::endl;
 
         client->on<uvw::DataEvent>([](const uvw::DataEvent &event, uvw::Tcp &) {
-            std::cout << "data" << std::endl;
+            std::cout.write(event.data(), event.length()) << std::endl;
+            std::cout << "data length: " << event.length() << std::endl;
         });
 
         client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::Tcp &client) {
@@ -64,15 +65,20 @@ void conn(uvw::Loop &loop) {
         std::cout << "error " << std::endl;
     });
 
+    tcp->once<uvw::WriteEvent>([](const uvw::WriteEvent &, uvw::Tcp &tcp) mutable {
+        std::cout << "write" << std::endl;
+        tcp.close();
+    });
+
     tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::Tcp &tcp) mutable {
         std::cout << "connect" << std::endl;
 
-        auto data = std::unique_ptr<char[]>(new char[1]);
-        data[0] = 'a';
-        uvw::Buffer buf{std::move(data), 1};
-        int bw = tcp.tryWrite(std::move(buf));
+        auto dataTryWrite = std::unique_ptr<char[]>(new char[1]{ 'a' });
+        int bw = tcp.tryWrite(std::move(dataTryWrite), 1);
         std::cout << "written: " << ((int)bw) << std::endl;
-        tcp.close();
+
+        auto dataWrite = std::unique_ptr<char[]>(new char[2]{ 'b', 'c' });
+        tcp.write(std::move(dataWrite), 2);
     });
 
     tcp->once<uvw::CloseEvent>([](const uvw::CloseEvent &, uvw::Tcp &) mutable {
