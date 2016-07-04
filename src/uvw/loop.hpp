@@ -65,7 +65,7 @@ public:
     }
 
     template<typename R, typename... Args>
-    std::shared_ptr<R> resource(Args&&... args) {
+    std::shared_ptr<R> handle(Args&&... args) {
         auto ptr = R::create(shared_from_this(), std::forward<Args>(args)...);
         ptr = ptr->init() ? ptr : nullptr;
         return ptr;
