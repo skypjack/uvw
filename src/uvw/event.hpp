@@ -11,14 +11,6 @@ namespace uvw {
 
 
 struct BaseEvent {
-    BaseEvent() = default;
-
-    BaseEvent(const BaseEvent &) = delete;
-    BaseEvent(BaseEvent &&) = delete;
-
-    void operator=(const BaseEvent &) = delete;
-    void operator=(BaseEvent &&) = delete;
-
     virtual ~BaseEvent() = 0;
 
     static std::size_t next() noexcept {

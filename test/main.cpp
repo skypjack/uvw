@@ -6,7 +6,7 @@
 
 
 void listen(uvw::Loop &loop) {
-    std::shared_ptr<uvw::Tcp> tcp = loop.resource<uvw::Tcp>();
+    std::shared_ptr<uvw::Tcp> tcp = loop.handle<uvw::Tcp>();
 
     tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::Tcp &) {
         std::cout << "error " << std::endl;
@@ -15,16 +15,16 @@ void listen(uvw::Loop &loop) {
     tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &event, uvw::Tcp &srv) mutable {
         std::cout << "listen" << std::endl;
 
-        std::shared_ptr<uvw::Tcp> client = srv.loop().resource<uvw::Tcp>();
+        std::shared_ptr<uvw::Tcp> client = srv.loop().handle<uvw::Tcp>();
 
         client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::Tcp &) {
             std::cout << "error " << std::endl;
         });
 
-        client->on<uvw::CloseEvent>([resource = srv.shared_from_this()](const uvw::CloseEvent &, uvw::Tcp &) mutable {
+        client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::Tcp &) mutable {
             std::cout << "close" << std::endl;
 
-            uvw::Tcp &srv = *resource;
+            uvw::Tcp &srv = *ptr;
             srv.close();
         });
 
@@ -43,6 +43,9 @@ void listen(uvw::Loop &loop) {
 
         client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::Tcp &client) {
             std::cout << "end" << std::endl;
+            int count = 0;
+            client.loop().walk([&count](uvw::BaseHandle &handle) { ++count; });
+            std::cout << "still alive: " << count << " handles" << std::endl;
             client.close();
         });
 
@@ -59,7 +62,7 @@ void listen(uvw::Loop &loop) {
 
 
 void conn(uvw::Loop &loop) {
-    auto tcp = loop.resource<uvw::Tcp>();
+    auto tcp = loop.handle<uvw::Tcp>();
 
     tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::Tcp &) {
         std::cout << "error " << std::endl;

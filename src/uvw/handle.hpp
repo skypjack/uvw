@@ -5,7 +5,6 @@
 #include <memory>
 #include <uv.h>
 #include "emitter.hpp"
-#include "self.hpp"
 #include "loop.hpp"
 
 
@@ -23,7 +22,11 @@ template<> struct HandleType<uv_tcp_t> { };
 
 
 template<typename T>
-class Handle: public Emitter<T>, public Self<T> {
+class Handle
+        : public BaseHandle,
+          public Emitter<T>,
+          public std::enable_shared_from_this<T>
+{
     struct BaseWrapper {
         virtual ~BaseWrapper() = default;
         virtual void * get() const noexcept = 0;
@@ -41,15 +44,17 @@ class Handle: public Emitter<T>, public Self<T> {
         Handle<T> &ref = *(static_cast<T*>(handle->data));
         ref.initialized = false;
         ref.publish(CloseEvent{});
-        ref.reset();
+        ref.leak.reset();
     }
 
 protected:
     template<typename U>
     explicit Handle(HandleType<U>, std::shared_ptr<Loop> ref)
-        : Emitter<T>{}, Self<T>{},
+        : Emitter<T>{},
+          std::enable_shared_from_this<T>{},
           wrapper{std::make_unique<Wrapper<U>>()},
           pLoop{std::move(ref)},
+          leak{nullptr},
           initialized{false}
     {
         this->template get<uv_handle_t>()->data = static_cast<T*>(this);
@@ -71,8 +76,8 @@ protected:
                 this->publish(ErrorEvent{err});
                 ret = false;
             } else {
+                leak = this->shared_from_this();
                 initialized = true;
-                this->leak();
             }
         }
 
@@ -92,14 +97,14 @@ public:
 
     Loop& loop() const noexcept { return *pLoop; }
 
-    bool active() const noexcept { return !(uv_is_active(get<uv_handle_t>()) == 0); }
-    bool closing() const noexcept { return !(uv_is_closing(get<uv_handle_t>()) == 0); }
+    bool active() const noexcept override { return !(uv_is_active(get<uv_handle_t>()) == 0); }
+    bool closing() const noexcept override { return !(uv_is_closing(get<uv_handle_t>()) == 0); }
 
-    void reference() noexcept { uv_ref(get<uv_handle_t>()); }
-    void unreference() noexcept { uv_unref(get<uv_handle_t>()); }
-    bool referenced() const noexcept { return !(uv_has_ref(get<uv_handle_t>()) == 0); }
+    void reference() noexcept override { uv_ref(get<uv_handle_t>()); }
+    void unreference() noexcept override { uv_unref(get<uv_handle_t>()); }
+    bool referenced() const noexcept override { return !(uv_has_ref(get<uv_handle_t>()) == 0); }
 
-    void close() noexcept {
+    void close() noexcept override {
         if(!closing()) {
             uv_close(get<uv_handle_t>(), &Handle<T>::closeCallback);
         }
@@ -108,6 +113,7 @@ public:
 private:
     std::unique_ptr<BaseWrapper> wrapper;
     std::shared_ptr<Loop> pLoop;
+    std::shared_ptr<void> leak;
     bool initialized;
 };
 

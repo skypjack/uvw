@@ -77,7 +77,7 @@ class Emitter {
 
 protected:
     template<typename E>
-    void publish(E &&event) noexcept {
+    void publish(E event) noexcept {
         handler<E>().publish(event, *static_cast<T*>(this));
     }
 
@@ -85,8 +85,8 @@ public:
     template<typename E>
     struct Connection: private Handler<E>::Connection {
         template<typename> friend class Emitter;
-        Connection(typename Handler<E>::Connection &&conn)
-            : Handler<E>::Connection{conn}
+        Connection(typename Handler<E>::Connection conn)
+            : Handler<E>::Connection{std::move(conn)}
         { }
     };
 

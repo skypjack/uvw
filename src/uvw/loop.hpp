@@ -13,6 +13,17 @@
 namespace uvw {
 
 
+class BaseHandle {
+public:
+    virtual bool active() const noexcept = 0;
+    virtual bool closing() const noexcept = 0;
+    virtual void reference() noexcept = 0;
+    virtual void unreference() noexcept = 0;
+    virtual bool referenced() const noexcept = 0;
+    virtual void close() noexcept = 0;
+};
+
+
 class Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop> {
     template<typename>
     friend class Handle;
@@ -65,7 +76,7 @@ public:
     }
 
     template<typename R, typename... Args>
-    std::shared_ptr<R> resource(Args&&... args) {
+    std::shared_ptr<R> handle(Args&&... args) {
         auto ptr = R::create(shared_from_this(), std::forward<Args>(args)...);
         ptr = ptr->init() ? ptr : nullptr;
         return ptr;
@@ -94,6 +105,16 @@ public:
 
     void stop() noexcept {
         uv_stop(loop.get());
+    }
+
+    void walk(std::function<void(BaseHandle &)> callback) noexcept {
+        // remember: non-capturing lambdas decay to pointers to functions
+        uv_walk(loop.get(), [](uv_handle_t *handle, void *func) {
+            BaseHandle &ref = *static_cast<BaseHandle*>(handle->data);
+            std::function<void(BaseHandle &)> &f =
+                    *static_cast<std::function<void(BaseHandle &)>*>(func);
+            f(ref);
+        }, &callback);
     }
 
 private:
