@@ -17,11 +17,7 @@ class Idle final: public Handle<Idle> {
         idle.publish(IdleEvent{});
     }
 
-    explicit Idle(std::shared_ptr<Loop> ref)
-        : Handle{ResourceType<uv_idle_t>{}, std::move(ref)}
-    {
-        initialized = (uv_idle_init(parent(), get<uv_idle_t>()) == 0);
-    }
+    using Handle<Idle>::Handle;
 
 public:
     template<typename... Args>
@@ -29,9 +25,13 @@ public:
         return std::shared_ptr<Idle>{new Idle{std::forward<Args>(args)...}};
     }
 
+    bool init() {
+        return Handle<Idle>::init<uv_idle_t>(&uv_idle_init);
+    }
+
     void start() {
         using CBF = CallbackFactory<void(uv_idle_t *)>;
-        auto func = CBF::create<&Idle::startCallback>(*this);
+        auto func = &CBF::template proto<&Idle::startCallback>;
         auto err = uv_idle_start(get<uv_idle_t>(), func);
         if(err) publish(ErrorEvent{err});
     }
@@ -40,11 +40,6 @@ public:
         auto err = uv_idle_stop(get<uv_idle_t>());
         if(err) publish(ErrorEvent{err});
     }
-
-    explicit operator bool() const noexcept { return initialized; }
-
-private:
-    bool initialized;
 };
 
 

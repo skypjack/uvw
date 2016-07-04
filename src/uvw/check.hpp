@@ -17,11 +17,7 @@ class Check final: public Handle<Check> {
         check.publish(CheckEvent{});
     }
 
-    explicit Check(std::shared_ptr<Loop> ref)
-        : Handle{ResourceType<uv_check_t>{}, std::move(ref)}
-    {
-        initialized = (uv_check_init(parent(), get<uv_check_t>()) == 0);
-    }
+    using Handle<Check>::Handle;
 
 public:
     template<typename... Args>
@@ -29,9 +25,13 @@ public:
         return std::shared_ptr<Check>{new Check{std::forward<Args>(args)...}};
     }
 
+    bool init() {
+        return Handle<Check>::init<uv_check_t>(&uv_check_init);
+    }
+
     void start() {
         using CBF = CallbackFactory<void(uv_check_t *)>;
-        auto func = CBF::create<&Check::startCallback>(*this);
+        auto func = &CBF::template proto<&Check::startCallback>;
         auto err = uv_check_start(get<uv_check_t>(), func);
         if(err) publish(ErrorEvent{err});
     }
@@ -41,10 +41,8 @@ public:
         if(err) publish(ErrorEvent{err});
     }
 
-    explicit operator bool() const noexcept { return initialized; }
-
 private:
-    bool initialized;
+    bool initialized = false;
 };
 
 

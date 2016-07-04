@@ -5,9 +5,7 @@
 #include <memory>
 #include <chrono>
 #include <uv.h>
-#if not defined(__APPLE__)
- #include "error.h"
-#endif
+#include "event.hpp"
 #include "handle.hpp"
 #include "util.hpp"
 
@@ -20,11 +18,7 @@ class Timer final: public Handle<Timer> {
         timer.publish(TimerEvent{});
     }
 
-    explicit Timer(std::shared_ptr<Loop> ref)
-        : Handle{ResourceType<uv_timer_t>{}, std::move(ref)}
-    {
-        initialized = (uv_timer_init(parent(), get<uv_timer_t>()) == 0);
-    }
+    using Handle<Timer>::Handle;
 
 public:
     using Time = std::chrono::milliseconds;
@@ -34,9 +28,13 @@ public:
         return std::shared_ptr<Timer>{new Timer{std::forward<Args>(args)...}};
     }
 
+    bool init() {
+        return Handle<Timer>::init<uv_timer_t>(&uv_timer_init);
+    }
+
     void start(Time timeout, Time repeat) {
         using CBF = CallbackFactory<void(uv_timer_t *)>;
-        auto func = CBF::create<&Timer::startCallback>(*this);
+        auto func = &CBF::template proto<&Timer::startCallback>;
         auto err = uv_timer_start(get<uv_timer_t>(), func, timeout.count(), repeat.count());
         if(err) publish(ErrorEvent{err});
     }
@@ -58,11 +56,6 @@ public:
     Time repeat() {
         return Time{uv_timer_get_repeat(get<uv_timer_t>())};
     }
-
-    explicit operator bool() const noexcept { return initialized; }
-
-private:
-    bool initialized;
 };
 
 

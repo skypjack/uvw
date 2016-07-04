@@ -36,7 +36,16 @@ void listen(uvw::Loop &loop) {
         uvw::Addr remote = client->remote<uvw::Tcp::IPv4>();
         std::cout << "remote: " << remote.first << " " << remote.second << std::endl;
 
-        client->close();
+        client->on<uvw::DataEvent>([](const uvw::DataEvent &event, uvw::Tcp &) {
+            std::cout << "data" << std::endl;
+        });
+
+        client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::Tcp &client) {
+            std::cout << "end" << std::endl;
+            client.close();
+        });
+
+        client->read();
     });
 
     tcp->once<uvw::CloseEvent>([](const uvw::CloseEvent &, uvw::Tcp &) mutable {
@@ -55,11 +64,11 @@ void conn(uvw::Loop &loop) {
         std::cout << "error " << std::endl;
     });
 
-    tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &event, uvw::Tcp &tcp) mutable {
+    tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::Tcp &tcp) mutable {
         std::cout << "connect" << std::endl;
 
         auto data = std::unique_ptr<char[]>(new char[1]);
-        data[0] = 42;
+        data[0] = 'a';
         uvw::Buffer buf{std::move(data), 1};
         int bw = tcp.tryWrite(std::move(buf));
         std::cout << "written: " << ((int)bw) << std::endl;
