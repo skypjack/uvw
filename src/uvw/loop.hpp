@@ -73,7 +73,7 @@ public:
 
     void close() noexcept {
         auto err = uv_loop_close(loop.get());
-        if(err) publish(ErrorEvent{err});
+        if(err) { publish(ErrorEvent{err}); }
     }
 
     bool run() noexcept {

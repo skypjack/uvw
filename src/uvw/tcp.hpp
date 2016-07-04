@@ -15,9 +15,10 @@ namespace uvw {
 
 
 class Tcp final: public Stream<Tcp> {
-    static void connectCallback(Tcp &tcp, uv_connect_t *, int status) {
-        if(status) tcp.publish(ErrorEvent{status});
-        else tcp.publish(ConnectEvent{});
+    static void connectCallback(uv_connect_t *req, int status) {
+        Tcp &tcp = *(static_cast<Tcp*>(req->handle->data));
+        if(status) { tcp.publish(ErrorEvent{status}); }
+        else { tcp.publish(ConnectEvent{}); }
     }
 
     explicit Tcp(std::shared_ptr<Loop> ref)
@@ -61,18 +62,14 @@ public:
         return std::shared_ptr<Tcp>{new Tcp{std::forward<Args>(args)...}};
     }
 
-    bool init() {
-        return Stream<Tcp>::init<uv_tcp_t>(&uv_tcp_init);
-    }
+    bool init() { return initialize<uv_tcp_t>(&uv_tcp_init); }
 
     void noDelay(bool value = false) noexcept {
-        auto err = uv_tcp_nodelay(get<uv_tcp_t>(), value ? 1 : 0);
-        if(err) publish(ErrorEvent{err});
+        invoke(&uv_tcp_nodelay, get<uv_tcp_t>(), value ? 1 : 0);
     }
 
     void keepAlive(bool enable = false, Time time = Time{0}) noexcept {
-        auto err = uv_tcp_keepalive(get<uv_tcp_t>(), enable ? 1 : 0, time.count());
-        if(err) publish(ErrorEvent{err});
+        invoke(&uv_tcp_keepalive, get<uv_tcp_t>(), enable ? 1 : 0, time.count());
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
@@ -80,8 +77,7 @@ public:
         typename Traits::Type addr;
         Traits::AddrFunc(ip.c_str(), port, &addr);
         unsigned int flags = ipv6only ? UV_TCP_IPV6ONLY : 0;
-        auto err = uv_tcp_bind(get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags);
-        if(err) publish(ErrorEvent{err});
+        invoke(&uv_tcp_bind, get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags);
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
@@ -103,10 +99,7 @@ public:
     void connect(std::string ip, unsigned int port) noexcept {
         typename Traits::Type addr;
         Traits::AddrFunc(ip.c_str(), port, &addr);
-        using CBF = CallbackFactory<void(uv_connect_t *, int)>;
-        auto func = &CBF::proto<&Tcp::connectCallback>;
-        auto err = uv_tcp_connect(conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), func);
-        if(err) publish(ErrorEvent{err});
+        invoke(&uv_tcp_connect, conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), &connectCallback);
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
@@ -115,15 +108,11 @@ public:
     }
 
     void accept(Tcp &tcp) noexcept {
-        auto err = uv_accept(get<uv_stream_t>(), tcp.get<uv_stream_t>());
-        if(err) publish(ErrorEvent{err});
+        invoke(&uv_accept, get<uv_stream_t>(), tcp.get<uv_stream_t>());
     }
-
-    explicit operator bool() const noexcept { return initialized; }
 
 private:
     std::unique_ptr<uv_connect_t> conn;
-    bool initialized;
 };
 
 

@@ -13,7 +13,8 @@ namespace uvw {
 
 
 class Idle final: public Handle<Idle> {
-    static void startCallback(Idle &idle, uv_idle_t *) {
+    static void startCallback(uv_idle_t *handle) {
+        Idle &idle = *(static_cast<Idle*>(handle->data));
         idle.publish(IdleEvent{});
     }
 
@@ -25,21 +26,10 @@ public:
         return std::shared_ptr<Idle>{new Idle{std::forward<Args>(args)...}};
     }
 
-    bool init() {
-        return Handle<Idle>::init<uv_idle_t>(&uv_idle_init);
-    }
+    bool init() { return initialize<uv_idle_t>(&uv_idle_init); }
 
-    void start() {
-        using CBF = CallbackFactory<void(uv_idle_t *)>;
-        auto func = &CBF::template proto<&Idle::startCallback>;
-        auto err = uv_idle_start(get<uv_idle_t>(), func);
-        if(err) publish(ErrorEvent{err});
-    }
-
-    void stop() {
-        auto err = uv_idle_stop(get<uv_idle_t>());
-        if(err) publish(ErrorEvent{err});
-    }
+    void start() { invoke(&uv_idle_start, get<uv_idle_t>(), &startCallback); }
+    void stop() { invoke(&uv_idle_stop, get<uv_idle_t>()); }
 };
 
 
