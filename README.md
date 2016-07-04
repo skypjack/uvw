@@ -66,11 +66,11 @@ Then pass the proper `-I` argument to the compiler to add the `src` directory to
 
 # API Reference
 
-TODO
+... Coming soon ...
 
 # Tests
 
-TODO
+... Coming soon ...
 
 # Contributors
 
