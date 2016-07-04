@@ -5,7 +5,7 @@
 #include <memory>
 #include <chrono>
 #include <uv.h>
-#include "error.h"
+#include "event.hpp"
 #include "handle.hpp"
 #include "util.hpp"
 
