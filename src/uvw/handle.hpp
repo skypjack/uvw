@@ -22,7 +22,11 @@ template<> struct HandleType<uv_tcp_t> { };
 
 
 template<typename T>
-class Handle: public Emitter<T>, public std::enable_shared_from_this<T> {
+class Handle
+        : public BaseHandle,
+          public Emitter<T>,
+          public std::enable_shared_from_this<T>
+{
     struct BaseWrapper {
         virtual ~BaseWrapper() = default;
         virtual void * get() const noexcept = 0;
@@ -93,14 +97,14 @@ public:
 
     Loop& loop() const noexcept { return *pLoop; }
 
-    bool active() const noexcept { return !(uv_is_active(get<uv_handle_t>()) == 0); }
-    bool closing() const noexcept { return !(uv_is_closing(get<uv_handle_t>()) == 0); }
+    bool active() const noexcept override { return !(uv_is_active(get<uv_handle_t>()) == 0); }
+    bool closing() const noexcept override { return !(uv_is_closing(get<uv_handle_t>()) == 0); }
 
-    void reference() noexcept { uv_ref(get<uv_handle_t>()); }
-    void unreference() noexcept { uv_unref(get<uv_handle_t>()); }
-    bool referenced() const noexcept { return !(uv_has_ref(get<uv_handle_t>()) == 0); }
+    void reference() noexcept override { uv_ref(get<uv_handle_t>()); }
+    void unreference() noexcept override { uv_unref(get<uv_handle_t>()); }
+    bool referenced() const noexcept override { return !(uv_has_ref(get<uv_handle_t>()) == 0); }
 
-    void close() noexcept {
+    void close() noexcept override {
         if(!closing()) {
             uv_close(get<uv_handle_t>(), &Handle<T>::closeCallback);
         }
