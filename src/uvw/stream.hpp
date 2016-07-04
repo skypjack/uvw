@@ -18,12 +18,13 @@ template<typename T>
 class Stream: public Handle<T> {
     static constexpr unsigned int DEFAULT_BACKLOG = 128;
 
-    static void allocCallback(T &, uv_handle_t *, std::size_t suggested, uv_buf_t *buf) {
+    static void allocCallback(uv_handle_t *, std::size_t suggested, uv_buf_t *buf) {
         buf->base = new char[suggested];
         buf->len = suggested;
     }
 
-    static void readCallback(T &ref, uv_stream_t *, ssize_t nread, const uv_buf_t *cbuf) {
+    static void readCallback(uv_stream_t *handle, ssize_t nread, const uv_buf_t *cbuf) {
+        T &ref = *(static_cast<T*>(handle->data));
         uv_buf_t *buf = const_cast<uv_buf_t *>(cbuf);
 
         if(nread == UV_EOF) {
@@ -43,22 +44,21 @@ class Stream: public Handle<T> {
         buf->len = 0;
     }
 
-    static void writeCallback(T &ref, uv_write_t *req, int status) {
-        if(status) {
-            ref.publish(ErrorEvent{status});
-        } else {
-            ref.publish(WriteEvent{});
-        }
-
+    static void writeCallback(uv_write_t *req, int status) {
+        T &ref = *(static_cast<T*>(req->handle->data));
+        if(status) { ref.publish(ErrorEvent{status}); }
+        else { ref.publish(WriteEvent{}); }
         delete req;
     }
 
-    static void shutdownCallback(T &ref, uv_shutdown_t *, int status) {
-        if(status) ref.publish(ErrorEvent{status});
-        else ref.publish(ShutdownEvent{});
+    static void shutdownCallback(uv_shutdown_t *req, int status) {
+        T &ref = *(static_cast<T*>(req->handle->data));
+        if(status) { ref.publish(ErrorEvent{status}); }
+        else { ref.publish(ShutdownEvent{}); }
     }
 
-    static void listenCallback(T &ref, uv_stream_t *, int status) {
+    static void listenCallback(uv_stream_t *handle, int status) {
+        T &ref = *(static_cast<T*>(handle->data));
         if(status) ref.publish(ErrorEvent{status});
         else ref.publish(ListenEvent{});
     }
@@ -71,17 +71,11 @@ protected:
 
 public:
     void shutdown() noexcept {
-        using CBF = typename Handle<T>::template CallbackFactory<void(uv_shutdown_t *, int)>;
-        auto func = &CBF::template proto<&Stream<T>::shutdownCallback>;
-        auto err = uv_shutdown(sdown.get(), this->template get<uv_stream_t>(), func);
-        if(err) this->publish(ErrorEvent{err});
+        this->invoke(&uv_shutdown, sdown.get(), this->template get<uv_stream_t>(), &shutdownCallback);
     }
 
     void listen(int backlog) noexcept {
-        using CBF = typename Handle<T>::template CallbackFactory<void(uv_stream_t *, int)>;
-        auto func = &CBF::template proto<&Stream<T>::listenCallback>;
-        auto err = uv_listen(this->template get<uv_stream_t>(), backlog, func);
-        if(err) this->publish(ErrorEvent{err});
+        this->invoke(&uv_listen, this->template get<uv_stream_t>(), backlog, &listenCallback);
     }
 
     void listen() noexcept {
@@ -89,25 +83,17 @@ public:
     }
 
     void read() {
-        using CBFAlloc = typename Handle<T>::template CallbackFactory<void(uv_handle_t *, std::size_t, uv_buf_t *)>;
-        using CBFRead = typename Handle<T>::template CallbackFactory<void(uv_stream_t *, ssize_t, const uv_buf_t *)>;
-        auto allocFunc = &CBFAlloc::template proto<&Stream<T>::allocCallback>;
-        auto readFunc = &CBFRead::template proto<&Stream<T>::readCallback>;
-        auto err = uv_read_start(this->template get<uv_stream_t>(), allocFunc, readFunc);
-        if(err) this->publish(ErrorEvent{err});
+        this->invoke(&uv_read_start, this->template get<uv_stream_t>(), &allocCallback, &readCallback);
     }
 
     void stop() noexcept {
-        auto err = uv_read_stop(this->template get<uv_stream_t>());
-        if(err) this->publish(ErrorEvent{err});
+        this->invoke(&uv_read_stop, this->template get<uv_stream_t>());
     }
 
     void write(Buffer buf) {
-        using CBF = typename Handle<T>::template CallbackFactory<void(uv_write_t *, int)>;
-        auto func = &CBF::template proto<&Stream<T>::writeCallback>;
         uv_buf_t data[] = { buf.uvBuf() };
         uv_write_t *req = new uv_write_t;
-        auto err = uv_write(req, this->template get<uv_stream_t>(), data, 1, func);
+        auto err = uv_write(req, this->template get<uv_stream_t>(), data, 1, &Stream<T>::writeCallback);
         if(err) {
             delete req;
             this->publish(ErrorEvent{err});

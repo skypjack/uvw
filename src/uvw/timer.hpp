@@ -14,7 +14,8 @@ namespace uvw {
 
 
 class Timer final: public Handle<Timer> {
-    static void startCallback(Timer &timer, uv_timer_t *) {
+    static void startCallback(uv_timer_t *handle) {
+        Timer &timer = *(static_cast<Timer*>(handle->data));
         timer.publish(TimerEvent{});
     }
 
@@ -28,34 +29,14 @@ public:
         return std::shared_ptr<Timer>{new Timer{std::forward<Args>(args)...}};
     }
 
-    bool init() {
-        return Handle<Timer>::init<uv_timer_t>(&uv_timer_init);
-    }
+    bool init() { return initialize<uv_timer_t>(&uv_timer_init); }
 
-    void start(Time timeout, Time repeat) {
-        using CBF = CallbackFactory<void(uv_timer_t *)>;
-        auto func = &CBF::template proto<&Timer::startCallback>;
-        auto err = uv_timer_start(get<uv_timer_t>(), func, timeout.count(), repeat.count());
-        if(err) publish(ErrorEvent{err});
-    }
+    void start(Time timeout, Time repeat) { invoke(uv_timer_start, get<uv_timer_t>(), &startCallback, timeout.count(), repeat.count()); }
+    void stop() { invoke(&uv_timer_stop, get<uv_timer_t>()); }
+    void again() { invoke(&uv_timer_again, get<uv_timer_t>()); }
 
-    void stop() {
-        auto err = uv_timer_stop(get<uv_timer_t>());
-        if(err) publish(ErrorEvent{err});
-    }
-
-    void again() {
-        auto err = uv_timer_again(get<uv_timer_t>());
-        if(err) publish(ErrorEvent{err});
-    }
-
-    void repeat(Time repeat) {
-        uv_timer_set_repeat(get<uv_timer_t>(), repeat.count());
-    }
-
-    Time repeat() {
-        return Time{uv_timer_get_repeat(get<uv_timer_t>())};
-    }
+    void repeat(Time repeat) { uv_timer_set_repeat(get<uv_timer_t>(), repeat.count()); }
+    Time repeat() { return Time{uv_timer_get_repeat(get<uv_timer_t>())}; }
 };
 
 

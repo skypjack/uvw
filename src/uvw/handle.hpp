@@ -12,26 +12,6 @@
 namespace uvw {
 
 
-namespace details {
-
-
-template<typename T> void* get(T *handle) { return handle->data; }
-void* get(uv_connect_t *conn) { return conn->handle->data; }
-
-
-template<typename, typename>
-struct UVCallbackFactory;
-
-template<typename T, typename H,  typename... Args>
-struct UVCallbackFactory<T, void(H, Args...)> {
-    template<void(*F)(T &, H, Args...)>
-    static void proto(H, Args...) noexcept;
-};
-
-
-}
-
-
 template<typename>
 struct HandleType;
 
@@ -44,9 +24,6 @@ template<> struct HandleType<uv_tcp_t> { };
 
 template<typename T>
 class Handle: public Emitter<T>, public Self<T> {
-    template<typename, typename>
-    friend struct details::UVCallbackFactory;
-
     struct BaseWrapper {
         virtual ~BaseWrapper() = default;
         virtual void * get() const noexcept = 0;
@@ -60,15 +37,13 @@ class Handle: public Emitter<T>, public Self<T> {
         std::unique_ptr<U> handle;
     };
 
-    static void closeCallback(T &ref, uv_handle_t *) {
+    static void closeCallback(uv_handle_t *handle) {
+        T &ref = *(static_cast<T*>(handle->data));
         ref.publish(CloseEvent{});
         ref.reset();
     }
 
 protected:
-    template<typename F>
-    using CallbackFactory = details::UVCallbackFactory<T, F>;
-
     template<typename U>
     explicit Handle(HandleType<U>, std::shared_ptr<Loop> ref)
         : Emitter<T>{}, Self<T>{},
@@ -84,7 +59,7 @@ protected:
     U* get() const noexcept { return reinterpret_cast<U*>(wrapper->get()); }
 
     template<typename U, typename F>
-    bool init(F &&f) {
+    bool initialize(F &&f) {
         bool ret = true;
 
         if(!active()) {
@@ -99,6 +74,12 @@ protected:
         }
 
         return ret;
+    }
+
+    template<typename F, typename... Args>
+    void invoke(F &&f, Args&&... args) {
+        auto err = std::forward<F>(f)(std::forward<Args>(args)...);
+        if(err) { Emitter<T>::publish(ErrorEvent{err}); }
     }
 
 public:
@@ -117,9 +98,7 @@ public:
 
     void close() noexcept {
         if(!closing()) {
-            using CBF = CallbackFactory<void(uv_handle_t *)>;
-            auto func = &CBF::template proto<&Handle<T>::closeCallback>;
-            uv_close(get<uv_handle_t>(), func);
+            uv_close(get<uv_handle_t>(), &Handle<T>::closeCallback);
         }
     }
 
@@ -127,20 +106,6 @@ private:
     std::unique_ptr<BaseWrapper> wrapper;
     std::shared_ptr<Loop> pLoop;
 };
-
-
-namespace details {
-
-
-template<typename T, typename H,  typename... Args>
-template<void(*F)(T &, H, Args...)>
-void UVCallbackFactory<T, void(H, Args...)>::proto(H handle, Args... args) noexcept {
-    T &ref = *(static_cast<T*>(details::get(handle)));
-    F(ref, handle, args...);
-}
-
-
-}
 
 
 }

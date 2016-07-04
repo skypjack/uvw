@@ -13,7 +13,8 @@ namespace uvw {
 
 
 class Check final: public Handle<Check> {
-    static void startCallback(Check &check, uv_check_t *) {
+    static void startCallback(uv_check_t *handle) {
+        Check &check = *(static_cast<Check*>(handle->data));
         check.publish(CheckEvent{});
     }
 
@@ -25,24 +26,10 @@ public:
         return std::shared_ptr<Check>{new Check{std::forward<Args>(args)...}};
     }
 
-    bool init() {
-        return Handle<Check>::init<uv_check_t>(&uv_check_init);
-    }
+    bool init() { return initialize<uv_check_t>(&uv_check_init); }
 
-    void start() {
-        using CBF = CallbackFactory<void(uv_check_t *)>;
-        auto func = &CBF::template proto<&Check::startCallback>;
-        auto err = uv_check_start(get<uv_check_t>(), func);
-        if(err) publish(ErrorEvent{err});
-    }
-
-    void stop() {
-        auto err = uv_check_stop(get<uv_check_t>());
-        if(err) publish(ErrorEvent{err});
-    }
-
-private:
-    bool initialized = false;
+    void start() { invoke(&uv_check_start, get<uv_check_t>(), &startCallback); }
+    void stop() { invoke(&uv_check_stop, get<uv_check_t>()); }
 };
 
 
