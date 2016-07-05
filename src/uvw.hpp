@@ -1,3 +1,4 @@
+#include "uvw/async.hpp"
 #include "uvw/check.hpp"
 #include "uvw/emitter.hpp"
 #include "uvw/event.hpp"

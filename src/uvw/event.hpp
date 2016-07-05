@@ -30,6 +30,7 @@ struct Event: BaseEvent {
 };
 
 
+struct AsyncEvent: Event<AsyncEvent> { };
 struct CheckEvent: Event<CheckEvent> { };
 struct CloseEvent: Event<CloseEvent> { };
 struct ConnectEvent: Event<ConnectEvent> { };
