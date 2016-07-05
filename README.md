@@ -86,6 +86,8 @@ To navigate it with your favorite browser:
 
 ### Crash Course
 
+##### The Loop and the Handle
+
 There is only one rule when using `uvw`: always initialize the handles and close them.  
 Handles keep themselves alive until one closes them. Because of that, leaks are possible if users simply forget about a handle.  
 To be honest, initialization is performed under the hood and can be even passed over, as far as resources are created using the `Loop::handle` member method.  
@@ -124,6 +126,8 @@ Anyway, it can be used to close the handle that originated from it. As an exampl
 No need to keep track of them.
 
 To know what are the available handles' types, please refer the API reference.
+
+##### The event-based approach
 
 For `uvw` offers an event-based approach, handles are small event emitters to which listeners can be attached.  
 Attaching a listener to a handle is the reccomended way to be notified about changes.  
