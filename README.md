@@ -89,7 +89,7 @@ To navigate it with your favorite browser:
 There is only one rule when using `uvw`: always initialize the handles and close them.  
 Handles keep themselves alive until one closes them. Because of that, leaks are possible if users simply forget about a handle.  
 To be honest, initialization is performed under the hood and can be even passed over, as far as resources are created using the `Loop::handle` member method.  
-Thus the rule quickly become *always close your handles*. It's simple as calling the `close` member method on them.
+Thus the rule quickly becomes *always close your handles*. It's simple as calling the `close` member method on them.
 
 The first thing to do to use `uvw` is to create a loop. In case the default one is enough, it's easy as doing this:
 
@@ -117,19 +117,19 @@ To know what are the handles that are still alive and bound to a given loop, jus
     loop.walk([](uvw::BaseHandle &){ /* application code here */ });
 
 `BaseHandle` exposes a few methods and cannot be used to know what's the original type of the handle.  
-Anyway, it can be used to close the handle that origins from it. As an example, all the handles still opened can be easily closed as it follows:
+Anyway, it can be used to close the handle that originated from it. As an example, all the pending handles can be easily closed as it follows:
 
     loop.walk([](uvw::BaseHandle &h){ h.close(); });
 
 No need to keep track of them.
 
-To know what are the available handles, please refer the API reference.
+To know what are the available handles' types, please refer the API reference.
 
 For `uvw` offers an event-based approach, handles are small event emitters to which listeners can be attached.  
 Attaching a listener to a handle is the reccomended way to be notified about changes.  
 Listeners must be callable objects of type `void(const EventType &, HandleType &)`, where:
 
-* `EventType` is the type of event for which they are designed
+* `EventType` is the type of the event for which they have been designed
 * `HandleType` is the type of the handle that has originated the event
 
 Note that, once more, there is no need to keep around references to the handles: they will pass themselves as an argument whenever an event is published.
@@ -163,7 +163,7 @@ tcp->bind<uvw::Tcp::IPv4>("127.0.0.1", 4242);
 tcp->listen();
 ```
 
-API reference is the reccomended documentation for further details about handles and their methods.
+The API reference is the reccomended documentation for further details about handles and their methods.
 
 ## Tests
 
