@@ -18,7 +18,9 @@ class Signal final: public Handle<Signal> {
         signal.publish(SignalEvent{signum});
     }
 
-    using Handle<Signal>::Handle;
+    explicit Signal(std::shared_ptr<Loop> ref)
+        : Handle{HandleType<uv_signal_t>{}, std::move(ref)}
+    { }
 
 public:
     template<typename... Args>
@@ -30,6 +32,8 @@ public:
 
     void start(int signum) { invoke(uv_signal_start, get<uv_signal_t>(), &startCallback, signum); }
     void stop() { invoke(&uv_signal_stop, get<uv_signal_t>()); }
+
+    int signal() const noexcept { return get<uv_signal_t>()->signum; }
 };
 
 

@@ -14,11 +14,13 @@ namespace uvw {
 template<typename>
 struct HandleType;
 
-template<> struct HandleType<uv_timer_t> { };
-template<> struct HandleType<uv_prepare_t> { };
+template<> struct HandleType<uv_async_t> { };
 template<> struct HandleType<uv_check_t> { };
 template<> struct HandleType<uv_idle_t> { };
+template<> struct HandleType<uv_prepare_t> { };
+template<> struct HandleType<uv_signal_t> { };
 template<> struct HandleType<uv_tcp_t> { };
+template<> struct HandleType<uv_timer_t> { };
 
 
 template<typename T>
@@ -65,12 +67,12 @@ protected:
     template<typename U>
     U* get() const noexcept { return reinterpret_cast<U*>(wrapper->get()); }
 
-    template<typename U, typename F>
-    bool initialize(F &&f) {
+    template<typename U, typename F, typename... Args>
+    bool initialize(F &&f, Args&&... args) {
         bool ret = true;
 
         if(!initialized) {
-            auto err = std::forward<F>(f)(parent(), get<U>());
+            auto err = std::forward<F>(f)(parent(), get<U>(), std::forward<Args>(args)...);
 
             if(err) {
                 this->publish(ErrorEvent{err});

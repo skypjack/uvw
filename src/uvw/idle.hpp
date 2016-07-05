@@ -18,7 +18,9 @@ class Idle final: public Handle<Idle> {
         idle.publish(IdleEvent{});
     }
 
-    using Handle<Idle>::Handle;
+    explicit Idle(std::shared_ptr<Loop> ref)
+        : Handle{HandleType<uv_idle_t>{}, std::move(ref)}
+    { }
 
 public:
     template<typename... Args>

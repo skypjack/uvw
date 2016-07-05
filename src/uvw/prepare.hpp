@@ -18,7 +18,9 @@ class Prepare final: public Handle<Prepare> {
         prepare.publish(PrepareEvent{});
     }
 
-    using Handle<Prepare>::Handle;
+    explicit Prepare(std::shared_ptr<Loop> ref)
+        : Handle{HandleType<uv_prepare_t>{}, std::move(ref)}
+    { }
 
 public:
     template<typename... Args>

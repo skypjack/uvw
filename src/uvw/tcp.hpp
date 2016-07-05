@@ -35,15 +35,11 @@ class Tcp final: public Stream<Tcp> {
 
         int err = std::forward<F>(f)(get<uv_tcp_t>(), reinterpret_cast<sockaddr *>(&ssto), &len);
 
-        if(err) {
-            publish(ErrorEvent{err});
-        } else {
+        if(!err) {
             typename Traits::Type *aptr = reinterpret_cast<typename Traits::Type *>(&ssto);
             err = Traits::NameFunc(aptr, name, len);
 
-            if(err) {
-                publish(ErrorEvent{err});
-            } else {
+            if(!err) {
                 addr = { std::string{name}, ntohs(aptr->sin_port) };
             }
         }
