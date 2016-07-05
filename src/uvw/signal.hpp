@@ -18,7 +18,9 @@ class Signal final: public Handle<Signal> {
         signal.publish(SignalEvent{signum});
     }
 
-    using Handle<Signal>::Handle;
+    explicit Signal(std::shared_ptr<Loop> ref)
+        : Handle{HandleType<uv_signal_t>{}, std::move(ref)}
+    { }
 
 public:
     template<typename... Args>

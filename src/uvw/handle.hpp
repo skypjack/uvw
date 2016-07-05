@@ -14,11 +14,12 @@ namespace uvw {
 template<typename>
 struct HandleType;
 
-template<> struct HandleType<uv_timer_t> { };
-template<> struct HandleType<uv_prepare_t> { };
 template<> struct HandleType<uv_check_t> { };
 template<> struct HandleType<uv_idle_t> { };
+template<> struct HandleType<uv_prepare_t> { };
+template<> struct HandleType<uv_signal_t> { };
 template<> struct HandleType<uv_tcp_t> { };
+template<> struct HandleType<uv_timer_t> { };
 
 
 template<typename T>

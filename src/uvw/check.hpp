@@ -18,7 +18,9 @@ class Check final: public Handle<Check> {
         check.publish(CheckEvent{});
     }
 
-    using Handle<Check>::Handle;
+    explicit Check(std::shared_ptr<Loop> ref)
+        : Handle{HandleType<uv_check_t>{}, std::move(ref)}
+    { }
 
 public:
     template<typename... Args>

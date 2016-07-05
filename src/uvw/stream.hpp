@@ -58,7 +58,9 @@ class Stream: public Handle<T> {
 protected:
     template<typename U>
     Stream(HandleType<U> rt, std::shared_ptr<Loop> ref)
-        : Handle<T>{std::move(rt), std::move(ref)}, sdown{std::make_unique<uv_shutdown_t>()}
+        : Handle<T>{std::move(rt),
+          std::move(ref)},
+          sdown{std::make_unique<uv_shutdown_t>()}
     { }
 
 public:

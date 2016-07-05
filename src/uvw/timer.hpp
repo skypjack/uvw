@@ -19,7 +19,9 @@ class Timer final: public Handle<Timer> {
         timer.publish(TimerEvent{});
     }
 
-    using Handle<Timer>::Handle;
+    explicit Timer(std::shared_ptr<Loop> ref)
+        : Handle{HandleType<uv_timer_t>{}, std::move(ref)}
+    { }
 
 public:
     using Time = std::chrono::milliseconds;
