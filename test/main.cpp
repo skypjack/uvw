@@ -31,10 +31,10 @@ void listen(uvw::Loop &loop) {
         srv.accept(*client);
 
         uvw::Addr local = srv.address<uvw::Tcp::IPv4>();
-        std::cout << "local: " << local.first << " " << local.second << std::endl;
+        std::cout << "local: " << local.ip << " " << local.port << std::endl;
 
         uvw::Addr remote = client->remote<uvw::Tcp::IPv4>();
-        std::cout << "remote: " << remote.first << " " << remote.second << std::endl;
+        std::cout << "remote: " << remote.ip << " " << remote.port << std::endl;
 
         client->on<uvw::DataEvent>([](const uvw::DataEvent &event, uvw::Tcp &) {
             std::cout.write(event.data(), event.length()) << std::endl;

@@ -31,7 +31,7 @@ class Tcp final: public Stream<Tcp> {
         sockaddr_storage ssto;
         int len = sizeof(ssto);
         char name[sizeof(ssto)];
-        Addr addr{ "", 0 };
+        std::pair<std::string, unsigned int> addr{ "", 0 };
 
         int err = std::forward<F>(f)(get<uv_tcp_t>(), reinterpret_cast<sockaddr *>(&ssto), &len);
 
@@ -44,7 +44,11 @@ class Tcp final: public Stream<Tcp> {
             }
         }
 
-        return addr;
+        /**
+         * See Boost/Mutant idiom:
+         *     https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Boost_mutant
+         */
+        return reinterpret_cast<Addr&>(addr);
     }
 
 public:
@@ -78,7 +82,7 @@ public:
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
     void bind(Addr addr, bool ipv6only = false) noexcept {
-        bind<I>(addr.first, addr.second, ipv6only);
+        bind<I>(addr.ip, addr.port, ipv6only);
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
@@ -100,7 +104,7 @@ public:
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
     void connect(Addr addr) noexcept {
-        connect<I>(addr.first, addr.second);
+        connect<I>(addr.ip, addr.port);
     }
 
     void accept(Tcp &tcp) noexcept {
