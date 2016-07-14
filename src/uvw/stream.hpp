@@ -45,6 +45,7 @@ class Stream: public Handle<T> {
     }
 
     static void shutdownCallback(uv_shutdown_t *req, int status) {
+        // TODO migrate to Request (see request.hpp for further details)
         T &ref = *(static_cast<T*>(req->handle->data));
         if(status) { ref.publish(ErrorEvent{status}); }
         else { ref.publish(ShutdownEvent{}); }
@@ -60,6 +61,7 @@ protected:
     template<typename U>
     Stream(ResourceType<U> rt, std::shared_ptr<Loop> ref)
         : Handle<T>{std::move(rt), std::move(ref)},
+          // TODO migrate to Request (see request.hpp for further details)
           sdown{std::make_unique<uv_shutdown_t>()}
     { }
 
@@ -126,6 +128,7 @@ public:
     }
 
 private:
+    // TODO migrate to Request (see request.hpp for further details)
     std::unique_ptr<uv_shutdown_t> sdown;
 };
 
