@@ -67,7 +67,12 @@ private:
 };
 
 
-using Addr = std::pair<std::string, unsigned int>;
+/**
+ * See Boost/Mutant idiom:
+ *     https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Boost_mutant
+ */
+struct Addr { std::string ip; unsigned int port; };
+struct WinSize { int width; int height; };
 
 
 }

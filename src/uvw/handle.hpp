@@ -21,6 +21,7 @@ template<> struct HandleType<uv_prepare_t> { };
 template<> struct HandleType<uv_signal_t> { };
 template<> struct HandleType<uv_tcp_t> { };
 template<> struct HandleType<uv_timer_t> { };
+template<> struct HandleType<uv_tty_t> { };
 
 
 template<typename T>
@@ -87,9 +88,10 @@ protected:
     }
 
     template<typename F, typename... Args>
-    void invoke(F &&f, Args&&... args) {
+    auto invoke(F &&f, Args&&... args) {
         auto err = std::forward<F>(f)(std::forward<Args>(args)...);
         if(err) { Emitter<T>::publish(ErrorEvent{err}); }
+        return err;
     }
 
 public:
