@@ -7,6 +7,7 @@
 #include "uvw/loop.hpp"
 #include "uvw/prepare.hpp"
 #include "uvw/request.hpp"
+#include "uvw/self.hpp"
 #include "uvw/signal.hpp"
 #include "uvw/stream.hpp"
 #include "uvw/tcp.hpp"

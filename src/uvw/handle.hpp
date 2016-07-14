@@ -5,6 +5,7 @@
 #include <memory>
 #include <uv.h>
 #include "emitter.hpp"
+#include "self.hpp"
 #include "loop.hpp"
 
 
@@ -25,11 +26,7 @@ template<> struct HandleType<uv_tty_t> { };
 
 
 template<typename T>
-class Handle
-        : public BaseHandle,
-          public Emitter<T>,
-          public std::enable_shared_from_this<T>
-{
+class Handle: public BaseHandle, public Emitter<T>, public Self<T> {
     struct BaseWrapper {
         virtual ~BaseWrapper() = default;
         virtual void * get() const noexcept = 0;
@@ -45,20 +42,18 @@ class Handle
 
     static void closeCallback(uv_handle_t *handle) {
         Handle<T> &ref = *(static_cast<T*>(handle->data));
-        ref.initialized = false;
         ref.publish(CloseEvent{});
-        ref.leak.reset();
+        ref.reset();
     }
 
 protected:
     template<typename U>
     explicit Handle(HandleType<U>, std::shared_ptr<Loop> ref)
-        : Emitter<T>{},
-          std::enable_shared_from_this<T>{},
+        : BaseHandle{},
+          Emitter<T>{},
+          Self<T>{},
           wrapper{std::make_unique<Wrapper<U>>()},
-          pLoop{std::move(ref)},
-          leak{nullptr},
-          initialized{false}
+          pLoop{std::move(ref)}
     {
         this->template get<uv_handle_t>()->data = static_cast<T*>(this);
     }
@@ -70,21 +65,17 @@ protected:
 
     template<typename U, typename F, typename... Args>
     bool initialize(F &&f, Args&&... args) {
-        bool ret = true;
-
-        if(!initialized) {
+        if(!this->self()) {
             auto err = std::forward<F>(f)(parent(), get<U>(), std::forward<Args>(args)...);
 
             if(err) {
                 this->publish(ErrorEvent{err});
-                ret = false;
             } else {
-                leak = this->shared_from_this();
-                initialized = true;
+                this->leak();
             }
         }
 
-        return ret;
+        return this->self();
     }
 
     template<typename F, typename... Args>
@@ -117,8 +108,6 @@ public:
 private:
     std::unique_ptr<BaseWrapper> wrapper;
     std::shared_ptr<Loop> pLoop;
-    std::shared_ptr<void> leak;
-    bool initialized;
 };
 
 
