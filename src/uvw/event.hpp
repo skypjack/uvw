@@ -30,6 +30,7 @@ struct Event: BaseEvent {
 };
 
 
+struct AfterWorkEvent: Event<AfterWorkEvent> { };
 struct AsyncEvent: Event<AsyncEvent> { };
 struct CheckEvent: Event<CheckEvent> { };
 struct CloseEvent: Event<CloseEvent> { };
@@ -82,6 +83,7 @@ private:
 
 struct TimerEvent: Event<TimerEvent> { };
 struct UninitializedEvent: Event<UninitializedEvent> { };
+struct WorkEvent: Event<WorkEvent> { };
 struct WriteEvent: Event<WriteEvent> { };
 
 

@@ -23,6 +23,7 @@ template<> struct ResourceType<uv_signal_t> { };
 template<> struct ResourceType<uv_tcp_t> { };
 template<> struct ResourceType<uv_timer_t> { };
 template<> struct ResourceType<uv_tty_t> { };
+template<> struct ResourceType<uv_work_t> { };
 
 
 template<typename T>
