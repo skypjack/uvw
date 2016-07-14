@@ -1,28 +1,28 @@
 #pragma once
 
 
+#include <utility>
+#include <memory>
 #include <uv.h>
+#include "resource.hpp"
 
 
 namespace uvw {
 
 
-template<uv_req_type>
-struct RequestType;
-
-template<> struct RequestType<UV_CONNECT> { };
-template<> struct RequestType<UV_WRITE> { };
-template<> struct RequestType<UV_SHUTDOWN> { };
-template<> struct RequestType<UV_UDP_SEND> { };
-template<> struct RequestType<UV_FS> { };
-template<> struct RequestType<UV_WORK> { };
-template<> struct RequestType<UV_GETADDRINFO> { };
-template<> struct RequestType<UV_GETNAMEINFO> { };
-
-
 template<typename T>
-struct Request: T {
-    // TODO room for a pointer to a memory pool and a better memory management
+class Request: public Resource<T> {
+protected:
+    using Resource<T>::Resource;
+
+public:
+    void cancel() noexcept {
+        invoke(&uv_cancel, this->template get<uv_req_t>());
+    }
+
+    std::size_t size() const noexcept {
+        return uv_req_size(this->template get<uv_req_t>()->type);
+    }
 };
 
 

@@ -26,7 +26,7 @@ public:
 
 class Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop> {
     template<typename>
-    friend class Handle;
+    friend class Resource;
 
     using Deleter = std::function<void(uv_loop_t *)>;
 
@@ -76,10 +76,17 @@ public:
     }
 
     template<typename R, typename... Args>
-    std::shared_ptr<R> handle(Args&&... args) {
+    std::enable_if_t<std::is_base_of<BaseHandle, R>::value, std::shared_ptr<R>>
+    resource(Args&&... args) {
         auto ptr = R::create(shared_from_this(), std::forward<Args>(args)...);
         ptr = ptr->init() ? ptr : nullptr;
         return ptr;
+    }
+
+    template<typename R, typename... Args>
+    std::enable_if_t<not std::is_base_of<BaseHandle, R>::value, std::shared_ptr<R>>
+    resource(Args&&... args) {
+        return R::create(shared_from_this(), std::forward<Args>(args)...);
     }
 
     void close() noexcept {

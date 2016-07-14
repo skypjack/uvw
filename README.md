@@ -3,8 +3,8 @@
 **Please, note that `uvw` is still a work in progress**.
 
 `uvw` is a header-only, event based, tiny and easy to use C++ wrapper for *libuv*.  
-The basic idea is to hide completely the *C-ish* interace of *libuv* behind a graceful C++ API. Currently, no `uv_*_t` data structure is actually exposed by the library.  
-Note that `uvw` stays true to the API of *libuv* and it doesn't add anything to its interface. For the same reason, users of the library must follow the same rules who are used to follow with *libuv*.  
+The basic idea is to hide completely the *C-ish* interface of *libuv* behind a graceful C++ API. Currently, no `uv_*_t` data structure is actually exposed by the library.  
+Note that `uvw` stays true to the API of *libuv* and it doesn't add anything to its interface. For the same reasons, users of the library must follow the same rules who are used to follow with *libuv*.  
 As an example, a *handle* should be initialized before any other operation and closed once it is no longer in use.
 
 ## Code Example
@@ -14,10 +14,10 @@ As an example, a *handle* should be initialized before any other operation and c
 #include <memory>
 
 void listen(uvw::Loop &loop) {
-    std::shared_ptr<uvw::Tcp> tcp = loop.handle<uvw::Tcp>();
+    std::shared_ptr<uvw::Tcp> tcp = loop.resource<uvw::Tcp>();
 
     tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &event, uvw::Tcp &srv) mutable {
-        std::shared_ptr<uvw::Tcp> client = srv.loop().handle<uvw::Tcp>();
+        std::shared_ptr<uvw::Tcp> client = srv.loop().resource<uvw::Tcp>();
 
         client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::Tcp &) mutable { ptr->close(); });
         client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::Tcp &client) { client.close(); });
@@ -31,7 +31,7 @@ void listen(uvw::Loop &loop) {
 }
 
 void conn(uvw::Loop &loop) {
-    auto tcp = loop.handle<uvw::Tcp>();
+    auto tcp = loop.resource<uvw::Tcp>();
 
     tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::Tcp &) { /* handle errors */ });
 
@@ -90,7 +90,7 @@ To navigate it with your favorite browser:
 
 There is only one rule when using `uvw`: always initialize the handles and close them.  
 Handles keep themselves alive until one closes them. Because of that, leaks are possible if users simply forget about a handle.  
-To be honest, initialization is performed under the hood and can be even passed over, as far as resources are created using the `Loop::handle` member method.  
+To be honest, initialization is performed under the hood and can be even passed over, as far as resources are created using the `Loop::resource` member method.  
 Thus the rule quickly becomes *always close your handles*. It's simple as calling the `close` member method on them.
 
 The first thing to do to use `uvw` is to create a loop. In case the default one is enough, it's easy as doing this:
@@ -102,9 +102,9 @@ Loops can be run using the `run`, `runOnce` and `runWait` member methods. Please
 
 In order to create a handle and to bind it to the given loop, just do the following:
 
-    auto tcp = loop.handle<uvw::Tcp>();
+    auto tcp = loop.resource<uvw::Tcp>();
 
-A tcp handle will be created and initialized, thus a shared pointer to that handle will be returned.  
+A tcp handle will be created and initialized, thus a shared pointer to the handle will be returned.  
 Users should check if pointers have been correctly initialized: in case of errors, they won't be.  
 Another way to create a handle is:
 
@@ -113,7 +113,7 @@ Another way to create a handle is:
 
 Pretty annoying indeed. Using a loop is the recommended approach.
 
-Once a handle has been created, it will keep itself alive until one invoke the `close` member method on it.  
+Once a handle has been created, it will keep itself alive until one invokes the `close` member method on it.  
 To know what are the handles that are still alive and bound to a given loop, just do the following:
 
     loop.walk([](uvw::BaseHandle &){ /* application code here */ });
@@ -151,12 +151,12 @@ The code below shows how to create a simple tcp server using `uvw`:
 
 ```
 auto loop = uvw::Loop::getDefault();
-auto tcp = loop.handle<uvw::Tcp>();
+auto tcp = loop.resource<uvw::Tcp>();
 
 tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::Tcp &srv) { /* something went wrong */ });
 
 tcp->on<uvw::ListenEvent>([](const uvw::ListenEvent &event, uvw::Tcp &srv) mutable {
-    std::shared_ptr<uvw::Tcp> client = srv.loop().handle<uvw::Tcp>();
+    std::shared_ptr<uvw::Tcp> client = srv.loop().resource<uvw::Tcp>();
     client->once<uvw::EndEvent>([](const uvw::EndEvent &, uvw::Tcp &client) { client.close(); });
     client->on<uvw::DataEvent>([](const uvw::DataEvent &, uvw::Tcp &) { /* data received */ });
     srv.accept(*client);

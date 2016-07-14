@@ -16,13 +16,15 @@ namespace uvw {
 
 class Tcp final: public Stream<Tcp> {
     static void connectCallback(uv_connect_t *req, int status) {
+        // TODO migrate to Request (see request.hpp for further details)
         Tcp &tcp = *(static_cast<Tcp*>(req->handle->data));
         if(status) { tcp.publish(ErrorEvent{status}); }
         else { tcp.publish(ConnectEvent{}); }
     }
 
     explicit Tcp(std::shared_ptr<Loop> ref)
-        : Stream{HandleType<uv_tcp_t>{}, std::move(ref)},
+        // TODO migrate to Request (see request.hpp for further details)
+        : Stream{ResourceType<uv_tcp_t>{}, std::move(ref)},
           conn{std::make_unique<uv_connect_t>()}
     { }
 
@@ -112,6 +114,7 @@ public:
     }
 
 private:
+    // TODO migrate to Request (see request.hpp for further details)
     std::unique_ptr<uv_connect_t> conn;
 };
 

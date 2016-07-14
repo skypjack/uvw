@@ -31,7 +31,7 @@ class TTY final: public Stream<TTY> {
     explicit TTY(std::shared_ptr<Loop> ref,
                  details::FileDescriptor<FD>,
                  bool readable)
-        : Stream{HandleType<uv_tty_t>{}, std::move(ref)},
+        : Stream{ResourceType<uv_tty_t>{}, std::move(ref)},
           fd{FD},
           rw{readable ? 1 : 0}
     { }

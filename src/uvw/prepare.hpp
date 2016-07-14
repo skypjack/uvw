@@ -19,7 +19,7 @@ class Prepare final: public Handle<Prepare> {
     }
 
     explicit Prepare(std::shared_ptr<Loop> ref)
-        : Handle{HandleType<uv_prepare_t>{}, std::move(ref)}
+        : Handle{ResourceType<uv_prepare_t>{}, std::move(ref)}
     { }
 
 public:

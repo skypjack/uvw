@@ -37,6 +37,7 @@ class Stream: public Handle<T> {
     }
 
     static void writeCallback(uv_write_t *req, int status) {
+        // TODO migrate to Request (see request.hpp for further details)
         T &ref = *(static_cast<T*>(req->handle->data));
         if(status) { ref.publish(ErrorEvent{status}); }
         else { ref.publish(WriteEvent{}); }
@@ -44,6 +45,7 @@ class Stream: public Handle<T> {
     }
 
     static void shutdownCallback(uv_shutdown_t *req, int status) {
+        // TODO migrate to Request (see request.hpp for further details)
         T &ref = *(static_cast<T*>(req->handle->data));
         if(status) { ref.publish(ErrorEvent{status}); }
         else { ref.publish(ShutdownEvent{}); }
@@ -57,9 +59,9 @@ class Stream: public Handle<T> {
 
 protected:
     template<typename U>
-    Stream(HandleType<U> rt, std::shared_ptr<Loop> ref)
-        : Handle<T>{std::move(rt),
-          std::move(ref)},
+    Stream(ResourceType<U> rt, std::shared_ptr<Loop> ref)
+        : Handle<T>{std::move(rt), std::move(ref)},
+          // TODO migrate to Request (see request.hpp for further details)
           sdown{std::make_unique<uv_shutdown_t>()}
     { }
 
@@ -86,6 +88,7 @@ public:
 
     void write(char *data, ssize_t length) {
         uv_buf_t bufs[] = { uv_buf_init(data, length) };
+        // TODO migrate to Request (see request.hpp for further details)
         uv_write_t *req = new uv_write_t;
 
         auto err = uv_write(req, this->template get<uv_stream_t>(), bufs, 1, &Stream<T>::writeCallback);
@@ -125,6 +128,7 @@ public:
     }
 
 private:
+    // TODO migrate to Request (see request.hpp for further details)
     std::unique_ptr<uv_shutdown_t> sdown;
 };
 
