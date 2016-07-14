@@ -9,6 +9,7 @@
 #include "event.hpp"
 #include "handle.hpp"
 #include "util.hpp"
+#include "shutdown.hpp"
 
 
 namespace uvw {
@@ -44,13 +45,6 @@ class Stream: public Handle<T> {
         delete req;
     }
 
-    static void shutdownCallback(uv_shutdown_t *req, int status) {
-        // TODO migrate to Request (see request.hpp for further details)
-        T &ref = *(static_cast<T*>(req->handle->data));
-        if(status) { ref.publish(ErrorEvent{status}); }
-        else { ref.publish(ShutdownEvent{}); }
-    }
-
     static void listenCallback(uv_stream_t *handle, int status) {
         T &ref = *(static_cast<T*>(handle->data));
         if(status) ref.publish(ErrorEvent{status});
@@ -60,14 +54,16 @@ class Stream: public Handle<T> {
 protected:
     template<typename U>
     Stream(ResourceType<U> rt, std::shared_ptr<Loop> ref)
-        : Handle<T>{std::move(rt), std::move(ref)},
-          // TODO migrate to Request (see request.hpp for further details)
-          sdown{std::make_unique<uv_shutdown_t>()}
+        : Handle<T>{std::move(rt), std::move(ref)}
     { }
 
 public:
     void shutdown() noexcept {
-        this->invoke(&uv_shutdown, sdown.get(), this->template get<uv_stream_t>(), &shutdownCallback);
+        auto listener = [this](const auto &event, Shutdown &) { publish(event); };
+        auto shutdown = this->loop()->template resource<Shutdown>();
+        shutdown->template once<ErrorEvent>(listener);
+        shutdown->template once<ShutdownEvent>(listener);
+        shutdown->shutdown(*this);
     }
 
     void listen(int backlog) noexcept {
@@ -126,10 +122,6 @@ public:
     bool writable() const noexcept {
         return (uv_is_writable(this->template get<uv_stream_t>()) == 1);
     }
-
-private:
-    // TODO migrate to Request (see request.hpp for further details)
-    std::unique_ptr<uv_shutdown_t> sdown;
 };
 
 
