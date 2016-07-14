@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <cstddef>
 #include <utility>
 #include <memory>
 #include <uv.h>
@@ -50,6 +51,12 @@ public:
         return !(uv_is_closing(this->template get<uv_handle_t>()) == 0);
     }
 
+    void close() noexcept override {
+        if(!closing()) {
+            uv_close(this->template get<uv_handle_t>(), &Handle<T>::closeCallback);
+        }
+    }
+
     void reference() noexcept override {
         uv_ref(this->template get<uv_handle_t>());
     }
@@ -62,10 +69,8 @@ public:
         return !(uv_has_ref(this->template get<uv_handle_t>()) == 0);
     }
 
-    void close() noexcept override {
-        if(!closing()) {
-            uv_close(this->template get<uv_handle_t>(), &Handle<T>::closeCallback);
-        }
+    std::size_t size() const noexcept {
+        return uv_handle_size(this->template get<uv_handle_t>()->type);
     }
 };
 
