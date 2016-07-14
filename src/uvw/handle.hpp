@@ -42,8 +42,9 @@ class Handle: public BaseHandle, public Emitter<T>, public Self<T> {
 
     static void closeCallback(uv_handle_t *handle) {
         Handle<T> &ref = *(static_cast<T*>(handle->data));
+        auto ptr = ref.shared_from_this();
+        ptr->reset();
         ref.publish(CloseEvent{});
-        ref.reset();
     }
 
 protected:
