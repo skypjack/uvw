@@ -26,7 +26,7 @@ public:
 
 class Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop> {
     template<typename>
-    friend class Handle;
+    friend class Resource;
 
     using Deleter = std::function<void(uv_loop_t *)>;
 

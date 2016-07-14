@@ -22,7 +22,7 @@ class Tcp final: public Stream<Tcp> {
     }
 
     explicit Tcp(std::shared_ptr<Loop> ref)
-        : Stream{HandleType<uv_tcp_t>{}, std::move(ref)},
+        : Stream{ResourceType<uv_tcp_t>{}, std::move(ref)},
           conn{std::make_unique<uv_connect_t>()}
     { }
 
