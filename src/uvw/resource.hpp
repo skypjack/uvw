@@ -19,6 +19,7 @@ template<> struct ResourceType<uv_async_t> { };
 template<> struct ResourceType<uv_check_t> { };
 template<> struct ResourceType<uv_idle_t> { };
 template<> struct ResourceType<uv_prepare_t> { };
+template<> struct ResourceType<uv_shutdown_t> { };
 template<> struct ResourceType<uv_signal_t> { };
 template<> struct ResourceType<uv_tcp_t> { };
 template<> struct ResourceType<uv_timer_t> { };
@@ -28,6 +29,9 @@ template<> struct ResourceType<uv_work_t> { };
 
 template<typename T>
 class Resource: public Emitter<T>, public Self<T> {
+    template<typename U>
+    friend class Resource;
+
     struct BaseWrapper {
         virtual ~BaseWrapper() = default;
         virtual void * get() const noexcept = 0;
