@@ -13,10 +13,7 @@ namespace uvw {
 template<typename T>
 class Request: public Resource<T> {
 protected:
-    template<typename U>
-    explicit Request(ResourceType<U> rt, std::shared_ptr<Loop> ref)
-        : Resource<T>{std::move(rt), std::move(ref)}
-    { }
+    using Resource<T>::Resource;
 
 public:
     void cancel() noexcept {

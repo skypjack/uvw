@@ -21,11 +21,7 @@ class Handle: public BaseHandle, public Resource<T> {
     }
 
 protected:
-    template<typename U>
-    explicit Handle(ResourceType<U> rt, std::shared_ptr<Loop> ref)
-        : BaseHandle{},
-          Resource<T>{std::move(rt), std::move(ref)}
-    { }
+    using Resource<T>::Resource;
 
     template<typename U, typename F, typename... Args>
     bool initialize(F &&f, Args&&... args) {
