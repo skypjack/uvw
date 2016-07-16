@@ -19,7 +19,7 @@ class Signal final: public Handle<Signal> {
     }
 
     explicit Signal(std::shared_ptr<Loop> ref)
-        : Handle{ResourceType<uv_signal_t>{}, std::move(ref)}
+        : Handle{HandleType<uv_signal_t>{}, std::move(ref)}
     { }
 
 public:

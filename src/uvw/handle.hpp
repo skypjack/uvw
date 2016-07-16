@@ -11,12 +11,27 @@
 namespace uvw {
 
 
+template<typename>
+struct HandleType;
+
+template<> struct HandleType<uv_async_t> { };
+template<> struct HandleType<uv_check_t> { };
+template<> struct HandleType<uv_idle_t> { };
+template<> struct HandleType<uv_prepare_t> { };
+template<> struct HandleType<uv_signal_t> { };
+template<> struct HandleType<uv_tcp_t> { };
+template<> struct HandleType<uv_timer_t> { };
+template<> struct HandleType<uv_tty_t> { };
+
+
 template<typename T>
-class Handle: public BaseHandle, public Resource<T> {
+class Handle: public BaseHandle, public Resource<T>
+{
     static void closeCallback(uv_handle_t *handle) {
         Handle<T> &ref = *(static_cast<T*>(handle->data));
         auto ptr = ref.shared_from_this();
-        ptr->reset();
+        (void)ptr;
+        ref.reset();
         ref.publish(CloseEvent{});
     }
 

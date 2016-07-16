@@ -7,6 +7,7 @@
 #include <chrono>
 #include <uv.h>
 #include "event.hpp"
+#include "request.hpp"
 #include "stream.hpp"
 #include "util.hpp"
 
@@ -14,18 +15,47 @@
 namespace uvw {
 
 
-class Tcp final: public Stream<Tcp> {
+namespace details {
+
+
+class Connect final: public Request<Connect> {
     static void connectCallback(uv_connect_t *req, int status) {
-        // TODO migrate to Request (see request.hpp for further details)
-        Tcp &tcp = *(static_cast<Tcp*>(req->handle->data));
-        if(status) { tcp.publish(ErrorEvent{status}); }
-        else { tcp.publish(ConnectEvent{}); }
+        Connect &connect = *(static_cast<Connect*>(req->data));
+
+        auto ptr = connect.shared_from_this();
+        (void)ptr;
+
+        connect.reset();
+
+        if(status) {
+            connect.publish(ErrorEvent{status});
+        } else {
+            connect.publish(ConnectEvent{});
+        }
     }
 
+    explicit Connect(std::shared_ptr<Loop> ref)
+        : Request{RequestType<uv_connect_t>{}, std::move(ref)}
+    { }
+
+public:
+    template<typename... Args>
+    static std::shared_ptr<Connect> create(Args&&... args) {
+        return std::shared_ptr<Connect>{new Connect{std::forward<Args>(args)...}};
+    }
+
+    void connect(uv_tcp_t *tcp, const sockaddr *addr) noexcept {
+        exec<uv_connect_t, ConnectEvent>(&uv_tcp_connect, get<uv_connect_t>(), tcp, addr);
+    }
+};
+
+
+}
+
+
+class Tcp final: public Stream<Tcp> {
     explicit Tcp(std::shared_ptr<Loop> ref)
-        // TODO migrate to Request (see request.hpp for further details)
-        : Stream{ResourceType<uv_tcp_t>{}, std::move(ref)},
-          conn{std::make_unique<uv_connect_t>()}
+        : Stream{HandleType<uv_tcp_t>{}, std::move(ref)}
     { }
 
     template<typename I, typename F, typename..., typename Traits = details::IpTraits<I>>
@@ -101,7 +131,18 @@ public:
     void connect(std::string ip, unsigned int port) noexcept {
         typename Traits::Type addr;
         Traits::AddrFunc(ip.c_str(), port, &addr);
-        invoke(&uv_tcp_connect, conn.get(), get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), &connectCallback);
+
+        std::weak_ptr<Tcp> weak = this->shared_from_this();
+
+        auto listener = [weak](const auto &event, details::Connect &) {
+            auto ptr = weak.lock();
+            if(ptr) { ptr->publish(event); }
+        };
+
+        auto connect = loop().resource<details::Connect>();
+        connect->once<ErrorEvent>(listener);
+        connect->once<ConnectEvent>(listener);
+        connect->connect(get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr));
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
@@ -112,10 +153,6 @@ public:
     void accept(Tcp &tcp) noexcept {
         invoke(&uv_accept, get<uv_stream_t>(), tcp.get<uv_stream_t>());
     }
-
-private:
-    // TODO migrate to Request (see request.hpp for further details)
-    std::unique_ptr<uv_connect_t> conn;
 };
 
 

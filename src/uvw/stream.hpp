@@ -7,12 +7,36 @@
 #include <memory>
 #include <uv.h>
 #include "event.hpp"
+#include "request.hpp"
 #include "handle.hpp"
 #include "util.hpp"
-#include "shutdown.hpp"
 
 
 namespace uvw {
+
+
+namespace details {
+
+
+class Shutdown final: public Request<Shutdown> {
+    explicit Shutdown(std::shared_ptr<Loop> ref)
+        : Request{RequestType<uv_shutdown_t>{}, std::move(ref)}
+    { }
+
+public:
+    template<typename... Args>
+    static std::shared_ptr<Shutdown> create(Args&&... args) {
+        return std::shared_ptr<Shutdown>{new Shutdown{std::forward<Args>(args)...}};
+    }
+
+    template<typename T>
+    void shutdown(uv_stream_t *stream) noexcept {
+        exec<uv_shutdown_t, ShutdownEvent>(&uv_shutdown, get<uv_shutdown_t>(), stream);
+    }
+};
+
+
+}
 
 
 template<typename T>
@@ -53,17 +77,23 @@ class Stream: public Handle<T> {
 
 protected:
     template<typename U>
-    Stream(ResourceType<U> rt, std::shared_ptr<Loop> ref)
+    Stream(HandleType<U> rt, std::shared_ptr<Loop> ref)
         : Handle<T>{std::move(rt), std::move(ref)}
     { }
 
 public:
     void shutdown() noexcept {
-        auto listener = [this](const auto &event, Shutdown &) { publish(event); };
-        auto shutdown = this->loop()->template resource<Shutdown>();
+        std::weak_ptr<T> weak = this->shared_from_this();
+
+        auto listener = [weak](const auto &event, details::Shutdown &) {
+            auto ptr = weak.lock();
+            if(ptr) { ptr->publish(event); }
+        };
+
+        auto shutdown = this->loop().template resource<details::Shutdown>();
         shutdown->template once<ErrorEvent>(listener);
         shutdown->template once<ShutdownEvent>(listener);
-        shutdown->shutdown(*this);
+        shutdown->shutdown(this->template get<uv_stream_t>());
     }
 
     void listen(int backlog) noexcept {

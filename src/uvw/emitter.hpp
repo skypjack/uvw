@@ -19,6 +19,7 @@ template<typename T>
 class Emitter {
     struct BaseHandler {
         virtual ~BaseHandler() = default;
+        virtual bool empty() const noexcept = 0;
     };
 
     template<typename E>
@@ -27,6 +28,10 @@ class Emitter {
         using ListenerList = std::list<Listener>;
         using ListenerIt = typename ListenerList::const_iterator;
         using Connection = std::pair<ListenerList &, ListenerIt>;
+
+        bool empty() const noexcept override {
+            return onceL.empty() && onL.empty();
+        }
 
         Connection once(Listener f) noexcept {
             auto conn = onceL.insert(onceL.cbegin(), std::move(f));
@@ -48,8 +53,8 @@ class Emitter {
         }
 
         void publish(const E &event, T &ref) noexcept {
-            for(auto &&listener: onceL) listener(event, ref);
-            for(auto &&listener: onL) listener(event, ref);
+            for(auto &&listener: onceL) { listener(event, ref); }
+            for(auto &&listener: onL) { listener(event, ref); }
             onceL.clear();
         }
 
@@ -115,6 +120,17 @@ public:
     template<typename E>
     void clear() noexcept {
         handler<E>().clear();
+    }
+
+    bool empty() const noexcept {
+        bool empty = true;
+
+        for(auto &&h: handlers) {
+            empty = !h || h->empty();
+            if(!empty) { break; }
+        }
+
+        return empty;
     }
 
 private:

@@ -86,65 +86,82 @@ To navigate it with your favorite browser:
 
 ### Crash Course
 
-##### The Loop and the Handle
+##### Vademecum
 
-There is only one rule when using `uvw`: always initialize the handles and close them.  
-Handles keep themselves alive until one closes them. Because of that, leaks are possible if users simply forget about a handle.  
-To be honest, initialization is performed under the hood and can be even passed over, as far as resources are created using the `Loop::resource` member method.  
+There is only one rule when using `uvw`: always initialize the resources and terminate them.
+
+Resources belong to two main families: _handles_ and _requests_.  
+Handles represent long-lived objects capable of performing certain operations while active.  
+Requests represent (typically) short-lived operations performed either over a handle or standalone.
+
+The following sections will explain in short what it means to initialize and terminate these kinds of resources.
+
+###### Handles
+
+Initialization is usually performed under the hood and can be even passed over, as far as handles are created using the `Loop::resource` member method.  
+On the other side, handles keep themselves alive until one explicitly closes them. Because of that, leaks are possible if users simply forget about a handle.  
 Thus the rule quickly becomes *always close your handles*. It's simple as calling the `close` member method on them.
+
+###### Requests
+
+Usually initialization is not required for requests objects. Anyway, the recommended way to create a request is still the `Loop::resource` member method.  
+Requests will keep themselves alive as long as they are bound to unfinished underlying activities. This means that users have not to discard explicitly a request.  
+Thus the rule quickly becomes *feel free to make a request and forget about it*. It's simple as calling a member method on them.
+
+##### The Loop and the Resource
 
 The first thing to do to use `uvw` is to create a loop. In case the default one is enough, it's easy as doing this:
 
     auto loop = uvw::Loop::getDefault();
 
-Note that loop objects don't require to be explicitly closed, even if they offer the `close` member method if you want to do that.  
+Note that loop objects don't require to be closed explicitly, even if they offer the `close` member method in case an user wants to do that.  
 Loops can be run using the `run`, `runOnce` and `runWait` member methods. Please refer to the documentation of *libuv* for further details.
 
-In order to create a handle and to bind it to the given loop, just do the following:
+In order to create a resource and to bind it to the given loop, just do the following:
 
     auto tcp = loop.resource<uvw::Tcp>();
 
-A tcp handle will be created and initialized, thus a shared pointer to the handle will be returned.  
+The line above will create and initialize a tcp handle, thus a shared pointer to that resource will be returned.  
 Users should check if pointers have been correctly initialized: in case of errors, they won't be.  
-Another way to create a handle is:
+Another way to create a resource is:
 
     auto tcp = Tcp::create(loop);
     tcp->init();
 
 Pretty annoying indeed. Using a loop is the recommended approach.
 
-Once a handle has been created, it will keep itself alive until one invokes the `close` member method on it.  
+Remember from the previous section that a handle will keep itself alive until one invokes the `close` member method on it.  
 To know what are the handles that are still alive and bound to a given loop, just do the following:
 
     loop.walk([](uvw::BaseHandle &){ /* application code here */ });
 
-`BaseHandle` exposes a few methods and cannot be used to know what's the original type of the handle.  
-Anyway, it can be used to close the handle that originated from it. As an example, all the pending handles can be easily closed as it follows:
+`BaseHandle` exposes a few methods and cannot be used to know the original type of the handle.  
+Anyway, it can be used to close the handle that originated from it. As an example, all the pending handles can be closed easily as it follows:
 
     loop.walk([](uvw::BaseHandle &h){ h.close(); });
 
 No need to keep track of them.
 
-To know what are the available handles' types, please refer the API reference.
+To know what are the available resources' types, please refer the API reference.
 
 ##### The event-based approach
 
-For `uvw` offers an event-based approach, handles are small event emitters to which listeners can be attached.  
-Attaching a listener to a handle is the reccomended way to be notified about changes.  
-Listeners must be callable objects of type `void(const EventType &, HandleType &)`, where:
+For `uvw` offers an event-based approach, resources are small event emitters to which listeners can be attached.  
+Attaching a listener to a resource is the reccomended way to be notified about changes.  
+Listeners must be callable objects of type `void(const EventType &, ResourceType &)`, where:
 
 * `EventType` is the type of the event for which they have been designed
-* `HandleType` is the type of the handle that has originated the event
+* `ResourceType` is the type of the resource that has originated the event
 
-Note that, once more, there is no need to keep around references to the handles: they will pass themselves as an argument whenever an event is published.
+Once more, please note that there is no need to keep around references to the resources: they will pass themselves as an argument whenever an event is published.
 
-There exist two methods to attach an event to a handle:
+There exist two methods to attach an event to a resource:
 
-* `handle.once<EventType>(listener)`: the listener will be automatically removed after the first event of the given type
-* `handle.on<EventType>(listener)`: to be used for long-running listeners
+* `resource.once<EventType>(listener)`: the listener will be automatically removed after the first event of the given type
+* `resource.on<EventType>(listener)`: to be used for long-running listeners
 
-Both of them return an object of type `HandleType::Connection` (as an example, `Tcp::Connection`).  
-A connection object can be used later as an argument to the `erase` member method of the handle to remove the listener.  
+Both of them return an object of type `ResourceType::Connection` (as an example, `Tcp::Connection`).  
+A connection object can be used later as an argument to the `erase` member method of the resource to remove the listener.  
 There exists also the `clear` member method to drop all the listeners at once.
 
 The code below shows how to create a simple tcp server using `uvw`:
@@ -167,7 +184,7 @@ tcp->bind<uvw::Tcp::IPv4>("127.0.0.1", 4242);
 tcp->listen();
 ```
 
-The API reference is the reccomended documentation for further details about handles and their methods.
+The API reference is the reccomended documentation for further details about resources and their methods.
 
 ## Tests
 
@@ -191,3 +208,7 @@ See [CONTRIBUTING.md](https://github.com/skypjack/uvw/blob/master/CONTRIBUTING.m
 Code and documentation Copyright (c) 2016 Michele Caini.  
 Code released under [the MIT license](https://github.com/skypjack/uvw/blob/master/LICENSE).
 Docs released under [Creative Commons](https://github.com/skypjack/uvw/blob/master/docs/LICENSE).
+
+ # Note
+
+This documentation is mostly inspired to the [libuv API documentation](http://docs.libuv.org/en/v1.x/) for obvious reasons.
