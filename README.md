@@ -94,19 +94,19 @@ Resources belong to two main families: _handles_ and _requests_.
 Handles represent long-lived objects capable of performing certain operations while active.  
 Requests represent (typically) short-lived operations performed either over a handle or standalone.
 
-The following sections will explain in short what it means to initialize and terminate those kinds of resources.
+The following sections will explain in short what it means to initialize and terminate these kinds of resources.
 
 ###### Handles
 
 Initialization is usually performed under the hood and can be even passed over, as far as handles are created using the `Loop::resource` member method.  
-On the other side, handles keep themselves alive until one explicitly close them. Because of that, leaks are possible if users simply forget about a handle.  
+On the other side, handles keep themselves alive until one explicitly closes them. Because of that, leaks are possible if users simply forget about a handle.  
 Thus the rule quickly becomes *always close your handles*. It's simple as calling the `close` member method on them.
 
 ###### Requests
 
 Usually initialization is not required for requests objects. Anyway, the recommended way to create a request is still the `Loop::resource` member method.  
-Requests will keep themselves alive as long as they are bound to unfinished underlying activities. This means that users have not to explicitly discard a request.  
-Thus the rule quickly becomes *feel free to make a request and forget about it*. It's simple as calling a member method.
+Requests will keep themselves alive as long as they are bound to unfinished underlying activities. This means that users have not to discard explicitly a request.  
+Thus the rule quickly becomes *feel free to make a request and forget about it*. It's simple as calling a member method on them.
 
 ##### The Loop and the Resource
 
@@ -114,7 +114,7 @@ The first thing to do to use `uvw` is to create a loop. In case the default one 
 
     auto loop = uvw::Loop::getDefault();
 
-Note that loop objects don't require to be explicitly closed, even if they offer the `close` member method if you want to do that.  
+Note that loop objects don't require to be closed explicitly, even if they offer the `close` member method in case an user wants to do that.  
 Loops can be run using the `run`, `runOnce` and `runWait` member methods. Please refer to the documentation of *libuv* for further details.
 
 In order to create a resource and to bind it to the given loop, just do the following:
@@ -135,8 +135,8 @@ To know what are the handles that are still alive and bound to a given loop, jus
 
     loop.walk([](uvw::BaseHandle &){ /* application code here */ });
 
-`BaseHandle` exposes a few methods and cannot be used to know what's the original type of the handle.  
-Anyway, it can be used to close the handle that originated from it. As an example, all the pending handles can be easily closed as it follows:
+`BaseHandle` exposes a few methods and cannot be used to know the original type of the handle.  
+Anyway, it can be used to close the handle that originated from it. As an example, all the pending handles can be closed easily as it follows:
 
     loop.walk([](uvw::BaseHandle &h){ h.close(); });
 
