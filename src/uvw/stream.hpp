@@ -59,7 +59,13 @@ protected:
 
 public:
     void shutdown() noexcept {
-        auto listener = [this](const auto &event, Shutdown &) { publish(event); };
+        std::weak_ptr<T> weak = this->shared_from_this();
+
+        auto listener = [weak](const auto &event, Shutdown &) {
+            auto ptr = weak.lock();
+            if(ptr) { ptr->publish(event); }
+        };
+
         auto shutdown = this->loop()->template resource<Shutdown>();
         shutdown->template once<ErrorEvent>(listener);
         shutdown->template once<ShutdownEvent>(listener);
