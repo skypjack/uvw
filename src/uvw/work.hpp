@@ -18,21 +18,6 @@ class Work final: public Request<Work> {
         static_cast<Work*>(req->data)->task();
     }
 
-    static void afterWorkCallback(uv_work_t *req, int status) {
-        Work &work = *(static_cast<Work*>(req->data));
-
-        auto ptr = work.shared_from_this();
-        (void)ptr;
-
-        work.reset();
-
-        if(status) {
-            work.publish(ErrorEvent{status});
-        } else {
-            work.publish(WorkEvent{});
-        }
-    }
-
     explicit Work(std::shared_ptr<Loop> ref)
         : Request{RequestType<uv_work_t>{}, std::move(ref)}
     { }
@@ -46,9 +31,8 @@ public:
     }
 
     void queue(Task t) noexcept {
-        if(0 == invoke(&uv_queue_work, parent(), get<uv_work_t>(), &workCallback, &afterWorkCallback)) {
+        if(0 == exec<uv_work_t, WorkEvent>(&uv_queue_work, parent(), get<uv_work_t>(), &workCallback)) {
             task = std::move(t);
-            leak();
         }
     }
 
