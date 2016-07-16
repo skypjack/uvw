@@ -29,9 +29,25 @@ public:
         return std::shared_ptr<Shutdown>{new Shutdown{std::forward<Args>(args)...}};
     }
 
-    template<typename T>
-    void shutdown(uv_stream_t *stream) noexcept {
-        exec<uv_shutdown_t, ShutdownEvent>(&uv_shutdown, get<uv_shutdown_t>(), stream);
+    void shutdown(uv_stream_t *handle) noexcept {
+        exec<uv_shutdown_t, ShutdownEvent>(&uv_shutdown, get<uv_shutdown_t>(), handle);
+    }
+};
+
+
+class Write final: public Request<Write> {
+    explicit Write(std::shared_ptr<Loop> ref)
+        : Request{RequestType<uv_write_t>{}, std::move(ref)}
+    { }
+
+public:
+    template<typename... Args>
+    static std::shared_ptr<Write> create(Args&&... args) {
+        return std::shared_ptr<Write>{new Write{std::forward<Args>(args)...}};
+    }
+
+    void write(uv_stream_t *handle, const uv_buf_t bufs[], unsigned int nbufs) {
+        exec<uv_write_t, WriteEvent>(&uv_write, get<uv_write_t>(), handle, bufs, nbufs);
     }
 };
 
@@ -59,14 +75,6 @@ class Stream: public Handle<T> {
         } else {
             ref.publish(ErrorEvent(nread));
         }
-    }
-
-    static void writeCallback(uv_write_t *req, int status) {
-        // TODO migrate to Request (see request.hpp for further details)
-        T &ref = *(static_cast<T*>(req->handle->data));
-        if(status) { ref.publish(ErrorEvent{status}); }
-        else { ref.publish(WriteEvent{}); }
-        delete req;
     }
 
     static void listenCallback(uv_stream_t *handle, int status) {
@@ -114,15 +122,17 @@ public:
 
     void write(char *data, ssize_t length) {
         uv_buf_t bufs[] = { uv_buf_init(data, length) };
-        // TODO migrate to Request (see request.hpp for further details)
-        uv_write_t *req = new uv_write_t;
+        std::weak_ptr<T> weak = this->shared_from_this();
 
-        auto err = uv_write(req, this->template get<uv_stream_t>(), bufs, 1, &Stream<T>::writeCallback);
+        auto listener = [weak](const auto &event, details::Write &) {
+            auto ptr = weak.lock();
+            if(ptr) { ptr->publish(event); }
+        };
 
-        if(err) {
-            delete req;
-            this->publish(ErrorEvent{err});
-        }
+        auto write = this->loop().template resource<details::Write>();
+        write->template once<ErrorEvent>(listener);
+        write->template once<WriteEvent>(listener);
+        write->write(this->template get<uv_stream_t>(), bufs, 1);
     }
 
     void write(std::unique_ptr<char[]> data, ssize_t length) {

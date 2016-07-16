@@ -29,8 +29,8 @@ public:
         return std::shared_ptr<Connect>{new Connect{std::forward<Args>(args)...}};
     }
 
-    void connect(uv_tcp_t *tcp, const sockaddr *addr) noexcept {
-        exec<uv_connect_t, ConnectEvent>(&uv_tcp_connect, get<uv_connect_t>(), tcp, addr);
+    void connect(uv_tcp_t *handle, const sockaddr *addr) noexcept {
+        exec<uv_connect_t, ConnectEvent>(&uv_tcp_connect, get<uv_connect_t>(), handle, addr);
     }
 };
 
