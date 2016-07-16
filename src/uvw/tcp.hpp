@@ -19,21 +19,6 @@ namespace details {
 
 
 class Connect final: public Request<Connect> {
-    static void connectCallback(uv_connect_t *req, int status) {
-        Connect &connect = *(static_cast<Connect*>(req->data));
-
-        auto ptr = connect.shared_from_this();
-        (void)ptr;
-
-        connect.reset();
-
-        if(status) {
-            connect.publish(ErrorEvent{status});
-        } else {
-            connect.publish(ConnectEvent{});
-        }
-    }
-
     explicit Connect(std::shared_ptr<Loop> ref)
         : Request{RequestType<uv_connect_t>{}, std::move(ref)}
     { }
@@ -44,8 +29,8 @@ public:
         return std::shared_ptr<Connect>{new Connect{std::forward<Args>(args)...}};
     }
 
-    void connect(uv_tcp_t *tcp, const sockaddr *addr) noexcept {
-        exec<uv_connect_t, ConnectEvent>(&uv_tcp_connect, get<uv_connect_t>(), tcp, addr);
+    void connect(uv_tcp_t *handle, const sockaddr *addr) noexcept {
+        exec<uv_connect_t, ConnectEvent>(&uv_tcp_connect, get<uv_connect_t>(), handle, addr);
     }
 };
 
