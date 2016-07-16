@@ -14,28 +14,22 @@ namespace uvw {
 
 template<typename T>
 class Resource: public Emitter<T>, public Self<T> {
+    using Deleter = void(*)(void *);
+
     template<typename U>
     friend class Resource;
 
-    struct BaseWrapper {
-        virtual ~BaseWrapper() = default;
-        virtual void * get() const noexcept = 0;
-    };
-
     template<typename U>
-    struct Wrapper: BaseWrapper {
-        Wrapper(): resource{std::make_unique<U>()} { }
-        void * get() const noexcept override { return resource.get(); }
-    private:
-        std::unique_ptr<U> resource;
-    };
+    static void proto(void *resource) {
+        delete static_cast<U*>(resource);
+    }
 
 protected:
     template<typename U, template<typename> class R>
     explicit Resource(R<U>, std::shared_ptr<Loop> ref)
         : Emitter<T>{},
           Self<T>{},
-          wrapper{std::make_unique<Wrapper<U>>()},
+          resource{new U, &proto<U>},
           pLoop{std::move(ref)}
     {
         this->template get<U>()->data = static_cast<T*>(this);
@@ -44,7 +38,7 @@ protected:
     uv_loop_t* parent() const noexcept { return pLoop->loop.get(); }
 
     template<typename U>
-    U* get() const noexcept { return reinterpret_cast<U*>(wrapper->get()); }
+    U* get() const noexcept { return reinterpret_cast<U*>(resource.get()); }
 
     template<typename F, typename... Args>
     auto invoke(F &&f, Args&&... args) {
@@ -54,6 +48,12 @@ protected:
     }
 
 public:
+    Resource(const Resource &) = delete;
+    Resource(Resource &&) = delete;
+
+    Resource& operator=(const Resource &) = delete;
+    Resource& operator=(Resource &&) = delete;
+
     virtual ~Resource() {
         static_assert(std::is_base_of<Resource<T>, T>::value, "!");
     }
@@ -61,7 +61,7 @@ public:
     Loop& loop() const noexcept { return *pLoop; }
 
 private:
-    std::unique_ptr<BaseWrapper> wrapper;
+    std::unique_ptr<void, Deleter> resource;
     std::shared_ptr<Loop> pLoop;
 };
 
