@@ -19,7 +19,7 @@ class Async final: public Handle<Async> {
     }
 
     explicit Async(std::shared_ptr<Loop> ref)
-        : Handle{ResourceType<uv_async_t>{}, std::move(ref)}
+        : Handle{HandleType<uv_async_t>{}, std::move(ref)}
     { }
 
 public:

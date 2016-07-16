@@ -19,7 +19,7 @@ class Check final: public Handle<Check> {
     }
 
     explicit Check(std::shared_ptr<Loop> ref)
-        : Handle{ResourceType<uv_check_t>{}, std::move(ref)}
+        : Handle{HandleType<uv_check_t>{}, std::move(ref)}
     { }
 
 public:

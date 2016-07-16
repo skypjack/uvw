@@ -15,14 +15,21 @@ namespace uvw {
 class Shutdown final: public Request<Shutdown> {
     static void shutdownCallback(uv_shutdown_t *req, int status) {
         Shutdown &shutdown = *(static_cast<Shutdown*>(req->data));
+
         auto ptr = shutdown.shared_from_this();
-        ptr->reset();
-        if(status) { shutdown.publish(ErrorEvent{status}); }
-        else { shutdown.publish(ShutdownEvent{}); }
+        (void)ptr;
+
+        shutdown.reset();
+
+        if(status) {
+            shutdown.publish(ErrorEvent{status});
+        } else {
+            shutdown.publish(ShutdownEvent{});
+        }
     }
 
     explicit Shutdown(std::shared_ptr<Loop> ref)
-        : Request{ResourceType<uv_shutdown_t>{}, std::move(ref)}
+        : Request{RequestType<uv_shutdown_t>{}, std::move(ref)}
     { }
 
 public:

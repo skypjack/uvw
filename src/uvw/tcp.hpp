@@ -24,7 +24,7 @@ class Tcp final: public Stream<Tcp> {
 
     explicit Tcp(std::shared_ptr<Loop> ref)
         // TODO migrate to Request (see request.hpp for further details)
-        : Stream{ResourceType<uv_tcp_t>{}, std::move(ref)},
+        : Stream{HandleType<uv_tcp_t>{}, std::move(ref)},
           conn{std::make_unique<uv_connect_t>()}
     { }
 

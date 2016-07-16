@@ -20,7 +20,7 @@ class Timer final: public Handle<Timer> {
     }
 
     explicit Timer(std::shared_ptr<Loop> ref)
-        : Handle{ResourceType<uv_timer_t>{}, std::move(ref)}
+        : Handle{HandleType<uv_timer_t>{}, std::move(ref)}
     { }
 
 public:

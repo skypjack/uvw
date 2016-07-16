@@ -53,7 +53,7 @@ class Stream: public Handle<T> {
 
 protected:
     template<typename U>
-    Stream(ResourceType<U> rt, std::shared_ptr<Loop> ref)
+    Stream(HandleType<U> rt, std::shared_ptr<Loop> ref)
         : Handle<T>{std::move(rt), std::move(ref)}
     { }
 

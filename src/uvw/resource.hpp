@@ -12,21 +12,6 @@
 namespace uvw {
 
 
-template<typename>
-struct ResourceType;
-
-template<> struct ResourceType<uv_async_t> { };
-template<> struct ResourceType<uv_check_t> { };
-template<> struct ResourceType<uv_idle_t> { };
-template<> struct ResourceType<uv_prepare_t> { };
-template<> struct ResourceType<uv_shutdown_t> { };
-template<> struct ResourceType<uv_signal_t> { };
-template<> struct ResourceType<uv_tcp_t> { };
-template<> struct ResourceType<uv_timer_t> { };
-template<> struct ResourceType<uv_tty_t> { };
-template<> struct ResourceType<uv_work_t> { };
-
-
 template<typename T>
 class Resource: public Emitter<T>, public Self<T> {
     template<typename U>
@@ -46,8 +31,8 @@ class Resource: public Emitter<T>, public Self<T> {
     };
 
 protected:
-    template<typename U>
-    explicit Resource(ResourceType<U>, std::shared_ptr<Loop> ref)
+    template<typename U, template<typename> class R>
+    explicit Resource(R<U>, std::shared_ptr<Loop> ref)
         : Emitter<T>{},
           Self<T>{},
           wrapper{std::make_unique<Wrapper<U>>()},

@@ -19,7 +19,7 @@ class Idle final: public Handle<Idle> {
     }
 
     explicit Idle(std::shared_ptr<Loop> ref)
-        : Handle{ResourceType<uv_idle_t>{}, std::move(ref)}
+        : Handle{HandleType<uv_idle_t>{}, std::move(ref)}
     { }
 
 public:

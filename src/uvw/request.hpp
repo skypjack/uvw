@@ -11,6 +11,13 @@ namespace uvw {
 
 
 template<typename T>
+struct RequestType;
+
+template<> struct RequestType<uv_shutdown_t> { };
+template<> struct RequestType<uv_work_t> { };
+
+
+template<typename T>
 class Request: public Resource<T> {
 protected:
     using Resource<T>::Resource;
