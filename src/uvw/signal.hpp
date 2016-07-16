@@ -30,7 +30,7 @@ public:
 
     bool init() { return initialize<uv_signal_t>(&uv_signal_init); }
 
-    void start(int signum) { invoke(uv_signal_start, get<uv_signal_t>(), &startCallback, signum); }
+    void start(int signum) { invoke(&uv_signal_start, get<uv_signal_t>(), &startCallback, signum); }
     void stop() { invoke(&uv_signal_stop, get<uv_signal_t>()); }
 
     int signal() const noexcept { return get<uv_signal_t>()->signum; }

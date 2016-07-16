@@ -30,7 +30,7 @@ public:
         return std::shared_ptr<Work>{new Work{std::forward<Args>(args)...}};
     }
 
-    void queue(Task t) noexcept {
+    void queue(Task t) {
         if(0 == exec<uv_work_t, WorkEvent>(&uv_queue_work, parent(), get<uv_work_t>(), &workCallback)) {
             task = std::move(t);
         }

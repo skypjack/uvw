@@ -29,7 +29,7 @@ public:
         return std::shared_ptr<Shutdown>{new Shutdown{std::forward<Args>(args)...}};
     }
 
-    void shutdown(uv_stream_t *handle) noexcept {
+    void shutdown(uv_stream_t *handle) {
         exec<uv_shutdown_t, ShutdownEvent>(&uv_shutdown, get<uv_shutdown_t>(), handle);
     }
 };
@@ -90,7 +90,7 @@ protected:
     { }
 
 public:
-    void shutdown() noexcept {
+    void shutdown() {
         std::weak_ptr<T> weak = this->shared_from_this();
 
         auto listener = [weak](const auto &event, details::Shutdown &) {
@@ -104,11 +104,11 @@ public:
         shutdown->shutdown(this->template get<uv_stream_t>());
     }
 
-    void listen(int backlog) noexcept {
+    void listen(int backlog) {
         this->invoke(&uv_listen, this->template get<uv_stream_t>(), backlog, &listenCallback);
     }
 
-    void listen() noexcept {
+    void listen() {
         listen(DEFAULT_BACKLOG);
     }
 
@@ -116,7 +116,7 @@ public:
         this->invoke(&uv_read_start, this->template get<uv_stream_t>(), &allocCallback, &readCallback);
     }
 
-    void stop() noexcept {
+    void stop() {
         this->invoke(&uv_read_stop, this->template get<uv_stream_t>());
     }
 
@@ -139,7 +139,7 @@ public:
         write(data.get(), length);
     }
 
-    int tryWrite(char *data, ssize_t length) noexcept {
+    int tryWrite(char *data, ssize_t length) {
         uv_buf_t bufs[] = { uv_buf_init(data, length) };
         auto bw = uv_try_write(this->template get<uv_stream_t>(), bufs, 1);
 
@@ -151,7 +151,7 @@ public:
         return bw;
     }
 
-    int tryWrite(std::unique_ptr<char[]> data, ssize_t length) noexcept {
+    int tryWrite(std::unique_ptr<char[]> data, ssize_t length) {
         return tryWrite(data.get(), length);
     }
 
