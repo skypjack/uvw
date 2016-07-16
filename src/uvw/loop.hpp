@@ -25,12 +25,14 @@ public:
 
 
 class Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop> {
+    using Deleter = void(*)(uv_loop_t *);
+
     template<typename>
     friend class Resource;
 
-    using Deleter = std::function<void(uv_loop_t *)>;
-
-    Loop(std::unique_ptr<uv_loop_t, Deleter> ptr): loop{std::move(ptr)} { }
+    Loop(std::unique_ptr<uv_loop_t, Deleter> ptr) noexcept
+        : loop{std::move(ptr)}
+    { }
 
 public:
     static std::shared_ptr<Loop> create() {
@@ -69,7 +71,7 @@ public:
     Loop& operator=(const Loop &) = delete;
     Loop& operator=(Loop &&other) = delete;
 
-    ~Loop() {
+    ~Loop() noexcept {
         if(loop) {
             close();
         }
@@ -89,7 +91,7 @@ public:
         return R::create(shared_from_this(), std::forward<Args>(args)...);
     }
 
-    void close() noexcept {
+    void close() {
         auto err = uv_loop_close(loop.get());
         if(err) { publish(ErrorEvent{err}); }
     }
@@ -114,7 +116,7 @@ public:
         uv_stop(loop.get());
     }
 
-    void walk(std::function<void(BaseHandle &)> callback) noexcept {
+    void walk(std::function<void(BaseHandle &)> callback) {
         // remember: non-capturing lambdas decay to pointers to functions
         uv_walk(loop.get(), [](uv_handle_t *handle, void *func) {
             BaseHandle &ref = *static_cast<BaseHandle*>(handle->data);

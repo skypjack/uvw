@@ -11,7 +11,7 @@ namespace uvw {
 
 
 struct BaseEvent {
-    virtual ~BaseEvent() = 0;
+    virtual ~BaseEvent() noexcept = 0;
 
     static std::size_t next() noexcept {
         static std::size_t cnt = 0;
@@ -19,7 +19,7 @@ struct BaseEvent {
     }
 };
 
-BaseEvent::~BaseEvent() { }
+BaseEvent::~BaseEvent() noexcept { }
 
 template<typename E>
 struct Event: BaseEvent {

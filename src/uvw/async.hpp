@@ -28,7 +28,7 @@ public:
         return std::shared_ptr<Async>{new Async{std::forward<Args>(args)...}};
     }
 
-    bool init() { return initialize<uv_async_t>(&uv_async_init, sendCallback); }
+    bool init() { return initialize<uv_async_t>(&uv_async_init, &sendCallback); }
 
     void send() { invoke(&uv_async_send, get<uv_async_t>()); }
 };

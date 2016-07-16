@@ -29,7 +29,7 @@ public:
         return std::shared_ptr<Connect>{new Connect{std::forward<Args>(args)...}};
     }
 
-    void connect(uv_tcp_t *handle, const sockaddr *addr) noexcept {
+    void connect(uv_tcp_t *handle, const sockaddr *addr) {
         exec<uv_connect_t, ConnectEvent>(&uv_tcp_connect, get<uv_connect_t>(), handle, addr);
     }
 };
@@ -81,16 +81,16 @@ public:
 
     bool init() { return initialize<uv_tcp_t>(&uv_tcp_init); }
 
-    void noDelay(bool value = false) noexcept {
+    void noDelay(bool value = false) {
         invoke(&uv_tcp_nodelay, get<uv_tcp_t>(), value ? 1 : 0);
     }
 
-    void keepAlive(bool enable = false, Time time = Time{0}) noexcept {
+    void keepAlive(bool enable = false, Time time = Time{0}) {
         invoke(&uv_tcp_keepalive, get<uv_tcp_t>(), enable ? 1 : 0, time.count());
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    void bind(std::string ip, unsigned int port, bool ipv6only = false) noexcept {
+    void bind(std::string ip, unsigned int port, bool ipv6only = false) {
         typename Traits::Type addr;
         Traits::AddrFunc(ip.c_str(), port, &addr);
         unsigned int flags = ipv6only ? UV_TCP_IPV6ONLY : 0;
@@ -98,7 +98,7 @@ public:
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    void bind(Addr addr, bool ipv6only = false) noexcept {
+    void bind(Addr addr, bool ipv6only = false) {
         bind<I>(addr.ip, addr.port, ipv6only);
     }
 
@@ -113,7 +113,7 @@ public:
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    void connect(std::string ip, unsigned int port) noexcept {
+    void connect(std::string ip, unsigned int port) {
         typename Traits::Type addr;
         Traits::AddrFunc(ip.c_str(), port, &addr);
 
@@ -131,11 +131,11 @@ public:
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    void connect(Addr addr) noexcept {
+    void connect(Addr addr) {
         connect<I>(addr.ip, addr.port);
     }
 
-    void accept(Tcp &tcp) noexcept {
+    void accept(Tcp &tcp) {
         invoke(&uv_accept, get<uv_stream_t>(), tcp.get<uv_stream_t>());
     }
 };

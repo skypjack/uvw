@@ -48,7 +48,7 @@ protected:
     }
 
 public:
-    void cancel() noexcept {
+    void cancel() {
         invoke(&uv_cancel, this->template get<uv_req_t>());
     }
 

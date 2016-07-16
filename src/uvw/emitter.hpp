@@ -33,12 +33,12 @@ class Emitter {
             return onceL.empty() && onL.empty();
         }
 
-        Connection once(Listener f) noexcept {
+        Connection once(Listener f) {
             auto conn = onceL.insert(onceL.cbegin(), std::move(f));
             return { onceL, std::move(conn) };
         }
 
-        Connection on(Listener f) noexcept {
+        Connection on(Listener f) {
             auto conn = onL.insert(onL.cbegin(), std::move(f));
             return { onL, std::move(conn) };
         }
@@ -52,7 +52,7 @@ class Emitter {
             onL.clear();
         }
 
-        void publish(const E &event, T &ref) noexcept {
+        void publish(const E &event, T &ref) {
             for(auto &&listener: onceL) { listener(event, ref); }
             for(auto &&listener: onL) { listener(event, ref); }
             onceL.clear();
@@ -82,7 +82,7 @@ class Emitter {
 
 protected:
     template<typename E>
-    void publish(E event) noexcept {
+    void publish(E event) {
         handler<E>().publish(event, *static_cast<T*>(this));
     }
 
@@ -98,17 +98,17 @@ public:
     template<typename E>
     using Listener = typename Handler<E>::Listener;
 
-    virtual ~Emitter() {
+    virtual ~Emitter() noexcept {
         static_assert(std::is_base_of<Emitter<T>, T>::value, "!");
     }
 
     template<typename E>
-    Connection<E> on(Listener<E> f) noexcept {
+    Connection<E> on(Listener<E> f) {
         return handler<E>().on(std::move(f));
     }
 
     template<typename E>
-    Connection<E> once(Listener<E> f) noexcept {
+    Connection<E> once(Listener<E> f) {
         return handler<E>().once(std::move(f));
     }
 

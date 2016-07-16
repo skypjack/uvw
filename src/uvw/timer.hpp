@@ -33,7 +33,7 @@ public:
 
     bool init() { return initialize<uv_timer_t>(&uv_timer_init); }
 
-    void start(Time timeout, Time repeat) { invoke(uv_timer_start, get<uv_timer_t>(), &startCallback, timeout.count(), repeat.count()); }
+    void start(Time timeout, Time repeat) { invoke(&uv_timer_start, get<uv_timer_t>(), &startCallback, timeout.count(), repeat.count()); }
     void stop() { invoke(&uv_timer_stop, get<uv_timer_t>()); }
     void again() { invoke(&uv_timer_again, get<uv_timer_t>()); }
 
