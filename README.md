@@ -200,6 +200,8 @@ Then, to build the tests:
 # Contributors
 
 Michele Caini aka [skypjack](https://github.com/skypjack)
+Luca Martini aka [lordlukas](https://github.com/lucamartini)
+Elia Mazzuoli
 
 See [CONTRIBUTING.md](https://github.com/skypjack/uvw/blob/master/CONTRIBUTING.md) if you want to contribute.
 
