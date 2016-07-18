@@ -49,25 +49,6 @@ const IpTraits<IPv6>::NameFuncType IpTraits<IPv6>::NameFunc = uv_ip6_name;
 }
 
 
-class UVWException final: std::runtime_error {
-public:
-    explicit UVWException(int code)
-        : runtime_error{uv_strerror(code)}, ec{code}
-    { }
-
-    const char* name() const noexcept {
-        return uv_err_name(ec);
-    }
-
-    const char* error() const noexcept {
-        return uv_strerror(ec);
-    }
-
-private:
-    int ec;
-};
-
-
 struct FileDescriptor {
     using Type = uv_file;
 

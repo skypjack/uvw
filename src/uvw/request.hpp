@@ -49,7 +49,7 @@ protected:
 
 public:
     void cancel() {
-        invoke(&uv_cancel, this->template get<uv_req_t>());
+        this->invoke(&uv_cancel, this->template get<uv_req_t>());
     }
 
     std::size_t size() const noexcept {

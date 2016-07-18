@@ -4,37 +4,37 @@
 
 set(UVW_SRC_DIR ${CMAKE_SOURCE_DIR}/${PROJECT_SRC_DIR})
 
-# List of available targets
-
-set(TARGET_FOOBAR foobar)
-
-# Test TARGET_FOOBAR_SRC_DIR
+set(
+    COMMON_INCLUDE_DIRS
+    ${UVW_SRC_DIR}
+    ${GOOGLETEST_INCLUDE_DIRS}
+    ${UV_INCLUDE_DIRS}
+)
 
 set(
-    TARGET_FOOBAR_SOURCES
-    main.cpp
+    COMMON_LINK_LIBS
+    ${CMAKE_THREAD_LIBS_INIT}
+    ${GOOGLETEST_LIBRARIES}
+    ${UV_LIBRARIES}
 )
 
-add_executable(
-    ${TARGET_FOOBAR}
-    ${TARGET_FOOBAR_SOURCES}
-)
+# List of available targets
 
-target_include_directories(
-    ${TARGET_FOOBAR}
-    PRIVATE ${UVW_SRC_DIR}
-    PRIVATE ${GOOGLETEST_INCLUDE_DIRS}
-    PRIVATE ${UV_INCLUDE_DIRS}
-)
+set(TARGET_MAIN main)
+set(TARGET_LOOP loop)
 
-target_link_libraries(
-    ${TARGET_FOOBAR}
-    PRIVATE ${CMAKE_THREAD_LIBS_INIT}
-    PRIVATE ${GOOGLETEST_LIBRARIES}
-    PRIVATE ${UV_LIBRARIES}
-)
+# Test TARGET_MAIN
 
-add_test(
-    NAME ${TARGET_FOOBAR}
-    COMMAND ${TARGET_FOOBAR}
-)
+set(TARGET_MAIN_SOURCES main.cpp)
+add_executable(${TARGET_MAIN} ${TARGET_MAIN_SOURCES})
+target_include_directories(${TARGET_MAIN} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_MAIN} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_MAIN} COMMAND ${TARGET_MAIN})
+
+# Test TARGET_LOOP
+
+set(TARGET_LOOP_SOURCES uvw/loop.cpp)
+add_executable(${TARGET_LOOP} ${TARGET_LOOP_SOURCES})
+target_include_directories(${TARGET_LOOP} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_LOOP} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_LOOP} COMMAND ${TARGET_LOOP})
