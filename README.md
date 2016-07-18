@@ -200,8 +200,10 @@ Then, to build the tests:
 # Contributors
 
 Michele Caini aka [skypjack](https://github.com/skypjack)
+Federico Bertolucci aka [lessness](https://github.com/lessness)
 Luca Martini aka [lordlukas](https://github.com/lucamartini)
-Elia Mazzuoli
+Elia Mazzuoli aka [Zikoel](https://github.com/Zikoel)
+Francesco De Felice aka [fradefe](https://github.com/fradefe)
 
 See [CONTRIBUTING.md](https://github.com/skypjack/uvw/blob/master/CONTRIBUTING.md) if you want to contribute.
 
