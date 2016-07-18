@@ -75,4 +75,8 @@ struct Addr { std::string ip; unsigned int port; };
 struct WinSize { int width; int height; };
 
 
+using TimeSpec = uv_timespec_t;
+using Stat = uv_stat_t;
+
+
 }
