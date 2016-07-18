@@ -13,34 +13,16 @@
 namespace uvw {
 
 
-namespace details {
-
-
-template<std::size_t FD>
-struct FileDescriptor;
-
-template<> struct FileDescriptor<0> { };
-template<> struct FileDescriptor<1> { };
-template<> struct FileDescriptor<2> { };
-
-}
-
-
 class TTY final: public Stream<TTY> {
-    template<std::size_t FD>
     explicit TTY(std::shared_ptr<Loop> ref,
-                 details::FileDescriptor<FD>,
+                 FileDescriptor desc,
                  bool readable)
         : Stream{HandleType<uv_tty_t>{}, std::move(ref)},
-          fd{FD},
+          fd{static_cast<FileDescriptor::Type>(desc)},
           rw{readable ? 1 : 0}
     { }
 
 public:
-    static constexpr auto STDIN = details::FileDescriptor<0>{};
-    static constexpr auto STDOUT = details::FileDescriptor<1>{};
-    static constexpr auto STDERR = details::FileDescriptor<2>{};
-
     enum class Mode: unsigned short int { NORMAL, RAW, IO };
 
     template<typename... Args>
@@ -89,7 +71,7 @@ public:
     }
 
 private:
-    uv_file fd;
+    FileDescriptor::Type fd;
     int rw;
 };
 
