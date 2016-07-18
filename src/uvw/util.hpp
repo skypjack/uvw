@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <type_traits>
 #include <stdexcept>
 #include <cstddef>
 #include <utility>
@@ -65,6 +66,23 @@ public:
 private:
     int ec;
 };
+
+
+struct FileDescriptor {
+    using Type = uv_file;
+
+    constexpr FileDescriptor(Type desc): fd{desc} { }
+
+    constexpr operator Type() const noexcept { return fd; }
+
+private:
+    const Type fd;
+};
+
+
+static constexpr auto STDIN = FileDescriptor{0};
+static constexpr auto STDOUT = FileDescriptor{1};
+static constexpr auto STDERR = FileDescriptor{2};
 
 
 /**
