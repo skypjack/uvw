@@ -64,6 +64,20 @@ private:
 };
 
 
+struct FsPollEvent: Event<FsPollEvent> {
+    explicit FsPollEvent(const Stat &p, const Stat &c)
+        : prev(p), curr(c)
+    { }
+
+    const Stat & previous() const noexcept { return prev; }
+    const Stat & current() const noexcept { return curr; }
+
+private:
+    const Stat prev;
+    const Stat curr;
+};
+
+
 struct IdleEvent: Event<IdleEvent> { };
 struct ListenEvent: Event<ListenEvent> { };
 struct PrepareEvent: Event<PrepareEvent> { };

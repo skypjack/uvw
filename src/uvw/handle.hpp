@@ -16,6 +16,7 @@ struct HandleType;
 
 template<> struct HandleType<uv_async_t> { };
 template<> struct HandleType<uv_check_t> { };
+template<> struct HandleType<uv_fs_poll_t> { };
 template<> struct HandleType<uv_idle_t> { };
 template<> struct HandleType<uv_prepare_t> { };
 template<> struct HandleType<uv_signal_t> { };
