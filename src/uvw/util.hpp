@@ -51,7 +51,7 @@ const IpTraits<IPv6>::NameFuncType IpTraits<IPv6>::NameFunc = uv_ip6_name;
 
 template<typename E>
 class Flags final {
-    using InnerType = typename std::underlying_type<E>::type;
+    using InnerType = std::underlying_type_t<E>;
 
     constexpr InnerType toInnerType(E flag) const noexcept { return static_cast<InnerType>(flag); }
 
@@ -59,7 +59,8 @@ public:
     using Type = InnerType;
 
     constexpr Flags(E flag) noexcept: flags{toInnerType(flag)} { }
-    constexpr Flags(Type f): flags(f) { }
+    constexpr Flags(Type f): flags{f} { }
+    constexpr Flags(): flags{} { }
 
     constexpr Flags(const Flags &f) noexcept: flags{f.flags} {  }
     constexpr Flags(Flags &&f) noexcept: flags{std::move(f.flags)} {  }
