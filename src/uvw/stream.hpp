@@ -79,8 +79,8 @@ class Stream: public Handle<T> {
 
     static void listenCallback(uv_stream_t *handle, int status) {
         T &ref = *(static_cast<T*>(handle->data));
-        if(status) ref.publish(ErrorEvent{status});
-        else ref.publish(ListenEvent{});
+        if(status) { ref.publish(ErrorEvent{status}); }
+        else { ref.publish(ListenEvent{}); }
     }
 
 protected:

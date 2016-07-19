@@ -37,7 +37,7 @@ struct ConnectEvent: Event<ConnectEvent> { };
 
 
 struct DataEvent: Event<DataEvent> {
-    explicit DataEvent(std::unique_ptr<const char[]> ptr, ssize_t l)
+    explicit DataEvent(std::unique_ptr<const char[]> ptr, ssize_t l) noexcept
         : dt{std::move(ptr)}, len{l}
     { }
 
@@ -54,7 +54,7 @@ struct EndEvent: Event<EndEvent> { };
 
 
 struct ErrorEvent: Event<ErrorEvent> {
-    explicit ErrorEvent(int code = 0): ec(code) { }
+    explicit ErrorEvent(int code = 0) noexcept: ec(code) { }
 
     operator const char *() const noexcept { return uv_strerror(ec); }
     operator int() const noexcept { return ec; }
@@ -64,8 +64,19 @@ private:
 };
 
 
+template<typename E>
+struct FlagsEvent: Event<FlagsEvent<E>> {
+    explicit FlagsEvent(Flags<E> f) noexcept: flags{std::move(f)} { }
+
+    operator Flags<E>() const noexcept { return flags; }
+
+private:
+    const Flags<E> flags;
+};
+
+
 struct FsPollEvent: Event<FsPollEvent> {
-    explicit FsPollEvent(const Stat &p, const Stat &c)
+    explicit FsPollEvent(const Stat &p, const Stat &c) noexcept
         : prev(p), curr(c)
     { }
 
@@ -85,7 +96,7 @@ struct ShutdownEvent: Event<ShutdownEvent> { };
 
 
 struct SignalEvent: Event<SignalEvent> {
-    explicit SignalEvent(int sig): signum(sig) { }
+    explicit SignalEvent(int sig) noexcept: signum(sig) { }
 
     operator int() const noexcept { return signum; }
 
