@@ -16,7 +16,8 @@ namespace uvw {
 class FsPoll final: public Handle<FsPoll> {
     static void startCallback(uv_fs_poll_t *handle, int status, const uv_stat_t *prev, const uv_stat_t *curr) {
         FsPoll &fsPoll = *(static_cast<FsPoll*>(handle->data));
-        fsPoll.publish(FsPollEvent{ *prev, *curr });
+        if(status) fsPoll.publish(ErrorEvent{status});
+        else fsPoll.publish(FsPollEvent{ *prev, *curr });
     }
 
     explicit FsPoll(std::shared_ptr<Loop> ref)
