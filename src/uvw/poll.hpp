@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <type_traits>
 #include <utility>
 #include <memory>
 #include <uv.h>
@@ -16,7 +17,7 @@ class Poll final: public Handle<Poll> {
     static void startCallback(uv_poll_t *handle, int status, int events) {
         Poll &poll = *(static_cast<Poll*>(handle->data));
         if(status) { poll.publish(ErrorEvent{status}); }
-        else { poll.publish(FlagsEvent<Poll::Event>{events}); }
+        else { poll.publish(FlagsEvent<Event>{static_cast<std::underlying_type_t<Event>>(events)}); }
     }
 
     explicit Poll(std::shared_ptr<Loop> ref)
@@ -24,7 +25,7 @@ class Poll final: public Handle<Poll> {
     { }
 
 public:
-    enum class Event {
+    enum class Event: std::underlying_type_t<uv_poll_event> {
         READABLE = UV_READABLE,
         WRITABLE = UV_WRITABLE,
         DISCONNECT = UV_DISCONNECT
