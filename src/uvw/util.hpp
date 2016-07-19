@@ -49,6 +49,37 @@ const IpTraits<IPv6>::NameFuncType IpTraits<IPv6>::NameFunc = uv_ip6_name;
 }
 
 
+template<typename E>
+class Flags final {
+    using InnerType = typename std::underlying_type<E>::type;
+
+    constexpr InnerType toInnerType(E flag) const noexcept { return static_cast<InnerType>(flag); }
+
+public:
+    using Type = InnerType;
+
+    constexpr Flags(E flag) noexcept: flags{toInnerType(flag)} { }
+    constexpr Flags(Type f): flags(f) { }
+
+    constexpr Flags(const Flags &f) noexcept: flags{f.flags} {  }
+    constexpr Flags(Flags &&f) noexcept: flags{std::move(f.flags)} {  }
+
+    ~Flags() noexcept { static_assert(std::is_enum<E>::value, "!"); }
+
+    constexpr Flags operator|(const Flags& f) const noexcept { return Flags(flags | f.flags); }
+    constexpr Flags operator|(E flag) const noexcept { return Flags(flags | toInnerType(flag)); }
+
+    constexpr Flags operator&(const Flags& f) const noexcept { return Flags(flags & f.flags); }
+    constexpr Flags operator&(E flag) const noexcept { return Flags(flags & toInnerType(flag)); }
+
+    constexpr operator bool() const noexcept { return !(flags == InnerType{}); }
+    constexpr operator Type() const noexcept { return flags; }
+
+private:
+    InnerType flags;
+};
+
+
 struct FileDescriptor {
     using Type = uv_file;
 
