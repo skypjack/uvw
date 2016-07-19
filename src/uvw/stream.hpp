@@ -59,10 +59,6 @@ template<typename T>
 class Stream: public Handle<T> {
     static constexpr unsigned int DEFAULT_BACKLOG = 128;
 
-    static void allocCallback(uv_handle_t *, std::size_t suggested, uv_buf_t *buf) {
-        *buf = uv_buf_init(new char[suggested], suggested);
-    }
-
     static void readCallback(uv_stream_t *handle, ssize_t nread, const uv_buf_t *buf) {
         T &ref = *(static_cast<T*>(handle->data));
         // data will be destroyed no matter of what the value of nread is
@@ -138,7 +134,7 @@ public:
     }
 
     void read() {
-        this->invoke(&uv_read_start, this->template get<uv_stream_t>(), &allocCallback, &readCallback);
+        this->invoke(&uv_read_start, this->template get<uv_stream_t>(), &this->allocCallback, &readCallback);
     }
 
     void stop() {

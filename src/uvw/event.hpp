@@ -92,6 +92,7 @@ private:
 struct IdleEvent: Event<IdleEvent> { };
 struct ListenEvent: Event<ListenEvent> { };
 struct PrepareEvent: Event<PrepareEvent> { };
+struct SendEvent: Event<SendEvent> { };
 struct ShutdownEvent: Event<ShutdownEvent> { };
 
 
