@@ -89,6 +89,31 @@ protected:
         : Handle<T>{std::move(rt), std::move(ref)}
     { }
 
+    template<typename I, typename U, typename F, typename..., typename Traits = details::IpTraits<I>>
+    Addr address(F &&f) {
+        sockaddr_storage ssto;
+        int len = sizeof(ssto);
+        char name[sizeof(ssto)];
+        std::pair<std::string, unsigned int> addr{ "", 0 };
+
+        int err = std::forward<F>(f)(this->template get<U>(), reinterpret_cast<sockaddr *>(&ssto), &len);
+
+        if(!err) {
+            typename Traits::Type *aptr = reinterpret_cast<typename Traits::Type *>(&ssto);
+            err = Traits::NameFunc(aptr, name, len);
+
+            if(!err) {
+                addr = { std::string{name}, ntohs(aptr->sin_port) };
+            }
+        }
+
+        /**
+         * See Boost/Mutant idiom:
+         *     https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Boost_mutant
+         */
+        return reinterpret_cast<Addr&>(addr);
+    }
+
 public:
     void shutdown() {
         std::weak_ptr<T> weak = this->shared_from_this();
