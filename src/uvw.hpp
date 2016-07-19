@@ -10,5 +10,6 @@
 #include "uvw/tcp.hpp"
 #include "uvw/timer.hpp"
 #include "uvw/tty.hpp"
+#include "uvw/udp.hpp"
 #include "uvw/util.hpp"
 #include "uvw/work.hpp"

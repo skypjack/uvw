@@ -24,6 +24,7 @@ template<> struct HandleType<uv_signal_t> { };
 template<> struct HandleType<uv_tcp_t> { };
 template<> struct HandleType<uv_timer_t> { };
 template<> struct HandleType<uv_tty_t> { };
+template<> struct HandleType<uv_udp_t> { };
 
 
 template<typename T>
