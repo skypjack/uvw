@@ -14,6 +14,29 @@
 namespace uvw {
 
 
+namespace details {
+
+
+class Send final: public Request<Send> {
+    explicit Send(std::shared_ptr<Loop> ref)
+        : Request{RequestType<uv_udp_send_t>{}, std::move(ref)}
+    { }
+
+public:
+    template<typename... Args>
+    static std::shared_ptr<Send> create(Args&&... args) {
+        return std::shared_ptr<Send>{new Send{std::forward<Args>(args)...}};
+    }
+
+    void send(uv_udp_t *handle, const uv_buf_t bufs[], unsigned int nbufs, const struct sockaddr* addr) {
+        exec<uv_udp_send_t, SendEvent>(&uv_udp_send, get<uv_udp_send_t>(), handle, bufs, nbufs, addr);
+    }
+};
+
+
+}
+
+
 class Udp final: public Stream<Udp> {
     explicit Udp(std::shared_ptr<Loop> ref)
         : Stream{HandleType<uv_udp_t>{}, std::move(ref)}
