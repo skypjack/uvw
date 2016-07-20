@@ -119,8 +119,8 @@ public:
         this->invoke(&uv_read_stop, this->template get<uv_stream_t>());
     }
 
-    void write(char *data, ssize_t length) {
-        uv_buf_t bufs[] = { uv_buf_init(data, length) };
+    void write(char *data, ssize_t len) {
+        uv_buf_t bufs[] = { uv_buf_init(data, len) };
         std::weak_ptr<T> weak = this->shared_from_this();
 
         auto listener = [weak](const auto &event, details::Write &) {
@@ -134,12 +134,12 @@ public:
         write->write(this->template get<uv_stream_t>(), bufs, 1);
     }
 
-    void write(std::unique_ptr<char[]> data, ssize_t length) {
-        write(data.get(), length);
+    void write(std::unique_ptr<char[]> data, ssize_t len) {
+        write(data.get(), len);
     }
 
-    int tryWrite(char *data, ssize_t length) {
-        uv_buf_t bufs[] = { uv_buf_init(data, length) };
+    int tryWrite(char *data, ssize_t len) {
+        uv_buf_t bufs[] = { uv_buf_init(data, len) };
         auto bw = uv_try_write(this->template get<uv_stream_t>(), bufs, 1);
 
         if(bw < 0) {
@@ -150,8 +150,8 @@ public:
         return bw;
     }
 
-    int tryWrite(std::unique_ptr<char[]> data, ssize_t length) {
-        return tryWrite(data.get(), length);
+    int tryWrite(std::unique_ptr<char[]> data, ssize_t len) {
+        return tryWrite(data.get(), len);
     }
 
     bool readable() const noexcept {

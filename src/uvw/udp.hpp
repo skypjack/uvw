@@ -59,7 +59,7 @@ class Udp final: public Handle<Udp> {
           remoteF{&tRemote<details::IPv4>}
     { }
 
-    static void readCallback(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
+    static void recvCallback(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
         Udp &udp = *(static_cast<Udp*>(handle->data));
         // data will be destroyed no matter of what the value of nread is
         std::unique_ptr<const char[]> data{buf->base};
@@ -121,9 +121,29 @@ public:
     void ttl(int val) { invoke(&uv_udp_set_ttl, get<uv_udp_t>(), val > 255 ? 255 : val); }
 
     // TODO uv_udp_send
-    // TODO uv_udp_try_send
 
-    void read() { invoke(&uv_udp_recv_start, get<uv_udp_t>(), &allocCallback, &readCallback); }
+    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    int trySend(std::string ip, unsigned int port, char *data, ssize_t len) {
+        typename Traits::Type addr;
+        Traits::AddrFunc(ip.c_str(), port, &addr);
+
+        uv_buf_t bufs[] = { uv_buf_init(data, len) };
+        auto bw = uv_udp_try_send(get<uv_udp_t>(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
+
+        if(bw < 0) {
+            this->publish(ErrorEvent{bw});
+            bw = 0;
+        }
+
+        return bw;
+    }
+
+    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    int trySend(std::string ip, unsigned int port, std::unique_ptr<char[]> data, ssize_t len) {
+        return trySend<I>(ip, port, data.get(), len);
+    }
+
+    void recv() { invoke(&uv_udp_recv_start, get<uv_udp_t>(), &allocCallback, &recvCallback); }
     void stop() { invoke(&uv_udp_recv_stop, get<uv_udp_t>()); }
 
 private:
