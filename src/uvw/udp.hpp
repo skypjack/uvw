@@ -122,8 +122,8 @@ public:
 
     // TODO uv_udp_send
     // TODO uv_udp_try_send
-    // TODO uv_udp_recv_start
 
+    void read() { invoke(&uv_udp_recv_start, get<uv_udp_t>(), &allocCallback, &readCallback); }
     void stop() { invoke(&uv_udp_recv_stop, get<uv_udp_t>()); }
 
 private:
