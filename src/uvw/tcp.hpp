@@ -40,8 +40,22 @@ public:
 
 
 class Tcp final: public Stream<Tcp> {
+    using GetNameFunctionType = Addr(*)(Tcp &);
+
+    template<typename I>
+    static Addr tAddress(Tcp &tcp) {
+        return tcp.Stream::address<I, uv_tcp_t>(uv_tcp_getsockname);
+    }
+
+    template<typename I>
+    static Addr tRemote(Tcp &tcp) {
+        return tcp.Stream::address<I, uv_tcp_t>(uv_tcp_getpeername);
+    }
+
     explicit Tcp(std::shared_ptr<Loop> ref)
-        : Stream{HandleType<uv_tcp_t>{}, std::move(ref)}
+        : Stream{HandleType<uv_tcp_t>{}, std::move(ref)},
+          addressF{&tAddress<details::IPv4>},
+          remoteF{&tRemote<details::IPv4>}
     { }
 
 public:
@@ -73,7 +87,11 @@ public:
     void bind(std::string ip, unsigned int port, Flags<Bind> flags = Flags<Bind>{}) {
         typename Traits::Type addr;
         Traits::AddrFunc(ip.c_str(), port, &addr);
-        invoke(&uv_tcp_bind, get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags);
+
+        if(0 == invoke(&uv_tcp_bind, get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags)) {
+            addressF = &tAddress<I>;
+            remoteF = &tRemote<I>;
+        }
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
@@ -81,11 +99,8 @@ public:
         bind<I>(addr.ip, addr.port, flags);
     }
 
-    template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    Addr address() { return Stream::address<I, uv_tcp_t>(uv_tcp_getsockname); }
-
-    template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    Addr remote() { return Stream::address<I, uv_tcp_t>(uv_tcp_getpeername); }
+    Addr address() { return addressF(*this); }
+    Addr remote() { return remoteF(*this); }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
     void connect(std::string ip, unsigned int port) {
@@ -96,7 +111,12 @@ public:
 
         auto listener = [weak](const auto &event, details::Connect &) {
             auto ptr = weak.lock();
-            if(ptr) { ptr->publish(event); }
+
+            if(ptr) {
+                ptr->addressF = &tAddress<I>;
+                ptr->remoteF = &tRemote<I>;
+                ptr->publish(event);
+            }
         };
 
         auto connect = loop().resource<details::Connect>();
@@ -109,8 +129,15 @@ public:
     void connect(Addr addr) { connect<I>(addr.ip, addr.port); }
 
     void accept(Tcp &tcp) {
-        invoke(&uv_accept, get<uv_stream_t>(), tcp.get<uv_stream_t>());
+        if(0 == invoke(&uv_accept, get<uv_stream_t>(), tcp.get<uv_stream_t>())) {
+            tcp.addressF = addressF;
+            tcp.remoteF = remoteF;
+        }
     }
+
+private:
+    GetNameFunctionType addressF;
+    GetNameFunctionType remoteF;
 };
 
 
