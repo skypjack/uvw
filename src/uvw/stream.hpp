@@ -90,7 +90,7 @@ protected:
         sockaddr_storage ssto;
         int len = sizeof(ssto);
         char name[sizeof(ssto)];
-        std::pair<std::string, unsigned int> addr{ "", 0 };
+        std::pair<std::string, unsigned int> addr{};
 
         int err = std::forward<F>(f)(this->template get<U>(), reinterpret_cast<sockaddr *>(&ssto), &len);
 
