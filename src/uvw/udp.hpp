@@ -7,7 +7,7 @@
 #include <uv.h>
 #include "event.hpp"
 #include "request.hpp"
-#include "stream.hpp"
+#include "handle.hpp"
 #include "util.hpp"
 
 
@@ -37,12 +37,51 @@ public:
 }
 
 
-class Udp final: public Stream<Udp> {
+class Udp final: public Handle<Udp> {
+    using AddressFunctionType = Addr(*)(const Udp &);
+    using RemoteFunctionType = Addr(*)(const sockaddr *);
+
+    template<typename I>
+    static Addr tAddress(const Udp &udp) noexcept {
+        return details::address<I>(uv_udp_getsockname, udp.get<uv_udp_t>());
+    }
+
+    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    static Addr tRemote(const sockaddr *addr) noexcept {
+        const typename Traits::Type *aptr = reinterpret_cast<const typename Traits::Type *>(addr);
+        int len = sizeof(*addr);
+        return details::address<I>(aptr, len);
+    }
+
     explicit Udp(std::shared_ptr<Loop> ref)
-        : Stream{HandleType<uv_udp_t>{}, std::move(ref)}
+        : Handle{HandleType<uv_udp_t>{}, std::move(ref)},
+          addressF{&tAddress<details::IPv4>},
+          remoteF{&tRemote<details::IPv4>}
     { }
 
+    static void readCallback(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
+        Udp &udp = *(static_cast<Udp*>(handle->data));
+        // data will be destroyed no matter of what the value of nread is
+        std::unique_ptr<const char[]> data{buf->base};
+
+        if(nread > 0) {
+            // data available (can be truncated)
+            udp.publish(UDPDataEvent{udp.remoteF(addr), std::move(data), nread, flags & UV_UDP_PARTIAL});
+        } else if(nread == 0 && addr == nullptr) {
+            // no more data to be read, doing nothing is fine
+        } else if(nread == 0 && addr != nullptr) {
+            // empty udp packet
+            udp.publish(UDPDataEvent{udp.remoteF(addr), std::move(data), nread, false});
+        } else {
+            // transmission error
+            udp.publish(ErrorEvent(nread));
+        }
+    }
+
 public:
+    using IPv4 = details::IPv4;
+    using IPv6 = details::IPv6;
+
     enum class Bind: std::underlying_type_t<uv_udp_flags> {
         IPV6ONLY = UV_UDP_IPV6ONLY,
         REUSEADDR = UV_UDP_REUSEADDR
@@ -59,7 +98,11 @@ public:
     void bind(std::string ip, unsigned int port, Flags<Bind> flags = Flags<Bind>{}) {
         typename Traits::Type addr;
         Traits::AddrFunc(ip.c_str(), port, &addr);
-        invoke(&uv_udp_bind, get<uv_udp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags);
+
+        if(0 == invoke(&uv_udp_bind, get<uv_udp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags)) {
+            addressF = &tAddress<I>;
+            remoteF = &tRemote<I>;
+        }
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
@@ -67,8 +110,7 @@ public:
         bind<I>(addr.ip, addr.port, flags);
     }
 
-    template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    Addr address() { return Stream::address<I, uv_udp_t>(uv_udp_getsockname); }
+    Addr address() const noexcept { return addressF(*this); }
 
     // TODO uv_udp_set_membership
     // TODO uv_udp_set_multicast_loop
@@ -83,6 +125,10 @@ public:
     // TODO uv_udp_recv_start
 
     void stop() { invoke(&uv_udp_recv_stop, get<uv_udp_t>()); }
+
+private:
+    AddressFunctionType addressF;
+    RemoteFunctionType remoteF;
 };
 
 

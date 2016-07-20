@@ -46,7 +46,7 @@ struct DataEvent: Event<DataEvent> {
 
 private:
     std::unique_ptr<const char[]> dt;
-    ssize_t len;
+    const ssize_t len;
 };
 
 
@@ -56,22 +56,22 @@ struct EndEvent: Event<EndEvent> { };
 struct ErrorEvent: Event<ErrorEvent> {
     explicit ErrorEvent(int code = 0) noexcept: ec(code) { }
 
-    operator const char *() const noexcept { return uv_strerror(ec); }
-    operator int() const noexcept { return ec; }
+    const char * what() const noexcept { return uv_strerror(ec); }
+    int code() const noexcept { return ec; }
 
 private:
-    int ec;
+    const int ec;
 };
 
 
 template<typename E>
 struct FlagsEvent: Event<FlagsEvent<E>> {
-    explicit FlagsEvent(Flags<E> f) noexcept: flags{std::move(f)} { }
+    explicit FlagsEvent(Flags<E> f) noexcept: flgs{std::move(f)} { }
 
-    operator Flags<E>() const noexcept { return flags; }
+    Flags<E> flags() const noexcept { return flgs; }
 
 private:
-    const Flags<E> flags;
+    Flags<E> flgs;
 };
 
 
@@ -84,8 +84,8 @@ struct FsPollEvent: Event<FsPollEvent> {
     const Stat & current() const noexcept { return curr; }
 
 private:
-    const Stat prev;
-    const Stat curr;
+    Stat prev;
+    Stat curr;
 };
 
 
@@ -99,14 +99,34 @@ struct ShutdownEvent: Event<ShutdownEvent> { };
 struct SignalEvent: Event<SignalEvent> {
     explicit SignalEvent(int sig) noexcept: signum(sig) { }
 
-    operator int() const noexcept { return signum; }
+    int signal() const noexcept { return signum; }
 
 private:
-    int signum;
+    const int signum;
 };
 
 
 struct TimerEvent: Event<TimerEvent> { };
+
+
+struct UDPDataEvent: Event<UDPDataEvent> {
+    explicit UDPDataEvent(Addr addr, std::unique_ptr<const char[]> ptr, ssize_t l, bool trunc) noexcept
+        : dt{std::move(ptr)}, len{l}, sndr{addr}, part{trunc}
+    { }
+
+    const char * data() const noexcept { return dt.get(); }
+    ssize_t length() const noexcept { return len; }
+    Addr sender() const noexcept { return sndr; }
+    bool partial() const noexcept { return part; }
+
+private:
+    std::unique_ptr<const char[]> dt;
+    const ssize_t len;
+    Addr sndr;
+    const bool part;
+};
+
+
 struct UninitializedEvent: Event<UninitializedEvent> { };
 struct WorkEvent: Event<WorkEvent> { };
 struct WriteEvent: Event<WriteEvent> { };
