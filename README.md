@@ -213,6 +213,6 @@ Code and documentation Copyright (c) 2016 Michele Caini.
 Code released under [the MIT license](https://github.com/skypjack/uvw/blob/master/LICENSE).
 Docs released under [Creative Commons](https://github.com/skypjack/uvw/blob/master/docs/LICENSE).
 
- # Note
+# Note
 
 This documentation is mostly inspired to the [libuv API documentation](http://docs.libuv.org/en/v1.x/) for obvious reasons.
