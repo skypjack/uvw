@@ -120,7 +120,37 @@ public:
     void broadcast(bool enable = false) { invoke(&uv_udp_set_broadcast, get<uv_udp_t>(), enable ? 1 : 0); }
     void ttl(int val) { invoke(&uv_udp_set_ttl, get<uv_udp_t>(), val > 255 ? 255 : val); }
 
-    // TODO uv_udp_send
+    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    void send(std::string ip, unsigned int port, char *data, ssize_t len) {
+        typename Traits::Type addr;
+        Traits::AddrFunc(ip.c_str(), port, &addr);
+
+        uv_buf_t bufs[] = { uv_buf_init(data, len) };
+        std::weak_ptr<Udp> weak = this->shared_from_this();
+
+        auto listener = [weak](const auto &event, details::Send &) {
+            auto ptr = weak.lock();
+
+            if(ptr) {
+                ptr->addressF = &tAddress<I>;
+                ptr->remoteF = &tRemote<I>;
+                ptr->publish(event);
+            }
+        };
+
+        auto send = this->loop().resource<details::Send>();
+        send->once<ErrorEvent>(listener);
+        send->once<SendEvent>(listener);
+        send->send(get<uv_udp_t>(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
+
+        addressF = &tAddress<I>;
+        remoteF = &tRemote<I>;
+    }
+
+    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    void send(std::string ip, unsigned int port, std::unique_ptr<char[]> data, ssize_t len) {
+        send<I>(ip, port, data.get(), len);
+    }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
     int trySend(std::string ip, unsigned int port, char *data, ssize_t len) {
@@ -133,6 +163,9 @@ public:
         if(bw < 0) {
             this->publish(ErrorEvent{bw});
             bw = 0;
+        } else {
+            addressF = &tAddress<I>;
+            remoteF = &tRemote<I>;
         }
 
         return bw;
