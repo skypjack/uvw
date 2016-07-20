@@ -40,16 +40,17 @@ public:
 
 
 class Tcp final: public Stream<Tcp> {
-    using GetNameFunctionType = Addr(*)(Tcp &);
+    using AddressFunctionType = Addr(*)(const Tcp &);
+    using RemoteFunctionType = AddressFunctionType;
 
     template<typename I>
-    static Addr tAddress(Tcp &tcp) {
-        return tcp.Stream::address<I, uv_tcp_t>(uv_tcp_getsockname);
+    static Addr tAddress(const Tcp &tcp) noexcept {
+        return details::address<I>(uv_tcp_getsockname, tcp.get<uv_tcp_t>());
     }
 
     template<typename I>
-    static Addr tRemote(Tcp &tcp) {
-        return tcp.Stream::address<I, uv_tcp_t>(uv_tcp_getpeername);
+    static Addr tRemote(const Tcp &tcp) noexcept {
+        return details::address<I>(uv_tcp_getpeername, tcp.get<uv_tcp_t>());
     }
 
     explicit Tcp(std::shared_ptr<Loop> ref)
@@ -99,8 +100,8 @@ public:
         bind<I>(addr.ip, addr.port, flags);
     }
 
-    Addr address() { return addressF(*this); }
-    Addr remote() { return remoteF(*this); }
+    Addr address() const noexcept { return addressF(*this); }
+    Addr remote() const noexcept { return remoteF(*this); }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
     void connect(std::string ip, unsigned int port) {
@@ -136,8 +137,8 @@ public:
     }
 
 private:
-    GetNameFunctionType addressF;
-    GetNameFunctionType remoteF;
+    AddressFunctionType addressF;
+    RemoteFunctionType remoteF;
 };
 
 

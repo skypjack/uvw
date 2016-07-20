@@ -12,43 +12,6 @@
 namespace uvw {
 
 
-namespace details {
-
-
-struct IPv4 { };
-struct IPv6 { };
-
-
-template<typename>
-struct IpTraits;
-
-template<>
-struct IpTraits<IPv4> {
-    using Type = sockaddr_in;
-    using AddrFuncType = int(*)(const char *, int, sockaddr_in *);
-    using NameFuncType = int(*)(const sockaddr_in *, char *, std::size_t);
-    static const AddrFuncType AddrFunc;
-    static const NameFuncType NameFunc;
-};
-
-template<>
-struct IpTraits<IPv6> {
-    using Type = sockaddr_in6;
-    using AddrFuncType = int(*)(const char *, int, sockaddr_in6 *);
-    using NameFuncType = int(*)(const sockaddr_in6 *, char *, std::size_t);
-    static const AddrFuncType AddrFunc;
-    static const NameFuncType NameFunc;
-};
-
-const IpTraits<IPv4>::AddrFuncType IpTraits<IPv4>::AddrFunc = uv_ip4_addr;
-const IpTraits<IPv6>::AddrFuncType IpTraits<IPv6>::AddrFunc = uv_ip6_addr;
-const IpTraits<IPv4>::NameFuncType IpTraits<IPv4>::NameFunc = uv_ip4_name;
-const IpTraits<IPv6>::NameFuncType IpTraits<IPv6>::NameFunc = uv_ip6_name;
-
-
-}
-
-
 template<typename E>
 class Flags final {
     using InnerType = std::underlying_type_t<E>;
@@ -108,6 +71,79 @@ struct WinSize { int width; int height; };
 
 using TimeSpec = uv_timespec_t;
 using Stat = uv_stat_t;
+
+
+namespace details {
+
+
+struct IPv4 { };
+struct IPv6 { };
+
+
+template<typename>
+struct IpTraits;
+
+template<>
+struct IpTraits<IPv4> {
+    using Type = sockaddr_in;
+    using AddrFuncType = int(*)(const char *, int, sockaddr_in *);
+    using NameFuncType = int(*)(const sockaddr_in *, char *, std::size_t);
+    static const AddrFuncType AddrFunc;
+    static const NameFuncType NameFunc;
+};
+
+template<>
+struct IpTraits<IPv6> {
+    using Type = sockaddr_in6;
+    using AddrFuncType = int(*)(const char *, int, sockaddr_in6 *);
+    using NameFuncType = int(*)(const sockaddr_in6 *, char *, std::size_t);
+    static const AddrFuncType AddrFunc;
+    static const NameFuncType NameFunc;
+};
+
+const IpTraits<IPv4>::AddrFuncType IpTraits<IPv4>::AddrFunc = uv_ip4_addr;
+const IpTraits<IPv6>::AddrFuncType IpTraits<IPv6>::AddrFunc = uv_ip6_addr;
+const IpTraits<IPv4>::NameFuncType IpTraits<IPv4>::NameFunc = uv_ip4_name;
+const IpTraits<IPv6>::NameFuncType IpTraits<IPv6>::NameFunc = uv_ip6_name;
+
+
+template<typename I, typename..., typename Traits = details::IpTraits<I>>
+Addr address(const typename Traits::Type *aptr, int len) noexcept {
+    std::pair<std::string, unsigned int> addr{};
+    char name[len];
+
+    int err = Traits::NameFunc(aptr, name, len);
+
+    if(0 == err) {
+        addr = { std::string{name}, ntohs(aptr->sin_port) };
+    }
+
+    /**
+     * See Boost/Mutant idiom:
+     *     https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Boost_mutant
+     */
+    return reinterpret_cast<Addr&>(addr);
+}
+
+
+template<typename I, typename F, typename U, typename..., typename Traits = details::IpTraits<I>>
+Addr address(F &&f, const U *handle) noexcept {
+    sockaddr_storage ssto;
+    int len = sizeof(ssto);
+    Addr addr{};
+
+    int err = std::forward<F>(f)(handle, reinterpret_cast<sockaddr *>(&ssto), &len);
+
+    if(0 == err) {
+        typename Traits::Type *aptr = reinterpret_cast<typename Traits::Type *>(&ssto);
+        addr = address<I>(aptr, len);
+    }
+
+    return addr;
+}
+
+
+}
 
 
 }
