@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <type_traits>
 #include <utility>
 #include <memory>
 #include <uv.h>
@@ -41,11 +42,19 @@ class Request: public Resource<T> {
 protected:
     using Resource<T>::Resource;
 
-    template<typename R, typename E, typename... A>
-    auto exec(A&&... args) {
-        auto ret = this->invoke(std::forward<A>(args)..., &execCallback<R, E>);
+    template<typename R, typename E, typename F, typename... A>
+    auto exec(F &&f, A&&... args)
+    -> std::enable_if_t<not std::is_void<std::result_of_t<F(A..., decltype(&execCallback<R, E>))>>::value, int> {
+        auto ret = this->invoke(std::forward<F>(f), std::forward<A>(args)..., &execCallback<R, E>);
         if(0 == ret) { this->leak(); }
         return ret;
+    }
+
+    template<typename R, typename E, typename F, typename... A>
+    auto exec(F &&f, A&&... args)
+    -> std::enable_if_t<std::is_void<std::result_of_t<F(A..., decltype(&execCallback<R, E>))>>::value> {
+        std::forward<F>(f)(std::forward<A>(args)..., &execCallback<R, E>);
+        this->leak();
     }
 
 public:

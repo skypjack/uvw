@@ -151,16 +151,11 @@ public:
         Traits::AddrFunc(ip.data(), port, &addr);
 
         uv_buf_t bufs[] = { uv_buf_init(data, len) };
-        std::weak_ptr<Udp> weak = this->shared_from_this();
 
-        auto listener = [weak](const auto &event, details::Send &) {
-            auto ptr = weak.lock();
-
-            if(ptr) {
-                ptr->sockF = &tSock<I>;
-                ptr->peerF = &tPeer<I>;
-                ptr->publish(event);
-            }
+        auto listener = [ptr = this->shared_from_this()](const auto &event, details::Send &) {
+            ptr->sockF = &tSock<I>;
+            ptr->peerF = &tPeer<I>;
+            ptr->publish(event);
         };
 
         auto send = this->loop().resource<details::Send>();
