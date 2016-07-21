@@ -4,6 +4,7 @@
 #include <type_traits>
 #include <utility>
 #include <memory>
+#include <string>
 #include <uv.h>
 #include "event.hpp"
 #include "request.hpp"
@@ -87,6 +88,11 @@ public:
         REUSEADDR = UV_UDP_REUSEADDR
     };
 
+    enum class Membership: std::underlying_type_t<uv_membership> {
+        LEAVE_GROUP = UV_LEAVE_GROUP,
+        JOIN_GROUP = UV_JOIN_GROUP
+    };
+
     template<typename... Args>
     static std::shared_ptr<Udp> create(Args&&... args) {
         return std::shared_ptr<Udp>{new Udp{std::forward<Args>(args)...}};
@@ -97,7 +103,7 @@ public:
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
     void bind(std::string ip, unsigned int port, Flags<Bind> flags = Flags<Bind>{}) {
         typename Traits::Type addr;
-        Traits::AddrFunc(ip.c_str(), port, &addr);
+        Traits::AddrFunc(ip.data(), port, &addr);
 
         if(0 == invoke(&uv_udp_bind, get<uv_udp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags)) {
             addressF = &tAddress<I>;
@@ -112,18 +118,37 @@ public:
 
     Addr address() const noexcept { return addressF(*this); }
 
-    // TODO uv_udp_set_membership
-    // TODO uv_udp_set_multicast_loop
-    // TODO uv_udp_set_multicast_ttl
-    // TODO uv_udp_set_multicast_interface
+    template<typename I>
+    void multicastMembership(std::string multicast, std::string interface, Membership membership) {
+        if(0 == invoke(&uv_udp_set_membership, get<uv_udp_t>(), multicast.data(), interface.data(), static_cast<uv_membership>(membership))) {
+            addressF = &tAddress<I>;
+            remoteF = &tRemote<I>;
+        }
+    }
 
-    void broadcast(bool enable = false) { invoke(&uv_udp_set_broadcast, get<uv_udp_t>(), enable ? 1 : 0); }
+    void multicastLoop(bool enable = true) {
+        invoke(&uv_udp_set_multicast_loop, get<uv_udp_t>(), enable);
+    }
+
+    void multicastTttl(int val) {
+        invoke(&uv_udp_set_multicast_ttl, get<uv_udp_t>(), val > 255 ? 255 : val);
+    }
+
+    template<typename I>
+    void multicastInterface(std::string interface) {
+        if(0 == invoke(&uv_udp_set_multicast_interface, get<uv_udp_t>(), interface.data())) {
+            addressF = &tAddress<I>;
+            remoteF = &tRemote<I>;
+        }
+    }
+
+    void broadcast(bool enable = false) { invoke(&uv_udp_set_broadcast, get<uv_udp_t>(), enable); }
     void ttl(int val) { invoke(&uv_udp_set_ttl, get<uv_udp_t>(), val > 255 ? 255 : val); }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
     void send(std::string ip, unsigned int port, char *data, ssize_t len) {
         typename Traits::Type addr;
-        Traits::AddrFunc(ip.c_str(), port, &addr);
+        Traits::AddrFunc(ip.data(), port, &addr);
 
         uv_buf_t bufs[] = { uv_buf_init(data, len) };
         std::weak_ptr<Udp> weak = this->shared_from_this();
@@ -155,7 +180,7 @@ public:
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
     int trySend(std::string ip, unsigned int port, char *data, ssize_t len) {
         typename Traits::Type addr;
-        Traits::AddrFunc(ip.c_str(), port, &addr);
+        Traits::AddrFunc(ip.data(), port, &addr);
 
         uv_buf_t bufs[] = { uv_buf_init(data, len) };
         auto bw = uv_udp_try_send(get<uv_udp_t>(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
