@@ -19,11 +19,15 @@ class TTY final: public Stream<TTY> {
                  bool readable)
         : Stream{HandleType<uv_tty_t>{}, std::move(ref)},
           fd{static_cast<FileDescriptor::Type>(desc)},
-          rw{readable ? 1 : 0}
+          rw{readable}
     { }
 
 public:
-    enum class Mode: unsigned short int { NORMAL, RAW, IO };
+    enum class Mode: std::underlying_type_t<uv_tty_mode_t> {
+        NORMAL = UV_TTY_MODE_NORMAL,
+        RAW = UV_TTY_MODE_RAW,
+        IO = UV_TTY_MODE_IO
+    };
 
     template<typename... Args>
     static std::shared_ptr<TTY> create(Args&&... args) {
@@ -32,23 +36,11 @@ public:
 
     bool init() { return initialize<uv_tty_t>(&uv_tty_init, fd, rw); }
 
-    void mode(TTY::Mode m) {
-        // uv_tty_set_mode is inline, cannot be used with invoke directly
-        auto wrap = [](auto *handle, auto m) {
+    void mode(Mode m) {
+        // uv_tty_set_mode is inline, it cannot be used with invoke directly
+        invoke([](auto *handle, auto m) {
             return uv_tty_set_mode(handle, m);
-        };
-
-        switch(m) {
-        case TTY::Mode::NORMAL:
-            invoke(std::move(wrap), get<uv_tty_t>(), UV_TTY_MODE_NORMAL);
-            break;
-        case TTY::Mode::RAW:
-            invoke(std::move(wrap), get<uv_tty_t>(), UV_TTY_MODE_RAW);
-            break;
-        case TTY::Mode::IO:
-            invoke(std::move(wrap), get<uv_tty_t>(), UV_TTY_MODE_IO);
-            break;
-        }
+        }, get<uv_tty_t>(), static_cast<std::underlying_type_t<Mode>>(m));
     }
 
     void reset() { invoke(&uv_tty_reset_mode); }

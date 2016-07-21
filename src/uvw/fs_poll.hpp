@@ -34,7 +34,7 @@ public:
 
     void start(std::string f, unsigned int interval) {
         file = std::move(f);
-        invoke(&uv_fs_poll_start, get<uv_fs_poll_t>(), &startCallback, file.c_str(), interval);
+        invoke(&uv_fs_poll_start, get<uv_fs_poll_t>(), &startCallback, file.data(), interval);
     }
 
     void stop() { invoke(&uv_fs_poll_stop, get<uv_fs_poll_t>()); }

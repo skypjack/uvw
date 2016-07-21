@@ -77,17 +77,17 @@ public:
     bool init() { return initialize<uv_tcp_t>(&uv_tcp_init); }
 
     void noDelay(bool value = false) {
-        invoke(&uv_tcp_nodelay, get<uv_tcp_t>(), value ? 1 : 0);
+        invoke(&uv_tcp_nodelay, get<uv_tcp_t>(), value);
     }
 
     void keepAlive(bool enable = false, Time time = Time{0}) {
-        invoke(&uv_tcp_keepalive, get<uv_tcp_t>(), enable ? 1 : 0, time.count());
+        invoke(&uv_tcp_keepalive, get<uv_tcp_t>(), enable, time.count());
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
     void bind(std::string ip, unsigned int port, Flags<Bind> flags = Flags<Bind>{}) {
         typename Traits::Type addr;
-        Traits::AddrFunc(ip.c_str(), port, &addr);
+        Traits::AddrFunc(ip.data(), port, &addr);
 
         if(0 == invoke(&uv_tcp_bind, get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags)) {
             addressF = &tAddress<I>;
@@ -106,7 +106,7 @@ public:
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
     void connect(std::string ip, unsigned int port) {
         typename Traits::Type addr;
-        Traits::AddrFunc(ip.c_str(), port, &addr);
+        Traits::AddrFunc(ip.data(), port, &addr);
 
         std::weak_ptr<Tcp> weak = this->shared_from_this();
 
