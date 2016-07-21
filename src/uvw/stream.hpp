@@ -18,6 +18,24 @@ namespace uvw {
 namespace details {
 
 
+class Connect final: public Request<Connect> {
+    explicit Connect(std::shared_ptr<Loop> ref)
+        : Request{RequestType<uv_connect_t>{}, std::move(ref)}
+    { }
+
+public:
+    template<typename... Args>
+    static std::shared_ptr<Connect> create(Args&&... args) {
+        return std::shared_ptr<Connect>{new Connect{std::forward<Args>(args)...}};
+    }
+
+    template<typename F, typename... A>
+    void connect(F &&f, A... args) {
+        exec<uv_connect_t, ConnectEvent>(std::forward<F>(f), get<uv_connect_t>(), std::forward<A>(args)...);
+    }
+};
+
+
 class Shutdown final: public Request<Shutdown> {
     explicit Shutdown(std::shared_ptr<Loop> ref)
         : Request{RequestType<uv_shutdown_t>{}, std::move(ref)}
@@ -110,6 +128,8 @@ public:
     void listen() {
         listen(DEFAULT_BACKLOG);
     }
+
+    virtual void accept(T &) = 0;
 
     void read() {
         this->invoke(&uv_read_start, this->template get<uv_stream_t>(), &this->allocCallback, &readCallback);

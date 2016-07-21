@@ -39,16 +39,16 @@ public:
 
 
 class Udp final: public Handle<Udp> {
-    using AddressFunctionType = Addr(*)(const Udp &);
-    using RemoteFunctionType = Addr(*)(const sockaddr *);
+    using SockFunctionType = Addr(*)(const Udp &);
+    using PeerFunctionType = Addr(*)(const sockaddr *);
 
     template<typename I>
-    static Addr tAddress(const Udp &udp) noexcept {
+    static Addr tSock(const Udp &udp) noexcept {
         return details::address<I>(uv_udp_getsockname, udp.get<uv_udp_t>());
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    static Addr tRemote(const sockaddr *addr) noexcept {
+    static Addr tPeer(const sockaddr *addr) noexcept {
         const typename Traits::Type *aptr = reinterpret_cast<const typename Traits::Type *>(addr);
         int len = sizeof(*addr);
         return details::address<I>(aptr, len);
@@ -56,8 +56,8 @@ class Udp final: public Handle<Udp> {
 
     explicit Udp(std::shared_ptr<Loop> ref)
         : Handle{HandleType<uv_udp_t>{}, std::move(ref)},
-          addressF{&tAddress<details::IPv4>},
-          remoteF{&tRemote<details::IPv4>}
+          sockF{&tSock<details::IPv4>},
+          peerF{&tPeer<details::IPv4>}
     { }
 
     static void recvCallback(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
@@ -67,12 +67,12 @@ class Udp final: public Handle<Udp> {
 
         if(nread > 0) {
             // data available (can be truncated)
-            udp.publish(UDPDataEvent{udp.remoteF(addr), std::move(data), nread, flags & UV_UDP_PARTIAL});
+            udp.publish(UDPDataEvent{udp.peerF(addr), std::move(data), nread, flags & UV_UDP_PARTIAL});
         } else if(nread == 0 && addr == nullptr) {
             // no more data to be read, doing nothing is fine
         } else if(nread == 0 && addr != nullptr) {
             // empty udp packet
-            udp.publish(UDPDataEvent{udp.remoteF(addr), std::move(data), nread, false});
+            udp.publish(UDPDataEvent{udp.peerF(addr), std::move(data), nread, false});
         } else {
             // transmission error
             udp.publish(ErrorEvent(nread));
@@ -106,8 +106,8 @@ public:
         Traits::AddrFunc(ip.data(), port, &addr);
 
         if(0 == invoke(&uv_udp_bind, get<uv_udp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags)) {
-            addressF = &tAddress<I>;
-            remoteF = &tRemote<I>;
+            sockF = &tSock<I>;
+            peerF = &tPeer<I>;
         }
     }
 
@@ -116,13 +116,13 @@ public:
         bind<I>(addr.ip, addr.port, flags);
     }
 
-    Addr address() const noexcept { return addressF(*this); }
+    Addr sock() const noexcept { return sockF(*this); }
 
     template<typename I>
     void multicastMembership(std::string multicast, std::string interface, Membership membership) {
         if(0 == invoke(&uv_udp_set_membership, get<uv_udp_t>(), multicast.data(), interface.data(), static_cast<uv_membership>(membership))) {
-            addressF = &tAddress<I>;
-            remoteF = &tRemote<I>;
+            sockF = &tSock<I>;
+            peerF = &tPeer<I>;
         }
     }
 
@@ -137,8 +137,8 @@ public:
     template<typename I>
     void multicastInterface(std::string interface) {
         if(0 == invoke(&uv_udp_set_multicast_interface, get<uv_udp_t>(), interface.data())) {
-            addressF = &tAddress<I>;
-            remoteF = &tRemote<I>;
+            sockF = &tSock<I>;
+            peerF = &tPeer<I>;
         }
     }
 
@@ -157,8 +157,8 @@ public:
             auto ptr = weak.lock();
 
             if(ptr) {
-                ptr->addressF = &tAddress<I>;
-                ptr->remoteF = &tRemote<I>;
+                ptr->sockF = &tSock<I>;
+                ptr->peerF = &tPeer<I>;
                 ptr->publish(event);
             }
         };
@@ -168,8 +168,8 @@ public:
         send->once<SendEvent>(listener);
         send->send(get<uv_udp_t>(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
 
-        addressF = &tAddress<I>;
-        remoteF = &tRemote<I>;
+        sockF = &tSock<I>;
+        peerF = &tPeer<I>;
     }
 
     template<typename I, typename..., typename Traits = details::IpTraits<I>>
@@ -189,8 +189,8 @@ public:
             this->publish(ErrorEvent{bw});
             bw = 0;
         } else {
-            addressF = &tAddress<I>;
-            remoteF = &tRemote<I>;
+            sockF = &tSock<I>;
+            peerF = &tPeer<I>;
         }
 
         return bw;
@@ -205,8 +205,8 @@ public:
     void stop() { invoke(&uv_udp_recv_stop, get<uv_udp_t>()); }
 
 private:
-    AddressFunctionType addressF;
-    RemoteFunctionType remoteF;
+    SockFunctionType sockF;
+    PeerFunctionType peerF;
 };
 
 

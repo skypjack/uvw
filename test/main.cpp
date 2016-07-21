@@ -30,10 +30,10 @@ void listen(uvw::Loop &loop) {
 
         srv.accept(*client);
 
-        uvw::Addr local = srv.address();
+        uvw::Addr local = srv.sock();
         std::cout << "local: " << local.ip << " " << local.port << std::endl;
 
-        uvw::Addr remote = client->remote();
+        uvw::Addr remote = client->peer();
         std::cout << "remote: " << remote.ip << " " << remote.port << std::endl;
 
         client->on<uvw::DataEvent>([](const uvw::DataEvent &event, uvw::Tcp &) {
