@@ -21,7 +21,7 @@ class FsPoll final: public Handle<FsPoll> {
     }
 
     explicit FsPoll(std::shared_ptr<Loop> ref)
-        : Handle{HandleType<uv_fs_poll_t>{}, std::move(ref)}, file{}
+        : Handle{HandleType<uv_fs_poll_t>{}, std::move(ref)}
     { }
 
 public:
@@ -32,16 +32,12 @@ public:
 
     bool init() { return initialize<uv_fs_poll_t>(&uv_fs_poll_init); }
 
-    void start(std::string f, unsigned int interval) {
-        file = std::move(f);
+    void start(std::string file, unsigned int interval) {
         invoke(&uv_fs_poll_start, get<uv_fs_poll_t>(), &startCallback, file.data(), interval);
     }
 
     void stop() { invoke(&uv_fs_poll_stop, get<uv_fs_poll_t>()); }
-    std::string path() const noexcept { return file; }
-
-private:
-    std::string file;
+    std::string path() const noexcept { return details::path(&uv_fs_poll_getpath, get<uv_fs_poll_t>()); }
 };
 
 

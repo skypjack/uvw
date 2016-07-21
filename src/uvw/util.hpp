@@ -101,10 +101,10 @@ struct IpTraits<IPv6> {
     static const NameFuncType NameFunc;
 };
 
-const IpTraits<IPv4>::AddrFuncType IpTraits<IPv4>::AddrFunc = uv_ip4_addr;
-const IpTraits<IPv6>::AddrFuncType IpTraits<IPv6>::AddrFunc = uv_ip6_addr;
-const IpTraits<IPv4>::NameFuncType IpTraits<IPv4>::NameFunc = uv_ip4_name;
-const IpTraits<IPv6>::NameFuncType IpTraits<IPv6>::NameFunc = uv_ip6_name;
+const IpTraits<IPv4>::AddrFuncType IpTraits<IPv4>::AddrFunc = &uv_ip4_addr;
+const IpTraits<IPv6>::AddrFuncType IpTraits<IPv6>::AddrFunc = &uv_ip6_addr;
+const IpTraits<IPv4>::NameFuncType IpTraits<IPv4>::NameFunc = &uv_ip4_name;
+const IpTraits<IPv6>::NameFuncType IpTraits<IPv6>::NameFunc = &uv_ip6_name;
 
 
 template<typename I, typename..., typename Traits = details::IpTraits<I>>
@@ -126,8 +126,8 @@ Addr address(const typename Traits::Type *aptr, int len) noexcept {
 }
 
 
-template<typename I, typename F, typename U, typename..., typename Traits = details::IpTraits<I>>
-Addr address(F &&f, const U *handle) noexcept {
+template<typename I, typename F, typename H, typename..., typename Traits = details::IpTraits<I>>
+Addr address(F &&f, const H *handle) noexcept {
     sockaddr_storage ssto;
     int len = sizeof(ssto);
     Addr addr{};
@@ -140,6 +140,28 @@ Addr address(F &&f, const U *handle) noexcept {
     }
 
     return addr;
+}
+
+
+template<typename F, typename H, typename..., std::size_t N = 128>
+std::string path(F &&f, H *handle) noexcept {
+    std::size_t size = N;
+    char buf[size];
+    std::string str{};
+    auto err = std::forward<F>(f)(handle, buf, &size);
+
+    if(UV_ENOBUFS == err) {
+        std::unique_ptr<char[]> data{new char[size]};
+        err = std::forward<F>(f)(handle, data.get(), &size);
+
+        if(0 == err) {
+            str = data.get();
+        }
+    } else {
+        str.assign(buf, size);
+    }
+
+    return str;
 }
 
 
