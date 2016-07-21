@@ -215,4 +215,4 @@ Docs released under [Creative Commons](https://github.com/skypjack/uvw/blob/mast
 
 # Note
 
-This documentation is mostly inspired to the [libuv API documentation](http://docs.libuv.org/en/v1.x/) for obvious reasons.
+This documentation is mostly inspired by the official [libuv API documentation](http://docs.libuv.org/en/v1.x/) for obvious reasons.
