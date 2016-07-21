@@ -108,11 +108,8 @@ protected:
 
 public:
     void shutdown() {
-        std::weak_ptr<T> weak = this->shared_from_this();
-
-        auto listener = [weak](const auto &event, details::Shutdown &) {
-            auto ptr = weak.lock();
-            if(ptr) { ptr->publish(event); }
+        auto listener = [ptr = this->shared_from_this()](const auto &event, details::Shutdown &) {
+            ptr->publish(event);
         };
 
         auto shutdown = this->loop().template resource<details::Shutdown>();
@@ -141,11 +138,9 @@ public:
 
     void write(char *data, ssize_t len) {
         uv_buf_t bufs[] = { uv_buf_init(data, len) };
-        std::weak_ptr<T> weak = this->shared_from_this();
 
-        auto listener = [weak](const auto &event, details::Write &) {
-            auto ptr = weak.lock();
-            if(ptr) { ptr->publish(event); }
+        auto listener = [ptr = this->shared_from_this()](const auto &event, details::Write &) {
+            ptr->publish(event);
         };
 
         auto write = this->loop().template resource<details::Write>();

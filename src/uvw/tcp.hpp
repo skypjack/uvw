@@ -85,16 +85,10 @@ public:
         typename Traits::Type addr;
         Traits::AddrFunc(ip.data(), port, &addr);
 
-        std::weak_ptr<Tcp> weak = this->shared_from_this();
-
-        auto listener = [weak](const auto &event, details::Connect &) {
-            auto ptr = weak.lock();
-
-            if(ptr) {
-                ptr->sockF = &tSock<I>;
-                ptr->peerF = &tPeer<I>;
-                ptr->publish(event);
-            }
+        auto listener = [ptr = this->shared_from_this()](const auto &event, details::Connect &) {
+            ptr->sockF = &tSock<I>;
+            ptr->peerF = &tPeer<I>;
+            ptr->publish(event);
         };
 
         auto connect = loop().resource<details::Connect>();
