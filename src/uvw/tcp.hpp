@@ -38,12 +38,21 @@ public:
 
     bool init() { return initialize<uv_tcp_t>(&uv_tcp_init); }
 
+    template<typename T, typename... Args>
+    bool init(T&& t, Args&&... args) {
+        return initialize<uv_tcp_t>(&uv_tcp_init_ex, std::forward<T>(t), std::forward<Args>(args)...);
+    }
+
     void noDelay(bool value = false) {
         invoke(&uv_tcp_nodelay, get<uv_tcp_t>(), value);
     }
 
     void keepAlive(bool enable = false, Time time = Time{0}) {
         invoke(&uv_tcp_keepalive, get<uv_tcp_t>(), enable, time.count());
+    }
+
+    void simultaneousAccepts(bool enable = true) {
+        invoke(&uv_tcp_simultaneous_accepts, get<uv_tcp_t>(), enable);
     }
 
     template<typename I = IPv4>
