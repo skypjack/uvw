@@ -29,9 +29,9 @@ public:
         return std::shared_ptr<Connect>{new Connect{std::forward<Args>(args)...}};
     }
 
-    template<typename F, typename... A>
-    void connect(F &&f, A... args) {
-        exec<uv_connect_t, ConnectEvent>(std::forward<F>(f), get<uv_connect_t>(), std::forward<A>(args)...);
+    template<typename F, typename... Args>
+    void connect(F &&f, Args... args) {
+        exec<uv_connect_t, ConnectEvent>(std::forward<F>(f), get<uv_connect_t>(), std::forward<Args>(args)...);
     }
 };
 
