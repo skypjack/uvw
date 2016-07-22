@@ -43,6 +43,10 @@ public:
         return initialize<uv_tcp_t>(&uv_tcp_init_ex, std::forward<T>(t), std::forward<Args>(args)...);
     }
 
+    void open(OSSocketHandle sock) {
+        invoke(&uv_tcp_open, get<uv_tcp_t>(), sock);
+    }
+
     void noDelay(bool value = false) {
         invoke(&uv_tcp_nodelay, get<uv_tcp_t>(), value);
     }
