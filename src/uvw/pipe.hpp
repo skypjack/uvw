@@ -28,6 +28,8 @@ public:
 
     bool init(bool ipc = false) { return initialize<uv_pipe_t>(&uv_pipe_init, ipc); }
 
+    // TODO uv_pipe_open
+
     void bind(std::string name) {
         invoke(&uv_pipe_bind, get<uv_pipe_t>(), name.data());
     }

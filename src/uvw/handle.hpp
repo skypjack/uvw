@@ -91,6 +91,10 @@ public:
     std::size_t size() const noexcept {
         return uv_handle_size(this->template get<uv_handle_t>()->type);
     }
+
+    // TODO uv_send_buffer_size
+    // TODO uv_recv_buffer_size
+    // TODO uv_fileno
 };
 
 

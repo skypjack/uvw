@@ -156,6 +156,8 @@ public:
         write(data.get(), len);
     }
 
+    // TODO uv_write2
+
     int tryWrite(char *data, ssize_t len) {
         uv_buf_t bufs[] = { uv_buf_init(data, len) };
         auto bw = uv_try_write(this->template get<uv_stream_t>(), bufs, 1);
@@ -179,6 +181,8 @@ public:
     bool writable() const noexcept {
         return (uv_is_writable(this->template get<uv_stream_t>()) == 1);
     }
+
+    // TODO uv_stream_set_blocking
 };
 
 
