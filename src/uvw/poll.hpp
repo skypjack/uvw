@@ -36,7 +36,7 @@ public:
         return std::shared_ptr<Poll>{new Poll{std::forward<Args>(args)...}};
     }
 
-    bool init(FileDescriptor fd) { return initialize<uv_poll_t>(&uv_poll_init, static_cast<FileDescriptor::Type>(fd)); }
+    bool init(int fd) { return initialize<uv_poll_t>(&uv_poll_init, fd); }
 
     void start(Flags<Event> flags) { invoke(&uv_poll_start, get<uv_poll_t>(), flags, &startCallback); }
     void start(Event event) { start(Flags<Event>{event}); }

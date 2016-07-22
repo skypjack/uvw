@@ -3,6 +3,8 @@
 
 
 TEST(Loop, Basics) {
+    // TODO partially done
+
     auto def = uvw::Loop::getDefault();
 
     ASSERT_TRUE(static_cast<bool>(def));

@@ -15,10 +15,10 @@ namespace uvw {
 
 class TTY final: public Stream<TTY> {
     explicit TTY(std::shared_ptr<Loop> ref,
-                 FileDescriptor desc,
+                 FileHandle desc,
                  bool readable)
         : Stream{HandleType<uv_tty_t>{}, std::move(ref)},
-          fd{static_cast<FileDescriptor::Type>(desc)},
+          fd{static_cast<FileHandle::Type>(desc)},
           rw{readable}
     { }
 
@@ -63,7 +63,7 @@ public:
     }
 
 private:
-    FileDescriptor::Type fd;
+    FileHandle::Type fd;
     int rw;
 };
 

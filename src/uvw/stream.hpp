@@ -29,9 +29,9 @@ public:
         return std::shared_ptr<Connect>{new Connect{std::forward<Args>(args)...}};
     }
 
-    template<typename F, typename... A>
-    void connect(F &&f, A... args) {
-        exec<uv_connect_t, ConnectEvent>(std::forward<F>(f), get<uv_connect_t>(), std::forward<A>(args)...);
+    template<typename F, typename... Args>
+    void connect(F &&f, Args... args) {
+        exec<uv_connect_t, ConnectEvent>(std::forward<F>(f), get<uv_connect_t>(), std::forward<Args>(args)...);
     }
 };
 
@@ -66,6 +66,10 @@ public:
 
     void write(uv_stream_t *handle, const uv_buf_t bufs[], unsigned int nbufs) {
         exec<uv_write_t, WriteEvent>(&uv_write, get<uv_write_t>(), handle, bufs, nbufs);
+    }
+
+    void write(uv_stream_t *handle, const uv_buf_t bufs[], unsigned int nbufs, uv_stream_t *send) {
+        exec<uv_write_t, WriteEvent>(&uv_write2, get<uv_write_t>(), handle, bufs, nbufs, send);
     }
 };
 
@@ -126,7 +130,10 @@ public:
         listen(DEFAULT_BACKLOG);
     }
 
-    virtual void accept(T &) = 0;
+    template<typename U>
+    void accept(Stream<U> &ref) {
+        this->invoke(&uv_accept, this->template get<uv_stream_t>(), ref.template get<uv_stream_t>());
+    }
 
     void read() {
         this->invoke(&uv_read_start, this->template get<uv_stream_t>(), &this->allocCallback, &readCallback);
@@ -153,6 +160,25 @@ public:
         write(data.get(), len);
     }
 
+    template<typename U>
+    void write(Stream<U> &send, char *data, ssize_t len) {
+        uv_buf_t bufs[] = { uv_buf_init(data, len) };
+
+        auto listener = [ptr = this->shared_from_this()](const auto &event, details::Write &) {
+            ptr->publish(event);
+        };
+
+        auto write = this->loop().template resource<details::Write>();
+        write->template once<ErrorEvent>(listener);
+        write->template once<WriteEvent>(listener);
+        write->write(this->template get<uv_stream_t>(), bufs, 1, send.template get<uv_stream_t>());
+    }
+
+    template<typename U>
+    void write(Stream<U> &send, std::unique_ptr<char[]> data, ssize_t len) {
+        write(send, data.get(), len);
+    }
+
     int tryWrite(char *data, ssize_t len) {
         uv_buf_t bufs[] = { uv_buf_init(data, len) };
         auto bw = uv_try_write(this->template get<uv_stream_t>(), bufs, 1);
@@ -175,6 +201,10 @@ public:
 
     bool writable() const noexcept {
         return (uv_is_writable(this->template get<uv_stream_t>()) == 1);
+    }
+
+    void blocking(bool enable = false) {
+        this->invoke(&uv_stream_set_blocking, this->template get<uv_stream_t>(), enable);
     }
 };
 
