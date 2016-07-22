@@ -26,7 +26,7 @@ void listen(uvw::Loop &loop) {
         client->read();
     });
 
-    tcp->bind<uvw::Tcp::IPv4>("127.0.0.1", 4242);
+    tcp->bind("127.0.0.1", 4242);
     tcp->listen();
 }
 
@@ -41,7 +41,7 @@ void conn(uvw::Loop &loop) {
         tcp.close();
     });
 
-    tcp->connect<uvw::Tcp::IPv4>(std::string{"127.0.0.1"}, 4242);
+    tcp->connect(std::string{"127.0.0.1"}, 4242);
 }
 
 int main() {
@@ -147,7 +147,7 @@ To know what are the available resources' types, please refer the API reference.
 ##### The event-based approach
 
 For `uvw` offers an event-based approach, resources are small event emitters to which listeners can be attached.  
-Attaching a listener to a resource is the reccomended way to be notified about changes.  
+Attaching a listener to a resource is the recommended way to be notified about changes.  
 Listeners must be callable objects of type `void(const EventType &, ResourceType &)`, where:
 
 * `EventType` is the type of the event for which they have been designed
@@ -180,11 +180,14 @@ tcp->on<uvw::ListenEvent>([](const uvw::ListenEvent &event, uvw::Tcp &srv) mutab
     client->read();
 });
 
-tcp->bind<uvw::Tcp::IPv4>("127.0.0.1", 4242);
+tcp->bind("127.0.0.1", 4242);
 tcp->listen();
 ```
 
-The API reference is the reccomended documentation for further details about resources and their methods.
+Note that `uvw::Tcp` already supports _IPv6_ out-of-the-box. The statement above is equivalent to `tcp->bind<uvw::Tcp::IPv4>("127.0.0.1", 4242)`.  
+It's suffice to explicitly specify `uvw::Tcp::IPv6` as the underlying protocol to use it.
+
+The API reference is the recommended documentation for further details about resources and their methods.
 
 ## Tests
 

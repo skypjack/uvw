@@ -126,7 +126,10 @@ public:
         listen(DEFAULT_BACKLOG);
     }
 
-    virtual void accept(T &) = 0;
+    template<typename U>
+    void accept(U &ref) {
+        this->invoke(&uv_accept, this->template get<uv_stream_t>(), ref.template get<uv_stream_t>());
+    }
 
     void read() {
         this->invoke(&uv_read_start, this->template get<uv_stream_t>(), &this->allocCallback, &readCallback);

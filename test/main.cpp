@@ -56,7 +56,7 @@ void listen(uvw::Loop &loop) {
         std::cout << "close" << std::endl;
     });
 
-    tcp->bind<uvw::Tcp::IPv4>("127.0.0.1", 4242);
+    tcp->bind("127.0.0.1", 4242);
     tcp->listen();
 }
 
@@ -88,7 +88,7 @@ void conn(uvw::Loop &loop) {
         std::cout << "close" << std::endl;
     });
 
-    tcp->connect<uvw::Tcp::IPv4>(std::string{"127.0.0.1"}, 4242);
+    tcp->connect(std::string{"127.0.0.1"}, 4242);
 }
 
 void g() {

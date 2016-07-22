@@ -107,12 +107,12 @@ const IpTraits<IPv4>::NameFuncType IpTraits<IPv4>::NameFunc = &uv_ip4_name;
 const IpTraits<IPv6>::NameFuncType IpTraits<IPv6>::NameFunc = &uv_ip6_name;
 
 
-template<typename I, typename..., typename Traits = details::IpTraits<I>>
-Addr address(const typename Traits::Type *aptr, int len) noexcept {
+template<typename I>
+Addr address(const typename details::IpTraits<I>::Type *aptr, int len) noexcept {
     std::pair<std::string, unsigned int> addr{};
     char name[len];
 
-    int err = Traits::NameFunc(aptr, name, len);
+    int err = details::IpTraits<I>::NameFunc(aptr, name, len);
 
     if(0 == err) {
         addr = { std::string{name}, ntohs(aptr->sin_port) };
@@ -126,7 +126,7 @@ Addr address(const typename Traits::Type *aptr, int len) noexcept {
 }
 
 
-template<typename I, typename F, typename H, typename..., typename Traits = details::IpTraits<I>>
+template<typename I, typename F, typename H>
 Addr address(F &&f, const H *handle) noexcept {
     sockaddr_storage ssto;
     int len = sizeof(ssto);
@@ -135,7 +135,7 @@ Addr address(F &&f, const H *handle) noexcept {
     int err = std::forward<F>(f)(handle, reinterpret_cast<sockaddr *>(&ssto), &len);
 
     if(0 == err) {
-        typename Traits::Type *aptr = reinterpret_cast<typename Traits::Type *>(&ssto);
+        typename details::IpTraits<I>::Type *aptr = reinterpret_cast<typename details::IpTraits<I>::Type *>(&ssto);
         addr = address<I>(aptr, len);
     }
 

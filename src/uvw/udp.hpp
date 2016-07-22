@@ -39,40 +39,27 @@ public:
 
 
 class Udp final: public Handle<Udp> {
-    using SockFunctionType = Addr(*)(const Udp &);
-    using PeerFunctionType = Addr(*)(const sockaddr *);
-
-    template<typename I>
-    static Addr tSock(const Udp &udp) noexcept {
-        return details::address<I>(uv_udp_getsockname, udp.get<uv_udp_t>());
-    }
-
-    template<typename I, typename..., typename Traits = details::IpTraits<I>>
-    static Addr tPeer(const sockaddr *addr) noexcept {
-        const typename Traits::Type *aptr = reinterpret_cast<const typename Traits::Type *>(addr);
-        int len = sizeof(*addr);
-        return details::address<I>(aptr, len);
-    }
-
     explicit Udp(std::shared_ptr<Loop> ref)
-        : Handle{HandleType<uv_udp_t>{}, std::move(ref)},
-          sockF{&tSock<details::IPv4>},
-          peerF{&tPeer<details::IPv4>}
+        : Handle{HandleType<uv_udp_t>{}, std::move(ref)}
     { }
 
+    template<typename I>
     static void recvCallback(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
+        typename details::IpTraits<I>::Type *aptr = reinterpret_cast<const typename details::IpTraits<I>::Type *>(addr);
+        int len = sizeof(*addr);
+
         Udp &udp = *(static_cast<Udp*>(handle->data));
         // data will be destroyed no matter of what the value of nread is
         std::unique_ptr<const char[]> data{buf->base};
 
         if(nread > 0) {
             // data available (can be truncated)
-            udp.publish(UDPDataEvent{udp.peerF(addr), std::move(data), nread, flags & UV_UDP_PARTIAL});
+            udp.publish(UDPDataEvent{details::address<I>(aptr, len), std::move(data), nread, flags & UV_UDP_PARTIAL});
         } else if(nread == 0 && addr == nullptr) {
             // no more data to be read, doing nothing is fine
         } else if(nread == 0 && addr != nullptr) {
             // empty udp packet
-            udp.publish(UDPDataEvent{udp.peerF(addr), std::move(data), nread, false});
+            udp.publish(UDPDataEvent{details::address<I>(aptr, len), std::move(data), nread, false});
         } else {
             // transmission error
             udp.publish(ErrorEvent(nread));
@@ -100,30 +87,26 @@ public:
 
     bool init() { return initialize<uv_udp_t>(&uv_udp_init); }
 
-    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    template<typename I = IPv4>
     void bind(std::string ip, unsigned int port, Flags<Bind> flags = Flags<Bind>{}) {
-        typename Traits::Type addr;
-        Traits::AddrFunc(ip.data(), port, &addr);
-
-        if(0 == invoke(&uv_udp_bind, get<uv_udp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags)) {
-            sockF = &tSock<I>;
-            peerF = &tPeer<I>;
-        }
+        typename details::IpTraits<I>::Type addr;
+        details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
+        invoke(&uv_udp_bind, get<uv_udp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags);
     }
 
-    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    template<typename I = IPv4>
     void bind(Addr addr, Flags<Bind> flags = Flags<Bind>{}) {
         bind<I>(addr.ip, addr.port, flags);
     }
 
-    Addr sock() const noexcept { return sockF(*this); }
+    template<typename I = IPv4>
+    Addr sock() const noexcept {
+        return details::address<I>(&uv_udp_getsockname, get<uv_udp_t>());
+    }
 
-    template<typename I>
+    template<typename I = IPv4>
     void multicastMembership(std::string multicast, std::string interface, Membership membership) {
-        if(0 == invoke(&uv_udp_set_membership, get<uv_udp_t>(), multicast.data(), interface.data(), static_cast<uv_membership>(membership))) {
-            sockF = &tSock<I>;
-            peerF = &tPeer<I>;
-        }
+        invoke(&uv_udp_set_membership, get<uv_udp_t>(), multicast.data(), interface.data(), static_cast<uv_membership>(membership));
     }
 
     void multicastLoop(bool enable = true) {
@@ -134,27 +117,22 @@ public:
         invoke(&uv_udp_set_multicast_ttl, get<uv_udp_t>(), val > 255 ? 255 : val);
     }
 
-    template<typename I>
+    template<typename I = IPv4>
     void multicastInterface(std::string interface) {
-        if(0 == invoke(&uv_udp_set_multicast_interface, get<uv_udp_t>(), interface.data())) {
-            sockF = &tSock<I>;
-            peerF = &tPeer<I>;
-        }
+        invoke(&uv_udp_set_multicast_interface, get<uv_udp_t>(), interface.data());
     }
 
     void broadcast(bool enable = false) { invoke(&uv_udp_set_broadcast, get<uv_udp_t>(), enable); }
     void ttl(int val) { invoke(&uv_udp_set_ttl, get<uv_udp_t>(), val > 255 ? 255 : val); }
 
-    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    template<typename I = IPv4>
     void send(std::string ip, unsigned int port, char *data, ssize_t len) {
-        typename Traits::Type addr;
-        Traits::AddrFunc(ip.data(), port, &addr);
+        typename details::IpTraits<I>::Type addr;
+        details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
 
         uv_buf_t bufs[] = { uv_buf_init(data, len) };
 
         auto listener = [ptr = this->shared_from_this()](const auto &event, details::Send &) {
-            ptr->sockF = &tSock<I>;
-            ptr->peerF = &tPeer<I>;
             ptr->publish(event);
         };
 
@@ -162,20 +140,17 @@ public:
         send->once<ErrorEvent>(listener);
         send->once<SendEvent>(listener);
         send->send(get<uv_udp_t>(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
-
-        sockF = &tSock<I>;
-        peerF = &tPeer<I>;
     }
 
-    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    template<typename I = IPv4>
     void send(std::string ip, unsigned int port, std::unique_ptr<char[]> data, ssize_t len) {
         send<I>(ip, port, data.get(), len);
     }
 
-    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    template<typename I = IPv4>
     int trySend(std::string ip, unsigned int port, char *data, ssize_t len) {
-        typename Traits::Type addr;
-        Traits::AddrFunc(ip.data(), port, &addr);
+        typename details::IpTraits<I>::Type addr;
+        details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
 
         uv_buf_t bufs[] = { uv_buf_init(data, len) };
         auto bw = uv_udp_try_send(get<uv_udp_t>(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
@@ -183,25 +158,22 @@ public:
         if(bw < 0) {
             this->publish(ErrorEvent{bw});
             bw = 0;
-        } else {
-            sockF = &tSock<I>;
-            peerF = &tPeer<I>;
         }
 
         return bw;
     }
 
-    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    template<typename I = IPv4>
     int trySend(std::string ip, unsigned int port, std::unique_ptr<char[]> data, ssize_t len) {
         return trySend<I>(ip, port, data.get(), len);
     }
 
-    void recv() { invoke(&uv_udp_recv_start, get<uv_udp_t>(), &allocCallback, &recvCallback); }
-    void stop() { invoke(&uv_udp_recv_stop, get<uv_udp_t>()); }
+    template<typename I = IPv4>
+    void recv() {
+        invoke(&uv_udp_recv_start, get<uv_udp_t>(), &allocCallback, &recvCallback<I>);
+    }
 
-private:
-    SockFunctionType sockF;
-    PeerFunctionType peerF;
+    void stop() { invoke(&uv_udp_recv_stop, get<uv_udp_t>()); }
 };
 
 

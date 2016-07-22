@@ -17,23 +17,8 @@ namespace uvw {
 
 
 class Tcp final: public Stream<Tcp> {
-    using SockFunctionType = Addr(*)(const Tcp &);
-    using PeerFunctionType = SockFunctionType;
-
-    template<typename I>
-    static Addr tSock(const Tcp &tcp) noexcept {
-        return details::address<I>(uv_tcp_getsockname, tcp.get<uv_tcp_t>());
-    }
-
-    template<typename I>
-    static Addr tPeer(const Tcp &tcp) noexcept {
-        return details::address<I>(uv_tcp_getpeername, tcp.get<uv_tcp_t>());
-    }
-
     explicit Tcp(std::shared_ptr<Loop> ref)
-        : Stream{HandleType<uv_tcp_t>{}, std::move(ref)},
-          sockF{&tSock<details::IPv4>},
-          peerF{&tPeer<details::IPv4>}
+        : Stream{HandleType<uv_tcp_t>{}, std::move(ref)}
     { }
 
 public:
@@ -61,33 +46,34 @@ public:
         invoke(&uv_tcp_keepalive, get<uv_tcp_t>(), enable, time.count());
     }
 
-    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    template<typename I = IPv4>
     void bind(std::string ip, unsigned int port, Flags<Bind> flags = Flags<Bind>{}) {
-        typename Traits::Type addr;
-        Traits::AddrFunc(ip.data(), port, &addr);
-
-        if(0 == invoke(&uv_tcp_bind, get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags)) {
-            sockF = &tSock<I>;
-            peerF = &tPeer<I>;
-        }
+        typename details::IpTraits<I>::Type addr;
+        details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
+        invoke(&uv_tcp_bind, get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags);
     }
 
-    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    template<typename I = IPv4>
     void bind(Addr addr, Flags<Bind> flags = Flags<Bind>{}) {
         bind<I>(addr.ip, addr.port, flags);
     }
 
-    Addr sock() const noexcept { return sockF(*this); }
-    Addr peer() const noexcept { return peerF(*this); }
+    template<typename I = IPv4>
+    Addr sock() const noexcept {
+        return details::address<I>(&uv_tcp_getsockname, get<uv_tcp_t>());
+    }
 
-    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    template<typename I = IPv4>
+    Addr peer() const noexcept {
+        return details::address<I>(&uv_tcp_getpeername, get<uv_tcp_t>());
+    }
+
+    template<typename I = IPv4>
     void connect(std::string ip, unsigned int port) {
-        typename Traits::Type addr;
-        Traits::AddrFunc(ip.data(), port, &addr);
+        typename details::IpTraits<I>::Type addr;
+        details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
 
         auto listener = [ptr = this->shared_from_this()](const auto &event, details::Connect &) {
-            ptr->sockF = &tSock<I>;
-            ptr->peerF = &tPeer<I>;
             ptr->publish(event);
         };
 
@@ -97,19 +83,8 @@ public:
         connect->connect(&uv_tcp_connect, get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr));
     }
 
-    template<typename I, typename..., typename Traits = details::IpTraits<I>>
+    template<typename I = IPv4>
     void connect(Addr addr) { connect<I>(addr.ip, addr.port); }
-
-    void accept(Tcp &tcp) override {
-        if(0 == invoke(&uv_accept, get<uv_stream_t>(), tcp.get<uv_stream_t>())) {
-            tcp.sockF = sockF;
-            tcp.peerF = peerF;
-        }
-    }
-
-private:
-    SockFunctionType sockF;
-    PeerFunctionType peerF;
 };
 
 
