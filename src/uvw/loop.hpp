@@ -5,6 +5,7 @@
 #include <memory>
 #include <utility>
 #include <type_traits>
+#include <chrono>
 #include <uv.h>
 #include "emitter.hpp"
 #include "util.hpp"
@@ -35,6 +36,12 @@ class Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop
     { }
 
 public:
+    using Time = std::chrono::milliseconds;
+
+    enum class Configure: std::underlying_type_t<uv_loop_option> {
+        BLOCK_SIGNAL = UV_LOOP_BLOCK_SIGNAL
+    };
+
     static std::shared_ptr<Loop> create() {
         auto ptr = std::unique_ptr<uv_loop_t, Deleter>{new uv_loop_t, [](uv_loop_t *l){ delete l; }};
         auto loop = std::shared_ptr<Loop>(new Loop{std::move(ptr)});
@@ -77,6 +84,12 @@ public:
         }
     }
 
+    template<typename... Args>
+    void configure(Configure flag, Args... args) {
+        auto err = uv_loop_configure(loop.get(), static_cast<std::underlying_type_t<Configure>>(flag), std::forward<Args>(args)...);
+        if(err) { publish(ErrorEvent{err}); }
+    }
+
     template<typename R, typename... Args>
     std::enable_if_t<std::is_base_of<BaseHandle, R>::value, std::shared_ptr<R>>
     resource(Args&&... args) {
@@ -114,6 +127,22 @@ public:
 
     void stop() noexcept {
         uv_stop(loop.get());
+    }
+
+    FileDescriptor descriptor() const noexcept {
+        return uv_backend_fd(loop.get());
+    }
+
+    Time timeout() const noexcept {
+        return Time{uv_backend_timeout(loop.get())};
+    }
+
+    Time now() const noexcept {
+        return Time{uv_now(loop.get())};
+    }
+
+    void update() const noexcept {
+        return uv_update_time(loop.get());
     }
 
     void walk(std::function<void(BaseHandle &)> callback) {
