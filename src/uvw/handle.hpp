@@ -39,6 +39,22 @@ class Handle: public BaseHandle, public Resource<T>
         ref.publish(CloseEvent{});
     }
 
+    template<typename F>
+    int setBufferSize(F &&f) {
+        int value = 0;
+
+        if(0 != invoke(std::forward<F>(f), this->template get<uv_handle_t>(), &value)) {
+            value = 0;
+        }
+
+        return 0;
+    }
+
+    template<typename F>
+    void getBufferSize(F &&f, int value) {
+        invoke(&std::forward<F>(f), this->template get<uv_handle_t>(), &value);
+    }
+
 protected:
     using Resource<T>::Resource;
 
@@ -92,9 +108,27 @@ public:
         return uv_handle_size(this->template get<uv_handle_t>()->type);
     }
 
-    // TODO uv_send_buffer_size
-    // TODO uv_recv_buffer_size
-    // TODO uv_fileno
+    int sendBufferSize() const {
+        return setBufferSize(&uv_send_buffer_size);
+    }
+
+    void sendBufferSize(int value) {
+        getBufferSize(&uv_send_buffer_size, value);
+    }
+
+    int recvBufferSize() const {
+        return setBufferSize(&uv_recv_buffer_size);
+    }
+
+    void recvBufferSize(int value) {
+        getBufferSize(&uv_recv_buffer_size, value);
+    }
+
+    OSFileDescriptor fileno() const {
+        uv_os_fd_t fd;
+        invoke(&uv_fileno, this->template get<uv_handle_t>(), &fd);
+        return fd;
+    }
 };
 
 
