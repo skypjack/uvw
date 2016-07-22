@@ -21,6 +21,13 @@ class Pipe final: public Stream<Pipe> {
     { }
 
 public:
+    enum class Pending: std::underlying_type_t<uv_handle_type> {
+        UNKNOWN = UV_UNKNOWN_HANDLE,
+        PIPE = UV_NAMED_PIPE,
+        TCP = UV_TCP,
+        UDP = UV_UDP
+    };
+
     template<typename... Args>
     static std::shared_ptr<Pipe> create(Args&&... args) {
         return std::shared_ptr<Pipe>{new Pipe{std::forward<Args>(args)...}};
@@ -51,9 +58,22 @@ public:
     std::string peer() const noexcept { return details::path(&uv_pipe_getpeername, get<uv_pipe_t>()); }
 
     void pending(int count) noexcept { uv_pipe_pending_instances(get<uv_pipe_t>(), count); }
-    int pending() noexcept { return uv_pipe_pending_count(get<uv_pipe_t>()); }
+    int pending() const noexcept { return uv_pipe_pending_count(get<uv_pipe_t>()); }
 
-    // TODO uv_pipe_pending_type
+    Pending receive() const noexcept {
+        auto type = uv_pipe_pending_type(get<uv_pipe_t>());
+
+        switch(type) {
+        case UV_NAMED_PIPE:
+            return Pending::PIPE;
+        case UV_TCP:
+            return Pending::TCP;
+        case UV_UDP:
+            return Pending::UDP;
+        default:
+            return Pending::UNKNOWN;
+        }
+    }
 };
 
 
