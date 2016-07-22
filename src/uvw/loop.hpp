@@ -129,7 +129,7 @@ public:
         uv_stop(loop.get());
     }
 
-    FileDescriptor descriptor() const noexcept {
+    FileHandle descriptor() const noexcept {
         return uv_backend_fd(loop.get());
     }
 

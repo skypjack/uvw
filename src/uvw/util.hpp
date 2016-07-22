@@ -44,21 +44,24 @@ private:
 };
 
 
-struct FileDescriptor {
-    using Type = uv_file;
-
-    constexpr FileDescriptor(Type desc): fd{desc} { }
-
-    constexpr operator Type() const noexcept { return fd; }
-
+template<typename T>
+struct UVTypeWrapper {
+    using Type = T;
+    constexpr UVTypeWrapper(Type val): value{val} { }
+    constexpr operator Type() const noexcept { return value; }
 private:
-    const Type fd;
+    const Type value;
 };
 
 
-static constexpr auto STDIN = FileDescriptor{0};
-static constexpr auto STDOUT = FileDescriptor{1};
-static constexpr auto STDERR = FileDescriptor{2};
+using FileHandle = UVTypeWrapper<uv_file>;
+using OSSocketHandle = UVTypeWrapper<uv_os_sock_t>;
+using OSFileDescriptor = UVTypeWrapper<uv_os_fd_t>;
+
+
+static constexpr auto STDIN = FileHandle{0};
+static constexpr auto STDOUT = FileHandle{1};
+static constexpr auto STDERR = FileHandle{2};
 
 
 /**
