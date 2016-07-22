@@ -87,6 +87,15 @@ public:
 
     bool init() { return initialize<uv_udp_t>(&uv_udp_init); }
 
+    template<typename T, typename... Args>
+    bool init(T&& t, Args&&... args) {
+        return initialize<uv_udp_t>(&uv_udp_init_ex, std::forward<T>(t), std::forward<Args>(args)...);
+    }
+
+    void open(OSSocketHandle sock) {
+        invoke(&uv_udp_open, get<uv_udp_t>(), sock);
+    }
+
     template<typename I = IPv4>
     void bind(std::string ip, unsigned int port, Flags<Bind> flags = Flags<Bind>{}) {
         typename details::IpTraits<I>::Type addr;
