@@ -131,7 +131,7 @@ public:
     }
 
     template<typename U>
-    void accept(Stream<U> &ref) {
+    void accept(U &ref) {
         this->invoke(&uv_accept, this->template get<uv_stream_t>(), ref.template get<uv_stream_t>());
     }
 
@@ -161,7 +161,7 @@ public:
     }
 
     template<typename U>
-    void write(Stream<U> &send, char *data, ssize_t len) {
+    void write(U &send, char *data, ssize_t len) {
         uv_buf_t bufs[] = { uv_buf_init(data, len) };
 
         auto listener = [ptr = this->shared_from_this()](const auto &event, details::Write &) {
@@ -175,7 +175,7 @@ public:
     }
 
     template<typename U>
-    void write(Stream<U> &send, std::unique_ptr<char[]> data, ssize_t len) {
+    void write(U &send, std::unique_ptr<char[]> data, ssize_t len) {
         write(send, data.get(), len);
     }
 
