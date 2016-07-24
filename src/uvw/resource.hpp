@@ -51,12 +51,12 @@ public:
     Resource(const Resource &) = delete;
     Resource(Resource &&) = delete;
 
-    Resource& operator=(const Resource &) = delete;
-    Resource& operator=(Resource &&) = delete;
-
     virtual ~Resource() {
         static_assert(std::is_base_of<Resource<T>, T>::value, "!");
     }
+
+    Resource& operator=(const Resource &) = delete;
+    Resource& operator=(Resource &&) = delete;
 
     Loop& loop() const noexcept { return *pLoop; }
 
