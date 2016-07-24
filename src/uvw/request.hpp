@@ -15,6 +15,7 @@ template<typename T>
 struct RequestType;
 
 template<> struct RequestType<uv_connect_t> { };
+template<> struct RequestType<uv_fs_t> { };
 template<> struct RequestType<uv_shutdown_t> { };
 template<> struct RequestType<uv_udp_send_t> { };
 template<> struct RequestType<uv_work_t> { };
