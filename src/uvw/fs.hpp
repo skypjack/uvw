@@ -13,6 +13,10 @@ namespace uvw {
 
 
 class Fs final: public Request<Fs> {
+    static void fsCallback(uv_fs_t *req) {
+        // TODO
+    }
+
     explicit Fs(std::shared_ptr<Loop> ref)
         : Request{RequestType<uv_fs_t>{}, std::move(ref)}
     { }
@@ -27,35 +31,59 @@ public:
         uv_fs_req_cleanup(get<uv_fs_t>());
     }
 
-    // TODO uv_fs_close
-    // TODO uv_fs_open
-    // TODO uv_fs_read
-    // TODO uv_fs_unlink
-    // TODO uv_fs_write
-    // TODO uv_fs_mkdir
-    // TODO uv_fs_mkdtemp
-    // TODO uv_fs_rmdir
-    // TODO uv_fs_scandir
-    // TODO uv_fs_scandir_next
-    // TODO uv_fs_stat
-    // TODO uv_fs_fstat
-    // TODO uv_fs_lstat
-    // TODO uv_fs_rename
-    // TODO uv_fs_fsync
-    // TODO uv_fs_fdatasync
-    // TODO uv_fs_ftruncate
-    // TODO uv_fs_sendfile
-    // TODO uv_fs_access
-    // TODO uv_fs_chmod
-    // TODO uv_fs_fchmod
-    // TODO uv_fs_utime
-    // TODO uv_fs_futime
-    // TODO uv_fs_link
-    // TODO uv_fs_symlink
-    // TODO uv_fs_readlink
-    // TODO uv_fs_realpath
-    // TODO uv_fs_chown
-    // TODO uv_fs_fchown
+    void close(FileHandle file) {
+        invoke(&uv_fs_close, parent(), get<uv_fs_t>(), file, &fsCallback);
+    }
+
+    // TODO uv_fs_close (sync (cb null))
+    // TODO uv_fs_open (sync (cb null)/async)
+    // TODO uv_fs_read (sync (cb null)/async)
+    // TODO uv_fs_unlink (sync (cb null)/async)
+    // TODO uv_fs_write (sync (cb null)/async)
+    // TODO uv_fs_mkdir (sync (cb null)/async)
+    // TODO uv_fs_mkdtemp (sync (cb null)/async)
+
+    void rmdir(std::string path) {
+        invoke(&uv_fs_rmdir, parent(), get<uv_fs_t>(), path.data(), &fsCallback);
+    }
+
+    // TODO uv_fs_rmdir (sync (cb null))
+    // TODO uv_fs_scandir (sync (cb null)/async)
+    // TODO uv_fs_scandir_next (sync (cb null)/async)
+
+    void stat(std::string path) {
+        invoke(&uv_fs_stat, parent(), get<uv_fs_t>(), path.data(), &fsCallback);
+    }
+
+    // TODO uv_fs_stat (sync (cb null))
+
+    void fstat(FileHandle file) {
+        invoke(&uv_fs_fstat, parent(), get<uv_fs_t>(), file, &fsCallback);
+    }
+
+    // TODO uv_fs_fstat (sync (cb null))
+
+    void lstat(std::string path) {
+        invoke(&uv_fs_lstat, parent(), get<uv_fs_t>(), path.data(), &fsCallback);
+    }
+
+    // TODO uv_fs_lstat (sync (cb null)/async)
+    // TODO uv_fs_rename (sync (cb null)/async)
+    // TODO uv_fs_fsync (sync (cb null)/async)
+    // TODO uv_fs_fdatasync (sync (cb null)/async)
+    // TODO uv_fs_ftruncate (sync (cb null)/async)
+    // TODO uv_fs_sendfile (sync (cb null)/async)
+    // TODO uv_fs_access (sync (cb null)/async)
+    // TODO uv_fs_chmod (sync (cb null)/async)
+    // TODO uv_fs_fchmod (sync (cb null)/async)
+    // TODO uv_fs_utime (sync (cb null)/async)
+    // TODO uv_fs_futime (sync (cb null)/async)
+    // TODO uv_fs_link (sync (cb null)/async)
+    // TODO uv_fs_symlink (sync (cb null)/async)
+    // TODO uv_fs_readlink (sync (cb null)/async)
+    // TODO uv_fs_realpath (sync (cb null)/async)
+    // TODO uv_fs_chown (sync (cb null)/async)
+    // TODO uv_fs_fchown (sync (cb null)/async)
 };
 
 
