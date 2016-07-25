@@ -9,8 +9,6 @@
 
 namespace uvw {
 
-// base structures
-
 
 struct BaseEvent {
     virtual ~BaseEvent() noexcept = 0;
@@ -32,28 +30,10 @@ struct Event: BaseEvent {
 };
 
 
-// empty events
-
-
-struct DefaultEvent: Event<DefaultEvent> { };
-
-using AsyncEvent = DefaultEvent;
-using CheckEvent = DefaultEvent;
-using CloseEvent = DefaultEvent;
-using ConnectEvent = DefaultEvent;
-using EndEvent = DefaultEvent;
-using IdleEvent = DefaultEvent;
-using ListenEvent = DefaultEvent;
-using PrepareEvent = DefaultEvent;
-using SendEvent = DefaultEvent;
-using ShutdownEvent = DefaultEvent;
-using TimerEvent = DefaultEvent;
-using UninitializedEvent = DefaultEvent;
-using WorkEvent = DefaultEvent;
-using WriteEvent = DefaultEvent;
-
-
-// specialized events
+struct AsyncEvent: Event<AsyncEvent> { };
+struct CheckEvent: Event<CheckEvent> { };
+struct CloseEvent: Event<CloseEvent> { };
+struct ConnectEvent: Event<ConnectEvent> { };
 
 
 struct DataEvent: Event<DataEvent> {
@@ -68,6 +48,9 @@ private:
     std::unique_ptr<const char[]> dt;
     const ssize_t len;
 };
+
+
+struct EndEvent: Event<EndEvent> { };
 
 
 struct ErrorEvent: Event<ErrorEvent> {
@@ -106,6 +89,13 @@ private:
 };
 
 
+struct IdleEvent: Event<IdleEvent> { };
+struct ListenEvent: Event<ListenEvent> { };
+struct PrepareEvent: Event<PrepareEvent> { };
+struct SendEvent: Event<SendEvent> { };
+struct ShutdownEvent: Event<ShutdownEvent> { };
+
+
 struct SignalEvent: Event<SignalEvent> {
     explicit SignalEvent(int sig) noexcept: signum(sig) { }
 
@@ -114,6 +104,9 @@ struct SignalEvent: Event<SignalEvent> {
 private:
     const int signum;
 };
+
+
+struct TimerEvent: Event<TimerEvent> { };
 
 
 struct UDPDataEvent: Event<UDPDataEvent> {
@@ -132,6 +125,11 @@ private:
     Addr sndr;
     const bool part;
 };
+
+
+struct UninitializedEvent: Event<UninitializedEvent> { };
+struct WorkEvent: Event<WorkEvent> { };
+struct WriteEvent: Event<WriteEvent> { };
 
 
 }
