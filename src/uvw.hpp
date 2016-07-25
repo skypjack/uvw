@@ -4,6 +4,7 @@
 #include "uvw/fs.hpp"
 #include "uvw/fs_poll.hpp"
 #include "uvw/idle.hpp"
+#include "uvw/lib.hpp"
 #include "uvw/loop.hpp"
 #include "uvw/pipe.hpp"
 #include "uvw/poll.hpp"
