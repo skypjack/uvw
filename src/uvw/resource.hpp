@@ -19,17 +19,12 @@ class Resource: public Emitter<T>, public Self<T> {
     template<typename U>
     friend class Resource;
 
-    template<typename U>
-    static void proto(void *resource) {
-        delete static_cast<U*>(resource);
-    }
-
 protected:
     template<typename U, template<typename> class R>
     explicit Resource(R<U>, std::shared_ptr<Loop> ref)
         : Emitter<T>{},
           Self<T>{},
-          resource{new U, &proto<U>},
+          resource{new U, [](void *res){ delete static_cast<U*>(res); }},
           pLoop{std::move(ref)}
     {
         this->template get<U>()->data = static_cast<T*>(this);
