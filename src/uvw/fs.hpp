@@ -13,14 +13,12 @@
 namespace uvw {
 
 
-class Fs final: public Request<Fs> {
+class Fs final: public Request<Fs, uv_fs_t> {
     static void fsCallback(uv_fs_t *req) {
         // TODO
     }
 
-    explicit Fs(std::shared_ptr<Loop> ref)
-        : Request{RequestType<uv_fs_t>{}, std::move(ref)}
-    { }
+    using Request::Request;
 
 public:
     template<typename... Args>

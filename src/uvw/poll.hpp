@@ -13,16 +13,14 @@
 namespace uvw {
 
 
-class Poll final: public Handle<Poll> {
+class Poll final: public Handle<Poll, uv_poll_t> {
     static void startCallback(uv_poll_t *handle, int status, int events) {
         Poll &poll = *(static_cast<Poll*>(handle->data));
         if(status) { poll.publish(ErrorEvent{status}); }
         else { poll.publish(FlagsEvent<Event>{static_cast<std::underlying_type_t<Event>>(events)}); }
     }
 
-    explicit Poll(std::shared_ptr<Loop> ref)
-        : Handle{HandleType<uv_poll_t>{}, std::move(ref)}
-    { }
+    using Handle::Handle;
 
 public:
     enum class Event: std::underlying_type_t<uv_poll_event> {

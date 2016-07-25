@@ -13,15 +13,13 @@
 namespace uvw {
 
 
-class Timer final: public Handle<Timer> {
+class Timer final: public Handle<Timer, uv_timer_t> {
     static void startCallback(uv_timer_t *handle) {
         Timer &timer = *(static_cast<Timer*>(handle->data));
         timer.publish(TimerEvent{});
     }
 
-    explicit Timer(std::shared_ptr<Loop> ref)
-        : Handle{HandleType<uv_timer_t>{}, std::move(ref)}
-    { }
+    using Handle::Handle;
 
 public:
     using Time = std::chrono::milliseconds;

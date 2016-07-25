@@ -15,10 +15,8 @@
 namespace uvw {
 
 
-class Pipe final: public Stream<Pipe> {
-    explicit Pipe(std::shared_ptr<Loop> ref)
-        : Stream{HandleType<uv_pipe_t>{}, std::move(ref)}
-    { }
+class Pipe final: public Stream<Pipe, uv_pipe_t> {
+    using Stream::Stream;
 
 public:
     enum class Pending: std::underlying_type_t<uv_handle_type> {
@@ -58,9 +56,9 @@ public:
     std::string peer() const noexcept { return details::path(&uv_pipe_getpeername, get<uv_pipe_t>()); }
 
     void pending(int count) noexcept { uv_pipe_pending_instances(get<uv_pipe_t>(), count); }
-    int pending() const noexcept { return uv_pipe_pending_count(get<uv_pipe_t>()); }
+    int pending() noexcept { return uv_pipe_pending_count(get<uv_pipe_t>()); }
 
-    Pending receive() const noexcept {
+    Pending receive() noexcept {
         auto type = uv_pipe_pending_type(get<uv_pipe_t>());
 
         switch(type) {

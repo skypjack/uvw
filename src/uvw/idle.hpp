@@ -12,15 +12,13 @@
 namespace uvw {
 
 
-class Idle final: public Handle<Idle> {
+class Idle final: public Handle<Idle, uv_idle_t> {
     static void startCallback(uv_idle_t *handle) {
         Idle &idle = *(static_cast<Idle*>(handle->data));
         idle.publish(IdleEvent{});
     }
 
-    explicit Idle(std::shared_ptr<Loop> ref)
-        : Handle{HandleType<uv_idle_t>{}, std::move(ref)}
-    { }
+    using Handle::Handle;
 
 public:
     template<typename... Args>

@@ -16,10 +16,8 @@
 namespace uvw {
 
 
-class Tcp final: public Stream<Tcp> {
-    explicit Tcp(std::shared_ptr<Loop> ref)
-        : Stream{HandleType<uv_tcp_t>{}, std::move(ref)}
-    { }
+class Tcp final: public Stream<Tcp, uv_tcp_t> {
+    using Stream::Stream;
 
 public:
     using Time = std::chrono::seconds;

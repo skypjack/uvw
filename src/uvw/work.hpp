@@ -13,14 +13,12 @@
 namespace uvw {
 
 
-class Work final: public Request<Work> {
+class Work final: public Request<Work, uv_work_t> {
     static void workCallback(uv_work_t *req) {
         static_cast<Work*>(req->data)->task();
     }
 
-    explicit Work(std::shared_ptr<Loop> ref)
-        : Request{RequestType<uv_work_t>{}, std::move(ref)}
-    { }
+    using Request::Request;
 
 public:
     using Task = std::function<void(void)>;
@@ -37,7 +35,7 @@ public:
     }
 
 private:
-    Task task;
+    Task task{};
 };
 
 

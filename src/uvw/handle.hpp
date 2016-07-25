@@ -11,28 +11,11 @@
 namespace uvw {
 
 
-template<typename>
-struct HandleType;
-
-template<> struct HandleType<uv_async_t> { };
-template<> struct HandleType<uv_check_t> { };
-template<> struct HandleType<uv_fs_poll_t> { };
-template<> struct HandleType<uv_idle_t> { };
-template<> struct HandleType<uv_pipe_t> { };
-template<> struct HandleType<uv_poll_t> { };
-template<> struct HandleType<uv_prepare_t> { };
-template<> struct HandleType<uv_signal_t> { };
-template<> struct HandleType<uv_tcp_t> { };
-template<> struct HandleType<uv_timer_t> { };
-template<> struct HandleType<uv_tty_t> { };
-template<> struct HandleType<uv_udp_t> { };
-
-
-template<typename T>
-class Handle: public BaseHandle, public Resource<T>
+template<typename T, typename U>
+class Handle: public BaseHandle, public Resource<T, U>
 {
     static void closeCallback(uv_handle_t *handle) {
-        Handle<T> &ref = *(static_cast<T*>(handle->data));
+        Handle<T, U> &ref = *(static_cast<T*>(handle->data));
         auto ptr = ref.shared_from_this();
         (void)ptr;
         ref.reset();
@@ -56,16 +39,16 @@ class Handle: public BaseHandle, public Resource<T>
     }
 
 protected:
-    using Resource<T>::Resource;
+    using Resource<T, U>::Resource;
 
     static void allocCallback(uv_handle_t *, std::size_t suggested, uv_buf_t *buf) {
         *buf = uv_buf_init(new char[suggested], suggested);
     }
 
-    template<typename U, typename F, typename... Args>
+    template<typename H, typename F, typename... Args>
     bool initialize(F &&f, Args&&... args) {
         if(!this->self()) {
-            auto err = std::forward<F>(f)(this->parent(), this->template get<U>(), std::forward<Args>(args)...);
+            auto err = std::forward<F>(f)(this->parent(), this->template get<H>(), std::forward<Args>(args)...);
 
             if(err) {
                 this->publish(ErrorEvent{err});
@@ -88,7 +71,7 @@ public:
 
     void close() noexcept override {
         if(!closing()) {
-            uv_close(this->template get<uv_handle_t>(), &Handle<T>::closeCallback);
+            uv_close(this->template get<uv_handle_t>(), &Handle<T, U>::closeCallback);
         }
     }
 

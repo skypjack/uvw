@@ -12,15 +12,13 @@
 namespace uvw {
 
 
-class Prepare final: public Handle<Prepare> {
+class Prepare final: public Handle<Prepare, uv_prepare_t> {
     static void startCallback(uv_prepare_t *handle) {
         Prepare &prepare = *(static_cast<Prepare*>(handle->data));
         prepare.publish(PrepareEvent{});
     }
 
-    explicit Prepare(std::shared_ptr<Loop> ref)
-        : Handle{HandleType<uv_prepare_t>{}, std::move(ref)}
-    { }
+    using Handle::Handle;
 
 public:
     template<typename... Args>
