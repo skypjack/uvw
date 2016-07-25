@@ -3,6 +3,7 @@
 
 #include <utility>
 #include <memory>
+#include <string>
 #include <uv.h>
 #include "event.hpp"
 #include "request.hpp"
@@ -12,14 +13,12 @@
 namespace uvw {
 
 
-class Fs final: public Request<Fs> {
+class Fs final: public Request<Fs, uv_fs_t> {
     static void fsCallback(uv_fs_t *req) {
         // TODO
     }
 
-    explicit Fs(std::shared_ptr<Loop> ref)
-        : Request{RequestType<uv_fs_t>{}, std::move(ref)}
-    { }
+    using Request::Request;
 
 public:
     template<typename... Args>
@@ -38,7 +37,12 @@ public:
     // TODO uv_fs_close (sync (cb null))
     // TODO uv_fs_open (sync (cb null)/async)
     // TODO uv_fs_read (sync (cb null)/async)
-    // TODO uv_fs_unlink (sync (cb null)/async)
+
+    void unlink(std::string path) {
+        invoke(&uv_fs_unlink, parent(), get<uv_fs_t>(), path.data(), &fsCallback);
+    }
+
+    // TODO uv_fs_unlink (sync (cb null))
     // TODO uv_fs_write (sync (cb null)/async)
     // TODO uv_fs_mkdir (sync (cb null)/async)
     // TODO uv_fs_mkdtemp (sync (cb null)/async)
@@ -67,7 +71,7 @@ public:
         invoke(&uv_fs_lstat, parent(), get<uv_fs_t>(), path.data(), &fsCallback);
     }
 
-    // TODO uv_fs_lstat (sync (cb null)/async)
+    // TODO uv_fs_lstat (sync (cb null))
     // TODO uv_fs_rename (sync (cb null)/async)
     // TODO uv_fs_fsync (sync (cb null)/async)
     // TODO uv_fs_fdatasync (sync (cb null)/async)
@@ -82,8 +86,18 @@ public:
     // TODO uv_fs_symlink (sync (cb null)/async)
     // TODO uv_fs_readlink (sync (cb null)/async)
     // TODO uv_fs_realpath (sync (cb null)/async)
-    // TODO uv_fs_chown (sync (cb null)/async)
-    // TODO uv_fs_fchown (sync (cb null)/async)
+
+    void chown(std::string path, Uid uid, Gid gid) {
+        invoke(&uv_fs_chown, parent(), get<uv_fs_t>(), path.data(), uid, gid, &fsCallback);
+    }
+
+    // TODO uv_fs_chown (sync (cb null))
+
+    void fchown(FileHandle file, Uid uid, Gid gid) {
+        invoke(&uv_fs_fchown, parent(), get<uv_fs_t>(), file, uid, gid, &fsCallback);
+    }
+
+    // TODO uv_fs_fchown (sync (cb null))
 };
 
 

@@ -18,10 +18,8 @@ namespace uvw {
 namespace details {
 
 
-class Connect final: public Request<Connect> {
-    explicit Connect(std::shared_ptr<Loop> ref)
-        : Request{RequestType<uv_connect_t>{}, std::move(ref)}
-    { }
+class Connect final: public Request<Connect, uv_connect_t> {
+    using Request::Request;
 
 public:
     template<typename... Args>
@@ -36,10 +34,8 @@ public:
 };
 
 
-class Shutdown final: public Request<Shutdown> {
-    explicit Shutdown(std::shared_ptr<Loop> ref)
-        : Request{RequestType<uv_shutdown_t>{}, std::move(ref)}
-    { }
+class Shutdown final: public Request<Shutdown, uv_shutdown_t> {
+    using Request::Request;
 
 public:
     template<typename... Args>
@@ -53,10 +49,8 @@ public:
 };
 
 
-class Write final: public Request<Write> {
-    explicit Write(std::shared_ptr<Loop> ref)
-        : Request{RequestType<uv_write_t>{}, std::move(ref)}
-    { }
+class Write final: public Request<Write, uv_write_t> {
+    using Request::Request;
 
 public:
     template<typename... Args>
@@ -77,8 +71,8 @@ public:
 }
 
 
-template<typename T>
-class Stream: public Handle<T> {
+template<typename T, typename U>
+class Stream: public Handle<T, U> {
     static constexpr unsigned int DEFAULT_BACKLOG = 128;
 
     static void readCallback(uv_stream_t *handle, ssize_t nread, const uv_buf_t *buf) {
@@ -105,10 +99,7 @@ class Stream: public Handle<T> {
     }
 
 protected:
-    template<typename U>
-    Stream(HandleType<U> rt, std::shared_ptr<Loop> ref)
-        : Handle<T>{std::move(rt), std::move(ref)}
-    { }
+    using Handle<T, U>::Handle;
 
 public:
     void shutdown() {
@@ -130,8 +121,8 @@ public:
         listen(DEFAULT_BACKLOG);
     }
 
-    template<typename U>
-    void accept(U &ref) {
+    template<typename S>
+    void accept(S &ref) {
         this->invoke(&uv_accept, this->template get<uv_stream_t>(), ref.template get<uv_stream_t>());
     }
 
@@ -160,8 +151,8 @@ public:
         write(data.get(), len);
     }
 
-    template<typename U>
-    void write(U &send, char *data, ssize_t len) {
+    template<typename S>
+    void write(S &send, char *data, ssize_t len) {
         uv_buf_t bufs[] = { uv_buf_init(data, len) };
 
         auto listener = [ptr = this->shared_from_this()](const auto &event, details::Write &) {
@@ -174,8 +165,8 @@ public:
         write->write(this->template get<uv_stream_t>(), bufs, 1, send.template get<uv_stream_t>());
     }
 
-    template<typename U>
-    void write(U &send, std::unique_ptr<char[]> data, ssize_t len) {
+    template<typename S>
+    void write(S &send, std::unique_ptr<char[]> data, ssize_t len) {
         write(send, data.get(), len);
     }
 

@@ -36,7 +36,7 @@ public:
     constexpr Flags operator&(const Flags& f) const noexcept { return Flags(flags & f.flags); }
     constexpr Flags operator&(E flag) const noexcept { return Flags(flags & toInnerType(flag)); }
 
-    constexpr operator bool() const noexcept { return !(flags == InnerType{}); }
+    explicit constexpr operator bool() const noexcept { return !(flags == InnerType{}); }
     constexpr operator Type() const noexcept { return flags; }
 
 private:
@@ -74,6 +74,8 @@ struct WinSize { int width; int height; };
 
 using TimeSpec = uv_timespec_t;
 using Stat = uv_stat_t;
+using Uid = uv_uid_t;
+using Gid = uv_gid_t;
 
 
 namespace details {

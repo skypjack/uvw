@@ -12,15 +12,13 @@
 namespace uvw {
 
 
-class Async final: public Handle<Async> {
+class Async final: public Handle<Async, uv_async_t> {
     static void sendCallback(uv_async_t *handle) {
         Async &async = *(static_cast<Async*>(handle->data));
         async.publish(AsyncEvent{});
     }
 
-    explicit Async(std::shared_ptr<Loop> ref)
-        : Handle{HandleType<uv_async_t>{}, std::move(ref)}
-    { }
+    using Handle::Handle;
 
 public:
     template<typename... Args>

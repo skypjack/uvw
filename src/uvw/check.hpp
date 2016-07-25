@@ -12,15 +12,13 @@
 namespace uvw {
 
 
-class Check final: public Handle<Check> {
+class Check final: public Handle<Check, uv_check_t> {
     static void startCallback(uv_check_t *handle) {
         Check &check = *(static_cast<Check*>(handle->data));
         check.publish(CheckEvent{});
     }
 
-    explicit Check(std::shared_ptr<Loop> ref)
-        : Handle{HandleType<uv_check_t>{}, std::move(ref)}
-    { }
+    using Handle::Handle;
 
 public:
     template<typename... Args>

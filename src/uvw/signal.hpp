@@ -12,15 +12,13 @@
 namespace uvw {
 
 
-class Signal final: public Handle<Signal> {
+class Signal final: public Handle<Signal, uv_signal_t> {
     static void startCallback(uv_signal_t *handle, int signum) {
         Signal &signal = *(static_cast<Signal*>(handle->data));
         signal.publish(SignalEvent{signum});
     }
 
-    explicit Signal(std::shared_ptr<Loop> ref)
-        : Handle{HandleType<uv_signal_t>{}, std::move(ref)}
-    { }
+    using Handle::Handle;
 
 public:
     template<typename... Args>

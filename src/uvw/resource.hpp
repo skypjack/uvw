@@ -12,33 +12,28 @@
 namespace uvw {
 
 
-template<typename T>
+template<typename T, typename U>
 class Resource: public Emitter<T>, public Self<T> {
-    using Deleter = void(*)(void *);
-
-    template<typename U>
+    template<typename, typename>
     friend class Resource;
 
-    template<typename U>
-    static void proto(void *resource) {
-        delete static_cast<U*>(resource);
-    }
-
 protected:
-    template<typename U, template<typename> class R>
-    explicit Resource(R<U>, std::shared_ptr<Loop> ref)
+    explicit Resource(std::shared_ptr<Loop> ref)
         : Emitter<T>{},
           Self<T>{},
-          resource{new U, &proto<U>},
-          pLoop{std::move(ref)}
+          pLoop{std::move(ref)},
+          resource{}
     {
         this->template get<U>()->data = static_cast<T*>(this);
     }
 
-    uv_loop_t* parent() const noexcept { return pLoop->loop.get(); }
+    auto parent() const noexcept { return pLoop->loop.get(); }
 
-    template<typename U>
-    U* get() const noexcept { return reinterpret_cast<U*>(resource.get()); }
+    template<typename R>
+    auto get() noexcept { return reinterpret_cast<R*>(&resource); }
+
+    template<typename R>
+    auto get() const noexcept { return reinterpret_cast<const R*>(&resource); }
 
     template<typename F, typename... Args>
     auto invoke(F &&f, Args&&... args) {
@@ -52,7 +47,7 @@ public:
     Resource(Resource &&) = delete;
 
     virtual ~Resource() {
-        static_assert(std::is_base_of<Resource<T>, T>::value, "!");
+        static_assert(std::is_base_of<Resource<T, U>, T>::value, "!");
     }
 
     Resource& operator=(const Resource &) = delete;
@@ -61,8 +56,8 @@ public:
     Loop& loop() const noexcept { return *pLoop; }
 
 private:
-    std::unique_ptr<void, Deleter> resource;
     std::shared_ptr<Loop> pLoop;
+    U resource;
 };
 
 

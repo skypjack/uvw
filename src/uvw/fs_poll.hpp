@@ -13,16 +13,14 @@
 namespace uvw {
 
 
-class FsPoll final: public Handle<FsPoll> {
+class FsPoll final: public Handle<FsPoll, uv_fs_poll_t> {
     static void startCallback(uv_fs_poll_t *handle, int status, const uv_stat_t *prev, const uv_stat_t *curr) {
         FsPoll &fsPoll = *(static_cast<FsPoll*>(handle->data));
         if(status) { fsPoll.publish(ErrorEvent{status}); }
         else { fsPoll.publish(FsPollEvent{ *prev, *curr }); }
     }
 
-    explicit FsPoll(std::shared_ptr<Loop> ref)
-        : Handle{HandleType<uv_fs_poll_t>{}, std::move(ref)}
-    { }
+    using Handle::Handle;
 
 public:
     template<typename... Args>
@@ -37,7 +35,7 @@ public:
     }
 
     void stop() { invoke(&uv_fs_poll_stop, get<uv_fs_poll_t>()); }
-    std::string path() const noexcept { return details::path(&uv_fs_poll_getpath, get<uv_fs_poll_t>()); }
+    std::string path() noexcept { return details::path(&uv_fs_poll_getpath, get<uv_fs_poll_t>()); }
 };
 
 

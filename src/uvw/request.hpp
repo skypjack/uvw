@@ -11,19 +11,8 @@
 namespace uvw {
 
 
-template<typename T>
-struct RequestType;
-
-template<> struct RequestType<uv_connect_t> { };
-template<> struct RequestType<uv_fs_t> { };
-template<> struct RequestType<uv_shutdown_t> { };
-template<> struct RequestType<uv_udp_send_t> { };
-template<> struct RequestType<uv_work_t> { };
-template<> struct RequestType<uv_write_t> { };
-
-
-template<typename T>
-class Request: public Resource<T> {
+template<typename T, typename U>
+class Request: public Resource<T, U> {
     template<typename R, typename E>
     static void execCallback(R *req, int status) {
         T &res = *(static_cast<T*>(req->data));
@@ -41,7 +30,7 @@ class Request: public Resource<T> {
     }
 
 protected:
-    using Resource<T>::Resource;
+    using Resource<T, U>::Resource;
 
     template<typename R, typename E, typename F, typename... Args>
     auto exec(F &&f, Args&&... args)

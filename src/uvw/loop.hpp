@@ -28,7 +28,7 @@ public:
 class Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop> {
     using Deleter = void(*)(uv_loop_t *);
 
-    template<typename>
+    template<typename, typename>
     friend class Resource;
 
     Loop(std::unique_ptr<uv_loop_t, Deleter> ptr) noexcept

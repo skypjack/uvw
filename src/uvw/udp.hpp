@@ -18,10 +18,8 @@ namespace uvw {
 namespace details {
 
 
-class Send final: public Request<Send> {
-    explicit Send(std::shared_ptr<Loop> ref)
-        : Request{RequestType<uv_udp_send_t>{}, std::move(ref)}
-    { }
+class Send final: public Request<Send, uv_udp_send_t> {
+    using Request::Request;
 
 public:
     template<typename... Args>
@@ -38,10 +36,8 @@ public:
 }
 
 
-class Udp final: public Handle<Udp> {
-    explicit Udp(std::shared_ptr<Loop> ref)
-        : Handle{HandleType<uv_udp_t>{}, std::move(ref)}
-    { }
+class Udp final: public Handle<Udp, uv_udp_t> {
+    using Handle::Handle;
 
     template<typename I>
     static void recvCallback(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
