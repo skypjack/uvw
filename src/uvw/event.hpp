@@ -42,4 +42,11 @@ private:
 };
 
 
+template<typename E, E e>
+struct TypedEvent: Event<TypedEvent<E, e>> {
+    using Type = E;
+    static constexpr E value = e;
+};
+
+
 }
