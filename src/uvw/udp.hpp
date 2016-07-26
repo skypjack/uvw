@@ -39,6 +39,18 @@ private:
 namespace details {
 
 
+enum class UVUdpFlags: std::underlying_type_t<uv_udp_flags> {
+    IPV6ONLY = UV_UDP_IPV6ONLY,
+    REUSEADDR = UV_UDP_REUSEADDR
+};
+
+
+enum class UVMembership: std::underlying_type_t<uv_membership> {
+    LEAVE_GROUP = UV_LEAVE_GROUP,
+    JOIN_GROUP = UV_JOIN_GROUP
+};
+
+
 class Send final: public Request<Send, uv_udp_send_t> {
     using Request::Request;
 
@@ -84,18 +96,10 @@ class Udp final: public Handle<Udp, uv_udp_t> {
     }
 
 public:
+    using Membership = details::UVMembership;
+    using Bind = details::UVUdpFlags;
     using IPv4 = details::IPv4;
     using IPv6 = details::IPv6;
-
-    enum class Bind: std::underlying_type_t<uv_udp_flags> {
-        IPV6ONLY = UV_UDP_IPV6ONLY,
-        REUSEADDR = UV_UDP_REUSEADDR
-    };
-
-    enum class Membership: std::underlying_type_t<uv_membership> {
-        LEAVE_GROUP = UV_LEAVE_GROUP,
-        JOIN_GROUP = UV_JOIN_GROUP
-    };
 
     template<typename... Args>
     static std::shared_ptr<Udp> create(Args&&... args) {

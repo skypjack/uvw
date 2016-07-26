@@ -53,7 +53,6 @@ class Fs final: public Request<Fs, uv_fs_t> {
 
 public:
     using Time = std::chrono::seconds;
-
     using Flags = int;
     using Mode = int;
     using Offset = int64_t;

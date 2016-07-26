@@ -16,18 +16,25 @@
 namespace uvw {
 
 
+namespace details {
+
+
+enum class UVTcpFlags: std::underlying_type_t<uv_tcp_flags> {
+    IPV6ONLY = UV_TCP_IPV6ONLY
+};
+
+
+}
+
+
 class Tcp final: public Stream<Tcp, uv_tcp_t> {
     using Stream::Stream;
 
 public:
     using Time = std::chrono::seconds;
-
+    using Bind = details::UVTcpFlags;
     using IPv4 = details::IPv4;
     using IPv6 = details::IPv6;
-
-    enum class Bind: std::underlying_type_t<uv_tcp_flags> {
-        IPV6ONLY = UV_TCP_IPV6ONLY
-    };
 
     template<typename... Args>
     static std::shared_ptr<Tcp> create(Args&&... args) {

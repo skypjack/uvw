@@ -42,15 +42,4 @@ private:
 };
 
 
-template<typename E>
-struct FlagsEvent: Event<FlagsEvent<E>> {
-    explicit FlagsEvent(Flags<E> f) noexcept: flgs{std::move(f)} { }
-
-    Flags<E> flags() const noexcept { return flgs; }
-
-private:
-    Flags<E> flgs;
-};
-
-
 }

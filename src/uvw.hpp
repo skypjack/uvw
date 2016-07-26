@@ -2,6 +2,7 @@
 #include "uvw/check.hpp"
 #include "uvw/event.hpp"
 #include "uvw/fs.hpp"
+#include "uvw/fs_event.hpp"
 #include "uvw/fs_poll.hpp"
 #include "uvw/idle.hpp"
 #include "uvw/lib.hpp"

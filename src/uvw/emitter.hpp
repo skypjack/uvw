@@ -88,15 +88,15 @@ protected:
 
 public:
     template<typename E>
+    using Listener = typename Handler<E>::Listener;
+
+    template<typename E>
     struct Connection: private Handler<E>::Connection {
         template<typename> friend class Emitter;
         Connection(typename Handler<E>::Connection conn)
             : Handler<E>::Connection{std::move(conn)}
         { }
     };
-
-    template<typename E>
-    using Listener = typename Handler<E>::Listener;
 
     virtual ~Emitter() noexcept {
         static_assert(std::is_base_of<Emitter<T>, T>::value, "!");
