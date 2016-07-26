@@ -137,11 +137,11 @@ public:
 
         uv_buf_t bufs[] = { uv_buf_init(data, len) };
 
-        auto listener = [ptr = this->shared_from_this()](const auto &event, details::Send &) {
+        auto listener = [ptr = shared_from_this()](const auto &event, details::Send &) {
             ptr->publish(event);
         };
 
-        auto send = this->loop().resource<details::Send>();
+        auto send = loop().resource<details::Send>();
         send->once<ErrorEvent>(listener);
         send->once<SendEvent>(listener);
         send->send(get<uv_udp_t>(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
@@ -161,7 +161,7 @@ public:
         auto bw = uv_udp_try_send(get<uv_udp_t>(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
 
         if(bw < 0) {
-            this->publish(ErrorEvent{bw});
+            publish(ErrorEvent{bw});
             bw = 0;
         }
 

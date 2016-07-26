@@ -84,7 +84,7 @@ public:
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
 
-        auto listener = [ptr = this->shared_from_this()](const auto &event, details::Connect &) {
+        auto listener = [ptr = shared_from_this()](const auto &event, details::Connect &) {
             ptr->publish(event);
         };
 

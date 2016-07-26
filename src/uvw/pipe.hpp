@@ -42,7 +42,7 @@ public:
     }
 
     void connect(std::string name) {
-        auto listener = [ptr = this->shared_from_this()](const auto &event, details::Connect &) {
+        auto listener = [ptr = shared_from_this()](const auto &event, details::Connect &) {
             ptr->publish(event);
         };
 
