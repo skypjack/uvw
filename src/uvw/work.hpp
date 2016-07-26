@@ -13,6 +13,9 @@
 namespace uvw {
 
 
+struct WorkEvent: Event<WorkEvent> { };
+
+
 class Work final: public Request<Work, uv_work_t> {
     static void workCallback(uv_work_t *req) {
         static_cast<Work*>(req->data)->task();

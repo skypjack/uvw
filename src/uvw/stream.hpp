@@ -15,6 +15,27 @@
 namespace uvw {
 
 
+struct ConnectEvent: Event<ConnectEvent> { };
+struct EndEvent: Event<EndEvent> { };
+struct ListenEvent: Event<ListenEvent> { };
+struct ShutdownEvent: Event<ShutdownEvent> { };
+struct WriteEvent: Event<WriteEvent> { };
+
+
+struct DataEvent: Event<DataEvent> {
+    explicit DataEvent(std::unique_ptr<const char[]> ptr, ssize_t l) noexcept
+        : dt{std::move(ptr)}, len{l}
+    { }
+
+    const char * data() const noexcept { return dt.get(); }
+    ssize_t length() const noexcept { return len; }
+
+private:
+    std::unique_ptr<const char[]> dt;
+    const ssize_t len;
+};
+
+
 namespace details {
 
 

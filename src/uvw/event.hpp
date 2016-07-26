@@ -21,6 +21,7 @@ struct BaseEvent {
 
 BaseEvent::~BaseEvent() noexcept { }
 
+
 template<typename E>
 struct Event: BaseEvent {
     static std::size_t type() noexcept {
@@ -28,29 +29,6 @@ struct Event: BaseEvent {
         return val;
     }
 };
-
-
-struct AsyncEvent: Event<AsyncEvent> { };
-struct CheckEvent: Event<CheckEvent> { };
-struct CloseEvent: Event<CloseEvent> { };
-struct ConnectEvent: Event<ConnectEvent> { };
-
-
-struct DataEvent: Event<DataEvent> {
-    explicit DataEvent(std::unique_ptr<const char[]> ptr, ssize_t l) noexcept
-        : dt{std::move(ptr)}, len{l}
-    { }
-
-    const char * data() const noexcept { return dt.get(); }
-    ssize_t length() const noexcept { return len; }
-
-private:
-    std::unique_ptr<const char[]> dt;
-    const ssize_t len;
-};
-
-
-struct EndEvent: Event<EndEvent> { };
 
 
 struct ErrorEvent: Event<ErrorEvent> {
@@ -73,63 +51,6 @@ struct FlagsEvent: Event<FlagsEvent<E>> {
 private:
     Flags<E> flgs;
 };
-
-
-struct FsPollEvent: Event<FsPollEvent> {
-    explicit FsPollEvent(const Stat &p, const Stat &c) noexcept
-        : prev(p), curr(c)
-    { }
-
-    const Stat & previous() const noexcept { return prev; }
-    const Stat & current() const noexcept { return curr; }
-
-private:
-    Stat prev;
-    Stat curr;
-};
-
-
-struct IdleEvent: Event<IdleEvent> { };
-struct ListenEvent: Event<ListenEvent> { };
-struct PrepareEvent: Event<PrepareEvent> { };
-struct SendEvent: Event<SendEvent> { };
-struct ShutdownEvent: Event<ShutdownEvent> { };
-
-
-struct SignalEvent: Event<SignalEvent> {
-    explicit SignalEvent(int sig) noexcept: signum(sig) { }
-
-    int signal() const noexcept { return signum; }
-
-private:
-    const int signum;
-};
-
-
-struct TimerEvent: Event<TimerEvent> { };
-
-
-struct UDPDataEvent: Event<UDPDataEvent> {
-    explicit UDPDataEvent(Addr addr, std::unique_ptr<const char[]> ptr, ssize_t l, bool trunc) noexcept
-        : dt{std::move(ptr)}, len{l}, sndr{addr}, part{trunc}
-    { }
-
-    const char * data() const noexcept { return dt.get(); }
-    ssize_t length() const noexcept { return len; }
-    Addr sender() const noexcept { return sndr; }
-    bool partial() const noexcept { return part; }
-
-private:
-    std::unique_ptr<const char[]> dt;
-    const ssize_t len;
-    Addr sndr;
-    const bool part;
-};
-
-
-struct UninitializedEvent: Event<UninitializedEvent> { };
-struct WorkEvent: Event<WorkEvent> { };
-struct WriteEvent: Event<WriteEvent> { };
 
 
 }

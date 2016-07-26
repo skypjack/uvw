@@ -12,6 +12,16 @@
 namespace uvw {
 
 
+struct SignalEvent: Event<SignalEvent> {
+    explicit SignalEvent(int sig) noexcept: signum(sig) { }
+
+    int signal() const noexcept { return signum; }
+
+private:
+    const int signum;
+};
+
+
 class Signal final: public Handle<Signal, uv_signal_t> {
     static void startCallback(uv_signal_t *handle, int signum) {
         Signal &signal = *(static_cast<Signal*>(handle->data));

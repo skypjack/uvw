@@ -12,6 +12,9 @@
 namespace uvw {
 
 
+struct PrepareEvent: Event<PrepareEvent> { };
+
+
 class Prepare final: public Handle<Prepare, uv_prepare_t> {
     static void startCallback(uv_prepare_t *handle) {
         Prepare &prepare = *(static_cast<Prepare*>(handle->data));
