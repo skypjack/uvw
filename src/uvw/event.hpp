@@ -37,9 +37,15 @@ struct ErrorEvent: Event<ErrorEvent> {
     const char * what() const noexcept { return uv_strerror(ec); }
     int code() const noexcept { return ec; }
 
+    explicit operator bool() const noexcept { return !(0 == ec); }
+
 private:
     const int ec;
 };
+
+
+template<typename E, E e>
+struct TypedEvent;
 
 
 }
