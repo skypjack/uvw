@@ -51,7 +51,76 @@ enum class UVFsType: std::underlying_type_t<uv_fs_type> {
 };
 
 
+enum class UVDirentTypeT: std::underlying_type_t<uv_dirent_type_t> {
+    UNKNOWN = UV_DIRENT_UNKNOWN,
+    FILE = UV_DIRENT_FILE,
+    DIR = UV_DIRENT_DIR,
+    LINK = UV_DIRENT_LINK,
+    FIFO = UV_DIRENT_FIFO,
+    SOCKET = UV_DIRENT_SOCKET,
+    CHAR = UV_DIRENT_CHAR,
+    BLOCK = UV_DIRENT_BLOCK
+};
+
+
 }
+
+
+template<details::UVFsType e>
+struct TypedEvent<details::UVFsType, e>
+        : Event<TypedEvent<details::UVFsType, e>>
+{
+    using Type = details::UVFsType;
+    static constexpr details::UVFsType value = e;
+};
+
+
+template<>
+struct TypedEvent<details::UVFsType, details::UVFsType::STAT>
+        : Event<TypedEvent<details::UVFsType, details::UVFsType::STAT>>
+{
+    using Type = details::UVFsType;
+    static constexpr details::UVFsType value = details::UVFsType::STAT;
+
+    TypedEvent(const Stat &s): fsStat{s} { }
+
+    const Stat & stat() const noexcept { return fsStat; }
+
+private:
+    Stat fsStat;
+};
+
+
+template<>
+struct TypedEvent<details::UVFsType, details::UVFsType::FSTAT>
+        : Event<TypedEvent<details::UVFsType, details::UVFsType::FSTAT>>
+{
+    using Type = details::UVFsType;
+    static constexpr details::UVFsType value = details::UVFsType::FSTAT;
+
+    TypedEvent(const Stat &s): fsStat{s} { }
+
+    const Stat & stat() const noexcept { return fsStat; }
+
+private:
+    Stat fsStat;
+};
+
+
+template<>
+struct TypedEvent<details::UVFsType, details::UVFsType::LSTAT>
+        : Event<TypedEvent<details::UVFsType, details::UVFsType::LSTAT>>
+{
+    using Type = details::UVFsType;
+    static constexpr details::UVFsType value = details::UVFsType::LSTAT;
+
+    TypedEvent(const Stat &s): fsStat{s} { }
+
+    const Stat & stat() const noexcept { return fsStat; }
+
+private:
+    Stat fsStat;
+};
 
 
 template<details::UVFsType e>
@@ -84,8 +153,21 @@ class Fs final: public Request<Fs, uv_fs_t> {
         // TODO - uv_fs_write callback
     }
 
+    template<details::UVFsType e>
     static void fsStatCallback(uv_fs_t *req) {
-        // TODO - uv_fs_stat callback
+        Fs &fs = *(static_cast<Fs*>(req->data));
+
+        auto ptr = fs.shared_from_this();
+        (void)ptr;
+
+        fs.reset();
+
+        if(req->result) {
+            int err = req->result;
+            fs.publish(ErrorEvent{err});
+        } else {
+            fs.publish(FsEvent<e>{req->statbuf});
+        }
     }
 
     static void fsReadlinkCallback(uv_fs_t *req) {
@@ -96,10 +178,9 @@ class Fs final: public Request<Fs, uv_fs_t> {
 
 public:
     using Time = std::chrono::seconds;
-    using Flags = int;
-    using Mode = int;
-    using Offset = int64_t;
     using Type = details::UVFsType;
+    using EntryType = details::UVDirentTypeT;
+    using Entry = std::pair<EntryType, std::string>;
 
     template<typename... Args>
     static std::shared_ptr<Fs> create(Args&&... args) {
@@ -114,134 +195,235 @@ public:
         invoke(&uv_fs_close, parent(), get<uv_fs_t>(), file, &fsGenericCallback<Type::CLOSE>);
     }
 
-    // TODO uv_fs_close (sync (cb null))
+    auto closeSync(FileHandle file) {
+        auto err = uv_fs_close(parent(), get<uv_fs_t>(), file, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::CLOSE>{});
+    }
 
-    void open(std::string path, Flags flags, Mode mode) {
+    void open(std::string path, int flags, int mode) {
         invoke(&uv_fs_open, parent(), get<uv_fs_t>(), path.data(), flags, mode, &fsGenericCallback<Type::OPEN>);
     }
 
-    // TODO uv_fs_open (sync (cb null))
+    auto openSync(std::string path, int flags, int mode) {
+        auto err = uv_fs_open(parent(), get<uv_fs_t>(), path.data(), flags, mode, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::OPEN>{});
+    }
+
     // TODO uv_fs_read (sync (cb null)/async)
 
     void unlink(std::string path) {
         invoke(&uv_fs_unlink, parent(), get<uv_fs_t>(), path.data(), &fsGenericCallback<Type::UNLINK>);
     }
 
-    // TODO uv_fs_unlink (sync (cb null))
-    // TODO uv_fs_write (sync (cb null)/async)
+    auto unlinkSync(std::string path) {
+        auto err = uv_fs_unlink(parent(), get<uv_fs_t>(), path.data(), nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::UNLINK>{});
+    }
 
-    void mkdir(std::string path, Mode mode) {
+    void write(FileHandle file, char *data, ssize_t len, int64_t offset) {
+        uv_buf_t bufs[] = { uv_buf_init(data, len) };
+        invoke(&uv_fs_write, parent(), get<uv_fs_t>(), file, bufs, 1, offset, &fsWriteCallback);
+    }
+
+    void write(FileHandle file, std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
+        write(file, data.get(), len, offset);
+    }
+
+    auto writeSync(FileHandle file, char *data, ssize_t len, int64_t offset) {
+        // TODO uv_fs_write (sync (cb null))
+    }
+
+    auto writeSync(FileHandle file, std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
+        // TODO uv_fs_write (sync (cb null))
+    }
+
+    void mkdir(std::string path, int mode) {
         invoke(&uv_fs_mkdir, parent(), get<uv_fs_t>(), path.data(), mode, &fsGenericCallback<Type::MKDIR>);
     }
 
-    // TODO uv_fs_mkdir (sync (cb null))
+    auto mkdirSync(std::string path, int mode) {
+        auto err = uv_fs_mkdir(parent(), get<uv_fs_t>(), path.data(), mode, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::MKDIR>{});
+    }
 
-    void mkdtemp(std::string tpl, Mode mode) {
+    void mkdtemp(std::string tpl) {
         invoke(&uv_fs_mkdtemp, parent(), get<uv_fs_t>(), tpl.data(), &fsGenericCallback<Type::MKDTEMP>);
     }
 
-    // TODO uv_fs_mkdtemp (sync (cb null))
+    auto mkdtempSync(std::string tpl) {
+        auto err = uv_fs_mkdtemp(parent(), get<uv_fs_t>(), tpl.data(), nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::MKDTEMP>{});
+    }
 
     void rmdir(std::string path) {
         invoke(&uv_fs_rmdir, parent(), get<uv_fs_t>(), path.data(), &fsGenericCallback<Type::RMDIR>);
     }
 
-    // TODO uv_fs_rmdir (sync (cb null))
+    auto rmdirSync(std::string path) {
+        auto err = uv_fs_rmdir(parent(), get<uv_fs_t>(), path.data(), nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::RMDIR>{});
+    }
 
-    void scandir(std::string path, Flags flags) {
+    void scandir(std::string path, int flags) {
         invoke(&uv_fs_scandir, parent(), get<uv_fs_t>(), path.data(), flags, &fsGenericCallback<Type::SCANDIR>);
     }
 
-    // TODO uv_fs_scandir (sync (cb null))
-    // TODO uv_fs_scandir_next (sync (cb null)/async)
+    auto scandirSync(std::string path, int flags) {
+        auto err = uv_fs_scandir(parent(), get<uv_fs_t>(), path.data(), flags, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::SCANDIR>{});
+    }
+
+    std::pair<bool, Entry> scandirNext() {
+        uv_dirent_t dirent;
+        std::pair<bool, Entry> ret{false, { EntryType::UNKNOWN, "" }};
+        auto res = uv_fs_scandir_next(get<uv_fs_t>(), &dirent);
+
+        if(UV_EOF != res) {
+            ret.second.first = static_cast<EntryType>(dirent.type);
+            ret.second.second = dirent.name;
+            ret.first = true;
+        }
+
+        return ret;
+    }
 
     void stat(std::string path) {
-        invoke(&uv_fs_stat, parent(), get<uv_fs_t>(), path.data(), &fsGenericCallback<Type::STAT>);
+        invoke(&uv_fs_stat, parent(), get<uv_fs_t>(), path.data(), &fsStatCallback<Type::STAT>);
     }
 
-    // TODO uv_fs_stat (sync (cb null))
+    auto statSync(std::string path) {
+        auto err = uv_fs_stat(parent(), get<uv_fs_t>(), path.data(), nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::STAT>{get<uv_fs_t>()->statbuf});
+    }
 
     void fstat(FileHandle file) {
-        invoke(&uv_fs_fstat, parent(), get<uv_fs_t>(), file, &fsGenericCallback<Type::FSTAT>);
+        invoke(&uv_fs_fstat, parent(), get<uv_fs_t>(), file, &fsStatCallback<Type::FSTAT>);
     }
 
-    // TODO uv_fs_fstat (sync (cb null))
+    auto fstatSync(FileHandle file) {
+        auto err = uv_fs_fstat(parent(), get<uv_fs_t>(), file, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::FSTAT>{get<uv_fs_t>()->statbuf});
+    }
 
     void lstat(std::string path) {
-        invoke(&uv_fs_lstat, parent(), get<uv_fs_t>(), path.data(), &fsGenericCallback<Type::LSTAT>);
+        invoke(&uv_fs_lstat, parent(), get<uv_fs_t>(), path.data(), &fsStatCallback<Type::LSTAT>);
     }
 
-    // TODO uv_fs_lstat (sync (cb null))
+    auto lstatSync(std::string path) {
+        auto err = uv_fs_lstat(parent(), get<uv_fs_t>(), path.data(), nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::LSTAT>{get<uv_fs_t>()->statbuf});
+    }
 
     void rename(std::string old, std::string path) {
         invoke(&uv_fs_rename, parent(), get<uv_fs_t>(), old.data(), path.data(), &fsGenericCallback<Type::RENAME>);
     }
 
-    // TODO uv_fs_rename (sync (cb null))
+    auto renameSync(std::string old, std::string path) {
+        auto err = uv_fs_rename(parent(), get<uv_fs_t>(), old.data(), path.data(), nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::RENAME>{});
+    }
 
     void fsync(FileHandle file) {
         invoke(&uv_fs_fsync, parent(), get<uv_fs_t>(), file, &fsGenericCallback<Type::FSYNC>);
     }
 
-    // TODO uv_fs_fsync (sync (cb null))
+    auto fsyncSync(FileHandle file) {
+        auto err = uv_fs_fsync(parent(), get<uv_fs_t>(), file, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::FSYNC>{});
+    }
 
     void fdatasync(FileHandle file) {
         invoke(&uv_fs_fdatasync, parent(), get<uv_fs_t>(), file, &fsGenericCallback<Type::FDATASYNC>);
     }
 
-    // TODO uv_fs_fdatasync (sync (cb null))
+    auto fdatasyncSync(FileHandle file) {
+        auto err = uv_fs_fdatasync(parent(), get<uv_fs_t>(), file, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::FDATASYNC>{});
+    }
 
-    void ftruncate(FileHandle file, Offset offset) {
+    void ftruncate(FileHandle file, int64_t offset) {
         invoke(&uv_fs_ftruncate, parent(), get<uv_fs_t>(), file, offset, &fsGenericCallback<Type::FTRUNCATE>);
     }
 
-    // TODO uv_fs_ftruncate (sync (cb null))
-    // TODO uv_fs_sendfile (sync (cb null)/async)
+    auto ftruncateSync(FileHandle file, int64_t offset) {
+        auto err = uv_fs_ftruncate(parent(), get<uv_fs_t>(), file, offset, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::FTRUNCATE>{});
+    }
 
-    void access(std::string path, Mode mode) {
+    void sendfile(FileHandle out, FileHandle in, int64_t offset, size_t length) {
+        invoke(&uv_fs_sendfile, parent(), get<uv_fs_t>(), out, in, offset, length, &fsGenericCallback<Type::SENDFILE>);
+    }
+
+    auto sendfileSync(FileHandle out, FileHandle in, int64_t offset, size_t length) {
+        auto err = uv_fs_sendfile(parent(), get<uv_fs_t>(), out, in, offset, length, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::SENDFILE>{});
+    }
+
+    void access(std::string path, int mode) {
         invoke(&uv_fs_access, parent(), get<uv_fs_t>(), path.data(), mode, &fsGenericCallback<Type::ACCESS>);
     }
 
-    // TODO uv_fs_access (sync (cb null))
+    auto accessSync(std::string path, int mode) {
+        auto err = uv_fs_access(parent(), get<uv_fs_t>(), path.data(), mode, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::ACCESS>{});
+    }
 
-    void chmod(std::string path, Mode mode) {
+    void chmod(std::string path, int mode) {
         invoke(&uv_fs_chmod, parent(), get<uv_fs_t>(), path.data(), mode, &fsGenericCallback<Type::CHMOD>);
     }
 
-    // TODO uv_fs_chmod (sync (cb null))
+    auto chmodSync(std::string path, int mode) {
+        auto err = uv_fs_chmod(parent(), get<uv_fs_t>(), path.data(), mode, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::CHMOD>{});
+    }
 
-    void fchmod(FileHandle file, Mode mode) {
+    void fchmod(FileHandle file, int mode) {
         invoke(&uv_fs_fchmod, parent(), get<uv_fs_t>(), file, mode, &fsGenericCallback<Type::FCHMOD>);
     }
 
-    // TODO uv_fs_fchmod (sync (cb null))
+    auto fchmodSync(FileHandle file, int mode) {
+        auto err = uv_fs_fchmod(parent(), get<uv_fs_t>(), file, mode, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::FCHMOD>{});
+    }
 
     void utime(std::string path, Time atime, Time mtime) {
         invoke(&uv_fs_utime, parent(), get<uv_fs_t>(), path.data(), atime.count(), mtime.count(), &fsGenericCallback<Type::UTIME>);
     }
 
-    // TODO uv_fs_utime (sync (cb null))
+    auto utimeSync(std::string path, Time atime, Time mtime) {
+        auto err = uv_fs_utime(parent(), get<uv_fs_t>(), path.data(), atime.count(), mtime.count(), nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::UTIME>{});
+    }
 
     void futime(FileHandle file, Time atime, Time mtime) {
         invoke(&uv_fs_futime, parent(), get<uv_fs_t>(), file, atime.count(), mtime.count(), &fsGenericCallback<Type::FUTIME>);
     }
 
-    // TODO uv_fs_futime (sync (cb null))
+    auto futimeSync(FileHandle file, Time atime, Time mtime) {
+        auto err = uv_fs_futime(parent(), get<uv_fs_t>(), file, atime.count(), mtime.count(), nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::FUTIME>{});
+    }
 
     void link(std::string old, std::string path) {
         invoke(&uv_fs_link, parent(), get<uv_fs_t>(), old.data(), path.data(), &fsGenericCallback<Type::LINK>);
     }
 
-    // TODO uv_fs_link (sync (cb null))
+    auto linkSync(std::string old, std::string path) {
+        auto err = uv_fs_link(parent(), get<uv_fs_t>(), old.data(), path.data(), nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::LINK>{});
+    }
 
-    void symlink(std::string old, std::string path, Flags flags) {
+    void symlink(std::string old, std::string path, int flags) {
         invoke(&uv_fs_symlink, parent(), get<uv_fs_t>(), old.data(), path.data(), flags, &fsGenericCallback<Type::SYMLINK>);
     }
 
-    // TODO uv_fs_symlink (sync (cb null))
+    auto symlinkSync(std::string old, std::string path, int flags) {
+        auto err = uv_fs_symlink(parent(), get<uv_fs_t>(), old.data(), path.data(), flags, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::SYMLINK>{});
+    }
 
     void readlink(std::string path) {
-        invoke(&uv_fs_readlink, parent(), get<uv_fs_t>(), path.data(), &fsGenericCallback<Type::READLINK>);
+        invoke(&uv_fs_readlink, parent(), get<uv_fs_t>(), path.data(), &fsReadlinkCallback);
     }
 
     // TODO uv_fs_readlink (sync (cb null))
@@ -250,19 +432,28 @@ public:
         invoke(&uv_fs_realpath, parent(), get<uv_fs_t>(), path.data(), &fsGenericCallback<Type::REALPATH>);
     }
 
-    // TODO uv_fs_realpath (sync (cb null))
+    auto realpathSync(std::string path) {
+        auto err = uv_fs_realpath(parent(), get<uv_fs_t>(), path.data(), nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::REALPATH>{});
+    }
 
     void chown(std::string path, Uid uid, Gid gid) {
         invoke(&uv_fs_chown, parent(), get<uv_fs_t>(), path.data(), uid, gid, &fsGenericCallback<Type::CHOWN>);
     }
 
-    // TODO uv_fs_chown (sync (cb null))
+    auto chownSync(std::string path, Uid uid, Gid gid) {
+        auto err = uv_fs_chown(parent(), get<uv_fs_t>(), path.data(), uid, gid, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::CHOWN>{});
+    }
 
     void fchown(FileHandle file, Uid uid, Gid gid) {
         invoke(&uv_fs_fchown, parent(), get<uv_fs_t>(), file, uid, gid, &fsGenericCallback<Type::FCHOWN>);
     }
 
-    // TODO uv_fs_fchown (sync (cb null))
+    auto fchownSync(FileHandle file, Uid uid, Gid gid) {
+        auto err = uv_fs_fchown(parent(), get<uv_fs_t>(), file, uid, gid, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::FCHOWN>{});
+    }
 };
 
 
