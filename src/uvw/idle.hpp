@@ -12,6 +12,9 @@
 namespace uvw {
 
 
+struct IdleEvent: Event<IdleEvent> { };
+
+
 class Idle final: public Handle<Idle, uv_idle_t> {
     static void startCallback(uv_idle_t *handle) {
         Idle &idle = *(static_cast<Idle*>(handle->data));

@@ -13,6 +13,9 @@
 namespace uvw {
 
 
+struct TimerEvent: Event<TimerEvent> { };
+
+
 class Timer final: public Handle<Timer, uv_timer_t> {
     static void startCallback(uv_timer_t *handle) {
         Timer &timer = *(static_cast<Timer*>(handle->data));

@@ -15,7 +15,40 @@
 namespace uvw {
 
 
+struct SendEvent: Event<SendEvent> { };
+
+
+struct UDPDataEvent: Event<UDPDataEvent> {
+    explicit UDPDataEvent(Addr addr, std::unique_ptr<const char[]> ptr, ssize_t l, bool trunc) noexcept
+        : dt{std::move(ptr)}, len{l}, sndr{addr}, part{trunc}
+    { }
+
+    const char * data() const noexcept { return dt.get(); }
+    ssize_t length() const noexcept { return len; }
+    Addr sender() const noexcept { return sndr; }
+    bool partial() const noexcept { return part; }
+
+private:
+    std::unique_ptr<const char[]> dt;
+    const ssize_t len;
+    Addr sndr;
+    const bool part;
+};
+
+
 namespace details {
+
+
+enum class UVUdpFlags: std::underlying_type_t<uv_udp_flags> {
+    IPV6ONLY = UV_UDP_IPV6ONLY,
+    REUSEADDR = UV_UDP_REUSEADDR
+};
+
+
+enum class UVMembership: std::underlying_type_t<uv_membership> {
+    LEAVE_GROUP = UV_LEAVE_GROUP,
+    JOIN_GROUP = UV_JOIN_GROUP
+};
 
 
 class Send final: public Request<Send, uv_udp_send_t> {
@@ -63,18 +96,10 @@ class Udp final: public Handle<Udp, uv_udp_t> {
     }
 
 public:
+    using Membership = details::UVMembership;
+    using Bind = details::UVUdpFlags;
     using IPv4 = details::IPv4;
     using IPv6 = details::IPv6;
-
-    enum class Bind: std::underlying_type_t<uv_udp_flags> {
-        IPV6ONLY = UV_UDP_IPV6ONLY,
-        REUSEADDR = UV_UDP_REUSEADDR
-    };
-
-    enum class Membership: std::underlying_type_t<uv_membership> {
-        LEAVE_GROUP = UV_LEAVE_GROUP,
-        JOIN_GROUP = UV_JOIN_GROUP
-    };
 
     template<typename... Args>
     static std::shared_ptr<Udp> create(Args&&... args) {
@@ -137,11 +162,11 @@ public:
 
         uv_buf_t bufs[] = { uv_buf_init(data, len) };
 
-        auto listener = [ptr = this->shared_from_this()](const auto &event, details::Send &) {
+        auto listener = [ptr = shared_from_this()](const auto &event, details::Send &) {
             ptr->publish(event);
         };
 
-        auto send = this->loop().resource<details::Send>();
+        auto send = loop().resource<details::Send>();
         send->once<ErrorEvent>(listener);
         send->once<SendEvent>(listener);
         send->send(get<uv_udp_t>(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
@@ -161,7 +186,7 @@ public:
         auto bw = uv_udp_try_send(get<uv_udp_t>(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
 
         if(bw < 0) {
-            this->publish(ErrorEvent{bw});
+            publish(ErrorEvent{bw});
             bw = 0;
         }
 

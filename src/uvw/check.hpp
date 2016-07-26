@@ -12,6 +12,9 @@
 namespace uvw {
 
 
+struct CheckEvent: Event<CheckEvent> { };
+
+
 class Check final: public Handle<Check, uv_check_t> {
     static void startCallback(uv_check_t *handle) {
         Check &check = *(static_cast<Check*>(handle->data));

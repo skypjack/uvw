@@ -11,6 +11,9 @@
 namespace uvw {
 
 
+struct CloseEvent: Event<CloseEvent> { };
+
+
 template<typename T, typename U>
 class Handle: public BaseHandle, public Resource<T, U>
 {

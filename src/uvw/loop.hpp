@@ -14,6 +14,17 @@
 namespace uvw {
 
 
+namespace details {
+
+
+enum class UVLoopOption: std::underlying_type_t<uv_loop_option> {
+    BLOCK_SIGNAL = UV_LOOP_BLOCK_SIGNAL
+};
+
+
+}
+
+
 class BaseHandle {
 public:
     virtual bool active() const noexcept = 0;
@@ -37,10 +48,7 @@ class Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop
 
 public:
     using Time = std::chrono::milliseconds;
-
-    enum class Configure: std::underlying_type_t<uv_loop_option> {
-        BLOCK_SIGNAL = UV_LOOP_BLOCK_SIGNAL
-    };
+    using Configure = details::UVLoopOption;
 
     static std::shared_ptr<Loop> create() {
         auto ptr = std::unique_ptr<uv_loop_t, Deleter>{new uv_loop_t, [](uv_loop_t *l){ delete l; }};

@@ -13,6 +13,19 @@
 namespace uvw {
 
 
+namespace details {
+
+
+enum class UVTTYModeT: std::underlying_type_t<uv_tty_mode_t> {
+    NORMAL = UV_TTY_MODE_NORMAL,
+    RAW = UV_TTY_MODE_RAW,
+    IO = UV_TTY_MODE_IO
+};
+
+
+}
+
+
 class TTY final: public Stream<TTY, uv_tty_t> {
     explicit TTY(std::shared_ptr<Loop> ref,
                  FileHandle desc,
@@ -23,11 +36,7 @@ class TTY final: public Stream<TTY, uv_tty_t> {
     { }
 
 public:
-    enum class Mode: std::underlying_type_t<uv_tty_mode_t> {
-        NORMAL = UV_TTY_MODE_NORMAL,
-        RAW = UV_TTY_MODE_RAW,
-        IO = UV_TTY_MODE_IO
-    };
+    using Mode = details::UVTTYModeT;
 
     template<typename... Args>
     static std::shared_ptr<TTY> create(Args&&... args) {

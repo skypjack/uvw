@@ -13,21 +13,42 @@
 namespace uvw {
 
 
+namespace details {
+
+
+enum class UVPollEvent: std::underlying_type_t<uv_poll_event> {
+    READABLE = UV_READABLE,
+    WRITABLE = UV_WRITABLE,
+    DISCONNECT = UV_DISCONNECT
+};
+
+
+}
+
+
+struct PollEvent: Event<PollEvent> {
+    explicit PollEvent(Flags<details::UVPollEvent> f) noexcept
+        : flgs{std::move(f)}
+    { }
+
+    Flags<details::UVPollEvent> flags() const noexcept { return flgs; }
+
+private:
+    Flags<details::UVPollEvent> flgs;
+};
+
+
 class Poll final: public Handle<Poll, uv_poll_t> {
     static void startCallback(uv_poll_t *handle, int status, int events) {
         Poll &poll = *(static_cast<Poll*>(handle->data));
         if(status) { poll.publish(ErrorEvent{status}); }
-        else { poll.publish(FlagsEvent<Event>{static_cast<std::underlying_type_t<Event>>(events)}); }
+        else { poll.publish(PollEvent{static_cast<std::underlying_type_t<Event>>(events)}); }
     }
 
     using Handle::Handle;
 
 public:
-    enum class Event: std::underlying_type_t<uv_poll_event> {
-        READABLE = UV_READABLE,
-        WRITABLE = UV_WRITABLE,
-        DISCONNECT = UV_DISCONNECT
-    };
+    using Event = details::UVPollEvent;
 
     template<typename... Args>
     static std::shared_ptr<Poll> create(Args&&... args) {

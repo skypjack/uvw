@@ -13,6 +13,20 @@
 namespace uvw {
 
 
+struct FsPollEvent: Event<FsPollEvent> {
+    explicit FsPollEvent(const Stat &p, const Stat &c) noexcept
+        : prev(p), curr(c)
+    { }
+
+    const Stat & previous() const noexcept { return prev; }
+    const Stat & current() const noexcept { return curr; }
+
+private:
+    Stat prev;
+    Stat curr;
+};
+
+
 class FsPoll final: public Handle<FsPoll, uv_fs_poll_t> {
     static void startCallback(uv_fs_poll_t *handle, int status, const uv_stat_t *prev, const uv_stat_t *curr) {
         FsPoll &fsPoll = *(static_cast<FsPoll*>(handle->data));

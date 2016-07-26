@@ -12,6 +12,9 @@
 namespace uvw {
 
 
+struct AsyncEvent: Event<AsyncEvent> { };
+
+
 class Async final: public Handle<Async, uv_async_t> {
     static void sendCallback(uv_async_t *handle) {
         Async &async = *(static_cast<Async*>(handle->data));

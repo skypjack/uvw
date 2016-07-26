@@ -15,16 +15,25 @@
 namespace uvw {
 
 
+namespace details {
+
+
+enum class UVHandleType: std::underlying_type_t<uv_handle_type> {
+    UNKNOWN = UV_UNKNOWN_HANDLE,
+    PIPE = UV_NAMED_PIPE,
+    TCP = UV_TCP,
+    UDP = UV_UDP
+};
+
+
+}
+
+
 class Pipe final: public Stream<Pipe, uv_pipe_t> {
     using Stream::Stream;
 
 public:
-    enum class Pending: std::underlying_type_t<uv_handle_type> {
-        UNKNOWN = UV_UNKNOWN_HANDLE,
-        PIPE = UV_NAMED_PIPE,
-        TCP = UV_TCP,
-        UDP = UV_UDP
-    };
+    using Pending = details::UVHandleType;
 
     template<typename... Args>
     static std::shared_ptr<Pipe> create(Args&&... args) {
@@ -42,7 +51,7 @@ public:
     }
 
     void connect(std::string name) {
-        auto listener = [ptr = this->shared_from_this()](const auto &event, details::Connect &) {
+        auto listener = [ptr = shared_from_this()](const auto &event, details::Connect &) {
             ptr->publish(event);
         };
 
