@@ -61,7 +61,7 @@ public:
     }
 
     void send(uv_udp_t *handle, const uv_buf_t bufs[], unsigned int nbufs, const struct sockaddr* addr) {
-        exec<uv_udp_send_t, SendEvent>(&uv_udp_send, get<uv_udp_send_t>(), handle, bufs, nbufs, addr);
+        invoke(&uv_udp_send, get<uv_udp_send_t>(), handle, bufs, nbufs, addr, &defaultCallback<uv_udp_send_t, SendEvent>);
     }
 };
 
@@ -156,11 +156,11 @@ public:
     void ttl(int val) { invoke(&uv_udp_set_ttl, get<uv_udp_t>(), val > 255 ? 255 : val); }
 
     template<typename I = IPv4>
-    void send(std::string ip, unsigned int port, char *data, ssize_t len) {
+    void send(std::string ip, unsigned int port, std::unique_ptr<char[]> data, ssize_t len) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
 
-        uv_buf_t bufs[] = { uv_buf_init(data, len) };
+        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
 
         auto listener = [ptr = shared_from_this()](const auto &event, details::Send &) {
             ptr->publish(event);
@@ -173,16 +173,11 @@ public:
     }
 
     template<typename I = IPv4>
-    void send(std::string ip, unsigned int port, std::unique_ptr<char[]> data, ssize_t len) {
-        send<I>(ip, port, data.get(), len);
-    }
-
-    template<typename I = IPv4>
-    int trySend(std::string ip, unsigned int port, char *data, ssize_t len) {
+    int trySend(std::string ip, unsigned int port, std::unique_ptr<char[]> data, ssize_t len) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
 
-        uv_buf_t bufs[] = { uv_buf_init(data, len) };
+        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
         auto bw = uv_udp_try_send(get<uv_udp_t>(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
 
         if(bw < 0) {
@@ -191,11 +186,6 @@ public:
         }
 
         return bw;
-    }
-
-    template<typename I = IPv4>
-    int trySend(std::string ip, unsigned int port, std::unique_ptr<char[]> data, ssize_t len) {
-        return trySend<I>(ip, port, data.get(), len);
     }
 
     template<typename I = IPv4>

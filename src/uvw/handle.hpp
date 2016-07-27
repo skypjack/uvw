@@ -63,6 +63,13 @@ protected:
         return this->self();
     }
 
+    template<typename F, typename... Args>
+    auto invoke(F &&f, Args&&... args) {
+        auto err = std::forward<F>(f)(std::forward<Args>(args)...);
+        if(err) { Emitter<T>::publish(ErrorEvent{err}); }
+        return err;
+    }
+
 public:
     bool active() const noexcept override {
         return !(uv_is_active(this->template get<uv_handle_t>()) == 0);

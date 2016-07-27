@@ -35,13 +35,6 @@ protected:
     template<typename R>
     auto get() const noexcept { return reinterpret_cast<const R*>(&resource); }
 
-    template<typename F, typename... Args>
-    auto invoke(F &&f, Args&&... args) {
-        auto err = std::forward<F>(f)(std::forward<Args>(args)...);
-        if(err) { Emitter<T>::publish(ErrorEvent{err}); }
-        return err;
-    }
-
 public:
     Resource(const Resource &) = delete;
     Resource(Resource &&) = delete;

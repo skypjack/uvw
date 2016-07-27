@@ -13,43 +13,42 @@ namespace uvw {
 
 template<typename T, typename U>
 class Request: public Resource<T, U> {
-    template<typename R, typename E>
-    static void execCallback(R *req, int status) {
-        T &res = *(static_cast<T*>(req->data));
-
-        auto ptr = res.shared_from_this();
-        (void)ptr;
-
-        res.reset();
-
-        if(status) {
-            res.publish(ErrorEvent{status});
-        } else {
-            res.publish(E{});
-        }
-    }
-
 protected:
     using Resource<T, U>::Resource;
 
-    template<typename R, typename E, typename F, typename... Args>
-    auto exec(F &&f, Args&&... args)
-    -> std::enable_if_t<not std::is_void<std::result_of_t<F(Args..., decltype(&execCallback<R, E>))>>::value, int> {
-        auto ret = this->invoke(std::forward<F>(f), std::forward<Args>(args)..., &execCallback<R, E>);
-        if(0 == ret) { this->leak(); }
-        return ret;
+    static auto reserve(uv_req_t *req) {
+        auto ptr = static_cast<T*>(req->data)->shared_from_this();
+        ptr->reset();
+        return ptr;
     }
 
-    template<typename R, typename E, typename F, typename... Args>
-    auto exec(F &&f, Args&&... args)
-    -> std::enable_if_t<std::is_void<std::result_of_t<F(Args..., decltype(&execCallback<R, E>))>>::value> {
-        std::forward<F>(f)(std::forward<Args>(args)..., &execCallback<R, E>);
+    template<typename R, typename E>
+    static void defaultCallback(R *req, int status) {
+        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        if(status) { ptr->publish(ErrorEvent{status}); }
+        else { ptr->publish(E{}); }
+    }
+
+    template<typename F, typename... Args>
+    auto invoke(F &&f, Args&&... args)
+    -> std::enable_if_t<not std::is_void<std::result_of_t<F(Args...)>>::value, int> {
+        auto err = std::forward<F>(f)(std::forward<Args>(args)...);
+        if(err) { Emitter<T>::publish(ErrorEvent{err}); }
+        else { this->leak(); }
+        return err;
+    }
+
+    template<typename F, typename... Args>
+    auto invoke(F &&f, Args&&... args)
+    -> std::enable_if_t<std::is_void<std::result_of_t<F(Args...)>>::value> {
+        std::forward<F>(f)(std::forward<Args>(args)...);
         this->leak();
     }
 
 public:
     void cancel() {
-        this->invoke(&uv_cancel, this->template get<uv_req_t>());
+        auto err = uv_cancel(this->template get<uv_req_t>());
+        if(err) { Emitter<T>::publish(ErrorEvent{err}); }
     }
 
     std::size_t size() const noexcept {
