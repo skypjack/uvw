@@ -155,8 +155,8 @@ public:
         this->invoke(&uv_read_stop, this->template get<uv_stream_t>());
     }
 
-    void write(char *data, ssize_t len) {
-        uv_buf_t bufs[] = { uv_buf_init(data, len) };
+    void write(std::unique_ptr<char[]> data, ssize_t len) {
+        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
 
         auto listener = [ptr = this->shared_from_this()](const auto &event, details::Write &) {
             ptr->publish(event);
@@ -168,13 +168,9 @@ public:
         write->write(this->template get<uv_stream_t>(), bufs, 1);
     }
 
-    void write(std::unique_ptr<char[]> data, ssize_t len) {
-        write(data.get(), len);
-    }
-
     template<typename S>
-    void write(S &send, char *data, ssize_t len) {
-        uv_buf_t bufs[] = { uv_buf_init(data, len) };
+    void write(S &send, std::unique_ptr<char[]> data, ssize_t len) {
+        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
 
         auto listener = [ptr = this->shared_from_this()](const auto &event, details::Write &) {
             ptr->publish(event);
@@ -186,13 +182,8 @@ public:
         write->write(this->template get<uv_stream_t>(), bufs, 1, send.template get<uv_stream_t>());
     }
 
-    template<typename S>
-    void write(S &send, std::unique_ptr<char[]> data, ssize_t len) {
-        write(send, data.get(), len);
-    }
-
-    int tryWrite(char *data, ssize_t len) {
-        uv_buf_t bufs[] = { uv_buf_init(data, len) };
+    int tryWrite(std::unique_ptr<char[]> data, ssize_t len) {
+        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
         auto bw = uv_try_write(this->template get<uv_stream_t>(), bufs, 1);
 
         if(bw < 0) {
@@ -201,10 +192,6 @@ public:
         }
 
         return bw;
-    }
-
-    int tryWrite(std::unique_ptr<char[]> data, ssize_t len) {
-        return tryWrite(data.get(), len);
     }
 
     bool readable() const noexcept {

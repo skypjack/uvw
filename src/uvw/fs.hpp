@@ -172,6 +172,12 @@ class Fs final: public Request<Fs, uv_fs_t> {
 
     static void fsReadlinkCallback(uv_fs_t *req) {
         // TODO - uv_fs_readlink callback
+        /*
+[10:00] <@saghul> in readlink's case, the result is in req->ptr
+[10:00] <@saghul> it's a null terminated string
+[10:00] <@saghul> but in that case the result will be 0
+[10:00] <@saghul> indicating success
+         */
     }
 
     using Request::Request;
@@ -220,17 +226,9 @@ public:
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::UNLINK>{});
     }
 
-    void write(FileHandle file, char *data, ssize_t len, int64_t offset) {
-        uv_buf_t bufs[] = { uv_buf_init(data, len) };
-        invoke(&uv_fs_write, parent(), get<uv_fs_t>(), file, bufs, 1, offset, &fsWriteCallback);
-    }
-
     void write(FileHandle file, std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
-        write(file, data.get(), len, offset);
-    }
-
-    auto writeSync(FileHandle file, char *data, ssize_t len, int64_t offset) {
-        // TODO uv_fs_write (sync (cb null))
+        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
+        invoke(&uv_fs_write, parent(), get<uv_fs_t>(), file, bufs, 1, offset, &fsWriteCallback);
     }
 
     auto writeSync(FileHandle file, std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
