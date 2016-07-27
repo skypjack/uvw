@@ -268,7 +268,10 @@ public:
     }
 
     auto writeSync(FileHandle file, std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
-        // TODO uv_fs_write (sync (cb null))
+        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
+        auto req = get<uv_fs_t>();
+        auto err = uv_fs_write(parent(), get<uv_fs_t>(), file, bufs, 1, offset, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::WRITE>{req->path, req->result});
     }
 
     void mkdir(std::string path, int mode) {
