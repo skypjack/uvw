@@ -47,12 +47,7 @@ private:
 template<typename T>
 struct UVTypeWrapper {
     using Type = T;
-
-    template<typename U, typename = std::enable_if_t<std::is_convertible<U, T>::value>>
-    constexpr UVTypeWrapper(U val): value{static_cast<T>(val)} { }
-
     constexpr UVTypeWrapper(Type val): value{val} { }
-
     constexpr operator Type() const noexcept { return value; }
 private:
     const Type value;
