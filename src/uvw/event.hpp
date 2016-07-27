@@ -34,6 +34,9 @@ struct Event: BaseEvent {
 struct ErrorEvent: Event<ErrorEvent> {
     explicit ErrorEvent(int code = 0) noexcept: ec(code) { }
 
+    template<typename U, typename = std::enable_if_t<std::is_convertible<U, int>::value>>
+    explicit ErrorEvent(U val) noexcept: ec{static_cast<int>(val)} { }
+
     const char * what() const noexcept { return uv_strerror(ec); }
     int code() const noexcept { return ec; }
 
