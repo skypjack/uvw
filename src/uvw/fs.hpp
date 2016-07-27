@@ -123,6 +123,22 @@ private:
 };
 
 
+template<>
+struct TypedEvent<details::UVFsType, details::UVFsType::READLINK>
+        : Event<TypedEvent<details::UVFsType, details::UVFsType::READLINK>>
+{
+    using Type = details::UVFsType;
+    static constexpr details::UVFsType value = details::UVFsType::READLINK;
+
+    explicit TypedEvent(const char *d) noexcept: dt{d} { }
+
+    const char * data() const noexcept { return dt; }
+
+private:
+    const char *dt;
+};
+
+
 template<details::UVFsType e>
 using FsEvent = TypedEvent<details::UVFsType, e>;
 
@@ -171,13 +187,19 @@ class Fs final: public Request<Fs, uv_fs_t> {
     }
 
     static void fsReadlinkCallback(uv_fs_t *req) {
-        // TODO - uv_fs_readlink callback
-        /*
-[10:00] <@saghul> in readlink's case, the result is in req->ptr
-[10:00] <@saghul> it's a null terminated string
-[10:00] <@saghul> but in that case the result will be 0
-[10:00] <@saghul> indicating success
-         */
+        Fs &fs = *(static_cast<Fs*>(req->data));
+
+        auto ptr = fs.shared_from_this();
+        (void)ptr;
+
+        fs.reset();
+
+        if(req->result) {
+            int err = req->result;
+            fs.publish(ErrorEvent{err});
+        } else {
+            fs.publish(FsEvent<Type::READLINK>{static_cast<char *>(req->ptr)});
+        }
     }
 
     using Request::Request;
@@ -302,8 +324,9 @@ public:
     }
 
     auto statSync(std::string path) {
-        auto err = cleanupAndExec(&uv_fs_stat, parent(), get<uv_fs_t>(), path.data(), nullptr);
-        return std::make_pair(ErrorEvent{err}, FsEvent<Type::STAT>{get<uv_fs_t>()->statbuf});
+        auto req = get<uv_fs_t>();
+        auto err = cleanupAndExec(&uv_fs_stat, parent(), req, path.data(), nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::STAT>{req->statbuf});
     }
 
     void fstat(FileHandle file) {
@@ -311,8 +334,9 @@ public:
     }
 
     auto fstatSync(FileHandle file) {
-        auto err = cleanupAndExec(&uv_fs_fstat, parent(), get<uv_fs_t>(), file, nullptr);
-        return std::make_pair(ErrorEvent{err}, FsEvent<Type::FSTAT>{get<uv_fs_t>()->statbuf});
+        auto req = get<uv_fs_t>();
+        auto err = cleanupAndExec(&uv_fs_fstat, parent(), req, file, nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::FSTAT>{req->statbuf});
     }
 
     void lstat(std::string path) {
@@ -320,8 +344,9 @@ public:
     }
 
     auto lstatSync(std::string path) {
-        auto err = cleanupAndExec(&uv_fs_lstat, parent(), get<uv_fs_t>(), path.data(), nullptr);
-        return std::make_pair(ErrorEvent{err}, FsEvent<Type::LSTAT>{get<uv_fs_t>()->statbuf});
+        auto req = get<uv_fs_t>();
+        auto err = cleanupAndExec(&uv_fs_lstat, parent(), req, path.data(), nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::LSTAT>{req->statbuf});
     }
 
     void rename(std::string old, std::string path) {
@@ -436,7 +461,11 @@ public:
         cleanupAndInvoke(&uv_fs_readlink, parent(), get<uv_fs_t>(), path.data(), &fsReadlinkCallback);
     }
 
-    // TODO uv_fs_readlink (sync (cb null))
+    auto readlinkSync(std::string path) {
+        auto req = get<uv_fs_t>();
+        auto err = cleanupAndExec(&uv_fs_readlink, parent(), req, path.data(), nullptr);
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::READLINK>{static_cast<char *>(req->ptr)});
+    }
 
     void realpath(std::string path) {
         cleanupAndInvoke(&uv_fs_realpath, parent(), get<uv_fs_t>(), path.data(), &fsGenericCallback<Type::REALPATH>);
