@@ -32,7 +32,7 @@ public:
     }
 
     void queue(Task t) {
-        if(0 == exec<uv_work_t, WorkEvent>(&uv_queue_work, parent(), get<uv_work_t>(), &workCallback)) {
+        if(0 == invoke(&uv_queue_work, parent(), get<uv_work_t>(), &workCallback, &defaultCallback<uv_work_t, WorkEvent>)) {
             task = std::move(t);
         }
     }

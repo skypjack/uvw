@@ -211,7 +211,7 @@ class Fs final: public Request<Fs, uv_fs_t> {
     }
 
     template<typename F, typename... Args>
-    auto cleanupAndExec(F &&f, Args&&... args) {
+    auto cleanupAndInvokeSync(F &&f, Args&&... args) {
         uv_fs_req_cleanup(get<uv_fs_t>());
         return std::forward<F>(f)(std::forward<Args>(args)...);
     }
@@ -236,7 +236,7 @@ public:
     }
 
     auto closeSync(FileHandle file) {
-        auto err = cleanupAndExec(&uv_fs_close, parent(), get<uv_fs_t>(), file, nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_close, parent(), get<uv_fs_t>(), file, nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::CLOSE>{});
     }
 
@@ -245,7 +245,7 @@ public:
     }
 
     auto openSync(std::string path, int flags, int mode) {
-        auto err = cleanupAndExec(&uv_fs_open, parent(), get<uv_fs_t>(), path.data(), flags, mode, nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_open, parent(), get<uv_fs_t>(), path.data(), flags, mode, nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::OPEN>{});
     }
 
@@ -256,7 +256,7 @@ public:
     }
 
     auto unlinkSync(std::string path) {
-        auto err = cleanupAndExec(&uv_fs_unlink, parent(), get<uv_fs_t>(), path.data(), nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_unlink, parent(), get<uv_fs_t>(), path.data(), nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::UNLINK>{});
     }
 
@@ -283,7 +283,7 @@ public:
     }
 
     auto mkdtempSync(std::string tpl) {
-        auto err = cleanupAndExec(&uv_fs_mkdtemp, parent(), get<uv_fs_t>(), tpl.data(), nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_mkdtemp, parent(), get<uv_fs_t>(), tpl.data(), nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::MKDTEMP>{});
     }
 
@@ -292,7 +292,7 @@ public:
     }
 
     auto rmdirSync(std::string path) {
-        auto err = cleanupAndExec(&uv_fs_rmdir, parent(), get<uv_fs_t>(), path.data(), nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_rmdir, parent(), get<uv_fs_t>(), path.data(), nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::RMDIR>{});
     }
 
@@ -301,7 +301,7 @@ public:
     }
 
     auto scandirSync(std::string path, int flags) {
-        auto err = cleanupAndExec(&uv_fs_scandir, parent(), get<uv_fs_t>(), path.data(), flags, nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_scandir, parent(), get<uv_fs_t>(), path.data(), flags, nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::SCANDIR>{});
     }
 
@@ -325,7 +325,7 @@ public:
 
     auto statSync(std::string path) {
         auto req = get<uv_fs_t>();
-        auto err = cleanupAndExec(&uv_fs_stat, parent(), req, path.data(), nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_stat, parent(), req, path.data(), nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::STAT>{req->statbuf});
     }
 
@@ -335,7 +335,7 @@ public:
 
     auto fstatSync(FileHandle file) {
         auto req = get<uv_fs_t>();
-        auto err = cleanupAndExec(&uv_fs_fstat, parent(), req, file, nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_fstat, parent(), req, file, nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::FSTAT>{req->statbuf});
     }
 
@@ -345,7 +345,7 @@ public:
 
     auto lstatSync(std::string path) {
         auto req = get<uv_fs_t>();
-        auto err = cleanupAndExec(&uv_fs_lstat, parent(), req, path.data(), nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_lstat, parent(), req, path.data(), nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::LSTAT>{req->statbuf});
     }
 
@@ -354,7 +354,7 @@ public:
     }
 
     auto renameSync(std::string old, std::string path) {
-        auto err = cleanupAndExec(&uv_fs_rename, parent(), get<uv_fs_t>(), old.data(), path.data(), nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_rename, parent(), get<uv_fs_t>(), old.data(), path.data(), nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::RENAME>{});
     }
 
@@ -363,7 +363,7 @@ public:
     }
 
     auto fsyncSync(FileHandle file) {
-        auto err = cleanupAndExec(&uv_fs_fsync, parent(), get<uv_fs_t>(), file, nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_fsync, parent(), get<uv_fs_t>(), file, nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::FSYNC>{});
     }
 
@@ -372,7 +372,7 @@ public:
     }
 
     auto fdatasyncSync(FileHandle file) {
-        auto err = cleanupAndExec(&uv_fs_fdatasync, parent(), get<uv_fs_t>(), file, nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_fdatasync, parent(), get<uv_fs_t>(), file, nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::FDATASYNC>{});
     }
 
@@ -381,7 +381,7 @@ public:
     }
 
     auto ftruncateSync(FileHandle file, int64_t offset) {
-        auto err = cleanupAndExec(&uv_fs_ftruncate, parent(), get<uv_fs_t>(), file, offset, nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_ftruncate, parent(), get<uv_fs_t>(), file, offset, nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::FTRUNCATE>{});
     }
 
@@ -390,7 +390,7 @@ public:
     }
 
     auto sendfileSync(FileHandle out, FileHandle in, int64_t offset, size_t length) {
-        auto err = cleanupAndExec(&uv_fs_sendfile, parent(), get<uv_fs_t>(), out, in, offset, length, nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_sendfile, parent(), get<uv_fs_t>(), out, in, offset, length, nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::SENDFILE>{});
     }
 
@@ -399,7 +399,7 @@ public:
     }
 
     auto accessSync(std::string path, int mode) {
-        auto err = cleanupAndExec(&uv_fs_access, parent(), get<uv_fs_t>(), path.data(), mode, nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_access, parent(), get<uv_fs_t>(), path.data(), mode, nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::ACCESS>{});
     }
 
@@ -408,7 +408,7 @@ public:
     }
 
     auto chmodSync(std::string path, int mode) {
-        auto err = cleanupAndExec(&uv_fs_chmod, parent(), get<uv_fs_t>(), path.data(), mode, nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_chmod, parent(), get<uv_fs_t>(), path.data(), mode, nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::CHMOD>{});
     }
 
@@ -417,7 +417,7 @@ public:
     }
 
     auto fchmodSync(FileHandle file, int mode) {
-        auto err = cleanupAndExec(&uv_fs_fchmod, parent(), get<uv_fs_t>(), file, mode, nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_fchmod, parent(), get<uv_fs_t>(), file, mode, nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::FCHMOD>{});
     }
 
@@ -426,7 +426,7 @@ public:
     }
 
     auto utimeSync(std::string path, Time atime, Time mtime) {
-        auto err = cleanupAndExec(&uv_fs_utime, parent(), get<uv_fs_t>(), path.data(), atime.count(), mtime.count(), nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_utime, parent(), get<uv_fs_t>(), path.data(), atime.count(), mtime.count(), nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::UTIME>{});
     }
 
@@ -435,7 +435,7 @@ public:
     }
 
     auto futimeSync(FileHandle file, Time atime, Time mtime) {
-        auto err = cleanupAndExec(&uv_fs_futime, parent(), get<uv_fs_t>(), file, atime.count(), mtime.count(), nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_futime, parent(), get<uv_fs_t>(), file, atime.count(), mtime.count(), nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::FUTIME>{});
     }
 
@@ -444,7 +444,7 @@ public:
     }
 
     auto linkSync(std::string old, std::string path) {
-        auto err = cleanupAndExec(&uv_fs_link, parent(), get<uv_fs_t>(), old.data(), path.data(), nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_link, parent(), get<uv_fs_t>(), old.data(), path.data(), nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::LINK>{});
     }
 
@@ -453,7 +453,7 @@ public:
     }
 
     auto symlinkSync(std::string old, std::string path, int flags) {
-        auto err = cleanupAndExec(&uv_fs_symlink, parent(), get<uv_fs_t>(), old.data(), path.data(), flags, nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_symlink, parent(), get<uv_fs_t>(), old.data(), path.data(), flags, nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::SYMLINK>{});
     }
 
@@ -463,7 +463,7 @@ public:
 
     auto readlinkSync(std::string path) {
         auto req = get<uv_fs_t>();
-        auto err = cleanupAndExec(&uv_fs_readlink, parent(), req, path.data(), nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_readlink, parent(), req, path.data(), nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::READLINK>{static_cast<char *>(req->ptr)});
     }
 
@@ -472,7 +472,7 @@ public:
     }
 
     auto realpathSync(std::string path) {
-        auto err = cleanupAndExec(&uv_fs_realpath, parent(), get<uv_fs_t>(), path.data(), nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_realpath, parent(), get<uv_fs_t>(), path.data(), nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::REALPATH>{});
     }
 
@@ -481,7 +481,7 @@ public:
     }
 
     auto chownSync(std::string path, Uid uid, Gid gid) {
-        auto err = cleanupAndExec(&uv_fs_chown, parent(), get<uv_fs_t>(), path.data(), uid, gid, nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_chown, parent(), get<uv_fs_t>(), path.data(), uid, gid, nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::CHOWN>{});
     }
 
@@ -490,7 +490,7 @@ public:
     }
 
     auto fchownSync(FileHandle file, Uid uid, Gid gid) {
-        auto err = cleanupAndExec(&uv_fs_fchown, parent(), get<uv_fs_t>(), file, uid, gid, nullptr);
+        auto err = cleanupAndInvokeSync(&uv_fs_fchown, parent(), get<uv_fs_t>(), file, uid, gid, nullptr);
         return std::make_pair(ErrorEvent{err}, FsEvent<Type::FCHOWN>{});
     }
 };
