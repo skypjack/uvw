@@ -173,19 +173,9 @@ using FsEvent = TypedEvent<details::UVFsType, e>;
 class Fs final: public Request<Fs, uv_fs_t> {
     template<details::UVFsType e>
     static void fsGenericCallback(uv_fs_t *req) {
-        Fs &fs = *(static_cast<Fs*>(req->data));
-
-        auto ptr = fs.shared_from_this();
-        (void)ptr;
-
-        fs.reset();
-
-        if(req->result) {
-            int err = req->result;
-            fs.publish(ErrorEvent{err});
-        } else {
-            fs.publish(FsEvent<e>{req->path});
-        }
+        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        if(req->result) { ptr->publish(ErrorEvent{static_cast<int>(req->result)}); }
+        else { ptr->publish(FsEvent<e>{req->path}); }
     }
 
     static void fsReadCallback(uv_fs_t *req) {
@@ -193,52 +183,22 @@ class Fs final: public Request<Fs, uv_fs_t> {
     }
 
     static void fsWriteCallback(uv_fs_t *req) {
-        Fs &fs = *(static_cast<Fs*>(req->data));
-
-        auto ptr = fs.shared_from_this();
-        (void)ptr;
-
-        fs.reset();
-
-        if(req->result) {
-            int err = req->result;
-            fs.publish(ErrorEvent{err});
-        } else {
-            fs.publish(FsEvent<Type::WRITE>{req->path, req->result});
-        }
+        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        if(req->result) { ptr->publish(ErrorEvent{static_cast<int>(req->result)}); }
+        else { ptr->publish(FsEvent<Type::WRITE>{req->path, req->result}); }
     }
 
     template<details::UVFsType e>
     static void fsStatCallback(uv_fs_t *req) {
-        Fs &fs = *(static_cast<Fs*>(req->data));
-
-        auto ptr = fs.shared_from_this();
-        (void)ptr;
-
-        fs.reset();
-
-        if(req->result) {
-            int err = req->result;
-            fs.publish(ErrorEvent{err});
-        } else {
-            fs.publish(FsEvent<e>{req->path, req->statbuf});
-        }
+        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        if(req->result) { ptr->publish(ErrorEvent{static_cast<int>(req->result)}); }
+        else { ptr->publish(FsEvent<e>{req->path, req->statbuf}); }
     }
 
     static void fsReadlinkCallback(uv_fs_t *req) {
-        Fs &fs = *(static_cast<Fs*>(req->data));
-
-        auto ptr = fs.shared_from_this();
-        (void)ptr;
-
-        fs.reset();
-
-        if(req->result) {
-            int err = req->result;
-            fs.publish(ErrorEvent{err});
-        } else {
-            fs.publish(FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr)});
-        }
+        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        if(req->result) { ptr->publish(ErrorEvent{static_cast<int>(req->result)}); }
+        else { ptr->publish(FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr)}); }
     }
 
     using Request::Request;

@@ -16,20 +16,17 @@ class Request: public Resource<T, U> {
 protected:
     using Resource<T, U>::Resource;
 
+    static auto reserve(uv_req_t *req) {
+        auto ptr = static_cast<T*>(req->data)->shared_from_this();
+        ptr->reset();
+        return ptr;
+    }
+
     template<typename R, typename E>
     static void defaultCallback(R *req, int status) {
-        T &res = *(static_cast<T*>(req->data));
-
-        auto ptr = res.shared_from_this();
-        (void)ptr;
-
-        res.reset();
-
-        if(status) {
-            res.publish(ErrorEvent{status});
-        } else {
-            res.publish(E{});
-        }
+        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        if(status) { ptr->publish(ErrorEvent{status}); }
+        else { ptr->publish(E{}); }
     }
 
     template<typename F, typename... Args>
