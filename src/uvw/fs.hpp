@@ -82,8 +82,42 @@ private:
 
 
 template<>
+struct TypedEvent<details::UVFsType, details::UVFsType::OPEN>
+        : Event<TypedEvent<details::UVFsType, details::UVFsType::OPEN>>
+{
+    TypedEvent(const char *p, ssize_t desc) noexcept
+        : rPath{p}, fd{desc}
+    { }
+
+    const char * path() const noexcept { return rPath; }
+    FileHandle file() const noexcept { return fd; }
+
+private:
+    const char *rPath;
+    const FileHandle fd;
+};
+
+
+template<>
 struct TypedEvent<details::UVFsType, details::UVFsType::WRITE>
         : Event<TypedEvent<details::UVFsType, details::UVFsType::WRITE>>
+{
+    TypedEvent(const char *p, ssize_t s) noexcept
+        : rPath{p}, sz{s}
+    { }
+
+    const char * path() const noexcept { return rPath; }
+    ssize_t amount() const noexcept { return sz; }
+
+private:
+    const char *rPath;
+    const ssize_t sz;
+};
+
+
+template<>
+struct TypedEvent<details::UVFsType, details::UVFsType::SENDFILE>
+        : Event<TypedEvent<details::UVFsType, details::UVFsType::SENDFILE>>
 {
     TypedEvent(const char *p, ssize_t s) noexcept
         : rPath{p}, sz{s}
@@ -150,19 +184,38 @@ private:
 
 
 template<>
+struct TypedEvent<details::UVFsType, details::UVFsType::SCANDIR>
+        : Event<TypedEvent<details::UVFsType, details::UVFsType::SCANDIR>>
+{
+    TypedEvent(const char *p, ssize_t s) noexcept
+        : rPath{p}, sz{s}
+    { }
+
+    const char * path() const noexcept { return rPath; }
+    ssize_t amount() const noexcept { return sz; }
+
+private:
+    const char *rPath;
+    const ssize_t sz;
+};
+
+
+template<>
 struct TypedEvent<details::UVFsType, details::UVFsType::READLINK>
         : Event<TypedEvent<details::UVFsType, details::UVFsType::READLINK>>
 {
-    explicit TypedEvent(const char *p, const char *d) noexcept
-        : rPath{p}, dt{d}
+    explicit TypedEvent(const char *p, const char *d, ssize_t l) noexcept
+        : rPath{p}, dt{d}, len{l}
     { }
 
     const char * path() const noexcept { return rPath; }
     const char * data() const noexcept { return dt; }
+    ssize_t length() const noexcept { return len; }
 
 private:
     const char *rPath;
     const char *dt;
+    const ssize_t len;
 };
 
 
@@ -174,7 +227,7 @@ class Fs final: public Request<Fs, uv_fs_t> {
     template<details::UVFsType e>
     static void fsGenericCallback(uv_fs_t *req) {
         auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
-        if(req->result) { ptr->publish(ErrorEvent{static_cast<int>(req->result)}); }
+        if(req->result) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<e>{req->path}); }
     }
 
@@ -182,23 +235,24 @@ class Fs final: public Request<Fs, uv_fs_t> {
         // TODO - uv_fs_read callback
     }
 
-    static void fsWriteCallback(uv_fs_t *req) {
+    template<details::UVFsType e>
+    static void fsResultCallback(uv_fs_t *req) {
         auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
-        if(req->result) { ptr->publish(ErrorEvent{static_cast<int>(req->result)}); }
-        else { ptr->publish(FsEvent<Type::WRITE>{req->path, req->result}); }
+        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
+        else { ptr->publish(FsEvent<e>{req->path, req->result}); }
     }
 
     template<details::UVFsType e>
     static void fsStatCallback(uv_fs_t *req) {
         auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
-        if(req->result) { ptr->publish(ErrorEvent{static_cast<int>(req->result)}); }
+        if(req->result) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<e>{req->path, req->statbuf}); }
     }
 
     static void fsReadlinkCallback(uv_fs_t *req) {
         auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
-        if(req->result) { ptr->publish(ErrorEvent{static_cast<int>(req->result)}); }
-        else { ptr->publish(FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr)}); }
+        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
+        else { ptr->publish(FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr), req->result}); }
     }
 
     using Request::Request;
@@ -241,16 +295,22 @@ public:
     }
 
     void open(std::string path, int flags, int mode) {
-        cleanupAndInvoke(&uv_fs_open, parent(), get<uv_fs_t>(), path.data(), flags, mode, &fsGenericCallback<Type::OPEN>);
+        cleanupAndInvoke(&uv_fs_open, parent(), get<uv_fs_t>(), path.data(), flags, mode, &fsResultCallback<Type::OPEN>);
     }
 
     auto openSync(std::string path, int flags, int mode) {
         auto req = get<uv_fs_t>();
         auto err = cleanupAndInvokeSync(&uv_fs_open, parent(), req, path.data(), flags, mode, nullptr);
-        return std::make_pair(ErrorEvent{err}, FsEvent<Type::OPEN>{req->path});
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::OPEN>{req->path, req->result});
     }
 
-    // TODO uv_fs_read (sync (cb null)/async)
+    void read(FileHandle file, int64_t offset, unsigned int len) {
+        // TODO uv_fs_read (async)
+    }
+
+    auto readSync(FileHandle file, int64_t offset, unsigned int len) {
+        // TODO uv_fs_read (sync (cb null))
+    }
 
     void unlink(std::string path) {
         cleanupAndInvoke(&uv_fs_unlink, parent(), get<uv_fs_t>(), path.data(), &fsGenericCallback<Type::UNLINK>);
@@ -264,7 +324,7 @@ public:
 
     void write(FileHandle file, std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
         uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
-        cleanupAndInvoke(&uv_fs_write, parent(), get<uv_fs_t>(), file, bufs, 1, offset, &fsWriteCallback);
+        cleanupAndInvoke(&uv_fs_write, parent(), get<uv_fs_t>(), file, bufs, 1, offset, &fsResultCallback<Type::WRITE>);
     }
 
     auto writeSync(FileHandle file, std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
@@ -305,13 +365,13 @@ public:
     }
 
     void scandir(std::string path, int flags) {
-        cleanupAndInvoke(&uv_fs_scandir, parent(), get<uv_fs_t>(), path.data(), flags, &fsGenericCallback<Type::SCANDIR>);
+        cleanupAndInvoke(&uv_fs_scandir, parent(), get<uv_fs_t>(), path.data(), flags, &fsResultCallback<Type::SCANDIR>);
     }
 
     auto scandirSync(std::string path, int flags) {
         auto req = get<uv_fs_t>();
         auto err = cleanupAndInvokeSync(&uv_fs_scandir, parent(), req, path.data(), flags, nullptr);
-        return std::make_pair(ErrorEvent{err}, FsEvent<Type::SCANDIR>{req->path});
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::SCANDIR>{req->path, req->result});
     }
 
     std::pair<bool, Entry> scandirNext() {
@@ -399,13 +459,13 @@ public:
     }
 
     void sendfile(FileHandle out, FileHandle in, int64_t offset, size_t length) {
-        cleanupAndInvoke(&uv_fs_sendfile, parent(), get<uv_fs_t>(), out, in, offset, length, &fsGenericCallback<Type::SENDFILE>);
+        cleanupAndInvoke(&uv_fs_sendfile, parent(), get<uv_fs_t>(), out, in, offset, length, &fsResultCallback<Type::SENDFILE>);
     }
 
     auto sendfileSync(FileHandle out, FileHandle in, int64_t offset, size_t length) {
         auto req = get<uv_fs_t>();
         auto err = cleanupAndInvokeSync(&uv_fs_sendfile, parent(), req, out, in, offset, length, nullptr);
-        return std::make_pair(ErrorEvent{err}, FsEvent<Type::SENDFILE>{req->path});
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::SENDFILE>{req->path, req->result});
     }
 
     void access(std::string path, int mode) {
@@ -485,7 +545,7 @@ public:
     auto readlinkSync(std::string path) {
         auto req = get<uv_fs_t>();
         auto err = cleanupAndInvokeSync(&uv_fs_readlink, parent(), req, path.data(), nullptr);
-        return std::make_pair(ErrorEvent{err}, FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr)});
+        return std::make_pair(ErrorEvent{err}, FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr), req->result});
     }
 
     void realpath(std::string path) {
