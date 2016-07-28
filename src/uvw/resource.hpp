@@ -27,13 +27,19 @@ protected:
         this->template get<U>()->data = static_cast<T*>(this);
     }
 
-    auto parent() const noexcept { return pLoop->loop.get(); }
+    auto parent() const noexcept {
+        return pLoop->loop.get();
+    }
 
     template<typename R>
-    auto get() noexcept { return reinterpret_cast<R*>(&resource); }
+    auto get() noexcept {
+        return reinterpret_cast<R*>(&resource);
+    }
 
     template<typename R>
-    auto get() const noexcept { return reinterpret_cast<const R*>(&resource); }
+    auto get() const noexcept {
+        return reinterpret_cast<const R*>(&resource);
+    }
 
 public:
     Resource(const Resource &) = delete;

@@ -41,7 +41,9 @@ public:
         return std::shared_ptr<TcpHandle>{new TcpHandle{std::forward<Args>(args)...}};
     }
 
-    bool init() { return initialize<uv_tcp_t>(&uv_tcp_init); }
+    bool init() {
+        return initialize<uv_tcp_t>(&uv_tcp_init);
+    }
 
     template<typename T, typename... Args>
     bool init(T&& t, Args&&... args) {
@@ -102,7 +104,9 @@ public:
     }
 
     template<typename I = IPv4>
-    void connect(Addr addr) { connect<I>(addr.ip, addr.port); }
+    void connect(Addr addr) {
+        connect<I>(addr.ip, addr.port);
+    }
 };
 
 

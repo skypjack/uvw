@@ -29,10 +29,17 @@ public:
         return std::shared_ptr<CheckHandle>{new CheckHandle{std::forward<Args>(args)...}};
     }
 
-    bool init() { return initialize<uv_check_t>(&uv_check_init); }
+    bool init() {
+        return initialize<uv_check_t>(&uv_check_init);
+    }
 
-    void start() { invoke(&uv_check_start, get<uv_check_t>(), &startCallback); }
-    void stop() { invoke(&uv_check_stop, get<uv_check_t>()); }
+    void start() {
+        invoke(&uv_check_start, get<uv_check_t>(), &startCallback);
+    }
+
+    void stop() {
+        invoke(&uv_check_stop, get<uv_check_t>());
+    }
 };
 
 

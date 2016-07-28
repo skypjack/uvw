@@ -29,10 +29,17 @@ public:
         return std::shared_ptr<IdleHandle>{new IdleHandle{std::forward<Args>(args)...}};
     }
 
-    bool init() { return initialize<uv_idle_t>(&uv_idle_init); }
+    bool init() {
+        return initialize<uv_idle_t>(&uv_idle_init);
+    }
 
-    void start() { invoke(&uv_idle_start, get<uv_idle_t>(), &startCallback); }
-    void stop() { invoke(&uv_idle_stop, get<uv_idle_t>()); }
+    void start() {
+        invoke(&uv_idle_start, get<uv_idle_t>(), &startCallback);
+    }
+
+    void stop() {
+        invoke(&uv_idle_stop, get<uv_idle_t>());
+    }
 };
 
 

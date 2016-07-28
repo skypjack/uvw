@@ -40,7 +40,9 @@ public:
         return std::shared_ptr<PipeHandle>{new PipeHandle{std::forward<Args>(args)...}};
     }
 
-    bool init(bool ipc = false) { return initialize<uv_pipe_t>(&uv_pipe_init, ipc); }
+    bool init(bool ipc = false) {
+        return initialize<uv_pipe_t>(&uv_pipe_init, ipc);
+    }
 
     void open(FileHandle file) {
         invoke(&uv_pipe_open, get<uv_pipe_t>(), file);
@@ -61,11 +63,21 @@ public:
         connect->connect(&uv_pipe_connect, get<uv_pipe_t>(), name.data());
     }
 
-    std::string sock() const noexcept { return details::path(&uv_pipe_getsockname, get<uv_pipe_t>()); }
-    std::string peer() const noexcept { return details::path(&uv_pipe_getpeername, get<uv_pipe_t>()); }
+    std::string sock() const noexcept {
+        return details::path(&uv_pipe_getsockname, get<uv_pipe_t>());
+    }
 
-    void pending(int count) noexcept { uv_pipe_pending_instances(get<uv_pipe_t>(), count); }
-    int pending() noexcept { return uv_pipe_pending_count(get<uv_pipe_t>()); }
+    std::string peer() const noexcept {
+        return details::path(&uv_pipe_getpeername, get<uv_pipe_t>());
+    }
+
+    void pending(int count) noexcept {
+        uv_pipe_pending_instances(get<uv_pipe_t>(), count);
+    }
+
+    int pending() noexcept {
+        return uv_pipe_pending_count(get<uv_pipe_t>());
+    }
 
     Pending receive() noexcept {
         auto type = uv_pipe_pending_type(get<uv_pipe_t>());

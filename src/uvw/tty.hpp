@@ -55,7 +55,9 @@ public:
         return std::shared_ptr<TTYHandle>{new TTYHandle{std::forward<Args>(args)..., ptr}};
     }
 
-    bool init() { return initialize<uv_tty_t>(&uv_tty_init, fd, rw); }
+    bool init() {
+        return initialize<uv_tty_t>(&uv_tty_init, fd, rw);
+    }
 
     void mode(Mode m) {
         // uv_tty_set_mode is inline, it cannot be used with invoke directly
@@ -64,7 +66,9 @@ public:
         }, get<uv_tty_t>(), static_cast<std::underlying_type_t<Mode>>(m));
     }
 
-    void reset() noexcept { invoke(&uv_tty_reset_mode); }
+    void reset() noexcept {
+        invoke(&uv_tty_reset_mode);
+    }
 
     WinSize getWinSize() {
         std::pair<int, int> size{0, 0};

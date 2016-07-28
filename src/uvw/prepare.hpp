@@ -29,10 +29,17 @@ public:
         return std::shared_ptr<PrepareHandle>{new PrepareHandle{std::forward<Args>(args)...}};
     }
 
-    bool init() { return initialize<uv_prepare_t>(&uv_prepare_init); }
+    bool init() {
+        return initialize<uv_prepare_t>(&uv_prepare_init);
+    }
 
-    void start() { invoke(&uv_prepare_start, get<uv_prepare_t>(), &startCallback); }
-    void stop() { invoke(&uv_prepare_stop, get<uv_prepare_t>()); }
+    void start() {
+        invoke(&uv_prepare_start, get<uv_prepare_t>(), &startCallback);
+    }
+
+    void stop() {
+        invoke(&uv_prepare_stop, get<uv_prepare_t>());
+    }
 };
 
 

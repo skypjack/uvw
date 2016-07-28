@@ -42,14 +42,21 @@ public:
         return std::shared_ptr<FsPollHandle>{new FsPollHandle{std::forward<Args>(args)...}};
     }
 
-    bool init() { return initialize<uv_fs_poll_t>(&uv_fs_poll_init); }
+    bool init() {
+        return initialize<uv_fs_poll_t>(&uv_fs_poll_init);
+    }
 
     void start(std::string file, unsigned int interval) {
         invoke(&uv_fs_poll_start, get<uv_fs_poll_t>(), &startCallback, file.data(), interval);
     }
 
-    void stop() { invoke(&uv_fs_poll_stop, get<uv_fs_poll_t>()); }
-    std::string path() noexcept { return details::path(&uv_fs_poll_getpath, get<uv_fs_poll_t>()); }
+    void stop() {
+        invoke(&uv_fs_poll_stop, get<uv_fs_poll_t>());
+    }
+
+    std::string path() noexcept {
+        return details::path(&uv_fs_poll_getpath, get<uv_fs_poll_t>());
+    }
 };
 
 
