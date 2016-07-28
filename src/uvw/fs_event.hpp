@@ -32,8 +32,8 @@ enum class UVFsEvent: std::underlying_type_t<uv_fs_event> {
 }
 
 
-struct FsMonitorEvent: Event<FsMonitorEvent> {
-    FsMonitorEvent(std::string fPath, Flags<details::UVFsEvent> f)
+struct FsEventEvent: Event<FsEventEvent> {
+    FsEventEvent(std::string fPath, Flags<details::UVFsEvent> f)
         : flgs{std::move(f)}, relPath{std::move(fPath)}
     { }
 
@@ -46,11 +46,11 @@ private:
 };
 
 
-class FsMonitor final: public Handle<FsMonitor, uv_fs_event_t> {
+class FsEventHandle final: public Handle<FsEventHandle, uv_fs_event_t> {
     static void startCallback(uv_fs_event_t *handle, const char *filename, int events, int status) {
-        FsMonitor &fsMonitor = *(static_cast<FsMonitor*>(handle->data));
-        if(status) { fsMonitor.publish(ErrorEvent{status}); }
-        else { fsMonitor.publish(FsMonitorEvent{filename, static_cast<std::underlying_type_t<Event>>(events)}); }
+        FsEventHandle &fsEvent = *(static_cast<FsEventHandle*>(handle->data));
+        if(status) { fsEvent.publish(ErrorEvent{status}); }
+        else { fsEvent.publish(FsEventEvent{filename, static_cast<std::underlying_type_t<Event>>(events)}); }
     }
 
     using Handle::Handle;
@@ -60,8 +60,8 @@ public:
     using Event = details::UVFsEventFlags;
 
     template<typename... Args>
-    static std::shared_ptr<FsMonitor> create(Args&&... args) {
-        return std::shared_ptr<FsMonitor>{new FsMonitor{std::forward<Args>(args)...}};
+    static std::shared_ptr<FsEventHandle> create(Args&&... args) {
+        return std::shared_ptr<FsEventHandle>{new FsEventHandle{std::forward<Args>(args)...}};
     }
 
     bool init() { return initialize<uv_fs_event_t>(&uv_fs_event_init); }

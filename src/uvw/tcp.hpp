@@ -27,8 +27,8 @@ enum class UVTcpFlags: std::underlying_type_t<uv_tcp_flags> {
 }
 
 
-class Tcp final: public Stream<Tcp, uv_tcp_t> {
-    using Stream::Stream;
+class TcpHandle final: public StreamHandle<TcpHandle, uv_tcp_t> {
+    using StreamHandle::StreamHandle;
 
 public:
     using Time = std::chrono::seconds;
@@ -37,8 +37,8 @@ public:
     using IPv6 = details::IPv6;
 
     template<typename... Args>
-    static std::shared_ptr<Tcp> create(Args&&... args) {
-        return std::shared_ptr<Tcp>{new Tcp{std::forward<Args>(args)...}};
+    static std::shared_ptr<TcpHandle> create(Args&&... args) {
+        return std::shared_ptr<TcpHandle>{new TcpHandle{std::forward<Args>(args)...}};
     }
 
     bool init() { return initialize<uv_tcp_t>(&uv_tcp_init); }
@@ -91,11 +91,11 @@ public:
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
 
-        auto listener = [ptr = shared_from_this()](const auto &event, details::Connect &) {
+        auto listener = [ptr = shared_from_this()](const auto &event, details::ConnectReq &) {
             ptr->publish(event);
         };
 
-        auto connect = loop().resource<details::Connect>();
+        auto connect = loop().resource<details::ConnectReq>();
         connect->once<ErrorEvent>(listener);
         connect->once<ConnectEvent>(listener);
         connect->connect(&uv_tcp_connect, get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr));

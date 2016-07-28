@@ -15,9 +15,9 @@ namespace uvw {
 struct AsyncEvent: Event<AsyncEvent> { };
 
 
-class Async final: public Handle<Async, uv_async_t> {
+class AsyncHandle final: public Handle<AsyncHandle, uv_async_t> {
     static void sendCallback(uv_async_t *handle) {
-        Async &async = *(static_cast<Async*>(handle->data));
+        AsyncHandle &async = *(static_cast<AsyncHandle*>(handle->data));
         async.publish(AsyncEvent{});
     }
 
@@ -25,8 +25,8 @@ class Async final: public Handle<Async, uv_async_t> {
 
 public:
     template<typename... Args>
-    static std::shared_ptr<Async> create(Args&&... args) {
-        return std::shared_ptr<Async>{new Async{std::forward<Args>(args)...}};
+    static std::shared_ptr<AsyncHandle> create(Args&&... args) {
+        return std::shared_ptr<AsyncHandle>{new AsyncHandle{std::forward<Args>(args)...}};
     }
 
     bool init() { return initialize<uv_async_t>(&uv_async_init, &sendCallback); }

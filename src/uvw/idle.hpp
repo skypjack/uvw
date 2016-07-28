@@ -15,9 +15,9 @@ namespace uvw {
 struct IdleEvent: Event<IdleEvent> { };
 
 
-class Idle final: public Handle<Idle, uv_idle_t> {
+class IdleHandle final: public Handle<IdleHandle, uv_idle_t> {
     static void startCallback(uv_idle_t *handle) {
-        Idle &idle = *(static_cast<Idle*>(handle->data));
+        IdleHandle &idle = *(static_cast<IdleHandle*>(handle->data));
         idle.publish(IdleEvent{});
     }
 
@@ -25,8 +25,8 @@ class Idle final: public Handle<Idle, uv_idle_t> {
 
 public:
     template<typename... Args>
-    static std::shared_ptr<Idle> create(Args&&... args) {
-        return std::shared_ptr<Idle>{new Idle{std::forward<Args>(args)...}};
+    static std::shared_ptr<IdleHandle> create(Args&&... args) {
+        return std::shared_ptr<IdleHandle>{new IdleHandle{std::forward<Args>(args)...}};
     }
 
     bool init() { return initialize<uv_idle_t>(&uv_idle_init); }

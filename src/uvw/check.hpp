@@ -15,9 +15,9 @@ namespace uvw {
 struct CheckEvent: Event<CheckEvent> { };
 
 
-class Check final: public Handle<Check, uv_check_t> {
+class CheckHandle final: public Handle<CheckHandle, uv_check_t> {
     static void startCallback(uv_check_t *handle) {
-        Check &check = *(static_cast<Check*>(handle->data));
+        CheckHandle &check = *(static_cast<CheckHandle*>(handle->data));
         check.publish(CheckEvent{});
     }
 
@@ -25,8 +25,8 @@ class Check final: public Handle<Check, uv_check_t> {
 
 public:
     template<typename... Args>
-    static std::shared_ptr<Check> create(Args&&... args) {
-        return std::shared_ptr<Check>{new Check{std::forward<Args>(args)...}};
+    static std::shared_ptr<CheckHandle> create(Args&&... args) {
+        return std::shared_ptr<CheckHandle>{new CheckHandle{std::forward<Args>(args)...}};
     }
 
     bool init() { return initialize<uv_check_t>(&uv_check_init); }

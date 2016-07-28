@@ -15,9 +15,9 @@ namespace uvw {
 struct PrepareEvent: Event<PrepareEvent> { };
 
 
-class Prepare final: public Handle<Prepare, uv_prepare_t> {
+class PrepareHandle final: public Handle<PrepareHandle, uv_prepare_t> {
     static void startCallback(uv_prepare_t *handle) {
-        Prepare &prepare = *(static_cast<Prepare*>(handle->data));
+        PrepareHandle &prepare = *(static_cast<PrepareHandle*>(handle->data));
         prepare.publish(PrepareEvent{});
     }
 
@@ -25,8 +25,8 @@ class Prepare final: public Handle<Prepare, uv_prepare_t> {
 
 public:
     template<typename... Args>
-    static std::shared_ptr<Prepare> create(Args&&... args) {
-        return std::shared_ptr<Prepare>{new Prepare{std::forward<Args>(args)...}};
+    static std::shared_ptr<PrepareHandle> create(Args&&... args) {
+        return std::shared_ptr<PrepareHandle>{new PrepareHandle{std::forward<Args>(args)...}};
     }
 
     bool init() { return initialize<uv_prepare_t>(&uv_prepare_init); }

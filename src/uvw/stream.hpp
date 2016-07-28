@@ -39,13 +39,13 @@ private:
 namespace details {
 
 
-class Connect final: public Request<Connect, uv_connect_t> {
+class ConnectReq final: public Request<ConnectReq, uv_connect_t> {
     using Request::Request;
 
 public:
     template<typename... Args>
-    static std::shared_ptr<Connect> create(Args&&... args) {
-        return std::shared_ptr<Connect>{new Connect{std::forward<Args>(args)...}};
+    static std::shared_ptr<ConnectReq> create(Args&&... args) {
+        return std::shared_ptr<ConnectReq>{new ConnectReq{std::forward<Args>(args)...}};
     }
 
     template<typename F, typename... Args>
@@ -55,13 +55,13 @@ public:
 };
 
 
-class Shutdown final: public Request<Shutdown, uv_shutdown_t> {
+class ShutdownReq final: public Request<ShutdownReq, uv_shutdown_t> {
     using Request::Request;
 
 public:
     template<typename... Args>
-    static std::shared_ptr<Shutdown> create(Args&&... args) {
-        return std::shared_ptr<Shutdown>{new Shutdown{std::forward<Args>(args)...}};
+    static std::shared_ptr<ShutdownReq> create(Args&&... args) {
+        return std::shared_ptr<ShutdownReq>{new ShutdownReq{std::forward<Args>(args)...}};
     }
 
     void shutdown(uv_stream_t *handle) {
@@ -70,13 +70,13 @@ public:
 };
 
 
-class Write final: public Request<Write, uv_write_t> {
+class WriteReq final: public Request<WriteReq, uv_write_t> {
     using Request::Request;
 
 public:
     template<typename... Args>
-    static std::shared_ptr<Write> create(Args&&... args) {
-        return std::shared_ptr<Write>{new Write{std::forward<Args>(args)...}};
+    static std::shared_ptr<WriteReq> create(Args&&... args) {
+        return std::shared_ptr<WriteReq>{new WriteReq{std::forward<Args>(args)...}};
     }
 
     void write(uv_stream_t *handle, const uv_buf_t bufs[], unsigned int nbufs) {
@@ -93,7 +93,7 @@ public:
 
 
 template<typename T, typename U>
-class Stream: public Handle<T, U> {
+class StreamHandle: public Handle<T, U> {
     static constexpr unsigned int DEFAULT_BACKLOG = 128;
 
     static void readCallback(uv_stream_t *handle, ssize_t nread, const uv_buf_t *buf) {
@@ -124,11 +124,11 @@ protected:
 
 public:
     void shutdown() {
-        auto listener = [ptr = this->shared_from_this()](const auto &event, details::Shutdown &) {
+        auto listener = [ptr = this->shared_from_this()](const auto &event, details::ShutdownReq &) {
             ptr->publish(event);
         };
 
-        auto shutdown = this->loop().template resource<details::Shutdown>();
+        auto shutdown = this->loop().template resource<details::ShutdownReq>();
         shutdown->template once<ErrorEvent>(listener);
         shutdown->template once<ShutdownEvent>(listener);
         shutdown->shutdown(this->template get<uv_stream_t>());
@@ -158,11 +158,11 @@ public:
     void write(std::unique_ptr<char[]> data, ssize_t len) {
         uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
 
-        auto listener = [ptr = this->shared_from_this()](const auto &event, details::Write &) {
+        auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
             ptr->publish(event);
         };
 
-        auto write = this->loop().template resource<details::Write>();
+        auto write = this->loop().template resource<details::WriteReq>();
         write->template once<ErrorEvent>(listener);
         write->template once<WriteEvent>(listener);
         write->write(this->template get<uv_stream_t>(), bufs, 1);
@@ -172,11 +172,11 @@ public:
     void write(S &send, std::unique_ptr<char[]> data, ssize_t len) {
         uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
 
-        auto listener = [ptr = this->shared_from_this()](const auto &event, details::Write &) {
+        auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
             ptr->publish(event);
         };
 
-        auto write = this->loop().template resource<details::Write>();
+        auto write = this->loop().template resource<details::WriteReq>();
         write->template once<ErrorEvent>(listener);
         write->template once<WriteEvent>(listener);
         write->write(this->template get<uv_stream_t>(), bufs, 1, send.template get<uv_stream_t>());

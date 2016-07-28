@@ -14,13 +14,13 @@ As an example, a *handle* should be initialized before any other operation and c
 #include <memory>
 
 void listen(uvw::Loop &loop) {
-    std::shared_ptr<uvw::Tcp> tcp = loop.resource<uvw::Tcp>();
+    std::shared_ptr<uvw::TcpHandle> tcp = loop.resource<uvw::TcpHandle>();
 
-    tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &event, uvw::Tcp &srv) mutable {
-        std::shared_ptr<uvw::Tcp> client = srv.loop().resource<uvw::Tcp>();
+    tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &event, uvw::TcpHandle &srv) mutable {
+        std::shared_ptr<uvw::TcpHandle> client = srv.loop().resource<uvw::TcpHandle>();
 
-        client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::Tcp &) mutable { ptr->close(); });
-        client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::Tcp &client) { client.close(); });
+        client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::TcpHandle &) mutable { ptr->close(); });
+        client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &client) { client.close(); });
 
         srv.accept(*client);
         client->read();
@@ -31,11 +31,11 @@ void listen(uvw::Loop &loop) {
 }
 
 void conn(uvw::Loop &loop) {
-    auto tcp = loop.resource<uvw::Tcp>();
+    auto tcp = loop.resource<uvw::TcpHandle>();
 
-    tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::Tcp &) { /* handle errors */ });
+    tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { /* handle errors */ });
 
-    tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::Tcp &tcp) mutable {
+    tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TcpHandle &tcp) mutable {
         auto dataWrite = std::unique_ptr<char[]>(new char[2]{ 'b', 'c' });
         tcp.write(std::move(dataWrite), 2);
         tcp.close();
@@ -119,13 +119,13 @@ Loops can be run using the `run`, `runOnce` and `runWait` member methods. Please
 
 In order to create a resource and to bind it to the given loop, just do the following:
 
-    auto tcp = loop.resource<uvw::Tcp>();
+    auto tcp = loop.resource<uvw::TcpHandle>();
 
 The line above will create and initialize a tcp handle, thus a shared pointer to that resource will be returned.  
 Users should check if pointers have been correctly initialized: in case of errors, they won't be.  
 Another way to create a resource is:
 
-    auto tcp = Tcp::create(loop);
+    auto tcp = TcpHandle::create(loop);
     tcp->init();
 
 Pretty annoying indeed. Using a loop is the recommended approach.
@@ -160,7 +160,7 @@ There exist two methods to attach an event to a resource:
 * `resource.once<EventType>(listener)`: the listener will be automatically removed after the first event of the given type
 * `resource.on<EventType>(listener)`: to be used for long-running listeners
 
-Both of them return an object of type `ResourceType::Connection` (as an example, `Tcp::Connection`).  
+Both of them return an object of type `ResourceType::Connection` (as an example, `TcpHandle::Connection`).  
 A connection object can be used later as an argument to the `erase` member method of the resource to remove the listener.  
 There exists also the `clear` member method to drop all the listeners at once.
 
@@ -168,14 +168,14 @@ The code below shows how to create a simple tcp server using `uvw`:
 
 ```
 auto loop = uvw::Loop::getDefault();
-auto tcp = loop.resource<uvw::Tcp>();
+auto tcp = loop.resource<uvw::TcpHandle>();
 
-tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::Tcp &srv) { /* something went wrong */ });
+tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &srv) { /* something went wrong */ });
 
-tcp->on<uvw::ListenEvent>([](const uvw::ListenEvent &event, uvw::Tcp &srv) mutable {
-    std::shared_ptr<uvw::Tcp> client = srv.loop().resource<uvw::Tcp>();
-    client->once<uvw::EndEvent>([](const uvw::EndEvent &, uvw::Tcp &client) { client.close(); });
-    client->on<uvw::DataEvent>([](const uvw::DataEvent &, uvw::Tcp &) { /* data received */ });
+tcp->on<uvw::ListenEvent>([](const uvw::ListenEvent &event, uvw::TcpHandle &srv) mutable {
+    std::shared_ptr<uvw::TcpHandle> client = srv.loop().resource<uvw::TcpHandle>();
+    client->once<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &client) { client.close(); });
+    client->on<uvw::DataEvent>([](const uvw::DataEvent &, uvw::TcpHandle &) { /* data received */ });
     srv.accept(*client);
     client->read();
 });
@@ -184,8 +184,8 @@ tcp->bind("127.0.0.1", 4242);
 tcp->listen();
 ```
 
-Note that `uvw::Tcp` already supports _IPv6_ out-of-the-box. The statement above is equivalent to `tcp->bind<uvw::Tcp::IPv4>("127.0.0.1", 4242)`.  
-It's suffice to explicitly specify `uvw::Tcp::IPv6` as the underlying protocol to use it.
+Note that `uvw::TcpHandle` already supports _IPv6_ out-of-the-box. The statement above is equivalent to `tcp->bind<uvw::TcpHandle::IPv4>("127.0.0.1", 4242)`.  
+It's suffice to explicitly specify `uvw::TcpHandle::IPv6` as the underlying protocol to use it.
 
 The API reference is the recommended documentation for further details about resources and their methods.
 

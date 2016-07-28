@@ -22,9 +22,9 @@ private:
 };
 
 
-class Signal final: public Handle<Signal, uv_signal_t> {
+class SignalHandle final: public Handle<SignalHandle, uv_signal_t> {
     static void startCallback(uv_signal_t *handle, int signum) {
-        Signal &signal = *(static_cast<Signal*>(handle->data));
+        SignalHandle &signal = *(static_cast<SignalHandle*>(handle->data));
         signal.publish(SignalEvent{signum});
     }
 
@@ -32,8 +32,8 @@ class Signal final: public Handle<Signal, uv_signal_t> {
 
 public:
     template<typename... Args>
-    static std::shared_ptr<Signal> create(Args&&... args) {
-        return std::shared_ptr<Signal>{new Signal{std::forward<Args>(args)...}};
+    static std::shared_ptr<SignalHandle> create(Args&&... args) {
+        return std::shared_ptr<SignalHandle>{new SignalHandle{std::forward<Args>(args)...}};
     }
 
     bool init() { return initialize<uv_signal_t>(&uv_signal_init); }

@@ -29,15 +29,15 @@ enum class UVHandleType: std::underlying_type_t<uv_handle_type> {
 }
 
 
-class Pipe final: public Stream<Pipe, uv_pipe_t> {
-    using Stream::Stream;
+class PipeHandle final: public StreamHandle<PipeHandle, uv_pipe_t> {
+    using StreamHandle::StreamHandle;
 
 public:
     using Pending = details::UVHandleType;
 
     template<typename... Args>
-    static std::shared_ptr<Pipe> create(Args&&... args) {
-        return std::shared_ptr<Pipe>{new Pipe{std::forward<Args>(args)...}};
+    static std::shared_ptr<PipeHandle> create(Args&&... args) {
+        return std::shared_ptr<PipeHandle>{new PipeHandle{std::forward<Args>(args)...}};
     }
 
     bool init(bool ipc = false) { return initialize<uv_pipe_t>(&uv_pipe_init, ipc); }
@@ -51,11 +51,11 @@ public:
     }
 
     void connect(std::string name) {
-        auto listener = [ptr = shared_from_this()](const auto &event, details::Connect &) {
+        auto listener = [ptr = shared_from_this()](const auto &event, details::ConnectReq &) {
             ptr->publish(event);
         };
 
-        auto connect = loop().resource<details::Connect>();
+        auto connect = loop().resource<details::ConnectReq>();
         connect->once<ErrorEvent>(listener);
         connect->once<ConnectEvent>(listener);
         connect->connect(&uv_pipe_connect, get<uv_pipe_t>(), name.data());
