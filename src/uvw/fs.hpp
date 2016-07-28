@@ -99,6 +99,25 @@ private:
 
 
 template<>
+struct TypedEvent<details::UVFsType, details::UVFsType::READ>
+        : Event<TypedEvent<details::UVFsType, details::UVFsType::READ>>
+{
+    TypedEvent(const char *p, std::unique_ptr<const char[]> ptr, ssize_t l) noexcept
+        : rPath{p}, dt{std::move(ptr)}, len{l}
+    { }
+
+    const char * path() const noexcept { return rPath; }
+    const char * data() const noexcept { return dt.get(); }
+    ssize_t length() const noexcept { return len; }
+
+private:
+    const char *rPath;
+    std::unique_ptr<const char[]> dt;
+    const ssize_t len;
+};
+
+
+template<>
 struct TypedEvent<details::UVFsType, details::UVFsType::WRITE>
         : Event<TypedEvent<details::UVFsType, details::UVFsType::WRITE>>
 {
@@ -230,15 +249,17 @@ class FsReq final: public Request<FsReq, uv_fs_t> {
         else { ptr->publish(FsEvent<Type::OPEN>{req->path, static_cast<uv_file>(req->result)}); }
     }
 
+    static void fsReadCallback(uv_fs_t *req) {
+        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
+        else { ptr->publish(FsEvent<Type::READ>{req->path, std::move(ptr->data), req->result}); }
+    }
+
     template<details::UVFsType e>
     static void fsGenericCallback(uv_fs_t *req) {
         auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
         if(req->result) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<e>{req->path}); }
-    }
-
-    static void fsReadCallback(uv_fs_t *req) {
-        // TODO - uv_fs_read callback
     }
 
     template<details::UVFsType e>
@@ -264,15 +285,15 @@ class FsReq final: public Request<FsReq, uv_fs_t> {
     using Request::Request;
 
     template<typename... Args>
-    void cleanupAndInvoke(Args&&... args) {
+    auto cleanupAndInvoke(Args&&... args) {
         uv_fs_req_cleanup(get<uv_fs_t>());
-        invoke(std::forward<Args>(args)...);
+        return invoke(std::forward<Args>(args)...);
     }
 
     template<typename F, typename... Args>
-    void cleanupAndInvokeSync(F &&f, Args&&... args) {
+    auto cleanupAndInvokeSync(F &&f, Args&&... args) {
         uv_fs_req_cleanup(get<uv_fs_t>());
-        std::forward<F>(f)(std::forward<Args>(args)...);
+        return std::forward<F>(f)(std::forward<Args>(args)...);
     }
 
 public:
@@ -311,12 +332,21 @@ public:
         return std::make_pair(ErrorEvent{fd < 0 ? fd : 0}, FsEvent<Type::OPEN>{req->path, static_cast<uv_file>(fd)});
     }
 
-    void read(int64_t offset, unsigned int len) {
-        // TODO uv_fs_read (async)
+    void read(FileHandle file, int64_t offset, unsigned int len) {
+        data = std::unique_ptr<char[]>{new char[len]};
+        buffer = uv_buf_init(data.get(), len);
+        uv_buf_t bufs[] = { buffer };
+        cleanupAndInvoke(&uv_fs_read, parent(), get<uv_fs_t>(), file, bufs, 1, offset, &fsReadCallback);
     }
 
-    auto readSync(int64_t offset, unsigned int len) {
-        // TODO uv_fs_read (sync (cb null))
+    auto readSync(FileHandle file, int64_t offset, unsigned int len) {
+        data = std::unique_ptr<char[]>{new char[len]};
+        buffer = uv_buf_init(data.get(), len);
+        uv_buf_t bufs[] = { buffer };
+        auto req = get<uv_fs_t>();
+        cleanupAndInvokeSync(&uv_fs_read, parent(), req, file, bufs, 1, offset, nullptr);
+        auto bw = req->result;
+        return std::make_pair(ErrorEvent{bw < 0 ? bw : 0}, FsEvent<Type::READ>{req->path, std::move(data), bw});
     }
 
     void unlink(std::string path) {
@@ -588,6 +618,10 @@ public:
         cleanupAndInvokeSync(&uv_fs_fchown, parent(), req, file, uid, gid, nullptr);
         return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FCHOWN>{req->path});
     }
+
+private:
+    std::unique_ptr<char[]> data;
+    uv_buf_t buffer;
 };
 
 
