@@ -32,18 +32,19 @@ struct Event: BaseEvent {
 
 
 struct ErrorEvent: Event<ErrorEvent> {
-    explicit ErrorEvent(int code = 0) noexcept: ec(code) { }
+    template<typename U, typename = std::enable_if_t<std::is_integral<U>::value>>
+    explicit ErrorEvent(U val) noexcept
+        : ec{static_cast<int>(val)}, str{uv_strerror(ec)}
+    { }
 
-    template<typename U, typename = std::enable_if_t<std::is_convertible<U, int>::value>>
-    explicit ErrorEvent(U val) noexcept: ec{static_cast<int>(val)} { }
-
-    const char * what() const noexcept { return uv_strerror(ec); }
+    const char * what() const noexcept { return str; }
     int code() const noexcept { return ec; }
 
-    explicit operator bool() const noexcept { return !(0 == ec); }
+    explicit operator bool() const noexcept { return ec < 0; }
 
 private:
     const int ec;
+    const char *str;
 };
 
 
