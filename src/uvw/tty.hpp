@@ -26,19 +26,19 @@ enum class UVTTYModeT: std::underlying_type_t<uv_tty_mode_t> {
 }
 
 
-class TTY final: public Stream<TTY, uv_tty_t> {
-    explicit TTY(std::shared_ptr<Loop> ref,
+class TTYHandle final: public StreamHandle<TTYHandle, uv_tty_t> {
+    explicit TTYHandle(std::shared_ptr<Loop> ref,
                  FileHandle desc,
                  bool readable)
-        : Stream{std::move(ref)}, fd{desc}, rw{readable}
+        : StreamHandle{std::move(ref)}, fd{desc}, rw{readable}
     { }
 
 public:
     using Mode = details::UVTTYModeT;
 
     template<typename... Args>
-    static std::shared_ptr<TTY> create(Args&&... args) {
-        return std::shared_ptr<TTY>{new TTY{std::forward<Args>(args)...}};
+    static std::shared_ptr<TTYHandle> create(Args&&... args) {
+        return std::shared_ptr<TTYHandle>{new TTYHandle{std::forward<Args>(args)...}};
     }
 
     bool init() { return initialize<uv_tty_t>(&uv_tty_init, fd, rw); }

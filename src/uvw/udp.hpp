@@ -69,7 +69,7 @@ public:
 }
 
 
-class Udp final: public Handle<Udp, uv_udp_t> {
+class UdpHandle final: public Handle<UdpHandle, uv_udp_t> {
     using Handle::Handle;
 
     template<typename I>
@@ -77,7 +77,7 @@ class Udp final: public Handle<Udp, uv_udp_t> {
         typename details::IpTraits<I>::Type *aptr = reinterpret_cast<const typename details::IpTraits<I>::Type *>(addr);
         int len = sizeof(*addr);
 
-        Udp &udp = *(static_cast<Udp*>(handle->data));
+        UdpHandle &udp = *(static_cast<UdpHandle*>(handle->data));
         // data will be destroyed no matter of what the value of nread is
         std::unique_ptr<const char[]> data{buf->base};
 
@@ -102,8 +102,8 @@ public:
     using IPv6 = details::IPv6;
 
     template<typename... Args>
-    static std::shared_ptr<Udp> create(Args&&... args) {
-        return std::shared_ptr<Udp>{new Udp{std::forward<Args>(args)...}};
+    static std::shared_ptr<UdpHandle> create(Args&&... args) {
+        return std::shared_ptr<UdpHandle>{new UdpHandle{std::forward<Args>(args)...}};
     }
 
     bool init() { return initialize<uv_udp_t>(&uv_udp_init); }

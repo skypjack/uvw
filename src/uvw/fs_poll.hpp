@@ -27,9 +27,9 @@ private:
 };
 
 
-class FsPoll final: public Handle<FsPoll, uv_fs_poll_t> {
+class FsPollHandle final: public Handle<FsPollHandle, uv_fs_poll_t> {
     static void startCallback(uv_fs_poll_t *handle, int status, const uv_stat_t *prev, const uv_stat_t *curr) {
-        FsPoll &fsPoll = *(static_cast<FsPoll*>(handle->data));
+        FsPollHandle &fsPoll = *(static_cast<FsPollHandle*>(handle->data));
         if(status) { fsPoll.publish(ErrorEvent{status}); }
         else { fsPoll.publish(FsPollEvent{ *prev, *curr }); }
     }
@@ -38,8 +38,8 @@ class FsPoll final: public Handle<FsPoll, uv_fs_poll_t> {
 
 public:
     template<typename... Args>
-    static std::shared_ptr<FsPoll> create(Args&&... args) {
-        return std::shared_ptr<FsPoll>{new FsPoll{std::forward<Args>(args)...}};
+    static std::shared_ptr<FsPollHandle> create(Args&&... args) {
+        return std::shared_ptr<FsPollHandle>{new FsPollHandle{std::forward<Args>(args)...}};
     }
 
     bool init() { return initialize<uv_fs_poll_t>(&uv_fs_poll_init); }

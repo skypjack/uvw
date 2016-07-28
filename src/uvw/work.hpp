@@ -16,9 +16,9 @@ namespace uvw {
 struct WorkEvent: Event<WorkEvent> { };
 
 
-class Work final: public Request<Work, uv_work_t> {
+class WorkReq final: public Request<WorkReq, uv_work_t> {
     static void workCallback(uv_work_t *req) {
-        static_cast<Work*>(req->data)->task();
+        static_cast<WorkReq*>(req->data)->task();
     }
 
     using Request::Request;
@@ -27,8 +27,8 @@ public:
     using Task = std::function<void(void)>;
 
     template<typename... Args>
-    static std::shared_ptr<Work> create(Args&&... args) {
-        return std::shared_ptr<Work>{new Work{std::forward<Args>(args)...}};
+    static std::shared_ptr<WorkReq> create(Args&&... args) {
+        return std::shared_ptr<WorkReq>{new WorkReq{std::forward<Args>(args)...}};
     }
 
     void queue(Task t) {

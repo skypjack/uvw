@@ -38,9 +38,9 @@ private:
 };
 
 
-class Poll final: public Handle<Poll, uv_poll_t> {
+class PollHandle final: public Handle<PollHandle, uv_poll_t> {
     static void startCallback(uv_poll_t *handle, int status, int events) {
-        Poll &poll = *(static_cast<Poll*>(handle->data));
+        PollHandle &poll = *(static_cast<PollHandle*>(handle->data));
         if(status) { poll.publish(ErrorEvent{status}); }
         else { poll.publish(PollEvent{static_cast<std::underlying_type_t<Event>>(events)}); }
     }
@@ -51,8 +51,8 @@ public:
     using Event = details::UVPollEvent;
 
     template<typename... Args>
-    static std::shared_ptr<Poll> create(Args&&... args) {
-        return std::shared_ptr<Poll>{new Poll{std::forward<Args>(args)...}};
+    static std::shared_ptr<PollHandle> create(Args&&... args) {
+        return std::shared_ptr<PollHandle>{new PollHandle{std::forward<Args>(args)...}};
     }
 
     bool init(int fd) { return initialize<uv_poll_t>(&uv_poll_init, fd); }

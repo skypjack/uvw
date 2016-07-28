@@ -16,9 +16,9 @@ namespace uvw {
 struct TimerEvent: Event<TimerEvent> { };
 
 
-class Timer final: public Handle<Timer, uv_timer_t> {
+class TimerHandle final: public Handle<TimerHandle, uv_timer_t> {
     static void startCallback(uv_timer_t *handle) {
-        Timer &timer = *(static_cast<Timer*>(handle->data));
+        TimerHandle &timer = *(static_cast<TimerHandle*>(handle->data));
         timer.publish(TimerEvent{});
     }
 
@@ -28,8 +28,8 @@ public:
     using Time = std::chrono::milliseconds;
 
     template<typename... Args>
-    static std::shared_ptr<Timer> create(Args&&... args) {
-        return std::shared_ptr<Timer>{new Timer{std::forward<Args>(args)...}};
+    static std::shared_ptr<TimerHandle> create(Args&&... args) {
+        return std::shared_ptr<TimerHandle>{new TimerHandle{std::forward<Args>(args)...}};
     }
 
     bool init() { return initialize<uv_timer_t>(&uv_timer_init); }

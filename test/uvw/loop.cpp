@@ -14,8 +14,8 @@ TEST(Loop, Basics) {
     def->walk([](uvw::BaseHandle &) { ASSERT_TRUE(false); });
 
     auto loop = uvw::Loop::create();
-    auto handle = loop->resource<uvw::Prepare>();
-    auto req = loop->resource<uvw::Work>();
+    auto handle = loop->resource<uvw::PrepareHandle>();
+    auto req = loop->resource<uvw::WorkReq>();
 
     auto err = [](uvw::ErrorEvent, auto &) { ASSERT_TRUE(false); };
 
@@ -29,7 +29,7 @@ TEST(Loop, Basics) {
     ASSERT_FALSE(loop->alive());
 
     handle->start();
-    handle->on<uvw::PrepareEvent>([](uvw::PrepareEvent, uvw::Prepare &handle) {
+    handle->on<uvw::PrepareEvent>([](uvw::PrepareEvent, uvw::PrepareHandle &handle) {
         handle.loop().walk([](uvw::BaseHandle &) {
             static bool trigger = true;
             ASSERT_TRUE(trigger);

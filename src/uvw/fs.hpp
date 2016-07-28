@@ -206,7 +206,7 @@ template<details::UVFsType e>
 using FsEvent = TypedEvent<details::UVFsType, e>;
 
 
-class Fs final: public Request<Fs, uv_fs_t> {
+class FsReq final: public Request<FsReq, uv_fs_t> {
     static constexpr int BAD_FD = -1;
 
     static void fsCloseCallback(uv_fs_t *req) {
@@ -283,11 +283,11 @@ public:
     using Entry = std::pair<EntryType, std::string>;
 
     template<typename... Args>
-    static std::shared_ptr<Fs> create(Args&&... args) {
-        return std::shared_ptr<Fs>{new Fs{std::forward<Args>(args)...}};
+    static std::shared_ptr<FsReq> create(Args&&... args) {
+        return std::shared_ptr<FsReq>{new FsReq{std::forward<Args>(args)...}};
     }
 
-    ~Fs() {
+    ~FsReq() {
         uv_fs_req_cleanup(get<uv_fs_t>());
     }
 
