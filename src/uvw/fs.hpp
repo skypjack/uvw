@@ -258,7 +258,7 @@ class FsReq final: public Request<FsReq, uv_fs_t> {
     template<details::UVFsType e>
     static void fsGenericCallback(uv_fs_t *req) {
         auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
-        if(req->result) { ptr->publish(ErrorEvent{req->result}); }
+        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<e>{req->path}); }
     }
 
@@ -272,7 +272,7 @@ class FsReq final: public Request<FsReq, uv_fs_t> {
     template<details::UVFsType e>
     static void fsStatCallback(uv_fs_t *req) {
         auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
-        if(req->result) { ptr->publish(ErrorEvent{req->result}); }
+        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<e>{req->path, req->statbuf}); }
     }
 
@@ -285,15 +285,15 @@ class FsReq final: public Request<FsReq, uv_fs_t> {
     using Request::Request;
 
     template<typename... Args>
-    auto cleanupAndInvoke(Args&&... args) {
+    void cleanupAndInvoke(Args&&... args) {
         uv_fs_req_cleanup(get<uv_fs_t>());
-        return invoke(std::forward<Args>(args)...);
+        invoke(std::forward<Args>(args)...);
     }
 
     template<typename F, typename... Args>
-    auto cleanupAndInvokeSync(F &&f, Args&&... args) {
+    void cleanupAndInvokeSync(F &&f, Args&&... args) {
         uv_fs_req_cleanup(get<uv_fs_t>());
-        return std::forward<F>(f)(std::forward<Args>(args)..., nullptr);
+        std::forward<F>(f)(std::forward<Args>(args)..., nullptr);
     }
 
 public:
@@ -328,8 +328,7 @@ public:
     auto openSync(std::string path, int flags, int mode) {
         auto req = get<uv_fs_t>();
         cleanupAndInvokeSync(&uv_fs_open, parent(), req, path.data(), flags, mode);
-        auto fd = req->result;
-        return std::make_pair(ErrorEvent{fd < 0 ? fd : 0}, FsEvent<Type::OPEN>{req->path, static_cast<uv_file>(fd)});
+        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::OPEN>{req->path, static_cast<uv_file>(req->result)});
     }
 
     void read(FileHandle file, int64_t offset, unsigned int len) {
@@ -345,8 +344,7 @@ public:
         uv_buf_t bufs[] = { buffer };
         auto req = get<uv_fs_t>();
         cleanupAndInvokeSync(&uv_fs_read, parent(), req, file, bufs, 1, offset);
-        auto bw = req->result;
-        return std::make_pair(ErrorEvent{bw < 0 ? bw : 0}, FsEvent<Type::READ>{req->path, std::move(data), bw});
+        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::READ>{req->path, std::move(data), req->result});
     }
 
     void unlink(std::string path) {
@@ -368,8 +366,7 @@ public:
         uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
         auto req = get<uv_fs_t>();
         cleanupAndInvokeSync(&uv_fs_write, parent(), get<uv_fs_t>(), file, bufs, 1, offset);
-        auto bw = req->result;
-        return std::make_pair(ErrorEvent{bw < 0 ? bw : 0}, FsEvent<Type::WRITE>{req->path, bw});
+        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::WRITE>{req->path, req->result});
     }
 
     void mkdir(std::string path, int mode) {
@@ -409,8 +406,7 @@ public:
     auto scandirSync(std::string path, int flags) {
         auto req = get<uv_fs_t>();
         cleanupAndInvokeSync(&uv_fs_scandir, parent(), req, path.data(), flags);
-        auto sz = req->result;
-        return std::make_pair(ErrorEvent{sz < 0 ? sz : 0}, FsEvent<Type::SCANDIR>{req->path, sz});
+        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::SCANDIR>{req->path, req->result});
     }
 
     std::pair<bool, Entry> scandirNext() {
@@ -504,8 +500,7 @@ public:
     auto sendfileSync(FileHandle out, FileHandle in, int64_t offset, size_t length) {
         auto req = get<uv_fs_t>();
         cleanupAndInvokeSync(&uv_fs_sendfile, parent(), req, out, in, offset, length);
-        auto bw = req->result;
-        return std::make_pair(ErrorEvent{bw < 0 ? bw : 0}, FsEvent<Type::SENDFILE>{req->path, bw});
+        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::SENDFILE>{req->path, req->result});
     }
 
     void access(std::string path, int mode) {
@@ -585,8 +580,7 @@ public:
     auto readlinkSync(std::string path) {
         auto req = get<uv_fs_t>();
         cleanupAndInvokeSync(&uv_fs_readlink, parent(), req, path.data());
-        auto bw = req->result;
-        return std::make_pair(ErrorEvent{bw < 0 ? bw : 0}, FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr), bw});
+        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr), req->result});
     }
 
     void realpath(std::string path) {
