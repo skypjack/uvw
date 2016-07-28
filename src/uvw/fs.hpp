@@ -307,7 +307,7 @@ public:
         return std::shared_ptr<FsReq>{new FsReq{std::forward<Args>(args)...}};
     }
 
-    ~FsReq() {
+    ~FsReq() noexcept {
         uv_fs_req_cleanup(get<uv_fs_t>());
     }
 

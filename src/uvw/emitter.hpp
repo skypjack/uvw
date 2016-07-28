@@ -18,7 +18,7 @@ namespace uvw {
 template<typename T>
 class Emitter {
     struct BaseHandler {
-        virtual ~BaseHandler() = default;
+        virtual ~BaseHandler() noexcept = default;
         virtual bool empty() const noexcept = 0;
     };
 
