@@ -82,23 +82,6 @@ private:
 
 
 template<>
-struct TypedEvent<details::UVFsType, details::UVFsType::OPEN>
-        : Event<TypedEvent<details::UVFsType, details::UVFsType::OPEN>>
-{
-    TypedEvent(const char *p, uv_file desc) noexcept
-        : rPath{p}, fd{desc}
-    { }
-
-    const char * path() const noexcept { return rPath; }
-    FileHandle descriptor() const noexcept { return fd; }
-
-private:
-    const char *rPath;
-    uv_file fd;
-};
-
-
-template<>
 struct TypedEvent<details::UVFsType, details::UVFsType::READ>
         : Event<TypedEvent<details::UVFsType, details::UVFsType::READ>>
 {
@@ -242,57 +225,41 @@ template<details::UVFsType e>
 using FsEvent = TypedEvent<details::UVFsType, e>;
 
 
-class FsReq final: public Request<FsReq, uv_fs_t> {
-    static void fsOpenCallback(uv_fs_t *req) {
-        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
-        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
-        else { ptr->publish(FsEvent<Type::OPEN>{req->path, static_cast<uv_file>(req->result)}); }
-    }
-
-    static void fsReadCallback(uv_fs_t *req) {
-        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
-        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
-        else { ptr->publish(FsEvent<Type::READ>{req->path, std::move(ptr->data), req->result}); }
-    }
-
+template<typename T>
+class FsRequest: public Request<T, uv_fs_t> {
+protected:
     template<details::UVFsType e>
     static void fsGenericCallback(uv_fs_t *req) {
-        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        auto ptr = Request<T, uv_fs_t>::reserve(reinterpret_cast<uv_req_t*>(req));
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<e>{req->path}); }
     }
 
     template<details::UVFsType e>
     static void fsResultCallback(uv_fs_t *req) {
-        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        auto ptr = Request<T, uv_fs_t>::reserve(reinterpret_cast<uv_req_t*>(req));
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<e>{req->path, req->result}); }
     }
 
     template<details::UVFsType e>
     static void fsStatCallback(uv_fs_t *req) {
-        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        auto ptr = Request<T, uv_fs_t>::reserve(reinterpret_cast<uv_req_t*>(req));
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<e>{req->path, req->statbuf}); }
     }
 
-    static void fsReadlinkCallback(uv_fs_t *req) {
-        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
-        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
-        else { ptr->publish(FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr), req->result}); }
-    }
-
-    using Request::Request;
+    using Request<T, uv_fs_t>::Request;
 
     template<typename... Args>
     void cleanupAndInvoke(Args&&... args) {
-        uv_fs_req_cleanup(get<uv_fs_t>());
-        invoke(std::forward<Args>(args)...);
+        uv_fs_req_cleanup(this->template get<uv_fs_t>());
+        this->invoke(std::forward<Args>(args)...);
     }
 
     template<typename F, typename... Args>
     void cleanupAndInvokeSync(F &&f, Args&&... args) {
-        uv_fs_req_cleanup(get<uv_fs_t>());
+        uv_fs_req_cleanup(this->template get<uv_fs_t>());
         std::forward<F>(f)(std::forward<Args>(args)..., nullptr);
     }
 
@@ -301,23 +268,60 @@ public:
     using Type = details::UVFsType;
     using EntryType = details::UVDirentTypeT;
     using Entry = std::pair<EntryType, std::string>;
+};
 
-    template<typename... Args>
-    static std::shared_ptr<FsReq> create(Args&&... args) {
-        return std::shared_ptr<FsReq>{new FsReq{std::forward<Args>(args)...}};
+
+class FileReq final: public FsRequest<FileReq> {
+    static constexpr uv_file BAD_FD = -1;
+
+    static void fsOpenCallback(uv_fs_t *req) {
+        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+
+        if(req->result < 0) {
+            ptr->publish(ErrorEvent{req->result});
+        } else {
+            ptr->file = static_cast<uv_file>(req->result);
+            ptr->publish(FsEvent<Type::OPEN>{req->path});
+        }
     }
 
-    ~FsReq() noexcept {
+    static void fsCloseCallback(uv_fs_t *req) {
+        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+
+        if(req->result < 0) {
+            ptr->publish(ErrorEvent{req->result});
+        } else {
+            ptr->file = BAD_FD;
+            ptr->publish(FsEvent<Type::CLOSE>{req->path});
+        }
+    }
+
+    static void fsReadCallback(uv_fs_t *req) {
+        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
+        else { ptr->publish(FsEvent<Type::READ>{req->path, std::move(ptr->data), req->result}); }
+    }
+
+    using FsRequest::FsRequest;
+
+public:
+    template<typename... Args>
+    static std::shared_ptr<FileReq> create(Args&&... args) {
+        return std::shared_ptr<FileReq>{new FileReq{std::forward<Args>(args)...}};
+    }
+
+    ~FileReq() noexcept {
         uv_fs_req_cleanup(get<uv_fs_t>());
     }
 
-    void close(FileHandle file) {
-        cleanupAndInvoke(&uv_fs_close, parent(), get<uv_fs_t>(), file, &fsGenericCallback<Type::CLOSE>);
+    void close() {
+        cleanupAndInvoke(&uv_fs_close, parent(), get<uv_fs_t>(), file, &fsCloseCallback);
     }
 
-    auto closeSync(FileHandle file) {
+    auto closeSync() {
         auto req = get<uv_fs_t>();
         cleanupAndInvokeSync(&uv_fs_close, parent(), req, file);
+        if(req->result >= 0) { file = BAD_FD; }
         return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::CLOSE>{req->path});
     }
 
@@ -328,23 +332,144 @@ public:
     auto openSync(std::string path, int flags, int mode) {
         auto req = get<uv_fs_t>();
         cleanupAndInvokeSync(&uv_fs_open, parent(), req, path.data(), flags, mode);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::OPEN>{req->path, static_cast<uv_file>(req->result)});
+        if(req->result >= 0) { file = static_cast<uv_file>(req->result); }
+        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::OPEN>{req->path});
     }
 
-    void read(FileHandle file, int64_t offset, unsigned int len) {
+    void read(int64_t offset, unsigned int len) {
         data = std::unique_ptr<char[]>{new char[len]};
         buffer = uv_buf_init(data.get(), len);
         uv_buf_t bufs[] = { buffer };
         cleanupAndInvoke(&uv_fs_read, parent(), get<uv_fs_t>(), file, bufs, 1, offset, &fsReadCallback);
     }
 
-    auto readSync(FileHandle file, int64_t offset, unsigned int len) {
+    auto readSync(int64_t offset, unsigned int len) {
         data = std::unique_ptr<char[]>{new char[len]};
         buffer = uv_buf_init(data.get(), len);
         uv_buf_t bufs[] = { buffer };
         auto req = get<uv_fs_t>();
         cleanupAndInvokeSync(&uv_fs_read, parent(), req, file, bufs, 1, offset);
         return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::READ>{req->path, std::move(data), req->result});
+    }
+
+    void write(std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
+        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
+        cleanupAndInvoke(&uv_fs_write, parent(), get<uv_fs_t>(), file, bufs, 1, offset, &fsResultCallback<Type::WRITE>);
+    }
+
+    auto writeSync(std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
+        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
+        auto req = get<uv_fs_t>();
+        cleanupAndInvokeSync(&uv_fs_write, parent(), get<uv_fs_t>(), file, bufs, 1, offset);
+        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::WRITE>{req->path, req->result});
+    }
+
+    void fstat() {
+        cleanupAndInvoke(&uv_fs_fstat, parent(), get<uv_fs_t>(), file, &fsStatCallback<Type::FSTAT>);
+    }
+
+    auto fstatSync() {
+        auto req = get<uv_fs_t>();
+        cleanupAndInvokeSync(&uv_fs_fstat, parent(), req, file);
+        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FSTAT>{req->path, req->statbuf});
+    }
+
+    void fsync() {
+        cleanupAndInvoke(&uv_fs_fsync, parent(), get<uv_fs_t>(), file, &fsGenericCallback<Type::FSYNC>);
+    }
+
+    auto fsyncSync() {
+        auto req = get<uv_fs_t>();
+        cleanupAndInvokeSync(&uv_fs_fsync, parent(), req, file);
+        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FSYNC>{req->path});
+    }
+
+    void fdatasync() {
+        cleanupAndInvoke(&uv_fs_fdatasync, parent(), get<uv_fs_t>(), file, &fsGenericCallback<Type::FDATASYNC>);
+    }
+
+    auto fdatasyncSync() {
+        auto req = get<uv_fs_t>();
+        cleanupAndInvokeSync(&uv_fs_fdatasync, parent(), req, file);
+        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FDATASYNC>{req->path});
+    }
+
+    void ftruncate(int64_t offset) {
+        cleanupAndInvoke(&uv_fs_ftruncate, parent(), get<uv_fs_t>(), file, offset, &fsGenericCallback<Type::FTRUNCATE>);
+    }
+
+    auto ftruncateSync(int64_t offset) {
+        auto req = get<uv_fs_t>();
+        cleanupAndInvokeSync(&uv_fs_ftruncate, parent(), req, file, offset);
+        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FTRUNCATE>{req->path});
+    }
+
+    void sendfile(FileHandle out, int64_t offset, size_t length) {
+        cleanupAndInvoke(&uv_fs_sendfile, parent(), get<uv_fs_t>(), out, file, offset, length, &fsResultCallback<Type::SENDFILE>);
+    }
+
+    auto sendfileSync(FileHandle out, int64_t offset, size_t length) {
+        auto req = get<uv_fs_t>();
+        cleanupAndInvokeSync(&uv_fs_sendfile, parent(), req, out, file, offset, length);
+        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::SENDFILE>{req->path, req->result});
+    }
+
+    void fchmod(int mode) {
+        cleanupAndInvoke(&uv_fs_fchmod, parent(), get<uv_fs_t>(), file, mode, &fsGenericCallback<Type::FCHMOD>);
+    }
+
+    auto fchmodSync(int mode) {
+        auto req = get<uv_fs_t>();
+        cleanupAndInvokeSync(&uv_fs_fchmod, parent(), req, file, mode);
+        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FCHMOD>{req->path});
+    }
+
+    void futime(Time atime, Time mtime) {
+        cleanupAndInvoke(&uv_fs_futime, parent(), get<uv_fs_t>(), file, atime.count(), mtime.count(), &fsGenericCallback<Type::FUTIME>);
+    }
+
+    auto futimeSync(Time atime, Time mtime) {
+        auto req = get<uv_fs_t>();
+        cleanupAndInvokeSync(&uv_fs_futime, parent(), req, file, atime.count(), mtime.count());
+        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FUTIME>{req->path});
+    }
+
+    void fchown(Uid uid, Gid gid) {
+        cleanupAndInvoke(&uv_fs_fchown, parent(), get<uv_fs_t>(), file, uid, gid, &fsGenericCallback<Type::FCHOWN>);
+    }
+
+    auto fchownSync(Uid uid, Gid gid) {
+        auto req = get<uv_fs_t>();
+        cleanupAndInvokeSync(&uv_fs_fchown, parent(), req, file, uid, gid);
+        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FCHOWN>{req->path});
+    }
+
+    operator FileHandle() const noexcept { return file; }
+
+private:
+    std::unique_ptr<char[]> data{nullptr};
+    uv_buf_t buffer{};
+    uv_file file{BAD_FD};
+};
+
+
+class FsReq final: public FsRequest<FsReq> {
+    using FsRequest::FsRequest;
+
+    static void fsReadlinkCallback(uv_fs_t *req) {
+        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
+        else { ptr->publish(FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr), req->result}); }
+    }
+
+public:
+    template<typename... Args>
+    static std::shared_ptr<FsReq> create(Args&&... args) {
+        return std::shared_ptr<FsReq>{new FsReq{std::forward<Args>(args)...}};
+    }
+
+    ~FsReq() noexcept {
+        uv_fs_req_cleanup(get<uv_fs_t>());
     }
 
     void unlink(std::string path) {
@@ -355,18 +480,6 @@ public:
         auto req = get<uv_fs_t>();
         cleanupAndInvokeSync(&uv_fs_unlink, parent(), req, path.data());
         return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::UNLINK>{req->path});
-    }
-
-    void write(FileHandle file, std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
-        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
-        cleanupAndInvoke(&uv_fs_write, parent(), get<uv_fs_t>(), file, bufs, 1, offset, &fsResultCallback<Type::WRITE>);
-    }
-
-    auto writeSync(FileHandle file, std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
-        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
-        auto req = get<uv_fs_t>();
-        cleanupAndInvokeSync(&uv_fs_write, parent(), get<uv_fs_t>(), file, bufs, 1, offset);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::WRITE>{req->path, req->result});
     }
 
     void mkdir(std::string path, int mode) {
@@ -433,16 +546,6 @@ public:
         return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::STAT>{req->path, req->statbuf});
     }
 
-    void fstat(FileHandle file) {
-        cleanupAndInvoke(&uv_fs_fstat, parent(), get<uv_fs_t>(), file, &fsStatCallback<Type::FSTAT>);
-    }
-
-    auto fstatSync(FileHandle file) {
-        auto req = get<uv_fs_t>();
-        cleanupAndInvokeSync(&uv_fs_fstat, parent(), req, file);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FSTAT>{req->path, req->statbuf});
-    }
-
     void lstat(std::string path) {
         cleanupAndInvoke(&uv_fs_lstat, parent(), get<uv_fs_t>(), path.data(), &fsStatCallback<Type::LSTAT>);
     }
@@ -461,46 +564,6 @@ public:
         auto req = get<uv_fs_t>();
         cleanupAndInvokeSync(&uv_fs_rename, parent(), req, old.data(), path.data());
         return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::RENAME>{req->path});
-    }
-
-    void fsync(FileHandle file) {
-        cleanupAndInvoke(&uv_fs_fsync, parent(), get<uv_fs_t>(), file, &fsGenericCallback<Type::FSYNC>);
-    }
-
-    auto fsyncSync(FileHandle file) {
-        auto req = get<uv_fs_t>();
-        cleanupAndInvokeSync(&uv_fs_fsync, parent(), req, file);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FSYNC>{req->path});
-    }
-
-    void fdatasync(FileHandle file) {
-        cleanupAndInvoke(&uv_fs_fdatasync, parent(), get<uv_fs_t>(), file, &fsGenericCallback<Type::FDATASYNC>);
-    }
-
-    auto fdatasyncSync(FileHandle file) {
-        auto req = get<uv_fs_t>();
-        cleanupAndInvokeSync(&uv_fs_fdatasync, parent(), req, file);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FDATASYNC>{req->path});
-    }
-
-    void ftruncate(FileHandle file, int64_t offset) {
-        cleanupAndInvoke(&uv_fs_ftruncate, parent(), get<uv_fs_t>(), file, offset, &fsGenericCallback<Type::FTRUNCATE>);
-    }
-
-    auto ftruncateSync(FileHandle file, int64_t offset) {
-        auto req = get<uv_fs_t>();
-        cleanupAndInvokeSync(&uv_fs_ftruncate, parent(), req, file, offset);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FTRUNCATE>{req->path});
-    }
-
-    void sendfile(FileHandle out, FileHandle in, int64_t offset, size_t length) {
-        cleanupAndInvoke(&uv_fs_sendfile, parent(), get<uv_fs_t>(), out, in, offset, length, &fsResultCallback<Type::SENDFILE>);
-    }
-
-    auto sendfileSync(FileHandle out, FileHandle in, int64_t offset, size_t length) {
-        auto req = get<uv_fs_t>();
-        cleanupAndInvokeSync(&uv_fs_sendfile, parent(), req, out, in, offset, length);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::SENDFILE>{req->path, req->result});
     }
 
     void access(std::string path, int mode) {
@@ -523,16 +586,6 @@ public:
         return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::CHMOD>{req->path});
     }
 
-    void fchmod(FileHandle file, int mode) {
-        cleanupAndInvoke(&uv_fs_fchmod, parent(), get<uv_fs_t>(), file, mode, &fsGenericCallback<Type::FCHMOD>);
-    }
-
-    auto fchmodSync(FileHandle file, int mode) {
-        auto req = get<uv_fs_t>();
-        cleanupAndInvokeSync(&uv_fs_fchmod, parent(), req, file, mode);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FCHMOD>{req->path});
-    }
-
     void utime(std::string path, Time atime, Time mtime) {
         cleanupAndInvoke(&uv_fs_utime, parent(), get<uv_fs_t>(), path.data(), atime.count(), mtime.count(), &fsGenericCallback<Type::UTIME>);
     }
@@ -541,16 +594,6 @@ public:
         auto req = get<uv_fs_t>();
         cleanupAndInvokeSync(&uv_fs_utime, parent(), req, path.data(), atime.count(), mtime.count());
         return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::UTIME>{req->path});
-    }
-
-    void futime(FileHandle file, Time atime, Time mtime) {
-        cleanupAndInvoke(&uv_fs_futime, parent(), get<uv_fs_t>(), file, atime.count(), mtime.count(), &fsGenericCallback<Type::FUTIME>);
-    }
-
-    auto futimeSync(FileHandle file, Time atime, Time mtime) {
-        auto req = get<uv_fs_t>();
-        cleanupAndInvokeSync(&uv_fs_futime, parent(), req, file, atime.count(), mtime.count());
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FUTIME>{req->path});
     }
 
     void link(std::string old, std::string path) {
@@ -602,20 +645,6 @@ public:
         cleanupAndInvokeSync(&uv_fs_chown, parent(), req, path.data(), uid, gid);
         return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::CHOWN>{req->path});
     }
-
-    void fchown(FileHandle file, Uid uid, Gid gid) {
-        cleanupAndInvoke(&uv_fs_fchown, parent(), get<uv_fs_t>(), file, uid, gid, &fsGenericCallback<Type::FCHOWN>);
-    }
-
-    auto fchownSync(FileHandle file, Uid uid, Gid gid) {
-        auto req = get<uv_fs_t>();
-        cleanupAndInvokeSync(&uv_fs_fchown, parent(), req, file, uid, gid);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FCHOWN>{req->path});
-    }
-
-private:
-    std::unique_ptr<char[]> data;
-    uv_buf_t buffer;
 };
 
 
