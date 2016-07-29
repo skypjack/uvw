@@ -24,6 +24,20 @@ private:
 };
 
 
+struct NameInfoEvent: Event<NameInfoEvent> {
+    NameInfoEvent(const char *h, const char *s)
+        : host{h}, serv{s}
+    { }
+
+    const char* hostname() const noexcept { return host; }
+    const char* service() const noexcept { return serv; }
+
+private:
+    const char *host;
+    const char *serv;
+};
+
+
 class GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
     static void getAddrInfoCallback(uv_getaddrinfo_t *req, int status, addrinfo *res) {
         auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
@@ -85,23 +99,46 @@ public:
 
 class GetNameInfoReq final: public Request<GetNameInfoReq, uv_getnameinfo_t> {
     static void getNameInfoCallback(uv_getnameinfo_t *req, int status, const char *hostname, const char *service) {
-        // TODO
+        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        if(status) { ptr->publish(ErrorEvent{status}); }
+        else { ptr->publish(NameInfoEvent{hostname, service}); }
     }
 
     using Request::Request;
 
 public:
+    using IPv4 = details::IPv4;
+    using IPv6 = details::IPv6;
+
     template<typename... Args>
     static std::shared_ptr<GetNameInfoReq> create(Args&&... args) {
         return std::shared_ptr<GetNameInfoReq>{new GetNameInfoReq{std::forward<Args>(args)...}};
     }
 
-    void getNameInfo() {
-        // TODO
+    template<typename I = IPv4>
+    void getNameInfo(std::string ip, unsigned int port, int flags = 0) {
+        typename details::IpTraits<I>::Type addr;
+        details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
+        invoke(&uv_getnameinfo, parent(), get<uv_getnameinfo_t>(), &getNameInfoCallback, &addr, flags);
     }
 
-    auto getNameInfoSync(int flags) {
-        // TODO
+    template<typename I = IPv4>
+    void getNameInfo(Addr addr, int flags = 0) {
+        getNameInfo<I>(addr.ip, addr.port, flags);
+    }
+
+    template<typename I = IPv4>
+    auto getNameInfoSync(std::string ip, unsigned int port, int flags = 0) {
+        typename details::IpTraits<I>::Type addr;
+        details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
+        auto req = get<uv_getaddrinfo_t>();
+        auto err = uv_getnameinfo(parent(), req, nullptr, &addr, flags);
+        return std::make_pair(ErrorEvent{err}, NameInfoEvent{req->host, req->service});
+    }
+
+    template<typename I = IPv4>
+    auto getNameInfoSync(Addr addr, int flags = 0) {
+        getNameInfoSync<I>(addr.ip, addr.port, flags);
     }
 };
 
