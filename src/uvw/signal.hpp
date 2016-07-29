@@ -36,12 +36,21 @@ public:
         return std::shared_ptr<SignalHandle>{new SignalHandle{std::forward<Args>(args)...}};
     }
 
-    bool init() { return initialize<uv_signal_t>(&uv_signal_init); }
+    bool init() {
+        return initialize<uv_signal_t>(&uv_signal_init);
+    }
 
-    void start(int signum) { invoke(&uv_signal_start, get<uv_signal_t>(), &startCallback, signum); }
-    void stop() { invoke(&uv_signal_stop, get<uv_signal_t>()); }
+    void start(int signum) {
+        invoke(&uv_signal_start, get<uv_signal_t>(), &startCallback, signum);
+    }
 
-    int signal() const noexcept { return get<uv_signal_t>()->signum; }
+    void stop() {
+        invoke(&uv_signal_stop, get<uv_signal_t>());
+    }
+
+    int signal() const noexcept {
+        return get<uv_signal_t>()->signum;
+    }
 };
 
 

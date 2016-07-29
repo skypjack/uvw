@@ -10,6 +10,7 @@
 #include "uvw/pipe.hpp"
 #include "uvw/poll.hpp"
 #include "uvw/prepare.hpp"
+#include "uvw/process.hpp"
 #include "uvw/signal.hpp"
 #include "uvw/tcp.hpp"
 #include "uvw/timer.hpp"

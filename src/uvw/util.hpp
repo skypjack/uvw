@@ -30,10 +30,20 @@ public:
 
     ~Flags() noexcept { static_assert(std::is_enum<E>::value, "!"); }
 
-    constexpr Flags operator|(const Flags& f) const noexcept { return Flags(flags | f.flags); }
+    constexpr Flags& operator=(const Flags &f) noexcept {
+        flags = f.flags;
+        return *this;
+    }
+
+    constexpr Flags& operator=(Flags &&f) noexcept {
+        flags = std::move(f.flags);
+        return *this;
+    }
+
+    constexpr Flags operator|(const Flags &f) const noexcept { return Flags(flags | f.flags); }
     constexpr Flags operator|(E flag) const noexcept { return Flags(flags | toInnerType(flag)); }
 
-    constexpr Flags operator&(const Flags& f) const noexcept { return Flags(flags & f.flags); }
+    constexpr Flags operator&(const Flags &f) const noexcept { return Flags(flags & f.flags); }
     constexpr Flags operator&(E flag) const noexcept { return Flags(flags & toInnerType(flag)); }
 
     explicit constexpr operator bool() const noexcept { return !(flags == InnerType{}); }

@@ -106,7 +106,9 @@ public:
         return std::shared_ptr<UdpHandle>{new UdpHandle{std::forward<Args>(args)...}};
     }
 
-    bool init() { return initialize<uv_udp_t>(&uv_udp_init); }
+    bool init() {
+        return initialize<uv_udp_t>(&uv_udp_init);
+    }
 
     template<typename T, typename... Args>
     bool init(T&& t, Args&&... args) {
@@ -152,8 +154,13 @@ public:
         invoke(&uv_udp_set_multicast_interface, get<uv_udp_t>(), interface.data());
     }
 
-    void broadcast(bool enable = false) { invoke(&uv_udp_set_broadcast, get<uv_udp_t>(), enable); }
-    void ttl(int val) { invoke(&uv_udp_set_ttl, get<uv_udp_t>(), val > 255 ? 255 : val); }
+    void broadcast(bool enable = false) {
+        invoke(&uv_udp_set_broadcast, get<uv_udp_t>(), enable);
+    }
+
+    void ttl(int val) {
+        invoke(&uv_udp_set_ttl, get<uv_udp_t>(), val > 255 ? 255 : val);
+    }
 
     template<typename I = IPv4>
     void send(std::string ip, unsigned int port, std::unique_ptr<char[]> data, ssize_t len) {
@@ -193,7 +200,9 @@ public:
         invoke(&uv_udp_recv_start, get<uv_udp_t>(), &allocCallback, &recvCallback<I>);
     }
 
-    void stop() { invoke(&uv_udp_recv_stop, get<uv_udp_t>()); }
+    void stop() {
+        invoke(&uv_udp_recv_stop, get<uv_udp_t>());
+    }
 };
 
 

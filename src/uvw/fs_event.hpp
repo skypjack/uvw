@@ -64,14 +64,21 @@ public:
         return std::shared_ptr<FsEventHandle>{new FsEventHandle{std::forward<Args>(args)...}};
     }
 
-    bool init() { return initialize<uv_fs_event_t>(&uv_fs_event_init); }
+    bool init() {
+        return initialize<uv_fs_event_t>(&uv_fs_event_init);
+    }
 
     void start(std::string path, Flags<Watch> flags = Flags<Watch>{}) {
         invoke(&uv_fs_event_start, get<uv_fs_event_t>(), &startCallback, path.data(), flags);
     }
 
-    void stop() { invoke(&uv_fs_event_stop, get<uv_fs_event_t>()); }
-    std::string path() noexcept { return details::path(&uv_fs_event_getpath, get<uv_fs_event_t>()); }
+    void stop() {
+        invoke(&uv_fs_event_stop, get<uv_fs_event_t>());
+    }
+
+    std::string path() noexcept {
+        return details::path(&uv_fs_event_getpath, get<uv_fs_event_t>());
+    }
 };
 
 
