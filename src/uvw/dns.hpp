@@ -3,6 +3,7 @@
 
 #include <utility>
 #include <memory>
+#include <string>
 #include <uv.h>
 #include "event.hpp"
 #include "request.hpp"
