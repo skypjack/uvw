@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <uv.h>
+#include "loop.hpp"
 
 
 namespace uvw {

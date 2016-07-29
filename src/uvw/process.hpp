@@ -63,6 +63,10 @@ public:
         uv_disable_stdio_inheritance();
     }
 
+    static bool kill(int pid, int signum) noexcept {
+        return (0 == uv_kill(pid, signum));
+    }
+
     bool init() const noexcept { return true; }
 
     void spawn(const char *file, char **args, char **env = nullptr) {
@@ -86,10 +90,6 @@ public:
 
     void kill(int signum) {
         invoke(&uv_process_kill, get<uv_process_t>(), signum);
-    }
-
-    static bool kill(int pid, int signum) noexcept {
-        return (0 == uv_kill(pid, signum));
     }
 
     int pid() noexcept {
