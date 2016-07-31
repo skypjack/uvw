@@ -132,7 +132,7 @@ public:
     auto getNameInfoSync(std::string ip, unsigned int port, int flags = 0) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
-        auto req = get<uv_getaddrinfo_t>();
+        auto req = get<uv_getnameinfo_t>();
         auto err = uv_getnameinfo(parent(), req, nullptr, &addr, flags);
         return std::make_pair(ErrorEvent{err}, NameInfoEvent{req->host, req->service});
     }

@@ -109,8 +109,9 @@ public:
     template<typename T, typename U>
     ProcessHandle& stdio(Flags<StdIO> flags, StreamHandle<T, U> &stream) {
         uv_stdio_container_t container;
-        container.flags = flags;
-        container.data.stream = stream.get<uv_stream_t>();
+        Flags<StdIO>::Type fgs = flags;
+        container.flags = static_cast<uv_stdio_flags>(fgs);
+        container.data.stream = stream.template get<uv_stream_t>();
         poStdio.push_back(std::move(container));
         return *this;
     }
@@ -118,7 +119,8 @@ public:
     template<typename T>
     ProcessHandle& stdio(Flags<StdIO> flags, FileHandle fd) {
         uv_stdio_container_t container;
-        container.flags = flags;
+        Flags<StdIO>::Type fgs = flags;
+        container.flags = static_cast<uv_stdio_flags>(fgs);
         container.data.fd = fd;
         poStdio.push_back(std::move(container));
         return *this;

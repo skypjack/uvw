@@ -139,7 +139,7 @@ struct TypedEvent<details::UVFsType, details::UVFsType::STAT>
         : Event<TypedEvent<details::UVFsType, details::UVFsType::STAT>>
 {
     TypedEvent(const char *p, const Stat &s) noexcept
-        : rPath{p}, fsStat{s}
+        : rPath{p}, fsStat(s)
     { }
 
     const char * path() const noexcept { return rPath; }
@@ -156,7 +156,7 @@ struct TypedEvent<details::UVFsType, details::UVFsType::FSTAT>
         : Event<TypedEvent<details::UVFsType, details::UVFsType::FSTAT>>
 {
     TypedEvent(const char *p, const Stat &s) noexcept
-        : rPath{p}, fsStat{s}
+        : rPath{p}, fsStat(s)
     { }
 
     const char * path() const noexcept { return rPath; }
@@ -173,7 +173,7 @@ struct TypedEvent<details::UVFsType, details::UVFsType::LSTAT>
         : Event<TypedEvent<details::UVFsType, details::UVFsType::LSTAT>>
 {
     TypedEvent(const char *p, const Stat &s) noexcept
-        : rPath{p}, fsStat{s}
+        : rPath{p}, fsStat(s)
     { }
 
     const char * path() const noexcept { return rPath; }

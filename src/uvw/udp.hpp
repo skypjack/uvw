@@ -20,7 +20,7 @@ struct SendEvent: Event<SendEvent> { };
 
 struct UDPDataEvent: Event<UDPDataEvent> {
     explicit UDPDataEvent(Addr addr, std::unique_ptr<const char[]> ptr, ssize_t l, bool trunc) noexcept
-        : dt{std::move(ptr)}, len{l}, sndr{addr}, part{trunc}
+        : dt{std::move(ptr)}, len{l}, sndr(addr), part{trunc}
     { }
 
     const char * data() const noexcept { return dt.get(); }
