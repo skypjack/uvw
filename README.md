@@ -2,7 +2,7 @@
 
 **Please, note that `uvw` is almost done, but it lacks a proper test suite**.
 
-`uvw` is a header-only, event based, tiny and easy to use C++ wrapper for *libuv*.  
+`uvw` is a header-only, event based, tiny and easy to use *libuv* wrapper in modern C++.  
 The basic idea is to hide completely the *C-ish* interface of *libuv* behind a graceful C++ API. Currently, no `uv_*_t` data structure is actually exposed by the library.  
 Note that `uvw` stays true to the API of *libuv* and it doesn't add anything to its interface. For the same reasons, users of the library must follow the same rules who are used to follow with *libuv*.  
 As an example, a *handle* should be initialized before any other operation and closed once it is no longer in use.
@@ -54,7 +54,7 @@ int main() {
 
 ## Motivation
 
-The main reason for which `uvw` has been written is the fact that it does not exist a valid C++ wrapper for *libuv*. That's all.
+The main reason for which `uvw` has been written is the fact that it does not exist a valid *libuv* wrapper in C++. That's all.
 
 # Build Instructions
 
@@ -76,6 +76,7 @@ Note that users are demanded to correctly setup include directories and librarie
 The documentation is based on [`doxygen`](http://www.stack.nl/~dimitri/doxygen/). To build it:
 
 * `$ cd build`
+* `$ cmake ..`
 * `$ make docs`
 
 The API reference will be created in HTML format within the directory `build/docs/html`.  
@@ -90,7 +91,7 @@ To navigate it with your favorite browser:
 
 There is only one rule when using `uvw`: always initialize the resources and terminate them.
 
-Resources belong to two main families: _handles_ and _requests_.  
+Resources belong mainly to two families: _handles_ and _requests_.  
 Handles represent long-lived objects capable of performing certain operations while active.  
 Requests represent (typically) short-lived operations performed either over a handle or standalone.
 
@@ -197,6 +198,7 @@ Run the script `deps.sh` to download them. It is good practice to do it every ti
 Then, to build the tests:
 
 * `$ cd build`
+* `$ cmake ..`
 * `$ make`
 * `$ make test`
 
