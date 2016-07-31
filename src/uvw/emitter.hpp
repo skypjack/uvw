@@ -20,6 +20,7 @@ class Emitter {
     struct BaseHandler {
         virtual ~BaseHandler() noexcept = default;
         virtual bool empty() const noexcept = 0;
+        virtual void clear() noexcept = 0;
     };
 
     template<typename E>
@@ -31,6 +32,11 @@ class Emitter {
 
         bool empty() const noexcept override {
             return onceL.empty() && onL.empty();
+        }
+
+        void clear() noexcept override {
+            onceL.clear();
+            onL.clear();
         }
 
         Connection once(Listener f) {
@@ -45,11 +51,6 @@ class Emitter {
 
         void erase(Connection conn) noexcept {
             conn.first.erase(conn.second);
-        }
-
-        void clear() noexcept {
-            onceL.clear();
-            onL.clear();
         }
 
         void publish(const E &event, T &ref) {
@@ -120,6 +121,12 @@ public:
     template<typename E>
     void clear() noexcept {
         handler<E>().clear();
+    }
+
+    void clearAll() noexcept {
+        for(auto &&h: handlers) {
+            h->clear();
+        }
     }
 
     bool empty() const noexcept {
