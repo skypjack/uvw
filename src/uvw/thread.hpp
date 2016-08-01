@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <type_traits>
 #include <utility>
 #include <memory>
 #include <string>
@@ -9,6 +10,16 @@
 
 
 namespace uvw {
+
+
+class Thread;
+class ThreadLocalStorage;
+class Once;
+class Mutex;
+class RWLock;
+class Semaphore;
+class Condition;
+class Barrier;
 
 
 class Thread final {
@@ -23,8 +34,7 @@ class Thread final {
         : pLoop{std::move(ref)},
           data{std::move(d)},
           thread{},
-          task{std::move(t)},
-          err{0}
+          task{std::move(t)}
     { }
 
 public:
@@ -44,23 +54,17 @@ public:
         return !(0 == uv_thread_equal(&tl.thread, &tr.thread));
     }
 
-    ~Thread() {
+    ~Thread() noexcept {
         uv_thread_join(&thread);
     }
 
     bool run() noexcept {
-        err = uv_thread_create(&thread, &createCallback, this);
-        return static_cast<bool>(*this);
+        return (0 == uv_thread_create(&thread, &createCallback, this));
     }
 
     bool join() noexcept {
-        err = uv_thread_join(&thread);
-        return static_cast<bool>(*this);
+        return (0 == uv_thread_join(&thread));
     }
-
-    explicit operator bool() const noexcept { return (0 == err); }
-
-    int error() const noexcept { return err; }
 
     Loop& loop() const noexcept { return *pLoop; }
 
@@ -69,17 +73,266 @@ private:
     std::shared_ptr<void> data;
     uv_thread_t thread;
     Task task;
-    int err;
 };
 
 
-// TODO Thread-local storage
-// TODO Once-only initialization
-// TODO Mutex locks
-// TODO Read-write locks
-// TODO Semaphores
-// TODO Conditions
-// TODO Barriers
+class ThreadLocalStorage final {
+    explicit ThreadLocalStorage(std::shared_ptr<Loop> ref) noexcept
+        : pLoop{std::move(ref)}
+    {
+        uv_key_create(&key);
+    }
+
+public:
+    template<typename... Args>
+    static std::shared_ptr<ThreadLocalStorage> create(Args&&... args) {
+        return std::shared_ptr<ThreadLocalStorage>{new ThreadLocalStorage{std::forward<Args>(args)...}};
+    }
+
+    ~ThreadLocalStorage() noexcept {
+        uv_key_delete(&key);
+    }
+
+    template<typename T>
+    T* get() noexcept {
+        return static_cast<T*>(uv_key_get(&key));
+    }
+
+    template<typename T>
+    void set(T *value) noexcept {
+        return uv_key_set(&key, value);
+    }
+
+    Loop& loop() const noexcept { return *pLoop; }
+
+private:
+    std::shared_ptr<Loop> pLoop;
+    uv_key_t key;
+};
+
+
+class Once final {
+    explicit Once(std::shared_ptr<Loop> ref) noexcept
+        : pLoop{std::move(ref)}
+    { }
+
+public:
+    template<typename... Args>
+    static std::shared_ptr<Once> create(Args&&... args) {
+        return std::shared_ptr<Once>{new Once{std::forward<Args>(args)...}};
+    }
+
+    template<typename F>
+    static void once(F &&f) noexcept {
+        using CallbackType = void (*)(void);
+        static_assert(std::is_convertible<F, CallbackType>::value, "!");
+        CallbackType cb = f;
+        uv_once(&guard, cb);
+    }
+
+    Loop& loop() const noexcept { return *pLoop; }
+
+private:
+    std::shared_ptr<Loop> pLoop;
+    static uv_once_t guard;
+};
+
+uv_once_t Once::guard = UV_ONCE_INIT;
+
+
+class Mutex final {
+    friend class Condition;
+
+    explicit Mutex(std::shared_ptr<Loop> ref) noexcept
+        : pLoop{std::move(ref)}
+    {
+        uv_mutex_init(&mutex);
+    }
+
+public:
+    template<typename... Args>
+    static std::shared_ptr<Mutex> create(Args&&... args) {
+        return std::shared_ptr<Mutex>{new Mutex{std::forward<Args>(args)...}};
+    }
+
+    ~Mutex() noexcept {
+        uv_mutex_destroy(&mutex);
+    }
+
+    void lock() noexcept {
+        uv_mutex_lock(&mutex);
+    }
+
+    bool tryLock() noexcept {
+        return (0 == uv_mutex_trylock(&mutex));
+    }
+
+    void unlock() noexcept {
+        uv_mutex_unlock(&mutex);
+    }
+
+    Loop& loop() const noexcept { return *pLoop; }
+
+private:
+    std::shared_ptr<Loop> pLoop;
+    uv_mutex_t mutex;
+};
+
+
+class RWLock final {
+    explicit RWLock(std::shared_ptr<Loop> ref) noexcept
+        : pLoop{std::move(ref)}
+    {
+        uv_rwlock_init(&rwlock);
+    }
+
+public:
+    template<typename... Args>
+    static std::shared_ptr<RWLock> create(Args&&... args) {
+        return std::shared_ptr<RWLock>{new RWLock{std::forward<Args>(args)...}};
+    }
+
+    ~RWLock() noexcept {
+        uv_rwlock_destroy(&rwlock);
+    }
+
+    void rdLock() noexcept {
+        uv_rwlock_rdlock(&rwlock);
+    }
+
+    bool tryRdLock() noexcept {
+        return (0 == uv_rwlock_tryrdlock(&rwlock));
+    }
+
+    void rdUnlock() noexcept {
+        uv_rwlock_rdunlock(&rwlock);
+    }
+
+    void wrLock() noexcept {
+        uv_rwlock_wrlock(&rwlock);
+    }
+
+    bool tryWrLock() noexcept {
+        return (0 == uv_rwlock_trywrlock(&rwlock));
+    }
+
+    void wrUnlock() noexcept {
+        uv_rwlock_wrunlock(&rwlock);
+    }
+
+    Loop& loop() const noexcept { return *pLoop; }
+
+private:
+    std::shared_ptr<Loop> pLoop;
+    uv_rwlock_t rwlock;
+};
+
+
+class Semaphore final {
+    explicit Semaphore(std::shared_ptr<Loop> ref, unsigned int value) noexcept
+        : pLoop{std::move(ref)}
+    {
+        uv_sem_init(&sem, value);
+    }
+
+public:
+    template<typename... Args>
+    static std::shared_ptr<Semaphore> create(Args&&... args) {
+        return std::shared_ptr<Semaphore>{new Semaphore{std::forward<Args>(args)...}};
+    }
+
+    ~Semaphore() noexcept {
+        uv_sem_destroy(&sem);
+    }
+
+    void post() noexcept {
+        uv_sem_post(&sem);
+    }
+
+    void wait() noexcept {
+        uv_sem_wait(&sem);
+    }
+
+    bool tryWait() noexcept {
+        return (0 == uv_sem_trywait(&sem));
+    }
+
+    Loop& loop() const noexcept { return *pLoop; }
+
+private:
+    std::shared_ptr<Loop> pLoop;
+    uv_sem_t sem;
+};
+
+
+class Condition final {
+    explicit Condition(std::shared_ptr<Loop> ref) noexcept
+        : pLoop{std::move(ref)}
+    {
+        uv_cond_init(&cond);
+    }
+
+public:
+    template<typename... Args>
+    static std::shared_ptr<Condition> create(Args&&... args) {
+        return std::shared_ptr<Condition>{new Condition{std::forward<Args>(args)...}};
+    }
+
+    ~Condition() noexcept {
+        uv_cond_destroy(&cond);
+    }
+
+    void signal() noexcept {
+        uv_cond_signal(&cond);
+    }
+
+    void broadcast() noexcept {
+        uv_cond_broadcast(&cond);
+    }
+
+    void wait(Mutex &mutex) noexcept {
+        uv_cond_wait(&cond, &mutex.mutex);
+    }
+
+    bool timedWait(Mutex &mutex, uint64_t timeout) noexcept {
+        return (0 == uv_cond_timedwait(&cond, &mutex.mutex, timeout));
+    }
+
+    Loop& loop() const noexcept { return *pLoop; }
+
+private:
+    std::shared_ptr<Loop> pLoop;
+    uv_cond_t cond;
+};
+
+
+class Barrier final {
+    explicit Barrier(std::shared_ptr<Loop> ref, unsigned int count) noexcept
+        : pLoop{std::move(ref)}
+    {
+        uv_barrier_init(&barrier, count);
+    }
+
+public:
+    template<typename... Args>
+    static std::shared_ptr<Barrier> create(Args&&... args) {
+        return std::shared_ptr<Barrier>{new Barrier{std::forward<Args>(args)...}};
+    }
+
+    ~Barrier() noexcept {
+        uv_barrier_destroy(&barrier);
+    }
+
+    bool wait() noexcept {
+        return (0 == uv_barrier_wait(&barrier));
+    }
+
+    Loop& loop() const noexcept { return *pLoop; }
+
+private:
+    std::shared_ptr<Loop> pLoop;
+    uv_barrier_t barrier;
+};
 
 
 }
