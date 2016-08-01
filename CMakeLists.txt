@@ -64,6 +64,7 @@ add_definitions(
 set(PROJECT_CMAKE_MODULES cmake/modules)
 set(PROJECT_BUILD_DIR build)
 set(PROJECT_DEPS_DIR deps)
+set(PROJECT_DOCS_DIR docs)
 set(PROJECT_SRC_DIR src)
 set(PROJECT_TEST_DIR test)
 
@@ -89,11 +90,16 @@ include(CTest)
 
 find_package(UV REQUIRED)
 find_package(Threads REQUIRED)
-find_package(GoogleTest REQUIRED)
+find_package(GoogleTest)
+find_package(Doxygen 1.8)
 
 #
 # Referenced directories and targets
 #
+
+if(${DOXYGEN_FOUND})
+    add_subdirectory(${PROJECT_DOCS_DIR})
+endif(${DOXYGEN_FOUND})
 
 if(${GOOGLETEST_FOUND})
     add_subdirectory(${PROJECT_TEST_DIR})
