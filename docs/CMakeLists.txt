@@ -2,6 +2,8 @@
 # Doxygen configuration (documentation)
 #
 
+set(TARGET_DOCS docs)
+
 set(DOXY_IN_FILE doxy.in)
 
 set(DOXY_SOURCE_DIRECTORY ${PROJECT_SRC_DIR})
