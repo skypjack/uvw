@@ -22,6 +22,13 @@ enum class UVLoopOption: std::underlying_type_t<uv_loop_option> {
 };
 
 
+enum class UVRunMode: std::underlying_type_t<uv_run_mode> {
+    DEFAULT = UV_RUN_DEFAULT,
+    ONCE = UV_RUN_ONCE,
+    NOWAIT = UV_RUN_NOWAIT
+};
+
+
 }
 
 
@@ -49,6 +56,7 @@ class Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop
 public:
     using Time = std::chrono::milliseconds;
     using Configure = details::UVLoopOption;
+    using Mode = details::UVRunMode;
 
     static std::shared_ptr<Loop> create() {
         auto ptr = std::unique_ptr<uv_loop_t, Deleter>{new uv_loop_t, [](uv_loop_t *l){ delete l; }};
@@ -117,16 +125,11 @@ public:
         if(err) { publish(ErrorEvent{err}); }
     }
 
+    template<Mode mode = Mode::DEFAULT>
     bool run() noexcept {
-        return (uv_run(loop.get(), UV_RUN_DEFAULT) == 0);
-    }
-
-    bool runOnce() noexcept {
-        return (uv_run(loop.get(), UV_RUN_ONCE) == 0);
-    }
-
-    bool runNoWait() noexcept {
-        return (uv_run(loop.get(), UV_RUN_NOWAIT) == 0);
+        auto utm = static_cast<std::underlying_type_t<Mode>>(mode);
+        auto uvrm = static_cast<uv_run_mode>(utm);
+        return (uv_run(loop.get(), uvrm) == 0);
     }
 
     bool alive() const noexcept {

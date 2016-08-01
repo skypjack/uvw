@@ -116,7 +116,12 @@ The first thing to do to use `uvw` is to create a loop. In case the default one 
     auto loop = uvw::Loop::getDefault();
 
 Note that loop objects don't require to be closed explicitly, even if they offer the `close` member method in case an user wants to do that.  
-Loops can be run using the `run`, `runOnce` and `runWait` member methods. Please refer to the documentation of *libuv* for further details.
+Loops can be started using the `run` member method. The two calls below are equivalent:
+
+    loop->run();
+    loop->run<uvw::Loop::Mode::DEFAULT>
+
+Available modes are: `DEFAULT`, `ONCE`, `NOWAIT`. Please refer to the documentation of *libuv* for further details.
 
 In order to create a resource and to bind it to the given loop, just do the following:
 

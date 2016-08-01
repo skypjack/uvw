@@ -27,7 +27,7 @@ TEST(Check, PartiallyDone) {
     ASSERT_TRUE(handle->active());
     ASSERT_FALSE(handle->closing());
 
-    loop->runNoWait();
+    loop->run<uvw::Loop::Mode::NOWAIT>();
 
     ASSERT_FALSE(checkErrorEvent);
     ASSERT_TRUE(checkCheckEvent);

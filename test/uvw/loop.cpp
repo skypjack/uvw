@@ -42,8 +42,8 @@ TEST(Loop, PartiallyDone) {
 
     loop->walk([](uvw::BaseHandle &) { ASSERT_TRUE(false); });
 
-    ASSERT_NO_THROW(loop->runOnce());
-    ASSERT_NO_THROW(loop->runNoWait());
+    ASSERT_NO_THROW(loop->run<uvw::Loop::Mode::ONCE>());
+    ASSERT_NO_THROW(loop->run<uvw::Loop::Mode::NOWAIT>());
 
     ASSERT_FALSE(loop->alive());
 }
