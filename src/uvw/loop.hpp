@@ -125,7 +125,7 @@ public:
         return (uv_run(loop.get(), UV_RUN_ONCE) == 0);
     }
 
-    bool runWait() noexcept {
+    bool runNoWait() noexcept {
         return (uv_run(loop.get(), UV_RUN_NOWAIT) == 0);
     }
 

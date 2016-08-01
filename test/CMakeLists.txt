@@ -22,6 +22,7 @@ set(
 
 set(TARGET_MAIN main)
 set(TARGET_ASYNC async)
+set(TARGET_CHECK check)
 set(TARGET_LOOP loop)
 set(TARGET_WORK work)
 
@@ -40,6 +41,14 @@ add_executable(${TARGET_ASYNC} ${TARGET_ASYNC_SOURCES})
 target_include_directories(${TARGET_ASYNC} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_ASYNC} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_ASYNC} COMMAND ${TARGET_ASYNC})
+
+# Test TARGET_CHECK
+
+set(TARGET_CHECK_SOURCES uvw/check.cpp)
+add_executable(${TARGET_CHECK} ${TARGET_CHECK_SOURCES})
+target_include_directories(${TARGET_CHECK} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_CHECK} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_CHECK} COMMAND ${TARGET_CHECK})
 
 # Test TARGET_LOOP
 
