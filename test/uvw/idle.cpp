@@ -2,46 +2,47 @@
 #include <uvw.hpp>
 
 
-TEST(Async, Send) {
+TEST(Idle, StartAndStop) {
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::AsyncHandle>();
+    auto handle = loop->resource<uvw::IdleHandle>();
 
     bool checkErrorEvent = false;
-    bool checkAsyncEvent = false;
+    bool checkIdleEvent = false;
 
     handle->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &){
         ASSERT_FALSE(checkErrorEvent);
         checkErrorEvent = true;
     });
 
-    handle->on<uvw::AsyncEvent>([&checkAsyncEvent](const auto &, auto &handle){
-        ASSERT_FALSE(checkAsyncEvent);
-        checkAsyncEvent = true;
+    handle->on<uvw::IdleEvent>([&checkIdleEvent](const auto &, auto &handle){
+        ASSERT_FALSE(checkIdleEvent);
+        checkIdleEvent = true;
+        handle.stop();
         handle.close();
         ASSERT_TRUE(handle.closing());
     });
 
-    handle->send();
+    handle->start();
 
     ASSERT_TRUE(handle->active());
     ASSERT_FALSE(handle->closing());
 
-    loop->run();
+    loop->run<uvw::Loop::Mode::NOWAIT>();
 
     ASSERT_FALSE(checkErrorEvent);
-    ASSERT_TRUE(checkAsyncEvent);
+    ASSERT_TRUE(checkIdleEvent);
 }
 
 
-TEST(Async, Fake) {
+TEST(Idle, Fake) {
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::AsyncHandle>();
+    auto handle = loop->resource<uvw::IdleHandle>();
 
     auto l = [](const auto &, auto &){ ASSERT_FALSE(true); };
     handle->on<uvw::ErrorEvent>(l);
-    handle->on<uvw::AsyncEvent>(l);
+    handle->on<uvw::IdleEvent>(l);
 
-    handle->send();
+    handle->start();
     handle->close();
 
     ASSERT_FALSE(handle->active());

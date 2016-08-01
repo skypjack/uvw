@@ -22,7 +22,11 @@ set(
 
 set(TARGET_MAIN main)
 set(TARGET_ASYNC async)
+set(TARGET_CHECK check)
+set(TARGET_IDLE idle)
 set(TARGET_LOOP loop)
+set(TARGET_PREPARE prepare)
+set(TARGET_SELF self)
 set(TARGET_WORK work)
 
 # Test TARGET_MAIN
@@ -41,6 +45,22 @@ target_include_directories(${TARGET_ASYNC} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_ASYNC} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_ASYNC} COMMAND ${TARGET_ASYNC})
 
+# Test TARGET_CHECK
+
+set(TARGET_CHECK_SOURCES uvw/check.cpp)
+add_executable(${TARGET_CHECK} ${TARGET_CHECK_SOURCES})
+target_include_directories(${TARGET_CHECK} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_CHECK} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_CHECK} COMMAND ${TARGET_CHECK})
+
+# Test TARGET_IDLE
+
+set(TARGET_IDLE_SOURCES uvw/idle.cpp)
+add_executable(${TARGET_IDLE} ${TARGET_IDLE_SOURCES})
+target_include_directories(${TARGET_IDLE} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_IDLE} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_IDLE} COMMAND ${TARGET_IDLE})
+
 # Test TARGET_LOOP
 
 set(TARGET_LOOP_SOURCES uvw/loop.cpp)
@@ -48,6 +68,22 @@ add_executable(${TARGET_LOOP} ${TARGET_LOOP_SOURCES})
 target_include_directories(${TARGET_LOOP} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_LOOP} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_LOOP} COMMAND ${TARGET_LOOP})
+
+# Test TARGET_PREPARE
+
+set(TARGET_PREPARE_SOURCES uvw/prepare.cpp)
+add_executable(${TARGET_PREPARE} ${TARGET_PREPARE_SOURCES})
+target_include_directories(${TARGET_PREPARE} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_PREPARE} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_PREPARE} COMMAND ${TARGET_PREPARE})
+
+# Test TARGET_SELF
+
+set(TARGET_SELF_SOURCES uvw/self.cpp)
+add_executable(${TARGET_SELF} ${TARGET_SELF_SOURCES})
+target_include_directories(${TARGET_SELF} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_SELF} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_SELF} COMMAND ${TARGET_SELF})
 
 # Test TARGET_WORK
 
