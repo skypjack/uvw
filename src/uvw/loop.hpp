@@ -188,6 +188,8 @@ public:
      * * Loop::Configure::BLOCK_SIGNAL: Block a signal when polling for new
      * events. A second argument is required and it is the signal number.
      *
+     * An ErrorEvent will be emitted in case of errors.
+     *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_configure)
      * for further details.
@@ -237,6 +239,8 @@ public:
      *
      * Call this function only when the loop has finished executing and all open
      * handles and requests have been closed, or the loop will emit an error.
+     *
+     * An ErrorEvent will be emitted in case of errors.
      */
     void close() {
         auto err = uv_loop_close(loop.get());

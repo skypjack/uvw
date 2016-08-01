@@ -23,8 +23,8 @@ struct AsyncEvent: Event<AsyncEvent> { };
 /**
  * @brief The AsyncHandle handle.
  *
- * Async handles allow the user to _wakeup_ the event loop and get a callback
- * called from another thread.
+ * Async handles allow the user to _wakeup_ the event loop and get an event
+ * emitted from another thread.
  */
 class AsyncHandle final: public Handle<AsyncHandle, uv_async_t> {
     static void sendCallback(uv_async_t *handle) {
@@ -37,9 +37,7 @@ class AsyncHandle final: public Handle<AsyncHandle, uv_async_t> {
 public:
     /**
      * @brief Creates a new async handle.
-     *
-     * No arguments required.
-     *
+     * @param ref A pointer to the loop from which the handle generated.
      * @return A pointer to the newly created handle.
      */
     template<typename... Args>
@@ -60,7 +58,7 @@ public:
     }
 
     /**
-     * @brief Wakeups the event loop and call the async handle’s callback.
+     * @brief Wakeups the event loop and emits the AsyncEvent event.
      *
      * It’s safe to call this function from any thread.<br/>
      * An AsyncEvent will be emitted on the loop thread.
