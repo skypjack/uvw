@@ -74,10 +74,6 @@ static constexpr auto STDOUT = FileHandle{1};
 static constexpr auto STDERR = FileHandle{2};
 
 
-/**
- * See Boost/Mutant idiom:
- *     https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Boost_mutant
- */
 struct Addr { std::string ip; unsigned int port; };
 struct WinSize { int width; int height; };
 
