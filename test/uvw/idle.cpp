@@ -2,21 +2,21 @@
 #include <uvw.hpp>
 
 
-TEST(Check, StartAndStop) {
+TEST(Idle, StartAndStop) {
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::CheckHandle>();
+    auto handle = loop->resource<uvw::IdleHandle>();
 
     bool checkErrorEvent = false;
-    bool checkCheckEvent = false;
+    bool checkIdleEvent = false;
 
     handle->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &){
         ASSERT_FALSE(checkErrorEvent);
         checkErrorEvent = true;
     });
 
-    handle->on<uvw::CheckEvent>([&checkCheckEvent](const auto &, auto &handle){
-        ASSERT_FALSE(checkCheckEvent);
-        checkCheckEvent = true;
+    handle->on<uvw::IdleEvent>([&checkIdleEvent](const auto &, auto &handle){
+        ASSERT_FALSE(checkIdleEvent);
+        checkIdleEvent = true;
         handle.stop();
         handle.close();
         ASSERT_TRUE(handle.closing());
@@ -30,17 +30,17 @@ TEST(Check, StartAndStop) {
     loop->run<uvw::Loop::Mode::NOWAIT>();
 
     ASSERT_FALSE(checkErrorEvent);
-    ASSERT_TRUE(checkCheckEvent);
+    ASSERT_TRUE(checkIdleEvent);
 }
 
 
-TEST(Check, Fake) {
+TEST(Idle, Fake) {
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::CheckHandle>();
+    auto handle = loop->resource<uvw::IdleHandle>();
 
     auto l = [](const auto &, auto &){ ASSERT_FALSE(true); };
     handle->on<uvw::ErrorEvent>(l);
-    handle->on<uvw::CheckEvent>(l);
+    handle->on<uvw::IdleEvent>(l);
 
     handle->start();
     handle->close();

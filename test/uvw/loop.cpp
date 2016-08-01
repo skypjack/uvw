@@ -15,7 +15,7 @@ TEST(Loop, PartiallyDone) {
     auto handle = loop->resource<uvw::PrepareHandle>();
     auto req = loop->resource<uvw::WorkReq>([](){});
 
-    auto err = [](uvw::ErrorEvent, auto &) { ASSERT_TRUE(false); };
+    auto err = [](const auto &, auto &) { ASSERT_TRUE(false); };
 
     loop->on<uvw::ErrorEvent>(err);
     req->on<uvw::ErrorEvent>(err);
@@ -27,7 +27,7 @@ TEST(Loop, PartiallyDone) {
     ASSERT_FALSE(loop->alive());
 
     handle->start();
-    handle->on<uvw::PrepareEvent>([](uvw::PrepareEvent, uvw::PrepareHandle &handle) {
+    handle->on<uvw::PrepareEvent>([](const auto &, auto &handle) {
         handle.loop().walk([](uvw::BaseHandle &) {
             static bool trigger = true;
             ASSERT_TRUE(trigger);

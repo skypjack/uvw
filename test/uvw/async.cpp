@@ -9,12 +9,12 @@ TEST(Async, Send) {
     bool checkErrorEvent = false;
     bool checkAsyncEvent = false;
 
-    handle->on<uvw::ErrorEvent>([&checkErrorEvent](const uvw::ErrorEvent &, uvw::AsyncHandle &){
+    handle->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &){
         ASSERT_FALSE(checkErrorEvent);
         checkErrorEvent = true;
     });
 
-    handle->on<uvw::AsyncEvent>([&checkAsyncEvent](const uvw::AsyncEvent &, uvw::AsyncHandle &handle){
+    handle->on<uvw::AsyncEvent>([&checkAsyncEvent](const auto &, auto &handle){
         ASSERT_FALSE(checkAsyncEvent);
         checkAsyncEvent = true;
         handle.close();
