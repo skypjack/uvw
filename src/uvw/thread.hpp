@@ -116,6 +116,11 @@ class Once final {
         : pLoop{std::move(ref)}
     { }
 
+    static uv_once_t* guard() noexcept {
+        static uv_once_t once = UV_ONCE_INIT;
+        return &once;
+    }
+
 public:
     template<typename... Args>
     static std::shared_ptr<Once> create(Args&&... args) {
@@ -127,17 +132,14 @@ public:
         using CallbackType = void (*)(void);
         static_assert(std::is_convertible<F, CallbackType>::value, "!");
         CallbackType cb = f;
-        uv_once(&guard, cb);
+        uv_once(guard(), cb);
     }
 
     Loop& loop() const noexcept { return *pLoop; }
 
 private:
     std::shared_ptr<Loop> pLoop;
-    static uv_once_t guard;
 };
-
-uv_once_t Once::guard = UV_ONCE_INIT;
 
 
 class Mutex final {
