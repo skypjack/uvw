@@ -23,8 +23,8 @@ struct CheckEvent: Event<CheckEvent> { };
 /**
  * @brief The CheckHandle handle.
  *
- * Check handles will emit a CheckEvent once per loop iteration, right after
- * polling for I/O.
+ * Check handles will emit a CheckEvent event once per loop iteration, right
+ * after polling for I/O.
  */
 class CheckHandle final: public Handle<CheckHandle, uv_check_t> {
     static void startCallback(uv_check_t *handle) {
@@ -37,7 +37,7 @@ class CheckHandle final: public Handle<CheckHandle, uv_check_t> {
 public:
     /**
      * @brief Creates a new check handle.
-     * @param ref A pointer to the loop from which the handle generated.
+     * @param args A pointer to the loop from which the handle generated.
      * @return A pointer to the newly created handle.
      */
     template<typename... Args>

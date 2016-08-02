@@ -37,7 +37,7 @@ class AsyncHandle final: public Handle<AsyncHandle, uv_async_t> {
 public:
     /**
      * @brief Creates a new async handle.
-     * @param ref A pointer to the loop from which the handle generated.
+     * @param args A pointer to the loop from which the handle generated.
      * @return A pointer to the newly created handle.
      */
     template<typename... Args>
@@ -61,7 +61,7 @@ public:
      * @brief Wakeups the event loop and emits the AsyncEvent event.
      *
      * It’s safe to call this function from any thread.<br/>
-     * An AsyncEvent will be emitted on the loop thread.
+     * An AsyncEvent event will be emitted on the loop thread.
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/async.html#c.uv_async_send)
