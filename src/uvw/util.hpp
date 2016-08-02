@@ -99,8 +99,8 @@ struct IpTraits<IPv4> {
     using Type = sockaddr_in;
     using AddrFuncType = int(*)(const char *, int, sockaddr_in *);
     using NameFuncType = int(*)(const sockaddr_in *, char *, std::size_t);
-    static const AddrFuncType AddrFunc;
-    static const NameFuncType NameFunc;
+    static constexpr AddrFuncType AddrFunc = &uv_ip4_addr;
+    static constexpr NameFuncType NameFunc = &uv_ip4_name;
 };
 
 template<>
@@ -108,14 +108,9 @@ struct IpTraits<IPv6> {
     using Type = sockaddr_in6;
     using AddrFuncType = int(*)(const char *, int, sockaddr_in6 *);
     using NameFuncType = int(*)(const sockaddr_in6 *, char *, std::size_t);
-    static const AddrFuncType AddrFunc;
-    static const NameFuncType NameFunc;
+    static constexpr AddrFuncType AddrFunc = &uv_ip6_addr;
+    static constexpr NameFuncType NameFunc = &uv_ip6_name;
 };
-
-const IpTraits<IPv4>::AddrFuncType IpTraits<IPv4>::AddrFunc = &uv_ip4_addr;
-const IpTraits<IPv6>::AddrFuncType IpTraits<IPv6>::AddrFunc = &uv_ip6_addr;
-const IpTraits<IPv4>::NameFuncType IpTraits<IPv4>::NameFunc = &uv_ip4_name;
-const IpTraits<IPv6>::NameFuncType IpTraits<IPv6>::NameFunc = &uv_ip6_name;
 
 
 template<typename I>

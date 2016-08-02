@@ -10,8 +10,11 @@
 namespace uvw {
 
 
+namespace details {
+
+
 struct BaseEvent {
-    virtual ~BaseEvent() noexcept = 0;
+    virtual ~BaseEvent() noexcept { }
 
     static std::size_t next() noexcept {
         static std::size_t cnt = 0;
@@ -19,11 +22,12 @@ struct BaseEvent {
     }
 };
 
-BaseEvent::~BaseEvent() noexcept { }
+
+}
 
 
 template<typename E>
-struct Event: BaseEvent {
+struct Event: details::BaseEvent {
     static std::size_t type() noexcept {
         static std::size_t val = BaseEvent::next();
         return val;

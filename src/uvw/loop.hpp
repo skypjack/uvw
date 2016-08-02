@@ -317,7 +317,8 @@ public:
      * @brief Returns the current timestamp in milliseconds.
      *
      * The timestamp is cached at the start of the event loop tick.<br/>
-     * The timestamp increases monotonically from some arbitrary point in time.
+     * The timestamp increases monotonically from some arbitrary point in
+     * time.<br/>
      * Don’t make assumptions about the starting point, you will only get
      * disappointed.
      *
