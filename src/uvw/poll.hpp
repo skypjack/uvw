@@ -26,6 +26,12 @@ enum class UVPollEvent: std::underlying_type_t<uv_poll_event> {
 }
 
 
+
+/**
+ * @brief PollEvent event.
+ *
+ * It will be emitted by the PollHandle according with its functionalities.
+ */
 struct PollEvent: Event<PollEvent> {
     explicit PollEvent(Flags<details::UVPollEvent> f) noexcept
         : flgs{std::move(f)}
@@ -38,6 +44,16 @@ private:
 };
 
 
+/**
+ * @brief The PollHandle handle.
+ *
+ * Poll handles are used to watch file descriptors for readability, writability
+ * and disconnection.
+ *
+ * See the official
+ * [documentation](http://docs.libuv.org/en/v1.x/poll.html)
+ * for further details.
+ */
 class PollHandle final: public Handle<PollHandle, uv_poll_t> {
     static void startCallback(uv_poll_t *handle, int status, int events) {
         PollHandle &poll = *(static_cast<PollHandle*>(handle->data));
@@ -50,11 +66,20 @@ class PollHandle final: public Handle<PollHandle, uv_poll_t> {
 public:
     using Event = details::UVPollEvent;
 
+    /**
+     * @brief Creates a new poll handle.
+     * @param args A pointer to the loop from which the handle generated.
+     * @return A pointer to the newly created handle.
+     */
     template<typename... Args>
     static std::shared_ptr<PollHandle> create(Args&&... args) {
         return std::shared_ptr<PollHandle>{new PollHandle{std::forward<Args>(args)...}};
     }
 
+    /**
+     * @brief Initializes the handle.
+     * @return True in case of success, false otherwise.
+     */
     bool init(int fd) {
         return initialize<uv_poll_t>(&uv_poll_init, fd);
     }

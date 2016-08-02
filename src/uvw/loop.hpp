@@ -43,14 +43,23 @@ enum class UVRunMode: std::underlying_type_t<uv_run_mode> {
 class BaseHandle {
 public:
     /**
-     * @brief Checks if a handle is active.
+     * @brief Checks if the handle is active.
      *
-     * What _active_ means depends on the type of handle.<br/>
-     * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/handle.html#c.uv_is_active)
-     * for further details.
+     * What _active_ means depends on the type of handle:
      *
-     * @return Non-zero if the handle is active, zero if it’s inactive.
+     * * An AsyncHandle handle is always active and cannot be deactivated,
+     * except by closing it with uv_close().
+     * * A PipeHandle, TcpHandle, UDPHandle, etc. handle - basically any handle
+     * that deals with I/O - is active when it is doing something that involves
+     * I/O, like reading, writing, connecting, accepting new connections, etc.
+     * * A CheckHandle, IdleHandle, TimerHandle, etc. handle is active when it
+     * has been started with a call to `start()`.
+     *
+     * Rule of thumb: if a handle of type `FooHandle` has a `start()` member
+     * method, then it’s active from the moment that method is called. Likewise,
+     * `stop()` deactivates the handle again.
+     *
+     * @return True if the handle is active, false otherwise.
      */
     virtual bool active() const noexcept = 0;
 
@@ -60,7 +69,7 @@ public:
      * This function should only be used between the initialization of the
      * handle and the arrival of the close callback.
      *
-     * @return Non-zero if the handle is closing or closed, zero otherwise.
+     * @return True if the handle is closing or closed, false otherwise.
      */
     virtual bool closing() const noexcept = 0;
 
@@ -82,7 +91,7 @@ public:
 
     /**
      * @brief Checks if the given handle referenced.
-     * @return Non-zero if the handle referenced, zero otherwise.
+     * @return True if the handle referenced, false otherwise.
      */
     virtual bool referenced() const noexcept = 0;
 
@@ -263,7 +272,7 @@ public:
      * [documentation](http://docs.libuv.org/en/v1.x/loop.html#c.uv_run)
      * for further details.
      *
-     * @return Zero when done, non-zero in all other cases.
+     * @return True when done, false in all other cases.
      */
     template<Mode mode = Mode::DEFAULT>
     bool run() noexcept {
@@ -274,7 +283,7 @@ public:
 
     /**
      * @brief Checks if there are active resources.
-     * @return Non-zero if there are active resources in the loop.
+     * @return True if there are active resources in the loop.
      */
     bool alive() const noexcept {
         return !(uv_loop_alive(loop.get()) == 0);

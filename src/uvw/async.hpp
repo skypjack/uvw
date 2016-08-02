@@ -13,7 +13,7 @@ namespace uvw {
 
 
 /**
- * @brief Trigger event.
+ * @brief AsyncEvent event.
  *
  * It will be emitted by the AsyncHandle according with its functionalities.
  */
