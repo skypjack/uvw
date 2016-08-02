@@ -11,9 +11,19 @@
 namespace uvw {
 
 
+/**
+ * @brief CloseEvent event.
+ *
+ * It will be emitted by the handles according with their functionalities.
+ */
 struct CloseEvent: Event<CloseEvent> { };
 
 
+/**
+ * @brief Handle base class.
+ *
+ * Base type for all `uvw` handle types.
+ */
 template<typename T, typename U>
 class Handle: public BaseHandle, public Resource<T, U>
 {
@@ -71,52 +81,168 @@ protected:
     }
 
 public:
+    /**
+     * @brief Checks if the handle is active.
+     *
+     * What _active_ means depends on the type of handle:
+     *
+     * * An AsyncHandle handle is always active and cannot be deactivated,
+     * except by closing it with uv_close().
+     * * A PipeHandle, TcpHandle, UDPHandle, etc. handle - basically any handle
+     * that deals with I/O - is active when it is doing something that involves
+     * I/O, like reading, writing, connecting, accepting new connections, etc.
+     * * A CheckHandle, IdleHandle, TimerHandle, etc. handle is active when it
+     * has been started with a call to `start()`.
+     *
+     * Rule of thumb: if a handle of type `FooHandle` has a `start()` member
+     * method, then it’s active from the moment that method is called. Likewise,
+     * `stop()` deactivates the handle again.
+     *
+     * @return True if the handle is active, false otherwise.
+     */
     bool active() const noexcept override {
         return !(uv_is_active(this->template get<uv_handle_t>()) == 0);
     }
 
+    /**
+     * @brief Checks if a handle is closing or closed.
+     *
+     * This function should only be used between the initialization of the
+     * handle and the arrival of the close callback.
+     *
+     * @return True if the handle is closing or closed, false otherwise.
+     */
     bool closing() const noexcept override {
         return !(uv_is_closing(this->template get<uv_handle_t>()) == 0);
     }
 
+    /**
+     * @brief Request handle to be closed.
+     *
+     * This **must** be called on each handle before memory is released.<br/>
+     * In-progress requests are cancelled and this can result in an ErrorEvent
+     * emitted.
+     */
     void close() noexcept override {
         if(!closing()) {
             uv_close(this->template get<uv_handle_t>(), &Handle<T, U>::closeCallback);
         }
     }
 
+    /**
+     * @brief Reference the given handle.
+     *
+     * References are idempotent, that is, if a handle is already referenced
+     * calling this function again will have no effect.
+     */
     void reference() noexcept override {
         uv_ref(this->template get<uv_handle_t>());
     }
 
+    /**
+     * @brief Unreference the given handle.
+     *
+     * References are idempotent, that is, if a handle is not referenced calling
+     * this function again will have no effect.
+     */
     void unreference() noexcept override {
         uv_unref(this->template get<uv_handle_t>());
     }
 
+    /**
+     * @brief Checks if the given handle referenced.
+     * @return True if the handle referenced, false otherwise.
+     */
     bool referenced() const noexcept override {
         return !(uv_has_ref(this->template get<uv_handle_t>()) == 0);
     }
 
+    /**
+     * @brief Returns the size of the underlying handle type.
+     * @return The size of the underlying handle type.
+     */
     std::size_t size() const noexcept {
         return uv_handle_size(this->template get<uv_handle_t>()->type);
     }
 
+    /**
+     * @brief Gets the size of the send buffer used for the socket.
+     *
+     * Gets the size of the send buffer that the operating system uses for the
+     * socket.<br/>
+     * This function works for TcpHandle, PipeHandle and UDPHandle handles on
+     * Unix and for TcpHandle and UDPHandle handles on Windows.<br/>
+     * Note that Linux will return double the size of the original set value.
+     *
+     * @return The size of the send buffer used for the socket.
+     */
     int sendBufferSize() const {
         return setBufferSize(&uv_send_buffer_size);
     }
 
+    /**
+     * @brief Sets the size of the send buffer used for the socket.
+     *
+     * Sets the size of the send buffer that the operating system uses for the
+     * socket.<br/>
+     * This function works for TcpHandle, PipeHandle and UDPHandle handles on
+     * Unix and for TcpHandle and UDPHandle handles on Windows.<br/>
+     * Note that Linux will set double the size.
+     */
     void sendBufferSize(int value) {
         getBufferSize(&uv_send_buffer_size, value);
     }
 
+    /**
+     * @brief Gets the size of the receive buffer used for the socket.
+     *
+     * Gets the size of the receive buffer that the operating system uses for
+     * the socket.<br/>
+     * This function works for TcpHandle, PipeHandle and UDPHandle handles on
+     * Unix and for TcpHandle and UDPHandle handles on Windows.<br/>
+     * Note that Linux will return double the size of the original set value.
+     *
+     * @return The size of the receive buffer used for the socket.
+     */
     int recvBufferSize() const {
         return setBufferSize(&uv_recv_buffer_size);
     }
 
+    /**
+     * @brief Sets the size of the receive buffer used for the socket.
+     *
+     * Sets the size of the receive buffer that the operating system uses for
+     * the socket.<br/>
+     * This function works for TcpHandle, PipeHandle and UDPHandle handles on
+     * Unix and for TcpHandle and UDPHandle handles on Windows.<br/>
+     * Note that Linux will set double the size.
+     */
     void recvBufferSize(int value) {
         getBufferSize(&uv_recv_buffer_size, value);
     }
 
+    /**
+     * @brief Gets the platform dependent file descriptor equivalent.
+     *
+     * Supported handles:
+     *
+     * * TcpHandle
+     * * PipeHandle
+     * * TTYHandle
+     * * UDPHandle
+     * * PollHandle
+     *
+     * It will emit an ErrorEvent event if invoked on any other handle.<br/>
+     * If a handle doesn’t have an attached file descriptor yet or the handle
+     * itself has been closed, an ErrorEvent event will be emitted.
+     *
+     * See the official
+     * [documentation](http://docs.libuv.org/en/v1.x/handle.html#c.uv_fileno)
+     * for further details.
+     *
+     * @return The file descriptor attached to the hande or a negative value in
+     * case of errors.
+     */
     OSFileDescriptor fileno() const {
         uv_os_fd_t fd;
         invoke(&uv_fileno, this->template get<uv_handle_t>(), &fd);

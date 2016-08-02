@@ -14,7 +14,7 @@ namespace uvw {
 
 
 /**
- * @brief Trigger event.
+ * @brief TimerEvent event.
  *
  * It will be emitted by the TimerHandle according with its functionalities.
  */

@@ -13,7 +13,7 @@ namespace uvw {
 
 
 /**
- * @brief Trigger event.
+ * @brief PrepareEvent event.
  *
  * It will be emitted by the PrepareHandle according with its functionalities.
  */

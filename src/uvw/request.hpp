@@ -46,11 +46,26 @@ protected:
     }
 
 public:
+    /**
+    * @brief Cancels a pending request.
+    *
+    * This method fails if the request is executing or has finished
+    * executing.<br/>
+    * It can emit an ErrorEvent event in case of errors.
+    *
+    * See the official
+    * [documentation](http://docs.libuv.org/en/v1.x/request.html#c.uv_cancel)
+    * for further details.
+    */
     void cancel() {
         auto err = uv_cancel(this->template get<uv_req_t>());
         if(err) { Emitter<T>::publish(ErrorEvent{err}); }
     }
 
+    /**
+    * @brief Returns the size of the underlying request type.
+    * @return The size of the underlying request type.
+    */
     std::size_t size() const noexcept {
         return uv_req_size(this->template get<uv_req_t>()->type);
     }

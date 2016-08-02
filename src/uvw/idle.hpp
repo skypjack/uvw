@@ -13,7 +13,7 @@ namespace uvw {
 
 
 /**
- * @brief Trigger event.
+ * @brief IdleEvent event.
  *
  * It will be emitted by the IdleHandle according with its functionalities.
  */

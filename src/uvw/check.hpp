@@ -13,7 +13,7 @@ namespace uvw {
 
 
 /**
- * @brief Trigger event.
+ * @brief CheckEvent event.
  *
  * It will be emitted by the CheckHandle according with its functionalities.
  */
