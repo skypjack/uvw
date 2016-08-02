@@ -37,6 +37,17 @@ struct PollEvent: Event<PollEvent> {
         : flgs{std::move(f)}
     { }
 
+    /**
+     * @brief Gets the detected events.
+     *
+     * Available flags are:
+     *
+     * * PollHandle::Event::READABLE
+     * * PollHandle::Event::WRITABLE
+     * * PollHandle::Event::DISCONNECT
+     *
+     * @return Detected events all in one.
+     */
     Flags<details::UVPollEvent> flags() const noexcept { return flgs; }
 
 private:
@@ -84,14 +95,66 @@ public:
         return initialize<uv_poll_t>(&uv_poll_init, fd);
     }
 
+    /**
+     * @brief Initializes the handle using a socket descriptor.
+     *
+     * On Unix this is identical to `init(int)`. On windows it takes a SOCKET
+     * handle.
+     *
+     * @param socket A valid socket descriptor.
+     * @return True in case of success, false otherwise.
+     */
+    bool init(OSSocketHandle socket) {
+        return initialize<uv_poll_t>(&uv_poll_init_socket, socket);
+    }
+
+    /**
+     * @brief Starts polling the file descriptor.
+     *
+     * Available flags are:
+     *
+     * * PollHandle::Event::READABLE
+     * * PollHandle::Event::WRITABLE
+     * * PollHandle::Event::DISCONNECT
+     *
+     * As soon as an event is detected, a PollEvent is emitted by the
+     * handle.<br>
+     * It could happen that ErrorEvent events are emitted while running.
+     *
+     * Calling more than once this method will update the flags to which the
+     * caller is interested.
+     *
+     * @param flags The events to which the caller is interested.
+     */
     void start(Flags<Event> flags) {
         invoke(&uv_poll_start, get<uv_poll_t>(), flags, &startCallback);
     }
 
+    /**
+     * @brief Starts polling the file descriptor.
+     *
+     * Available flags are:
+     *
+     * * PollHandle::Event::READABLE
+     * * PollHandle::Event::WRITABLE
+     * * PollHandle::Event::DISCONNECT
+     *
+     * As soon as an event is detected, a PollEvent is emitted by the
+     * handle.<br>
+     * It could happen that ErrorEvent events are emitted while running.
+     *
+     * Calling more than once this method will update the flags to which the
+     * caller is interested.
+     *
+     * @param event The event to which the caller is interested.
+     */
     void start(Event event) {
         start(Flags<Event>{event});
     }
 
+    /**
+     * @brief Stops polling the file descriptor.
+     */
     void stop() {
         invoke(&uv_poll_stop, get<uv_poll_t>());
     }
