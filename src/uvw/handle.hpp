@@ -122,6 +122,8 @@ public:
      * This **must** be called on each handle before memory is released.<br/>
      * In-progress requests are cancelled and this can result in an ErrorEvent
      * emitted.
+     *
+     * The handle will emit a CloseEvent when finished.
      */
     void close() noexcept override {
         if(!closing()) {

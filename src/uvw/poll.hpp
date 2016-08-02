@@ -89,6 +89,7 @@ public:
 
     /**
      * @brief Initializes the handle.
+     * @param fd A valid file descriptor.
      * @return True in case of success, false otherwise.
      */
     bool init(int fd) {

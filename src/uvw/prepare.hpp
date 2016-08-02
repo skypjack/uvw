@@ -58,6 +58,8 @@ public:
      *
      * A PrepareEvent event will be emitted once per loop iteration, right
      * before polling for I/O.
+     *
+     * The handle will start emitting PrepareEvent when needed.
      */
     void start() {
         invoke(&uv_prepare_start, get<uv_prepare_t>(), &startCallback);
