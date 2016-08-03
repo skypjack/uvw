@@ -72,14 +72,30 @@ class PollHandle final: public Handle<PollHandle, uv_poll_t> {
         else { poll.publish(PollEvent{static_cast<std::underlying_type_t<Event>>(events)}); }
     }
 
-    using Handle::Handle;
+    explicit PollHandle(std::shared_ptr<Loop> ref, int desc)
+        : Handle{std::move(ref)}, tag{FD}, fd{desc}
+    { }
+
+    explicit PollHandle(std::shared_ptr<Loop> ref, OSSocketHandle sock)
+        : Handle{std::move(ref)}, tag{SOCKET}, socket{sock}
+    { }
 
 public:
     using Event = details::UVPollEvent;
 
     /**
      * @brief Creates a new poll handle.
-     * @param args A pointer to the loop from which the handle generated.
+     * @param args
+     *
+     * * A pointer to the loop from which the handle generated.
+     * * A descriptor that can be:
+     *     * either an `int` file descriptor
+     *     * or a OSSocketHandle socket descriptor
+     *
+     * See the official
+     * [documentation](http://docs.libuv.org/en/v1.x/poll.html)
+     * for further details.
+     *
      * @return A pointer to the newly created handle.
      */
     template<typename... Args>
@@ -89,24 +105,12 @@ public:
 
     /**
      * @brief Initializes the handle.
-     * @param fd A valid file descriptor.
      * @return True in case of success, false otherwise.
      */
-    bool init(int fd) {
-        return initialize<uv_poll_t>(&uv_poll_init, fd);
-    }
-
-    /**
-     * @brief Initializes the handle using a socket descriptor.
-     *
-     * On Unix this is identical to `init(int)`. On windows it takes a SOCKET
-     * handle.
-     *
-     * @param socket A valid socket descriptor.
-     * @return True in case of success, false otherwise.
-     */
-    bool init(OSSocketHandle socket) {
-        return initialize<uv_poll_t>(&uv_poll_init_socket, socket);
+    bool init() {
+        return (tag == SOCKET)
+                ? initialize<uv_poll_t>(&uv_poll_init_socket, socket)
+                : initialize<uv_poll_t>(&uv_poll_init, fd);
     }
 
     /**
@@ -159,6 +163,13 @@ public:
     void stop() {
         invoke(&uv_poll_stop, get<uv_poll_t>());
     }
+
+private:
+    enum { FD, SOCKET } tag;
+    union {
+        int fd;
+        OSSocketHandle::Type socket;
+    };
 };
 
 

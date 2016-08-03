@@ -70,8 +70,6 @@ public:
 
 
 class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
-    using Handle::Handle;
-
     template<typename I>
     static void recvCallback(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
         typename details::IpTraits<I>::Type *aptr = reinterpret_cast<const typename details::IpTraits<I>::Type *>(addr);
@@ -95,6 +93,14 @@ class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
         }
     }
 
+    explicit UDPHandle(std::shared_ptr<Loop> ref)
+        : Handle{std::move(ref)}, tag{DEFAULT}, flags{}
+    { }
+
+    explicit UDPHandle(std::shared_ptr<Loop> ref, unsigned int f)
+        : Handle{std::move(ref)}, tag{FLAGS}, flags{f}
+    { }
+
 public:
     using Membership = details::UVMembership;
     using Bind = details::UVUdpFlags;
@@ -107,12 +113,9 @@ public:
     }
 
     bool init() {
-        return initialize<uv_udp_t>(&uv_udp_init);
-    }
-
-    template<typename T, typename... Args>
-    bool init(T&& t, Args&&... args) {
-        return initialize<uv_udp_t>(&uv_udp_init_ex, std::forward<T>(t), std::forward<Args>(args)...);
+        return (tag == FLAGS)
+                ? initialize<uv_udp_t>(&uv_udp_init_ex, flags)
+                : initialize<uv_udp_t>(&uv_udp_init);
     }
 
     void open(OSSocketHandle sock) {
@@ -203,6 +206,10 @@ public:
     void stop() {
         invoke(&uv_udp_recv_stop, get<uv_udp_t>());
     }
+
+private:
+    enum { DEFAULT, FLAGS } tag;
+    unsigned int flags;
 };
 
 

@@ -454,13 +454,13 @@ private:
 
 
 class FsReq final: public FsRequest<FsReq> {
-    using FsRequest::FsRequest;
-
     static void fsReadlinkCallback(uv_fs_t *req) {
         auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr), req->result}); }
     }
+
+    using FsRequest::FsRequest;
 
 public:
     template<typename... Args>

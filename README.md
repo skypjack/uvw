@@ -1,3 +1,5 @@
+![cynny-logo](https://web.cynny.com/live/static/favicon/favicon-16.png) **Sponsored and contributed by [Cynny SpA](https://www.cynny.com/).**
+
 # uvw
 
 # Introduction
@@ -172,6 +174,9 @@ Both of them return an object of type `ResourceType::Connection` (as an example,
 A connection object can be used later as an argument to the `erase` member method of the resource to remove the listener.<br/>
 There exists also the `clear` member method to drop all the listeners at once.
 
+Almost all the resources use to emit `ErrorEvent` events in case of errors.<br/>
+All the other events are specific for the given resource and documented in the API reference.
+
 The code below shows how to create a simple tcp server using `uvw`:
 
 ```
@@ -192,7 +197,7 @@ tcp->bind("127.0.0.1", 4242);
 tcp->listen();
 ```
 
-Note that `uvw::TcpHandle` already supports _IPv6_ out-of-the-box. The statement above is equivalent to `tcp->bind<uvw::TcpHandle::IPv4>("127.0.0.1", 4242)`.<br/>
+Note also that `uvw::TcpHandle` already supports _IPv6_ out-of-the-box. The statement above is equivalent to `tcp->bind<uvw::TcpHandle::IPv4>("127.0.0.1", 4242)`.<br/>
 It's suffice to explicitly specify `uvw::TcpHandle::IPv6` as the underlying protocol to use it.
 
 The API reference is the recommended documentation for further details about resources and their methods.

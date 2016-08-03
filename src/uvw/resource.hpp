@@ -12,6 +12,12 @@
 namespace uvw {
 
 
+/**
+ * @brief Common class for almost all the resources available in `uvw`.
+ *
+ * This is the base class for handles and requests.<br/>
+ * It mainly acts as a wrapper around a libuv's data structure.
+ */
 template<typename T, typename U>
 class Resource: public Emitter<T>, public Self<T> {
     template<typename, typename>
@@ -52,6 +58,10 @@ public:
     Resource& operator=(const Resource &) = delete;
     Resource& operator=(Resource &&) = delete;
 
+    /**
+     * @brief Gets the loop from which the resource was originated.
+     * @return A reference to a loop instance.
+     */
     Loop& loop() const noexcept { return *pLoop; }
 
 private:
