@@ -28,7 +28,13 @@ enum class UVTcpFlags: std::underlying_type_t<uv_tcp_flags> {
 
 
 class TcpHandle final: public StreamHandle<TcpHandle, uv_tcp_t> {
-    using StreamHandle::StreamHandle;
+    explicit TcpHandle(std::shared_ptr<Loop> ref)
+        : StreamHandle{std::move(ref)}, tag{DEFAULT}, flags{}
+    { }
+
+    explicit TcpHandle(std::shared_ptr<Loop> ref, unsigned int f)
+        : StreamHandle{std::move(ref)}, tag{FLAGS}, flags{f}
+    { }
 
 public:
     using Time = std::chrono::seconds;
@@ -42,12 +48,9 @@ public:
     }
 
     bool init() {
-        return initialize<uv_tcp_t>(&uv_tcp_init);
-    }
-
-    template<typename T, typename... Args>
-    bool init(T&& t, Args&&... args) {
-        return initialize<uv_tcp_t>(&uv_tcp_init_ex, std::forward<T>(t), std::forward<Args>(args)...);
+        return (tag == FLAGS)
+                ? initialize<uv_tcp_t>(&uv_tcp_init_ex, flags)
+                : initialize<uv_tcp_t>(&uv_tcp_init);
     }
 
     void open(OSSocketHandle sock) {
@@ -107,6 +110,10 @@ public:
     void connect(Addr addr) {
         connect<I>(addr.ip, addr.port);
     }
+
+private:
+    enum { DEFAULT, FLAGS } tag;
+    unsigned int flags;
 };
 
 
