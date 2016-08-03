@@ -12,6 +12,16 @@
 namespace uvw {
 
 
+/**
+ * @brief Utility class to handle flags.
+ *
+ * This class can be used to handle flags of a same enumeration type.<br/>
+ * It is meant to be used as an argument for functions and member methods and
+ * as part of events.<br/>
+ * `Flags<E>` objects can be easily _or-ed_ and _and-ed_ with other instances of
+ * the same type or with instances of the type `E` (that is, the actual flag
+ * type), thus converted to the underlying type when needed.
+ */
 template<typename E>
 class Flags final {
     using InnerType = std::underlying_type_t<E>;
@@ -21,8 +31,22 @@ class Flags final {
 public:
     using Type = InnerType;
 
+    /**
+     * @brief Constructs a Flags object from a value of the enum `E`.
+     * @param flag An value of the enum `E`.
+     */
     constexpr Flags(E flag) noexcept: flags{toInnerType(flag)} { }
+
+    /**
+     * @brief Constructs a Flags object from an instance of the underlying type
+     * of the enum `E`.
+     * @param f An instance of the underlying type of the enum `E`.
+     */
     constexpr Flags(Type f): flags{f} { }
+
+    /**
+     * @brief Constructs an uninitialized Flags object.
+     */
     constexpr Flags(): flags{} { }
 
     constexpr Flags(const Flags &f) noexcept: flags{f.flags} {  }
@@ -40,13 +64,44 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Or operator.
+     * @param f A valid instance of Flags.
+     * @return This instance _or-ed_ with `f`.
+     */
     constexpr Flags operator|(const Flags &f) const noexcept { return Flags(flags | f.flags); }
+
+    /**
+     * @brief Or operator.
+     * @param flag A value of the enum `E`.
+     * @return This instance _or-ed_ with `flag`.
+     */
     constexpr Flags operator|(E flag) const noexcept { return Flags(flags | toInnerType(flag)); }
 
+    /**
+     * @brief And operator.
+     * @param f A valid instance of Flags.
+     * @return This instance _and-ed_ with `f`.
+     */
     constexpr Flags operator&(const Flags &f) const noexcept { return Flags(flags & f.flags); }
+
+    /**
+     * @brief And operator.
+     * @param flag A value of the enum `E`.
+     * @return This instance _and-ed_ with `flag`.
+     */
     constexpr Flags operator&(E flag) const noexcept { return Flags(flags & toInnerType(flag)); }
 
+    /**
+     * @brief Checks if this instance is initialized.
+     * @return False if it's uninitialized, true otherwise.
+     */
     explicit constexpr operator bool() const noexcept { return !(flags == InnerType{}); }
+
+    /**
+     * @brief Casts the instance to the underlying type of `E`.
+     * @return An integral representation of the contained flags.
+     */
     constexpr operator Type() const noexcept { return flags; }
 
 private:
@@ -54,10 +109,32 @@ private:
 };
 
 
+/**
+ * @brief Wrapper for underlying library's types.
+ *
+ * In particular, It is used for:
+ *
+ * * FileHandle (that is an alias for `UVTypeWrapper<uv_file>`)
+ * * OSSocketHandle (that is an alias for `UVTypeWrapper<uv_os_sock_t>`)
+ * * OSFileDescriptor (that is an alias for `UVTypeWrapper<uv_os_fd_t>`)
+ *
+ * It can be bound to each value of type `T` and it will be implicitly converted
+ * to the underlying type when needed.
+ */
 template<typename T>
 struct UVTypeWrapper {
     using Type = T;
+
+    /**
+     * @brief Constructs a new instance of the wrapper.
+     * @param val The value to be stored.
+     */
     constexpr UVTypeWrapper(Type val): value{val} { }
+
+    /**
+     * @brief Cast operator to the underlying type.
+     * @return The stored value.
+     */
     constexpr operator Type() const noexcept { return value; }
 private:
     const Type value;
@@ -69,12 +146,28 @@ using OSSocketHandle = UVTypeWrapper<uv_os_sock_t>;
 using OSFileDescriptor = UVTypeWrapper<uv_os_fd_t>;
 
 
-static constexpr auto STDIN = FileHandle{0};
-static constexpr auto STDOUT = FileHandle{1};
-static constexpr auto STDERR = FileHandle{2};
-
-
+/**
+ * @brief Address representation.
+ *
+ * Pair alias (see Boost/Mutant idiom) used to pack together an ip and a
+ * port.<br/>
+ * Instead of `first` and `second`, the two parameters are named:
+ *
+ * * `ip`, that is of type `std::string`
+ * * `port`, that is of type `unsigned int`
+ */
 struct Addr { std::string ip; unsigned int port; };
+
+/**
+ * @brief Windows size representation.
+ *
+ * Pair alias (see Boost/Mutant idiom) used to pack together a width and a
+ * height.<br/>
+ * Instead of `first` and `second`, the two parameters are named:
+ *
+ * * `width`, that is of type `int`
+ * * `height`, that is of type `int`
+ */
 struct WinSize { int width; int height; };
 
 
