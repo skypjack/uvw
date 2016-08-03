@@ -1,3 +1,5 @@
+![cynny](https://web.cynny.com/live/static/favicon/favicon-16.png) **Sponsored and contributed by [Cynny SpA](https://www.cynny.com/).**
+
 # uvw
 
 # Introduction
