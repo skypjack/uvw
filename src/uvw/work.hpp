@@ -53,7 +53,7 @@ public:
      * * A valid instance of a `Task`, that is of type
      * `std::function<void(void)>`.
      *
-     * @return A pointer to the newly created handle.
+     * @return A pointer to the newly created request.
      */
     template<typename... Args>
     static std::shared_ptr<WorkReq> create(Args&&... args) {
