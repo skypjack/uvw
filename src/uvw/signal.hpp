@@ -15,7 +15,7 @@ namespace uvw {
 /**
  * @brief SignalEvent event.
  *
- * It will be emitted by the SignalHandle according with its functionalities.
+ * It will be emitted by SignalHandle according with its functionalities.
  */
 struct SignalEvent: Event<SignalEvent> {
     explicit SignalEvent(int sig) noexcept: signum(sig) { }

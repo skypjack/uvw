@@ -15,7 +15,7 @@ namespace uvw {
 /**
  * @brief PrepareEvent event.
  *
- * It will be emitted by the PrepareHandle according with its functionalities.
+ * It will be emitted by PrepareHandle according with its functionalities.
  */
 struct PrepareEvent: Event<PrepareEvent> { };
 

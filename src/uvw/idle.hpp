@@ -15,7 +15,7 @@ namespace uvw {
 /**
  * @brief IdleEvent event.
  *
- * It will be emitted by the IdleHandle according with its functionalities.
+ * It will be emitted by IdleHandle according with its functionalities.
  */
 struct IdleEvent: Event<IdleEvent> { };
 
