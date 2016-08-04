@@ -15,7 +15,7 @@ namespace uvw {
 /**
  * @brief CheckEvent event.
  *
- * It will be emitted by the CheckHandle according with its functionalities.
+ * It will be emitted by CheckHandle according with its functionalities.
  */
 struct CheckEvent: Event<CheckEvent> { };
 

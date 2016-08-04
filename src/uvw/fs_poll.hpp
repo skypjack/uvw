@@ -16,7 +16,7 @@ namespace uvw {
 /**
  * @brief FsPollEvent event.
  *
- * It will be emitted by the FsPollHandle according with its functionalities.
+ * It will be emitted by FsPollHandle according with its functionalities.
  */
 struct FsPollEvent: Event<FsPollEvent> {
     explicit FsPollEvent(const Stat &p, const Stat &c) noexcept

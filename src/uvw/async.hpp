@@ -15,7 +15,7 @@ namespace uvw {
 /**
  * @brief AsyncEvent event.
  *
- * It will be emitted by the AsyncHandle according with its functionalities.
+ * It will be emitted by AsyncHandle according with its functionalities.
  */
 struct AsyncEvent: Event<AsyncEvent> { };
 

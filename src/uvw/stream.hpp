@@ -18,7 +18,7 @@ namespace uvw {
 /**
  * @brief ConnectEvent event.
  *
- * It will be emitted by the StreamHandle according with its functionalities.
+ * It will be emitted by StreamHandle according with its functionalities.
  */
 struct ConnectEvent: Event<ConnectEvent> { };
 
@@ -26,7 +26,7 @@ struct ConnectEvent: Event<ConnectEvent> { };
 /**
  * @brief EndEvent event.
  *
- * It will be emitted by the StreamHandle according with its functionalities.
+ * It will be emitted by StreamHandle according with its functionalities.
  */
 struct EndEvent: Event<EndEvent> { };
 
@@ -34,7 +34,7 @@ struct EndEvent: Event<EndEvent> { };
 /**
  * @brief ListenEvent event.
  *
- * It will be emitted by the StreamHandle according with its functionalities.
+ * It will be emitted by StreamHandle according with its functionalities.
  */
 struct ListenEvent: Event<ListenEvent> { };
 
@@ -42,7 +42,7 @@ struct ListenEvent: Event<ListenEvent> { };
 /**
  * @brief ShutdownEvent event.
  *
- * It will be emitted by the StreamHandle according with its functionalities.
+ * It will be emitted by StreamHandle according with its functionalities.
  */
 struct ShutdownEvent: Event<ShutdownEvent> { };
 
@@ -50,7 +50,7 @@ struct ShutdownEvent: Event<ShutdownEvent> { };
 /**
  * @brief WriteEvent event.
  *
- * It will be emitted by the StreamHandle according with its functionalities.
+ * It will be emitted by StreamHandle according with its functionalities.
  */
 struct WriteEvent: Event<WriteEvent> { };
 
@@ -58,7 +58,7 @@ struct WriteEvent: Event<WriteEvent> { };
 /**
  * @brief DataEvent event.
  *
- * It will be emitted by the StreamHandle according with its functionalities.
+ * It will be emitted by StreamHandle according with its functionalities.
  */
 struct DataEvent: Event<DataEvent> {
     explicit DataEvent(std::unique_ptr<const char[]> ptr, ssize_t l) noexcept
@@ -257,7 +257,7 @@ public:
      *
      * Data are written in order.<br/>
      * A WriteEvent event will be emitted when the data have been written.<br/>
-     * An ErrorEvent wvent will be emitted in case of errors.
+     * An ErrorEvent event will be emitted in case of errors.
      *
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
@@ -315,7 +315,7 @@ public:
      *
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
-     * @return Nomuber of bytes written.
+     * @return Number of bytes written.
      */
     int tryWrite(std::unique_ptr<char[]> data, ssize_t len) {
         uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };

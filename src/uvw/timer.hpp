@@ -16,7 +16,7 @@ namespace uvw {
 /**
  * @brief TimerEvent event.
  *
- * It will be emitted by the TimerHandle according with its functionalities.
+ * It will be emitted by TimerHandle according with its functionalities.
  */
 struct TimerEvent: Event<TimerEvent> { };
 

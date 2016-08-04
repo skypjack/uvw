@@ -67,12 +67,12 @@ public:
     }
 
     /**
-     * @brief Opens an existing file descriptor or handle as a pipe.
+     * @brief Opens an existing file descriptor or HANDLE as a pipe.
      *
-     * The passed file descriptor or handle is not checked for its type, but
+     * The passed file descriptor or HANDLE is not checked for its type, but
      * it’s required that it represents a valid pipe.
      *
-     * @param file A valid file handle (either a file descriptor or a handle).
+     * @param file A valid file handle (either a file descriptor or a HANDLE).
      */
     void open(FileHandle file) {
         invoke(&uv_pipe_open, get<uv_pipe_t>(), file);

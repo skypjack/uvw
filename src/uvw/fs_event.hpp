@@ -35,7 +35,7 @@ enum class UVFsEvent: std::underlying_type_t<uv_fs_event> {
 /**
  * @brief FsEventEvent event.
  *
- * It will be emitted by the FsEventHandle according with its functionalities.
+ * It will be emitted by FsEventHandle according with its functionalities.
  */
 struct FsEventEvent: Event<FsEventEvent> {
     FsEventEvent(std::string fPath, Flags<details::UVFsEvent> f)
