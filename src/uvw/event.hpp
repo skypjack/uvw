@@ -83,8 +83,4 @@ private:
 };
 
 
-template<typename E, E e>
-struct TypedEvent;
-
-
 }
