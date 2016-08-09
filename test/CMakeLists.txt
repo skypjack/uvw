@@ -26,7 +26,6 @@ set(TARGET_CHECK check)
 set(TARGET_IDLE idle)
 set(TARGET_LOOP loop)
 set(TARGET_PREPARE prepare)
-set(TARGET_SELF self)
 set(TARGET_WORK work)
 
 # Test TARGET_MAIN
@@ -76,14 +75,6 @@ add_executable(${TARGET_PREPARE} ${TARGET_PREPARE_SOURCES})
 target_include_directories(${TARGET_PREPARE} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_PREPARE} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_PREPARE} COMMAND ${TARGET_PREPARE})
-
-# Test TARGET_SELF
-
-set(TARGET_SELF_SOURCES uvw/self.cpp)
-add_executable(${TARGET_SELF} ${TARGET_SELF_SOURCES})
-target_include_directories(${TARGET_SELF} PRIVATE ${COMMON_INCLUDE_DIRS})
-target_link_libraries(${TARGET_SELF} PRIVATE ${COMMON_LINK_LIBS})
-add_test(NAME ${TARGET_SELF} COMMAND ${TARGET_SELF})
 
 # Test TARGET_WORK
 

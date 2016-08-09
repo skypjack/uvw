@@ -5,7 +5,6 @@
 #include <memory>
 #include <uv.h>
 #include "emitter.hpp"
-#include "self.hpp"
 #include "loop.hpp"
 
 
@@ -19,14 +18,14 @@ namespace uvw {
  * It mainly acts as a wrapper around a libuv's data structure.
  */
 template<typename T, typename U>
-class Resource: public Emitter<T>, public Self<T> {
+class Resource: public Emitter<T>, public std::enable_shared_from_this<T> {
     template<typename, typename>
     friend class Resource;
 
 protected:
     explicit Resource(std::shared_ptr<Loop> ref)
         : Emitter<T>{},
-          Self<T>{},
+          std::enable_shared_from_this<T>{},
           pLoop{std::move(ref)},
           resource{}
     {
@@ -47,6 +46,18 @@ protected:
         return reinterpret_cast<const R*>(&resource);
     }
 
+    void leak() noexcept {
+        ptr = this->shared_from_this();
+    }
+
+    void reset() noexcept {
+        ptr.reset();
+    }
+
+    bool self() const noexcept {
+        return static_cast<bool>(ptr);
+    }
+
 public:
     Resource(const Resource &) = delete;
     Resource(Resource &&) = delete;
@@ -65,6 +76,7 @@ public:
     Loop& loop() const noexcept { return *pLoop; }
 
 private:
+    std::shared_ptr<void> ptr{nullptr};
     std::shared_ptr<Loop> pLoop;
     U resource;
 };
