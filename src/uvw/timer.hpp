@@ -21,6 +21,11 @@ namespace uvw {
 struct TimerEvent: Event<TimerEvent> { };
 
 
+/**
+ * @brief The TimerHandle handle.
+ *
+ * Timer handles are used to schedule events to be emitted in the future.
+ */
 class TimerHandle final: public Handle<TimerHandle, uv_timer_t> {
     static void startCallback(uv_timer_t *handle) {
         TimerHandle &timer = *(static_cast<TimerHandle*>(handle->data));
