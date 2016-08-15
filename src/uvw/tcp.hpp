@@ -143,7 +143,7 @@ public:
     template<typename I = IPv4>
     void bind(std::string ip, unsigned int port, Flags<Bind> flags = Flags<Bind>{}) {
         typename details::IpTraits<I>::Type addr;
-        details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
+        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
         invoke(&uv_tcp_bind, get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags);
     }
 
@@ -199,7 +199,7 @@ public:
     template<typename I = IPv4>
     void connect(std::string ip, unsigned int port) {
         typename details::IpTraits<I>::Type addr;
-        details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
+        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
         auto listener = [ptr = shared_from_this()](const auto &event, details::ConnectReq &) {
             ptr->publish(event);

@@ -206,7 +206,7 @@ public:
     template<typename I = IPv4>
     void bind(std::string ip, unsigned int port, Flags<Bind> flags = Flags<Bind>{}) {
         typename details::IpTraits<I>::Type addr;
-        details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
+        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
         invoke(&uv_udp_bind, get<uv_udp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags);
     }
 
@@ -318,7 +318,7 @@ public:
     template<typename I = IPv4>
     void send(std::string ip, unsigned int port, std::unique_ptr<char[]> data, ssize_t len) {
         typename details::IpTraits<I>::Type addr;
-        details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
+        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
         uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
 
@@ -347,7 +347,7 @@ public:
     template<typename I = IPv4>
     int trySend(std::string ip, unsigned int port, std::unique_ptr<char[]> data, ssize_t len) {
         typename details::IpTraits<I>::Type addr;
-        details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
+        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
         uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
         auto bw = uv_udp_try_send(get<uv_udp_t>(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
