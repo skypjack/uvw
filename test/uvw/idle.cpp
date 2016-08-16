@@ -9,12 +9,12 @@ TEST(Idle, StartAndStop) {
     bool checkErrorEvent = false;
     bool checkIdleEvent = false;
 
-    handle->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &){
+    handle->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &) {
         ASSERT_FALSE(checkErrorEvent);
         checkErrorEvent = true;
     });
 
-    handle->on<uvw::IdleEvent>([&checkIdleEvent](const auto &, auto &handle){
+    handle->on<uvw::IdleEvent>([&checkIdleEvent](const auto &, auto &handle) {
         ASSERT_FALSE(checkIdleEvent);
         checkIdleEvent = true;
         handle.stop();
@@ -27,7 +27,7 @@ TEST(Idle, StartAndStop) {
     ASSERT_TRUE(handle->active());
     ASSERT_FALSE(handle->closing());
 
-    loop->run<uvw::Loop::Mode::NOWAIT>();
+    loop->run();
 
     ASSERT_FALSE(checkErrorEvent);
     ASSERT_TRUE(checkIdleEvent);
@@ -38,7 +38,7 @@ TEST(Idle, Fake) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::IdleHandle>();
 
-    auto l = [](const auto &, auto &){ ASSERT_FALSE(true); };
+    auto l = [](const auto &, auto &) { ASSERT_FALSE(true); };
     handle->on<uvw::ErrorEvent>(l);
     handle->on<uvw::IdleEvent>(l);
 
