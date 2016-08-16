@@ -26,6 +26,7 @@ set(TARGET_CHECK check)
 set(TARGET_IDLE idle)
 set(TARGET_LOOP loop)
 set(TARGET_PREPARE prepare)
+set(TARGET_TIMER timer)
 set(TARGET_WORK work)
 
 # Test TARGET_MAIN
@@ -75,6 +76,14 @@ add_executable(${TARGET_PREPARE} ${TARGET_PREPARE_SOURCES})
 target_include_directories(${TARGET_PREPARE} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_PREPARE} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_PREPARE} COMMAND ${TARGET_PREPARE})
+
+# Test TARGET_TIMER
+
+set(TARGET_TIMER_SOURCES uvw/timer.cpp)
+add_executable(${TARGET_TIMER} ${TARGET_TIMER_SOURCES})
+target_include_directories(${TARGET_TIMER} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_TIMER} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_TIMER} COMMAND ${TARGET_TIMER})
 
 # Test TARGET_WORK
 

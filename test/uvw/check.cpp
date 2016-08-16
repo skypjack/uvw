@@ -9,12 +9,12 @@ TEST(Check, StartAndStop) {
     bool checkErrorEvent = false;
     bool checkCheckEvent = false;
 
-    handle->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &){
+    handle->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &) {
         ASSERT_FALSE(checkErrorEvent);
         checkErrorEvent = true;
     });
 
-    handle->on<uvw::CheckEvent>([&checkCheckEvent](const auto &, auto &handle){
+    handle->on<uvw::CheckEvent>([&checkCheckEvent](const auto &, auto &handle) {
         ASSERT_FALSE(checkCheckEvent);
         checkCheckEvent = true;
         handle.stop();
@@ -38,7 +38,7 @@ TEST(Check, Fake) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::CheckHandle>();
 
-    auto l = [](const auto &, auto &){ ASSERT_FALSE(true); };
+    auto l = [](const auto &, auto &) { ASSERT_FALSE(true); };
     handle->on<uvw::ErrorEvent>(l);
     handle->on<uvw::CheckEvent>(l);
 

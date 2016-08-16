@@ -13,7 +13,7 @@ TEST(Loop, PartiallyDone) {
 
     auto loop = uvw::Loop::create();
     auto handle = loop->resource<uvw::PrepareHandle>();
-    auto req = loop->resource<uvw::WorkReq>([](){});
+    auto req = loop->resource<uvw::WorkReq>([]() {});
 
     auto err = [](const auto &, auto &) { ASSERT_TRUE(false); };
 
