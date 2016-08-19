@@ -26,6 +26,7 @@ set(TARGET_CHECK check)
 set(TARGET_IDLE idle)
 set(TARGET_LOOP loop)
 set(TARGET_PREPARE prepare)
+set(TARGET_SIGNAL signal)
 set(TARGET_TIMER timer)
 set(TARGET_WORK work)
 
@@ -76,6 +77,14 @@ add_executable(${TARGET_PREPARE} ${TARGET_PREPARE_SOURCES})
 target_include_directories(${TARGET_PREPARE} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_PREPARE} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_PREPARE} COMMAND ${TARGET_PREPARE})
+
+# Test TARGET_SIGNAL
+
+set(TARGET_SIGNAL_SOURCES uvw/signal.cpp)
+add_executable(${TARGET_SIGNAL} ${TARGET_SIGNAL_SOURCES})
+target_include_directories(${TARGET_SIGNAL} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_SIGNAL} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_SIGNAL} COMMAND ${TARGET_SIGNAL})
 
 # Test TARGET_TIMER
 
