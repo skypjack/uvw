@@ -23,9 +23,11 @@ set(
 set(TARGET_MAIN main)
 set(TARGET_ASYNC async)
 set(TARGET_CHECK check)
+set(TARGET_EMITTER emitter)
 set(TARGET_IDLE idle)
 set(TARGET_LOOP loop)
 set(TARGET_PREPARE prepare)
+set(TARGET_SIGNAL signal)
 set(TARGET_TIMER timer)
 set(TARGET_WORK work)
 
@@ -53,6 +55,14 @@ target_include_directories(${TARGET_CHECK} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_CHECK} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_CHECK} COMMAND ${TARGET_CHECK})
 
+# Test TARGET_EMITTER
+
+set(TARGET_EMITTER_SOURCES uvw/emitter.cpp)
+add_executable(${TARGET_EMITTER} ${TARGET_EMITTER_SOURCES})
+target_include_directories(${TARGET_EMITTER} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_EMITTER} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_EMITTER} COMMAND ${TARGET_EMITTER})
+
 # Test TARGET_IDLE
 
 set(TARGET_IDLE_SOURCES uvw/idle.cpp)
@@ -76,6 +86,14 @@ add_executable(${TARGET_PREPARE} ${TARGET_PREPARE_SOURCES})
 target_include_directories(${TARGET_PREPARE} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_PREPARE} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_PREPARE} COMMAND ${TARGET_PREPARE})
+
+# Test TARGET_SIGNAL
+
+set(TARGET_SIGNAL_SOURCES uvw/signal.cpp)
+add_executable(${TARGET_SIGNAL} ${TARGET_SIGNAL_SOURCES})
+target_include_directories(${TARGET_SIGNAL} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_SIGNAL} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_SIGNAL} COMMAND ${TARGET_SIGNAL})
 
 # Test TARGET_TIMER
 
