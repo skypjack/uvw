@@ -183,6 +183,20 @@ public:
     }
 
     /**
+     * @brief Checks if there are listeners registered for the specific event.
+     * @return True if there are no listeners registered for the specific event,
+     * false otherwise.
+     */
+    template<typename E>
+    bool empty() const noexcept {
+        std::size_t type = E::type();
+
+        return (!(type < handlers.size()) ||
+                !handlers[type] ||
+                static_cast<Handler<E>&>(*handlers[type]).empty());
+    }
+
+    /**
      * @brief Checks if there are listeners registered with the event emitter.
      * @return True if there are no listeners registered with the event emitter,
      * false otherwise.
