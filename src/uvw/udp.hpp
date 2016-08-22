@@ -103,7 +103,7 @@ public:
  *
  * UDP handles encapsulate UDP communication for both clients and servers.<br/>
  * By default, _IPv4_ is used as a template parameter. The handle already
- * supports _IPv6_ out-of-the-box by using `uvw::UDPHandle::IPv6`.
+ * supports _IPv6_ out-of-the-box by using `uvw::net::IPv6`.
  */
 class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
     template<typename I>
@@ -140,8 +140,6 @@ class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
 public:
     using Membership = details::UVMembership;
     using Bind = details::UVUdpFlags;
-    using IPv4 = details::IPv4;
-    using IPv6 = details::IPv6;
 
     /**
      * @brief Creates a new udp handle.
@@ -203,7 +201,7 @@ public:
      * @param port The port to which to bind.
      * @param flags Optional additional flags.
      */
-    template<typename I = IPv4>
+    template<typename I = net::IPv4>
     void bind(std::string ip, unsigned int port, Flags<Bind> flags = Flags<Bind>{}) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
@@ -225,7 +223,7 @@ public:
      * @param addr A valid instance of Addr.
      * @param flags Optional additional flags.
      */
-    template<typename I = IPv4>
+    template<typename I = net::IPv4>
     void bind(Addr addr, Flags<Bind> flags = Flags<Bind>{}) {
         bind<I>(addr.ip, addr.port, flags);
     }
@@ -234,7 +232,7 @@ public:
      * @brief Get the local IP and port of the UDP handle.
      * @return A valid instance of Addr, an empty one in case of errors.
      */
-    template<typename I = IPv4>
+    template<typename I = net::IPv4>
     Addr sock() const noexcept {
         return details::address<I>(&uv_udp_getsockname, get<uv_udp_t>());
     }
@@ -251,7 +249,7 @@ public:
      * @param interface Interface address.
      * @param membership Action to be performed.
      */
-    template<typename I = IPv4>
+    template<typename I = net::IPv4>
     void multicastMembership(std::string multicast, std::string interface, Membership membership) {
         invoke(&uv_udp_set_membership, get<uv_udp_t>(), multicast.data(), interface.data(), static_cast<uv_membership>(membership));
     }
@@ -279,7 +277,7 @@ public:
      * @brief Sets the multicast interface to send or receive data on.
      * @param interface Interface address.
      */
-    template<typename I = IPv4>
+    template<typename I = net::IPv4>
     void multicastInterface(std::string interface) {
         invoke(&uv_udp_set_multicast_interface, get<uv_udp_t>(), interface.data());
     }
@@ -315,7 +313,7 @@ public:
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
      */
-    template<typename I = IPv4>
+    template<typename I = net::IPv4>
     void send(std::string ip, unsigned int port, std::unique_ptr<char[]> data, ssize_t len) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
@@ -344,7 +342,7 @@ public:
      * @param len The lenght of the submitted data.
      * @return Number of bytes written.
      */
-    template<typename I = IPv4>
+    template<typename I = net::IPv4>
     int trySend(std::string ip, unsigned int port, std::unique_ptr<char[]> data, ssize_t len) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
@@ -370,7 +368,7 @@ public:
      * An UDPDataEvent event will be emitted when the handle receives data.<br/>
      * An ErrorEvent event will be emitted in case of errors.
      */
-    template<typename I = IPv4>
+    template<typename I = net::IPv4>
     void recv() {
         invoke(&uv_udp_recv_start, get<uv_udp_t>(), &allocCallback, &recvCallback<I>);
     }
