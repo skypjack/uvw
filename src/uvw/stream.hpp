@@ -9,7 +9,6 @@
 #include "event.hpp"
 #include "request.hpp"
 #include "handle.hpp"
-#include "util.hpp"
 
 
 namespace uvw {

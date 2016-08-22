@@ -9,24 +9,10 @@
 #include "event.hpp"
 #include "request.hpp"
 #include "stream.hpp"
-#include "util.hpp"
+#include "misc.hpp"
 
 
 namespace uvw {
-
-
-namespace details {
-
-
-enum class UVHandleType: std::underlying_type_t<uv_handle_type> {
-    UNKNOWN = UV_UNKNOWN_HANDLE,
-    PIPE = UV_NAMED_PIPE,
-    TCP = UV_TCP,
-    UDP = UV_UDP
-};
-
-
-}
 
 
 /**
@@ -41,8 +27,6 @@ class PipeHandle final: public StreamHandle<PipeHandle, uv_pipe_t> {
     { }
 
 public:
-    using Pending = details::UVHandleType;
-
     /**
      * @brief Creates a new poll handle.
      * @param args
@@ -152,24 +136,19 @@ public:
      * Steps to be done:
      *
      * * Call `pending()`, if it’s greater than zero then proceed.
-     * * Initialize a handle of the given type, returned by `receive()`.
+     * * Initialize a handle of the given type, as returned by `receive()`.
      * * Call `accept(pipe, handle)`.
      *
-     * @return
+     * @return The type of the pending handle. Possible values are:
+     *
+     * * `HandleType::PIPE`
+     * * `HandleType::TCP`
+     * * `HandleType::UDP`
+     * * `HandleType::UNKNOWN`
      */
-    Pending receive() noexcept {
+    HandleType receive() noexcept {
         auto type = uv_pipe_pending_type(get<uv_pipe_t>());
-
-        switch(type) {
-        case UV_NAMED_PIPE:
-            return Pending::PIPE;
-        case UV_TCP:
-            return Pending::TCP;
-        case UV_UDP:
-            return Pending::UDP;
-        default:
-            return Pending::UNKNOWN;
-        }
+        return guessHandle(type);
     }
 
 private:

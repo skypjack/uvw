@@ -8,7 +8,6 @@
 #include <chrono>
 #include <uv.h>
 #include "emitter.hpp"
-#include "util.hpp"
 
 
 namespace uvw {
@@ -194,7 +193,7 @@ public:
      * mentioned otherwise.<br/>
      * Supported options:
      *
-     * * Loop::Configure::BLOCK_SIGNAL: Block a signal when polling for new
+     * * `Loop::Configure::BLOCK_SIGNAL`: Block a signal when polling for new
      * events. A second argument is required and it is the signal number.
      *
      * An ErrorEvent will be emitted in case of errors.
@@ -261,11 +260,11 @@ public:
      *
      * Available modes are:
      *
-     * * Loop::Mode::DEFAULT: Runs the event loop until there are no more active
-     * and referenced handles or requests.
-     * * Loop::Mode::ONCE: Poll for i/o once. Note that this function blocks if
-     * there are no pending callbacks.
-     * * Loop::Mode::NOWAIT: Poll for i/o once but don’t block if there are no
+     * * `Loop::Mode::DEFAULT`: Runs the event loop until there are no more
+     * active and referenced handles or requests.
+     * * `Loop::Mode::ONCE`: Poll for i/o once. Note that this function blocks
+     * if there are no pending callbacks.
+     * * `Loop::Mode::NOWAIT`: Poll for i/o once but don’t block if there are no
      * pending callbacks.
      *
      * See the official

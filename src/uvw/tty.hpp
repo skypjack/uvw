@@ -7,7 +7,7 @@
 #include <uv.h>
 #include "event.hpp"
 #include "stream.hpp"
-#include "util.hpp"
+#include "misc.hpp"
 
 
 namespace uvw {
@@ -58,9 +58,9 @@ public:
      *
      * * A pointer to the loop from which the handle generated.
      * * A valid FileHandle. Usually the file descriptor will be:
-     *     * 0 = stdin
-     *     * 1 = stdout
-     *     * 2 = stderr
+     *     * `0` = `stdin`
+     *     * `1` = `stdout`
+     *     * `2` = `stderr`
      * * A boolean value (_readable_) that specifies the plan on calling `read()` with this
      * stream. Remember that `stdin` is readable, `stdout` is not.
      *
@@ -91,9 +91,9 @@ public:
      *
      * Available modes are:
      *
-     * * TTY::Mode::NORMAL
-     * * TTY::Mode::RAW
-     * * TTY::Mode::IO
+     * * `TTY::Mode::NORMAL`
+     * * `TTY::Mode::RAW`
+     * * `TTY::Mode::IO`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/tty.html#c.uv_tty_mode_t)

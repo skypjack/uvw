@@ -8,7 +8,7 @@
 #include "event.hpp"
 #include "handle.hpp"
 #include "stream.hpp"
-#include "util.hpp"
+#include "misc.hpp"
 
 
 namespace uvw {
@@ -176,11 +176,11 @@ public:
      *
      * Available flags are:
      *
-     * * ProcessHandle::Process::SETUID
-     * * ProcessHandle::Process::SETGID
-     * * ProcessHandle::Process::WINDOWS_VERBATIM_ARGUMENTS
-     * * ProcessHandle::Process::DETACHED
-     * * ProcessHandle::Process::WINDOWS_HIDE
+     * * `ProcessHandle::Process::SETUID`
+     * * `ProcessHandle::Process::SETGID`
+     * * `ProcessHandle::Process::WINDOWS_VERBATIM_ARGUMENTS`
+     * * `ProcessHandle::Process::DETACHED`
+     * * `ProcessHandle::Process::WINDOWS_HIDE`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_process_flags)
@@ -199,12 +199,12 @@ public:
      *
      * Available flags are:
      *
-     * * ProcessHandle::StdIO::IGNORE
-     * * ProcessHandle::StdIO::CREATE_PIPE
-     * * ProcessHandle::StdIO::INHERIT_FD
-     * * ProcessHandle::StdIO::INHERIT_STREAM
-     * * ProcessHandle::StdIO::READABLE_PIPE
-     * * ProcessHandle::StdIO::WRITABLE_PIPE
+     * * `ProcessHandle::StdIO::IGNORE`
+     * * `ProcessHandle::StdIO::CREATE_PIPE`
+     * * `ProcessHandle::StdIO::INHERIT_FD`
+     * * `ProcessHandle::StdIO::INHERIT_STREAM`
+     * * `ProcessHandle::StdIO::READABLE_PIPE`
+     * * `ProcessHandle::StdIO::WRITABLE_PIPE`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_stdio_flags)
@@ -229,12 +229,12 @@ public:
      *
      * Available flags are:
      *
-     * * ProcessHandle::StdIO::IGNORE
-     * * ProcessHandle::StdIO::CREATE_PIPE
-     * * ProcessHandle::StdIO::INHERIT_FD
-     * * ProcessHandle::StdIO::INHERIT_STREAM
-     * * ProcessHandle::StdIO::READABLE_PIPE
-     * * ProcessHandle::StdIO::WRITABLE_PIPE
+     * * `ProcessHandle::StdIO::IGNORE`
+     * * `ProcessHandle::StdIO::CREATE_PIPE`
+     * * `ProcessHandle::StdIO::INHERIT_FD`
+     * * `ProcessHandle::StdIO::INHERIT_STREAM`
+     * * `ProcessHandle::StdIO::READABLE_PIPE`
+     * * `ProcessHandle::StdIO::WRITABLE_PIPE`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_stdio_flags)
