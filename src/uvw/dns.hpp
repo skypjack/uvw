@@ -198,9 +198,6 @@ class GetNameInfoReq final: public Request<GetNameInfoReq, uv_getnameinfo_t> {
     using Request::Request;
 
 public:
-    using IPv4 = details::IPv4;
-    using IPv6 = details::IPv6;
-
     /**
      * @brief Creates a new `getnameinfo` wrapper request.
      * @param args A pointer to the loop from which the handle generated.
@@ -217,7 +214,7 @@ public:
      * @param port A valid port number.
      * @param flags Optional flags that modify the behavior of `getnameinfo`.
      */
-    template<typename I = IPv4>
+    template<typename I = net::IPv4>
     void getNameInfo(std::string ip, unsigned int port, int flags = 0) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
@@ -229,7 +226,7 @@ public:
      * @param addr A valid instance of Addr.
      * @param flags Optional flags that modify the behavior of `getnameinfo`.
      */
-    template<typename I = IPv4>
+    template<typename I = net::IPv4>
     void getNameInfo(Addr addr, int flags = 0) {
         getNameInfo<I>(addr.ip, addr.port, flags);
     }
@@ -240,7 +237,7 @@ public:
      * @param port A valid port number.
      * @param flags Optional flags that modify the behavior of `getnameinfo`.
      */
-    template<typename I = IPv4>
+    template<typename I = net::IPv4>
     auto getNameInfoSync(std::string ip, unsigned int port, int flags = 0) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
@@ -254,7 +251,7 @@ public:
      * @param addr A valid instance of Addr.
      * @param flags Optional flags that modify the behavior of `getnameinfo`.
      */
-    template<typename I = IPv4>
+    template<typename I = net::IPv4>
     auto getNameInfoSync(Addr addr, int flags = 0) {
         getNameInfoSync<I>(addr.ip, addr.port, flags);
     }

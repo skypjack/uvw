@@ -13,18 +13,24 @@
 namespace uvw {
 
 
-namespace details {
+namespace net {
 
 
 struct IPv4 { };
 struct IPv6 { };
 
 
+}
+
+
+namespace details {
+
+
 template<typename>
 struct IpTraits;
 
 template<>
-struct IpTraits<IPv4> {
+struct IpTraits<net::IPv4> {
     using Type = sockaddr_in;
     using AddrFuncType = int(*)(const char *, int, sockaddr_in *);
     using NameFuncType = int(*)(const sockaddr_in *, char *, std::size_t);
@@ -33,7 +39,7 @@ struct IpTraits<IPv4> {
 };
 
 template<>
-struct IpTraits<IPv6> {
+struct IpTraits<net::IPv6> {
     using Type = sockaddr_in6;
     using AddrFuncType = int(*)(const char *, int, sockaddr_in6 *);
     using NameFuncType = int(*)(const sockaddr_in6 *, char *, std::size_t);

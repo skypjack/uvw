@@ -37,6 +37,18 @@ enum class UVHandleType: std::underlying_type_t<uv_handle_type> {
 };
 
 
+template<typename T>
+struct UVTypeWrapper {
+    using Type = T;
+
+    constexpr UVTypeWrapper(Type val): value{val} { }
+    constexpr operator Type() const noexcept { return value; }
+
+private:
+    const Type value;
+};
+
+
 }
 
 
@@ -138,38 +150,6 @@ private:
 
 
 /**
- * @brief Wrapper for underlying library's types.
- *
- * In particular, It is used for:
- *
- * * `FileHandle` (that is an alias for `UVTypeWrapper<uv_file>`)
- * * `OSSocketHandle` (that is an alias for `UVTypeWrapper<uv_os_sock_t>`)
- * * `OSFileDescriptor` (that is an alias for `UVTypeWrapper<uv_os_fd_t>`)
- *
- * It can be bound to each value of type `T` and it will be implicitly converted
- * to the underlying type when needed.
- */
-template<typename T>
-struct UVTypeWrapper {
-    using Type = T;
-
-    /**
-     * @brief Constructs a new instance of the wrapper.
-     * @param val The value to be stored.
-     */
-    constexpr UVTypeWrapper(Type val): value{val} { }
-
-    /**
-     * @brief Cast operator to the underlying type.
-     * @return The stored value.
-     */
-    constexpr operator Type() const noexcept { return value; }
-private:
-    const Type value;
-};
-
-
-/**
  * @brief Address representation.
  *
  * Pair alias (see Boost/Mutant idiom) used to pack together an ip and a
@@ -196,9 +176,9 @@ struct WinSize { int width; int height; };
 
 using HandleType = details::UVHandleType;
 
-using FileHandle = UVTypeWrapper<uv_file>;
-using OSSocketHandle = UVTypeWrapper<uv_os_sock_t>;
-using OSFileDescriptor = UVTypeWrapper<uv_os_fd_t>;
+using FileHandle = details::UVTypeWrapper<uv_file>;
+using OSSocketHandle = details::UVTypeWrapper<uv_os_sock_t>;
+using OSFileDescriptor = details::UVTypeWrapper<uv_os_fd_t>;
 
 using TimeSpec = uv_timespec_t;
 using Stat = uv_stat_t;
@@ -266,6 +246,29 @@ HandleType guessHandle(FileHandle file) {
         return HandleType::UNKNOWN;
     }
 }
+
+
+/**
+ * TODO
+ *
+ * * uv_replace_allocator
+ * * uv_uptime
+ * * uv_getrusage
+ * * uv_cpu_info
+ * * uv_free_cpu_info
+ * * uv_interface_addresses
+ * * uv_free_interface_addresses
+ * * uv_loadavg
+ * * uv_exepath
+ * * uv_cwd
+ * * uv_chdir
+ * * uv_os_homedir
+ * * uv_os_tmpdir
+ * * uv_os_get_passwd
+ * * uv_os_free_passwd
+ * * uv_get_total_memory
+ * * uv_hrtime
+ */
 
 
 }
