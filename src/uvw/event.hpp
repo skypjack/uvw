@@ -4,7 +4,6 @@
 #include <cstddef>
 #include <memory>
 #include <uv.h>
-#include "util.hpp"
 
 
 namespace uvw {

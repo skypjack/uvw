@@ -8,7 +8,6 @@
 #include <chrono>
 #include <uv.h>
 #include "emitter.hpp"
-#include "util.hpp"
 
 
 namespace uvw {
