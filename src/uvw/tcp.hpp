@@ -133,8 +133,8 @@ public:
      *
      * Available flags are:
      *
-     * * TcpHandle::Bind::IPV6ONLY: it disables dual-stack support and only IPv6
-     * is used.
+     * * `TcpHandle::Bind::IPV6ONLY`: it disables dual-stack support and only
+     * IPv6 is used.
      *
      * @param ip The address to which to bind.
      * @param port The port to which to bind.
@@ -157,8 +157,8 @@ public:
      *
      * Available flags are:
      *
-     * * TcpHandle::Bind::IPV6ONLY: it disables dual-stack support and only IPv6
-     * is used.
+     * * `TcpHandle::Bind::IPV6ONLY`: it disables dual-stack support and only
+     * IPv6 is used.
      *
      * @param addr A valid instance of Addr.
      * @param flags Optional additional flags.

@@ -71,36 +71,36 @@ enum class UVDirentTypeT: std::underlying_type_t<uv_dirent_type_t> {
  *
  * Available types are:
  *
- * * FsRequest::Type::UNKNOWN
- * * FsRequest::Type::CUSTOM
- * * FsRequest::Type::OPEN
- * * FsRequest::Type::CLOSE
- * * FsRequest::Type::READ
- * * FsRequest::Type::WRITE
- * * FsRequest::Type::SENDFILE
- * * FsRequest::Type::STAT
- * * FsRequest::Type::LSTAT
- * * FsRequest::Type::FSTAT
- * * FsRequest::Type::FTRUNCATE
- * * FsRequest::Type::UTIME
- * * FsRequest::Type::FUTIME
- * * FsRequest::Type::ACCESS
- * * FsRequest::Type::CHMOD
- * * FsRequest::Type::FCHMOD
- * * FsRequest::Type::FSYNC
- * * FsRequest::Type::FDATASYNC
- * * FsRequest::Type::UNLINK
- * * FsRequest::Type::RMDIR
- * * FsRequest::Type::MKDIR
- * * FsRequest::Type::MKDTEMP
- * * FsRequest::Type::RENAME
- * * FsRequest::Type::SCANDIR
- * * FsRequest::Type::LINK
- * * FsRequest::Type::SYMLINK
- * * FsRequest::Type::READLINK
- * * FsRequest::Type::CHOWN
- * * FsRequest::Type::FCHOWN
- * * FsRequest::Type::REALPATH
+ * * `FsRequest::Type::UNKNOWN`
+ * * `FsRequest::Type::CUSTOM`
+ * * `FsRequest::Type::OPEN`
+ * * `FsRequest::Type::CLOSE`
+ * * `FsRequest::Type::READ`
+ * * `FsRequest::Type::WRITE`
+ * * `FsRequest::Type::SENDFILE`
+ * * `FsRequest::Type::STAT`
+ * * `FsRequest::Type::LSTAT`
+ * * `FsRequest::Type::FSTAT`
+ * * `FsRequest::Type::FTRUNCATE`
+ * * `FsRequest::Type::UTIME`
+ * * `FsRequest::Type::FUTIME`
+ * * `FsRequest::Type::ACCESS`
+ * * `FsRequest::Type::CHMOD`
+ * * `FsRequest::Type::FCHMOD`
+ * * `FsRequest::Type::FSYNC`
+ * * `FsRequest::Type::FDATASYNC`
+ * * `FsRequest::Type::UNLINK`
+ * * `FsRequest::Type::RMDIR`
+ * * `FsRequest::Type::MKDIR`
+ * * `FsRequest::Type::MKDTEMP`
+ * * `FsRequest::Type::RENAME`
+ * * `FsRequest::Type::SCANDIR`
+ * * `FsRequest::Type::LINK`
+ * * `FsRequest::Type::SYMLINK`
+ * * `FsRequest::Type::READLINK`
+ * * `FsRequest::Type::CHOWN`
+ * * `FsRequest::Type::FCHOWN`
+ * * `FsRequest::Type::REALPATH`
  *
  * It will be emitted by FsReq and/or FileReq according with their
  * functionalities.
@@ -125,7 +125,7 @@ private:
 
 
 /**
- * @brief FsEvent event specialization for FsRequest::Type::READ.
+ * @brief FsEvent event specialization for `FsRequest::Type::READ`.
  *
  * It will be emitted by FsReq and/or FileReq according with their
  * functionalities.
@@ -164,7 +164,7 @@ private:
 
 
 /**
- * @brief FsEvent event specialization for FsRequest::Type::WRITE.
+ * @brief FsEvent event specialization for `FsRequest::Type::WRITE`.
  *
  * It will be emitted by FsReq and/or FileReq according with their
  * functionalities.
@@ -196,7 +196,7 @@ private:
 
 
 /**
- * @brief FsEvent event specialization for FsRequest::Type::SENDFILE.
+ * @brief FsEvent event specialization for `FsRequest::Type::SENDFILE`.
  *
  * It will be emitted by FsReq and/or FileReq according with their
  * functionalities.
@@ -228,7 +228,7 @@ private:
 
 
 /**
- * @brief FsEvent event specialization for FsRequest::Type::STAT.
+ * @brief FsEvent event specialization for `FsRequest::Type::STAT`.
  *
  * It will be emitted by FsReq and/or FileReq according with their
  * functionalities.
@@ -260,7 +260,7 @@ private:
 
 
 /**
- * @brief FsEvent event specialization for FsRequest::Type::FSTAT.
+ * @brief FsEvent event specialization for `FsRequest::Type::FSTAT`.
  *
  * It will be emitted by FsReq and/or FileReq according with their
  * functionalities.
@@ -292,7 +292,7 @@ private:
 
 
 /**
- * @brief FsEvent event specialization for FsRequest::Type::LSTAT.
+ * @brief FsEvent event specialization for `FsRequest::Type::LSTAT`.
  *
  * It will be emitted by FsReq and/or FileReq according with their
  * functionalities.
@@ -324,7 +324,7 @@ private:
 
 
 /**
- * @brief FsEvent event specialization for FsRequest::Type::SCANDIR.
+ * @brief FsEvent event specialization for `FsRequest::Type::SCANDIR`.
  *
  * It will be emitted by FsReq and/or FileReq according with their
  * functionalities.
@@ -356,7 +356,7 @@ private:
 
 
 /**
- * @brief FsEvent event specialization for FsRequest::Type::READLINK.
+ * @brief FsEvent event specialization for `FsRequest::Type::READLINK`.
  *
  * It will be emitted by FsReq and/or FileReq according with their
  * functionalities.
@@ -979,14 +979,14 @@ public:
      *
      * Available entry types are:
      *
-     * * FsReq::EntryType::UNKNOWN
-     * * FsReq::EntryType::FILE
-     * * FsReq::EntryType::DIR
-     * * FsReq::EntryType::LINK
-     * * FsReq::EntryType::FIFO
-     * * FsReq::EntryType::SOCKET
-     * * FsReq::EntryType::CHAR
-     * * FsReq::EntryType::BLOCK
+     * * `FsReq::EntryType::UNKNOWN`
+     * * `FsReq::EntryType::FILE`
+     * * `FsReq::EntryType::DIR`
+     * * `FsReq::EntryType::LINK`
+     * * `FsReq::EntryType::FIFO`
+     * * `FsReq::EntryType::SOCKET`
+     * * `FsReq::EntryType::CHAR`
+     * * `FsReq::EntryType::BLOCK`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/fs.html#c.uv_dirent_t)
@@ -996,7 +996,7 @@ public:
      *
      * * The first parameter is a boolean value that indicates if the current
      * entry is still valid.
-     * * The second parameter is an instance of Entry (see above).
+     * * The second parameter is an instance of `Entry` (see above).
      */
     std::pair<bool, Entry> scandirNext() {
         uv_dirent_t dirent;

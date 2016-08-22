@@ -42,9 +42,9 @@ struct PollEvent: Event<PollEvent> {
      *
      * Available flags are:
      *
-     * * PollHandle::Event::READABLE
-     * * PollHandle::Event::WRITABLE
-     * * PollHandle::Event::DISCONNECT
+     * * `PollHandle::Event::READABLE`
+     * * `PollHandle::Event::WRITABLE`
+     * * `PollHandle::Event::DISCONNECT`
      *
      * @return Detected events all in one.
      */
@@ -90,7 +90,7 @@ public:
      * * A pointer to the loop from which the handle generated.
      * * A descriptor that can be:
      *     * either an `int` file descriptor
-     *     * or a OSSocketHandle socket descriptor
+     *     * or a `OSSocketHandle` socket descriptor
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/poll.html)
@@ -118,9 +118,9 @@ public:
      *
      * Available flags are:
      *
-     * * PollHandle::Event::READABLE
-     * * PollHandle::Event::WRITABLE
-     * * PollHandle::Event::DISCONNECT
+     * * `PollHandle::Event::READABLE`
+     * * `PollHandle::Event::WRITABLE`
+     * * `PollHandle::Event::DISCONNECT`
      *
      * As soon as an event is detected, a PollEvent is emitted by the
      * handle.<br>
@@ -140,9 +140,9 @@ public:
      *
      * Available flags are:
      *
-     * * PollHandle::Event::READABLE
-     * * PollHandle::Event::WRITABLE
-     * * PollHandle::Event::DISCONNECT
+     * * `PollHandle::Event::READABLE`
+     * * `PollHandle::Event::WRITABLE`
+     * * `PollHandle::Event::DISCONNECT`
      *
      * As soon as an event is detected, a PollEvent is emitted by the
      * handle.<br>

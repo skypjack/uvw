@@ -57,8 +57,8 @@ struct FsEventEvent: Event<FsEventEvent> {
      *
      * Available flags are:
      *
-     * * FsEventHandle::Watch::RENAME
-     * * FsEventHandle::Watch::CHANGE
+     * * `FsEventHandle::Watch::RENAME`
+     * * `FsEventHandle::Watch::CHANGE`
      *
      * @return Detected events all in one.
      */
@@ -122,9 +122,9 @@ public:
      *
      * Available flags are:
      *
-     * * FsEventHandle::Event::WATCH_ENTRY
-     * * FsEventHandle::Event::STAT
-     * * FsEventHandle::Event::RECURSIVE
+     * * `FsEventHandle::Event::WATCH_ENTRY`
+     * * `FsEventHandle::Event::STAT`
+     * * `FsEventHandle::Event::RECURSIVE`
      *
      * @param path The file or directory to be monitored.
      * @param flags Additional flags to control the behavior.
@@ -143,9 +143,9 @@ public:
      *
      * Available flags are:
      *
-     * * FsEventHandle::Event::WATCH_ENTRY
-     * * FsEventHandle::Event::STAT
-     * * FsEventHandle::Event::RECURSIVE
+     * * `FsEventHandle::Event::WATCH_ENTRY`
+     * * `FsEventHandle::Event::STAT`
+     * * `FsEventHandle::Event::RECURSIVE`
      *
      * @param path The file or directory to be monitored.
      * @param watch Additional flag to control the behavior.

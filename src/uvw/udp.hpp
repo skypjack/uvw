@@ -192,8 +192,8 @@ public:
      *
      * Available flags are:
      *
-     * * UDPHandle::Bind::IPV6ONLY
-     * * UDPHandle::Bind::REUSEADDR
+     * * `UDPHandle::Bind::IPV6ONLY`
+     * * `UDPHandle::Bind::REUSEADDR`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
@@ -215,8 +215,8 @@ public:
      *
      * Available flags are:
      *
-     * * UDPHandle::Bind::IPV6ONLY
-     * * UDPHandle::Bind::REUSEADDR
+     * * `UDPHandle::Bind::IPV6ONLY`
+     * * `UDPHandle::Bind::REUSEADDR`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
@@ -244,8 +244,8 @@ public:
      *
      * Available values for `membership` are:
      *
-     * * UDPHandle::Membership::LEAVE_GROUP
-     * * UDPHandle::Membership::JOIN_GROUP
+     * * `UDPHandle::Membership::LEAVE_GROUP`
+     * * `UDPHandle::Membership::JOIN_GROUP`
      *
      * @param multicast Multicast address to set membership for.
      * @param interface Interface address.
