@@ -207,11 +207,11 @@ struct IpTraits<IPv6> {
 
 
 template<typename I>
-Addr address(const typename details::IpTraits<I>::Type *aptr, int len) noexcept {
+Addr address(const typename IpTraits<I>::Type *aptr, int len) noexcept {
     std::pair<std::string, unsigned int> addr{};
     char name[len];
 
-    int err = details::IpTraits<I>::nameFunc(aptr, name, len);
+    int err = IpTraits<I>::nameFunc(aptr, name, len);
 
     if(0 == err) {
         addr = { std::string{name}, ntohs(aptr->sin_port) };
@@ -234,7 +234,7 @@ Addr address(F &&f, const H *handle) noexcept {
     int err = std::forward<F>(f)(handle, reinterpret_cast<sockaddr *>(&ssto), &len);
 
     if(0 == err) {
-        typename details::IpTraits<I>::Type *aptr = reinterpret_cast<typename details::IpTraits<I>::Type *>(&ssto);
+        typename IpTraits<I>::Type *aptr = reinterpret_cast<typename IpTraits<I>::Type *>(&ssto);
         addr = address<I>(aptr, len);
     }
 
