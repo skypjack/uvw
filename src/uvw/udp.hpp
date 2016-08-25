@@ -109,7 +109,6 @@ class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
     template<typename I>
     static void recvCallback(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
         typename details::IpTraits<I>::Type *aptr = reinterpret_cast<const typename details::IpTraits<I>::Type *>(addr);
-        int len = sizeof(*addr);
 
         UDPHandle &udp = *(static_cast<UDPHandle*>(handle->data));
         // data will be destroyed no matter of what the value of nread is
@@ -117,12 +116,12 @@ class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
 
         if(nread > 0) {
             // data available (can be truncated)
-            udp.publish(UDPDataEvent{details::address<I>(aptr, len), std::move(data), nread, flags & UV_UDP_PARTIAL});
+            udp.publish(UDPDataEvent{details::address<I>(aptr), std::move(data), nread, flags & UV_UDP_PARTIAL});
         } else if(nread == 0 && addr == nullptr) {
             // no more data to be read, doing nothing is fine
         } else if(nread == 0 && addr != nullptr) {
             // empty udp packet
-            udp.publish(UDPDataEvent{details::address<I>(aptr, len), std::move(data), nread, false});
+            udp.publish(UDPDataEvent{details::address<I>(aptr), std::move(data), nread, false});
         } else {
             // transmission error
             udp.publish(ErrorEvent(nread));

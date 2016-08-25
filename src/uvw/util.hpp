@@ -298,39 +298,38 @@ struct IpTraits;
 template<>
 struct IpTraits<IPv4> {
     using Type = sockaddr_in;
-    using AddrFuncType = int(*)(const char *, int, sockaddr_in *);
-    using NameFuncType = int(*)(const sockaddr_in *, char *, std::size_t);
+    using AddrFuncType = int(*)(const char *, int, Type *);
+    using NameFuncType = int(*)(const Type *, char *, std::size_t);
     static constexpr AddrFuncType addrFunc = &uv_ip4_addr;
     static constexpr NameFuncType nameFunc = &uv_ip4_name;
+    static constexpr auto sinPort(const Type *addr) { return addr->sin_port; }
 };
 
 
 template<>
 struct IpTraits<IPv6> {
     using Type = sockaddr_in6;
-    using AddrFuncType = int(*)(const char *, int, sockaddr_in6 *);
-    using NameFuncType = int(*)(const sockaddr_in6 *, char *, std::size_t);
+    using AddrFuncType = int(*)(const char *, int, Type *);
+    using NameFuncType = int(*)(const Type *, char *, std::size_t);
     static constexpr AddrFuncType addrFunc = &uv_ip6_addr;
     static constexpr NameFuncType nameFunc = &uv_ip6_name;
+    static constexpr auto sinPort(const Type *addr) { return addr->sin6_port; }
 };
 
 
-template<typename I>
-Addr address(const typename IpTraits<I>::Type *aptr, int len) noexcept {
-    std::pair<std::string, unsigned int> addr{};
-    char name[len];
+template<typename I, typename..., std::size_t N = 128>
+Addr address(const typename details::IpTraits<I>::Type *aptr) noexcept {
+    Addr addr;
+    char name[N];
 
-    int err = IpTraits<I>::nameFunc(aptr, name, len);
+    int err = details::IpTraits<I>::nameFunc(aptr, name, N);
 
     if(0 == err) {
-        addr = { std::string{name}, ntohs(aptr->sin_port) };
+        addr.port = ntohs(details::IpTraits<I>::sinPort(aptr));
+        addr.ip = std::string{name};
     }
 
-    /**
-     * See Boost/Mutant idiom:
-     *     https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Boost_mutant
-     */
-    return reinterpret_cast<Addr&>(addr);
+    return addr;
 }
 
 
@@ -344,7 +343,7 @@ Addr address(F &&f, const H *handle) noexcept {
 
     if(0 == err) {
         typename IpTraits<I>::Type *aptr = reinterpret_cast<typename IpTraits<I>::Type *>(&ssto);
-        addr = address<I>(aptr, len);
+        addr = address<I>(aptr);
     }
 
     return addr;
