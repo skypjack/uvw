@@ -139,6 +139,8 @@ class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
 public:
     using Membership = details::UVMembership;
     using Bind = details::UVUdpFlags;
+    using IPv4 = uvw::IPv4;
+    using IPv6 = uvw::IPv6;
 
     /**
      * @brief Creates a new udp handle.

@@ -302,6 +302,12 @@ std::string path(F &&f, H *handle) noexcept {
  * Miscellaneous functions that don’t really belong to any other class.
  */
 struct Utilities {
+    using MallocFuncType = void*(*)(size_t);
+    using ReallocFuncType = void*(*)(void*, size_t);
+    using CallocFuncType = void*(*)(size_t, size_t);
+    using FreeFuncType = void(*)(void*);
+
+
     /**
      * @brief Gets the type of the stream to be used with the given descriptor.
      *
@@ -402,13 +408,39 @@ struct Utilities {
 
         return interfaces;
     }
+
+
+    /**
+     * @brief Override the use of some standard library’s functions.
+     *
+     * Override the use of the standard library’s memory allocation
+     * functions.<br/>
+     * This method must be invoked before any other `uvw` function is called or
+     * after all resources have been freed and thus the underlying library
+     * doesn’t reference any allocated memory chunk.
+     *
+     * If any of the function pointers is _null_, the invokation will fail.
+     *
+     * **Note**: there is no protection against changing the allocator multiple
+     * times. If the user changes it they are responsible for making sure the
+     * allocator is changed while no memory was allocated with the previous
+     * allocator, or that they are compatible.
+     *
+     * @param mallocFunc Replacement function for _malloc_.
+     * @param reallocFunc Replacement function for _realloc_.
+     * @param callocFunc Replacement function for _calloc_.
+     * @param freeFunc Replacement function for _free_.
+     * @return True in case of success, false otherwise.
+     */
+    static bool replaceAllocator(MallocFuncType mallocFunc, ReallocFuncType reallocFunc, CallocFuncType callocFunc, FreeFuncType freeFunc) {
+        return (0 == uv_replace_allocator(mallocFunc, reallocFunc, callocFunc, freeFunc));
+    }
 };
 
 
 /**
  * TODO
  *
- * * uv_replace_allocator
  * * uv_uptime
  * * uv_getrusage
  * * uv_cpu_info

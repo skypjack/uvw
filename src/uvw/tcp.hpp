@@ -46,6 +46,8 @@ class TcpHandle final: public StreamHandle<TcpHandle, uv_tcp_t> {
 public:
     using Time = std::chrono::seconds;
     using Bind = details::UVTcpFlags;
+    using IPv4 = uvw::IPv4;
+    using IPv6 = uvw::IPv6;
 
     /**
      * @brief Creates a new tcp handle.
