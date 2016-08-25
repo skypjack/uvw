@@ -2,10 +2,12 @@
 
 
 #include <type_traits>
+#include <algorithm>
 #include <stdexcept>
 #include <cstddef>
 #include <utility>
 #include <string>
+#include <vector>
 #include <uv.h>
 
 
@@ -151,15 +153,11 @@ private:
 
 /**
  * @brief Windows size representation.
- *
- * Pair alias (see Boost/Mutant idiom) used to pack together a width and a
- * height.<br/>
- * Instead of `first` and `second`, the two parameters are named:
- *
- * * `width`, that is of type `int`
- * * `height`, that is of type `int`
  */
-struct WinSize { int width; int height; };
+struct WinSize {
+    int width; /*!< The _width_ of the given window. */
+    int height; /*!< The _height_ of the given window. */
+};
 
 
 using HandleType = details::UVHandleType;
@@ -237,7 +235,7 @@ HandleType guessHandle(FileHandle file) {
 
 
 /**
- * @brief The IPv4 tag
+ * @brief The IPv4 tag.
  *
  * To be used as template parameter to switch between IPv4 and IPv6.
  */
@@ -245,7 +243,7 @@ struct IPv4 { };
 
 
 /**
- * @brief The IPv6 tag
+ * @brief The IPv6 tag.
  *
  * To be used as template parameter to switch between IPv4 and IPv6.
  */
@@ -254,15 +252,11 @@ struct IPv6 { };
 
 /**
  * @brief Address representation.
- *
- * Pair alias (see Boost/Mutant idiom) used to pack together an ip and a
- * port.<br/>
- * Instead of `first` and `second`, the two parameters are named:
- *
- * * `ip`, that is of type `std::string`
- * * `port`, that is of type `unsigned int`
  */
-struct Addr { std::string ip; unsigned int port; };
+struct Addr {
+    std::string ip; /*!< Either an IPv4 or an IPv6. */
+    unsigned int port; /*!< A valid service identifier. */
+};
 
 
 /**
@@ -273,8 +267,6 @@ struct Addr { std::string ip; unsigned int port; };
  * * uv_getrusage
  * * uv_cpu_info
  * * uv_free_cpu_info
- * * uv_interface_addresses
- * * uv_free_interface_addresses
  * * uv_loadavg
  * * uv_exepath
  * * uv_cwd
@@ -372,6 +364,58 @@ std::string path(F &&f, H *handle) noexcept {
 }
 
 
+}
+
+
+/**
+ * \brief Interface address.
+ */
+struct Interface {
+    std::string name; /*!< The name of the interface (as an example _eth0_). */
+    std::string physical; /*!< The physical address. */
+    bool internal; /*!< True if it is an internal interface (as an example _loopback_), false otherwise. */
+    Addr address; /*!< The address of the given interface. */
+    Addr netmask; /*!< The netmask of the given interface. */
+};
+
+
+/**
+ * @brief Gets a set of descriptors of all the available interfaces.
+ *
+ * This function can be used to query the underlying system and get a set of
+ * descriptors of all the available interfaces, either internal or not.
+ *
+ * @return A set of descriptors of all the available interfaces.
+ */
+std::vector<Interface> interfaces() noexcept {
+    std::vector<Interface> interfaces;
+
+    uv_interface_address_t *ifaces;
+    int count;
+
+    uv_interface_addresses(&ifaces, &count);
+
+    std::for_each(ifaces, ifaces+count, [&interfaces](const auto &iface) {
+        Interface interface;
+
+        interface.name = iface.name;
+        interface.physical = iface.phys_addr;
+        interface.internal = iface.is_internal;
+
+        if(iface.address.address4.sin_family == AF_INET) {
+            interface.address = details::address<IPv4>(&iface.address.address4);
+            interface.netmask = details::address<IPv4>(&iface.netmask.netmask4);
+        } else if(iface.address.address4.sin_family == AF_INET6) {
+            interface.address = details::address<IPv6>(&iface.address.address6);
+            interface.netmask = details::address<IPv6>(&iface.netmask.netmask6);
+        }
+
+        interfaces.push_back(std::move(interface));
+    });
+
+    uv_free_interface_addresses(ifaces, count);
+
+    return interfaces;
 }
 
 
