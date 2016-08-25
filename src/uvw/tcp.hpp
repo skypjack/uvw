@@ -10,7 +10,7 @@
 #include "event.hpp"
 #include "request.hpp"
 #include "stream.hpp"
-#include "misc.hpp"
+#include "util.hpp"
 
 
 namespace uvw {
@@ -32,7 +32,7 @@ enum class UVTcpFlags: std::underlying_type_t<uv_tcp_flags> {
  *
  * TCP handles are used to represent both TCP streams and servers.<br/>
  * By default, _IPv4_ is used as a template parameter. The handle already
- * supports _IPv6_ out-of-the-box by using `uvw::net::IPv6`.
+ * supports _IPv6_ out-of-the-box by using `uvw::IPv6`.
  */
 class TcpHandle final: public StreamHandle<TcpHandle, uv_tcp_t> {
     explicit TcpHandle(std::shared_ptr<Loop> ref)
@@ -138,7 +138,7 @@ public:
      * @param port The port to which to bind.
      * @param flags Optional additional flags.
      */
-    template<typename I = net::IPv4>
+    template<typename I = IPv4>
     void bind(std::string ip, unsigned int port, Flags<Bind> flags = Flags<Bind>{}) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
@@ -161,7 +161,7 @@ public:
      * @param addr A valid instance of Addr.
      * @param flags Optional additional flags.
      */
-    template<typename I = net::IPv4>
+    template<typename I = IPv4>
     void bind(Addr addr, Flags<Bind> flags = Flags<Bind>{}) {
         bind<I>(addr.ip, addr.port, flags);
     }
@@ -170,7 +170,7 @@ public:
      * @brief Gets the current address to which the handle is bound.
      * @return A valid instance of Addr, an empty one in case of errors.
      */
-    template<typename I = net::IPv4>
+    template<typename I = IPv4>
     Addr sock() const noexcept {
         return details::address<I>(&uv_tcp_getsockname, get<uv_tcp_t>());
     }
@@ -179,7 +179,7 @@ public:
      * @brief Gets the address of the peer connected to the handle.
      * @return A valid instance of Addr, an empty one in case of errors.
      */
-    template<typename I = net::IPv4>
+    template<typename I = IPv4>
     Addr peer() const noexcept {
         return details::address<I>(&uv_tcp_getpeername, get<uv_tcp_t>());
     }
@@ -194,7 +194,7 @@ public:
      * @param ip The address to which to bind.
      * @param port The port to which to bind.
      */
-    template<typename I = net::IPv4>
+    template<typename I = IPv4>
     void connect(std::string ip, unsigned int port) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
@@ -218,7 +218,7 @@ public:
      *
      * @param addr A valid instance of Addr.
      */
-    template<typename I = net::IPv4>
+    template<typename I = IPv4>
     void connect(Addr addr) {
         connect<I>(addr.ip, addr.port);
     }
