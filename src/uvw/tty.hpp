@@ -117,14 +117,14 @@ public:
 
     /**
      * @brief Gets the current Window size.
-     * @return The current Window size or `{0, 0}` in case of errors.
+     * @return The current Window size or `{-1, -1}` in case of errors.
      */
     WinSize getWinSize() {
         WinSize size;
 
         if(0 != invoke(&uv_tty_get_winsize, get<uv_tty_t>(), &size.width, &size.height)) {
-            size.width = 0;
-            size.height = 0;
+            size.width = -1;
+            size.height = -1;
         }
 
         return size;
