@@ -173,68 +173,6 @@ using Gid = uv_gid_t;
 
 
 /**
- * @brief Gets the type of the stream to be used with the given descriptor.
- *
- * Returns the type of stream that should be used with a given file
- * descriptor.<br/>
- * Usually this will be used during initialization to guess the type of the
- * stdio streams.
- *
- * @param file A valid descriptor.
- * @return One of the following types:
- *
- * * `HandleType::UNKNOWN`
- * * `HandleType::PIPE`
- * * `HandleType::TCP`
- * * `HandleType::TTY`
- * * `HandleType::UDP`
- * * `HandleType::FILE`
- */
-HandleType guessHandle(FileHandle file) {
-    auto type = uv_guess_handle(file);
-
-    switch(type) {
-    case UV_ASYNC:
-        return HandleType::ASYNC;
-    case UV_CHECK:
-        return HandleType::CHECK;
-    case UV_FS_EVENT:
-        return HandleType::FS_EVENT;
-    case UV_FS_POLL:
-        return HandleType::FS_POLL;
-    case UV_HANDLE:
-        return HandleType::HANDLE;
-    case UV_IDLE:
-        return HandleType::IDLE;
-    case UV_NAMED_PIPE:
-        return HandleType::PIPE;
-    case UV_POLL:
-        return HandleType::POLL;
-    case UV_PREPARE:
-        return HandleType::PREPARE;
-    case UV_PROCESS:
-        return HandleType::PROCESS;
-    case UV_STREAM:
-        return HandleType::STREAM;
-    case UV_TCP:
-        return HandleType::TCP;
-    case UV_TIMER:
-        return HandleType::TIMER;
-    case UV_TTY:
-        return HandleType::TTY;
-    case UV_UDP:
-        return HandleType::UDP;
-    case UV_SIGNAL:
-        return HandleType::SIGNAL;
-    case UV_FILE:
-        return HandleType::FILE;
-    default:
-        return HandleType::UNKNOWN;
-    }
-}
-
-
-/**
  * @brief The IPv4 tag.
  *
  * To be used as template parameter to switch between IPv4 and IPv6.
@@ -260,24 +198,15 @@ struct Addr {
 
 
 /**
- * TODO
- *
- * * uv_replace_allocator
- * * uv_uptime
- * * uv_getrusage
- * * uv_cpu_info
- * * uv_free_cpu_info
- * * uv_loadavg
- * * uv_exepath
- * * uv_cwd
- * * uv_chdir
- * * uv_os_homedir
- * * uv_os_tmpdir
- * * uv_os_get_passwd
- * * uv_os_free_passwd
- * * uv_get_total_memory
- * * uv_hrtime
+ * \brief Interface address.
  */
+struct Interface {
+    std::string name; /*!< The name of the interface (as an example _eth0_). */
+    std::string physical; /*!< The physical address. */
+    bool internal; /*!< True if it is an internal interface (as an example _loopback_), false otherwise. */
+    Addr address; /*!< The address of the given interface. */
+    Addr netmask; /*!< The netmask of the given interface. */
+};
 
 
 namespace details {
@@ -368,55 +297,133 @@ std::string path(F &&f, H *handle) noexcept {
 
 
 /**
- * \brief Interface address.
+ * @brief Miscellaneous utilities.
+ *
+ * Miscellaneous functions that don’t really belong to any other class.
  */
-struct Interface {
-    std::string name; /*!< The name of the interface (as an example _eth0_). */
-    std::string physical; /*!< The physical address. */
-    bool internal; /*!< True if it is an internal interface (as an example _loopback_), false otherwise. */
-    Addr address; /*!< The address of the given interface. */
-    Addr netmask; /*!< The netmask of the given interface. */
+struct Utilities {
+    /**
+     * @brief Gets the type of the stream to be used with the given descriptor.
+     *
+     * Returns the type of stream that should be used with a given file
+     * descriptor.<br/>
+     * Usually this will be used during initialization to guess the type of the
+     * stdio streams.
+     *
+     * @param file A valid descriptor.
+     * @return One of the following types:
+     *
+     * * `HandleType::UNKNOWN`
+     * * `HandleType::PIPE`
+     * * `HandleType::TCP`
+     * * `HandleType::TTY`
+     * * `HandleType::UDP`
+     * * `HandleType::FILE`
+     */
+    static HandleType guessHandle(FileHandle file) {
+        auto type = uv_guess_handle(file);
+
+        switch(type) {
+        case UV_ASYNC:
+            return HandleType::ASYNC;
+        case UV_CHECK:
+            return HandleType::CHECK;
+        case UV_FS_EVENT:
+            return HandleType::FS_EVENT;
+        case UV_FS_POLL:
+            return HandleType::FS_POLL;
+        case UV_HANDLE:
+            return HandleType::HANDLE;
+        case UV_IDLE:
+            return HandleType::IDLE;
+        case UV_NAMED_PIPE:
+            return HandleType::PIPE;
+        case UV_POLL:
+            return HandleType::POLL;
+        case UV_PREPARE:
+            return HandleType::PREPARE;
+        case UV_PROCESS:
+            return HandleType::PROCESS;
+        case UV_STREAM:
+            return HandleType::STREAM;
+        case UV_TCP:
+            return HandleType::TCP;
+        case UV_TIMER:
+            return HandleType::TIMER;
+        case UV_TTY:
+            return HandleType::TTY;
+        case UV_UDP:
+            return HandleType::UDP;
+        case UV_SIGNAL:
+            return HandleType::SIGNAL;
+        case UV_FILE:
+            return HandleType::FILE;
+        default:
+            return HandleType::UNKNOWN;
+        }
+    }
+
+
+    /**
+     * @brief Gets a set of descriptors of all the available interfaces.
+     *
+     * This function can be used to query the underlying system and get a set of
+     * descriptors of all the available interfaces, either internal or not.
+     *
+     * @return A set of descriptors of all the available interfaces.
+     */
+    static std::vector<Interface> interfaces() noexcept {
+        std::vector<Interface> interfaces;
+
+        uv_interface_address_t *ifaces;
+        int count;
+
+        uv_interface_addresses(&ifaces, &count);
+
+        std::for_each(ifaces, ifaces+count, [&interfaces](const auto &iface) {
+            Interface interface;
+
+            interface.name = iface.name;
+            interface.physical = iface.phys_addr;
+            interface.internal = iface.is_internal;
+
+            if(iface.address.address4.sin_family == AF_INET) {
+                interface.address = details::address<IPv4>(&iface.address.address4);
+                interface.netmask = details::address<IPv4>(&iface.netmask.netmask4);
+            } else if(iface.address.address4.sin_family == AF_INET6) {
+                interface.address = details::address<IPv6>(&iface.address.address6);
+                interface.netmask = details::address<IPv6>(&iface.netmask.netmask6);
+            }
+
+            interfaces.push_back(std::move(interface));
+        });
+
+        uv_free_interface_addresses(ifaces, count);
+
+        return interfaces;
+    }
 };
 
 
 /**
- * @brief Gets a set of descriptors of all the available interfaces.
+ * TODO
  *
- * This function can be used to query the underlying system and get a set of
- * descriptors of all the available interfaces, either internal or not.
- *
- * @return A set of descriptors of all the available interfaces.
+ * * uv_replace_allocator
+ * * uv_uptime
+ * * uv_getrusage
+ * * uv_cpu_info
+ * * uv_free_cpu_info
+ * * uv_loadavg
+ * * uv_exepath
+ * * uv_cwd
+ * * uv_chdir
+ * * uv_os_homedir
+ * * uv_os_tmpdir
+ * * uv_os_get_passwd
+ * * uv_os_free_passwd
+ * * uv_get_total_memory
+ * * uv_hrtime
  */
-std::vector<Interface> interfaces() noexcept {
-    std::vector<Interface> interfaces;
-
-    uv_interface_address_t *ifaces;
-    int count;
-
-    uv_interface_addresses(&ifaces, &count);
-
-    std::for_each(ifaces, ifaces+count, [&interfaces](const auto &iface) {
-        Interface interface;
-
-        interface.name = iface.name;
-        interface.physical = iface.phys_addr;
-        interface.internal = iface.is_internal;
-
-        if(iface.address.address4.sin_family == AF_INET) {
-            interface.address = details::address<IPv4>(&iface.address.address4);
-            interface.netmask = details::address<IPv4>(&iface.netmask.netmask4);
-        } else if(iface.address.address4.sin_family == AF_INET6) {
-            interface.address = details::address<IPv6>(&iface.address.address6);
-            interface.netmask = details::address<IPv6>(&iface.netmask.netmask6);
-        }
-
-        interfaces.push_back(std::move(interface));
-    });
-
-    uv_free_interface_addresses(ifaces, count);
-
-    return interfaces;
-}
 
 
 }
