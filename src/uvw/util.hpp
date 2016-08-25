@@ -2,10 +2,12 @@
 
 
 #include <type_traits>
+#include <algorithm>
 #include <stdexcept>
 #include <cstddef>
 #include <utility>
 #include <string>
+#include <vector>
 #include <uv.h>
 
 
@@ -150,28 +152,12 @@ private:
 
 
 /**
- * @brief Address representation.
- *
- * Pair alias (see Boost/Mutant idiom) used to pack together an ip and a
- * port.<br/>
- * Instead of `first` and `second`, the two parameters are named:
- *
- * * `ip`, that is of type `std::string`
- * * `port`, that is of type `unsigned int`
- */
-struct Addr { std::string ip; unsigned int port; };
-
-/**
  * @brief Windows size representation.
- *
- * Pair alias (see Boost/Mutant idiom) used to pack together a width and a
- * height.<br/>
- * Instead of `first` and `second`, the two parameters are named:
- *
- * * `width`, that is of type `int`
- * * `height`, that is of type `int`
  */
-struct WinSize { int width; int height; };
+struct WinSize {
+    int width; /*!< The _width_ of the given window. */
+    int height; /*!< The _height_ of the given window. */
+};
 
 
 using HandleType = details::UVHandleType;
@@ -187,65 +173,236 @@ using Gid = uv_gid_t;
 
 
 /**
- * @brief Gets the type of the stream to be used with the given descriptor.
+ * @brief The IPv4 tag.
  *
- * Returns the type of stream that should be used with a given file
- * descriptor.<br/>
- * Usually this will be used during initialization to guess the type of the
- * stdio streams.
- *
- * @param file A valid descriptor.
- * @return One of the following types:
- *
- * * `HandleType::UNKNOWN`
- * * `HandleType::PIPE`
- * * `HandleType::TCP`
- * * `HandleType::TTY`
- * * `HandleType::UDP`
- * * `HandleType::FILE`
+ * To be used as template parameter to switch between IPv4 and IPv6.
  */
-HandleType guessHandle(FileHandle file) {
-    auto type = uv_guess_handle(file);
+struct IPv4 { };
 
-    switch(type) {
-    case UV_ASYNC:
-        return HandleType::ASYNC;
-    case UV_CHECK:
-        return HandleType::CHECK;
-    case UV_FS_EVENT:
-        return HandleType::FS_EVENT;
-    case UV_FS_POLL:
-        return HandleType::FS_POLL;
-    case UV_HANDLE:
-        return HandleType::HANDLE;
-    case UV_IDLE:
-        return HandleType::IDLE;
-    case UV_NAMED_PIPE:
-        return HandleType::PIPE;
-    case UV_POLL:
-        return HandleType::POLL;
-    case UV_PREPARE:
-        return HandleType::PREPARE;
-    case UV_PROCESS:
-        return HandleType::PROCESS;
-    case UV_STREAM:
-        return HandleType::STREAM;
-    case UV_TCP:
-        return HandleType::TCP;
-    case UV_TIMER:
-        return HandleType::TIMER;
-    case UV_TTY:
-        return HandleType::TTY;
-    case UV_UDP:
-        return HandleType::UDP;
-    case UV_SIGNAL:
-        return HandleType::SIGNAL;
-    case UV_FILE:
-        return HandleType::FILE;
-    default:
-        return HandleType::UNKNOWN;
+
+/**
+ * @brief The IPv6 tag.
+ *
+ * To be used as template parameter to switch between IPv4 and IPv6.
+ */
+struct IPv6 { };
+
+
+/**
+ * @brief Address representation.
+ */
+struct Addr {
+    std::string ip; /*!< Either an IPv4 or an IPv6. */
+    unsigned int port; /*!< A valid service identifier. */
+};
+
+
+/**
+ * \brief Interface address.
+ */
+struct Interface {
+    std::string name; /*!< The name of the interface (as an example _eth0_). */
+    std::string physical; /*!< The physical address. */
+    bool internal; /*!< True if it is an internal interface (as an example _loopback_), false otherwise. */
+    Addr address; /*!< The address of the given interface. */
+    Addr netmask; /*!< The netmask of the given interface. */
+};
+
+
+namespace details {
+
+
+template<typename>
+struct IpTraits;
+
+
+template<>
+struct IpTraits<IPv4> {
+    using Type = sockaddr_in;
+    using AddrFuncType = int(*)(const char *, int, Type *);
+    using NameFuncType = int(*)(const Type *, char *, std::size_t);
+    static constexpr AddrFuncType addrFunc = &uv_ip4_addr;
+    static constexpr NameFuncType nameFunc = &uv_ip4_name;
+    static constexpr auto sinPort(const Type *addr) { return addr->sin_port; }
+};
+
+
+template<>
+struct IpTraits<IPv6> {
+    using Type = sockaddr_in6;
+    using AddrFuncType = int(*)(const char *, int, Type *);
+    using NameFuncType = int(*)(const Type *, char *, std::size_t);
+    static constexpr AddrFuncType addrFunc = &uv_ip6_addr;
+    static constexpr NameFuncType nameFunc = &uv_ip6_name;
+    static constexpr auto sinPort(const Type *addr) { return addr->sin6_port; }
+};
+
+
+template<typename I, typename..., std::size_t N = 128>
+Addr address(const typename details::IpTraits<I>::Type *aptr) noexcept {
+    Addr addr;
+    char name[N];
+
+    int err = details::IpTraits<I>::nameFunc(aptr, name, N);
+
+    if(0 == err) {
+        addr.port = ntohs(details::IpTraits<I>::sinPort(aptr));
+        addr.ip = std::string{name};
     }
+
+    return addr;
 }
+
+
+template<typename I, typename F, typename H>
+Addr address(F &&f, const H *handle) noexcept {
+    sockaddr_storage ssto;
+    int len = sizeof(ssto);
+    Addr addr{};
+
+    int err = std::forward<F>(f)(handle, reinterpret_cast<sockaddr *>(&ssto), &len);
+
+    if(0 == err) {
+        typename IpTraits<I>::Type *aptr = reinterpret_cast<typename IpTraits<I>::Type *>(&ssto);
+        addr = address<I>(aptr);
+    }
+
+    return addr;
+}
+
+
+template<typename F, typename H, typename..., std::size_t N = 128>
+std::string path(F &&f, H *handle) noexcept {
+    std::size_t size = N;
+    char buf[size];
+    std::string str{};
+    auto err = std::forward<F>(f)(handle, buf, &size);
+
+    if(UV_ENOBUFS == err) {
+        std::unique_ptr<char[]> data{new char[size]};
+        err = std::forward<F>(f)(handle, data.get(), &size);
+
+        if(0 == err) {
+            str = data.get();
+        }
+    } else {
+        str.assign(buf, size);
+    }
+
+    return str;
+}
+
+
+}
+
+
+/**
+ * @brief Miscellaneous utilities.
+ *
+ * Miscellaneous functions that don’t really belong to any other class.
+ */
+struct Utilities {
+    /**
+     * @brief Gets the type of the stream to be used with the given descriptor.
+     *
+     * Returns the type of stream that should be used with a given file
+     * descriptor.<br/>
+     * Usually this will be used during initialization to guess the type of the
+     * stdio streams.
+     *
+     * @param file A valid descriptor.
+     * @return One of the following types:
+     *
+     * * `HandleType::UNKNOWN`
+     * * `HandleType::PIPE`
+     * * `HandleType::TCP`
+     * * `HandleType::TTY`
+     * * `HandleType::UDP`
+     * * `HandleType::FILE`
+     */
+    static HandleType guessHandle(FileHandle file) {
+        auto type = uv_guess_handle(file);
+
+        switch(type) {
+        case UV_ASYNC:
+            return HandleType::ASYNC;
+        case UV_CHECK:
+            return HandleType::CHECK;
+        case UV_FS_EVENT:
+            return HandleType::FS_EVENT;
+        case UV_FS_POLL:
+            return HandleType::FS_POLL;
+        case UV_HANDLE:
+            return HandleType::HANDLE;
+        case UV_IDLE:
+            return HandleType::IDLE;
+        case UV_NAMED_PIPE:
+            return HandleType::PIPE;
+        case UV_POLL:
+            return HandleType::POLL;
+        case UV_PREPARE:
+            return HandleType::PREPARE;
+        case UV_PROCESS:
+            return HandleType::PROCESS;
+        case UV_STREAM:
+            return HandleType::STREAM;
+        case UV_TCP:
+            return HandleType::TCP;
+        case UV_TIMER:
+            return HandleType::TIMER;
+        case UV_TTY:
+            return HandleType::TTY;
+        case UV_UDP:
+            return HandleType::UDP;
+        case UV_SIGNAL:
+            return HandleType::SIGNAL;
+        case UV_FILE:
+            return HandleType::FILE;
+        default:
+            return HandleType::UNKNOWN;
+        }
+    }
+
+
+    /**
+     * @brief Gets a set of descriptors of all the available interfaces.
+     *
+     * This function can be used to query the underlying system and get a set of
+     * descriptors of all the available interfaces, either internal or not.
+     *
+     * @return A set of descriptors of all the available interfaces.
+     */
+    static std::vector<Interface> interfaces() noexcept {
+        std::vector<Interface> interfaces;
+
+        uv_interface_address_t *ifaces;
+        int count;
+
+        uv_interface_addresses(&ifaces, &count);
+
+        std::for_each(ifaces, ifaces+count, [&interfaces](const auto &iface) {
+            Interface interface;
+
+            interface.name = iface.name;
+            interface.physical = iface.phys_addr;
+            interface.internal = iface.is_internal;
+
+            if(iface.address.address4.sin_family == AF_INET) {
+                interface.address = details::address<IPv4>(&iface.address.address4);
+                interface.netmask = details::address<IPv4>(&iface.netmask.netmask4);
+            } else if(iface.address.address4.sin_family == AF_INET6) {
+                interface.address = details::address<IPv6>(&iface.address.address6);
+                interface.netmask = details::address<IPv6>(&iface.netmask.netmask6);
+            }
+
+            interfaces.push_back(std::move(interface));
+        });
+
+        uv_free_interface_addresses(ifaces, count);
+
+        return interfaces;
+    }
+};
 
 
 /**
@@ -256,8 +413,6 @@ HandleType guessHandle(FileHandle file) {
  * * uv_getrusage
  * * uv_cpu_info
  * * uv_free_cpu_info
- * * uv_interface_addresses
- * * uv_free_interface_addresses
  * * uv_loadavg
  * * uv_exepath
  * * uv_cwd

@@ -9,7 +9,7 @@
 #include "event.hpp"
 #include "request.hpp"
 #include "stream.hpp"
-#include "misc.hpp"
+#include "util.hpp"
 
 
 namespace uvw {
@@ -148,7 +148,7 @@ public:
      */
     HandleType receive() noexcept {
         auto type = uv_pipe_pending_type(get<uv_pipe_t>());
-        return guessHandle(type);
+        return Utilities::guessHandle(type);
     }
 
 private:

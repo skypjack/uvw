@@ -7,7 +7,7 @@
 #include <uv.h>
 #include "event.hpp"
 #include "handle.hpp"
-#include "misc.hpp"
+#include "util.hpp"
 
 
 namespace uvw {

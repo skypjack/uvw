@@ -8,7 +8,7 @@
 #include "event.hpp"
 #include "handle.hpp"
 #include "stream.hpp"
-#include "misc.hpp"
+#include "util.hpp"
 
 
 namespace uvw {

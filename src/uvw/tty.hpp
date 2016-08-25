@@ -7,7 +7,7 @@
 #include <uv.h>
 #include "event.hpp"
 #include "stream.hpp"
-#include "misc.hpp"
+#include "util.hpp"
 
 
 namespace uvw {
@@ -117,23 +117,17 @@ public:
 
     /**
      * @brief Gets the current Window size.
-     * @return The current Window size or `{0, 0}` in case of errors.
+     * @return The current Window size or `{-1, -1}` in case of errors.
      */
     WinSize getWinSize() {
-        std::pair<int, int> size{0, 0};
-        int width;
-        int height;
+        WinSize size;
 
-        if(0 == invoke(&uv_tty_get_winsize, get<uv_tty_t>(), &width, &height)) {
-            size.first = width;
-            size.second = height;
+        if(0 != invoke(&uv_tty_get_winsize, get<uv_tty_t>(), &size.width, &size.height)) {
+            size.width = -1;
+            size.height = -1;
         }
 
-        /**
-         * See Boost/Mutant idiom:
-         *     https://en.wikibooks.org/wiki/More_C%2B%2B_Idioms/Boost_mutant
-         */
-        return reinterpret_cast<WinSize&>(size);
+        return size;
     }
 
 private:

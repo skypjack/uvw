@@ -195,8 +195,8 @@ tcp->bind("127.0.0.1", 4242);
 tcp->listen();
 ```
 
-Note also that `uvw::TcpHandle` already supports _IPv6_ out-of-the-box. The statement above is equivalent to `tcp->bind<uvw::net::IPv4>("127.0.0.1", 4242)`.<br/>
-It's suffice to explicitly specify `uvw::net::IPv6` as the underlying protocol to use it.
+Note also that `uvw::TcpHandle` already supports _IPv6_ out-of-the-box. The statement above is equivalent to `tcp->bind<uvw::IPv4>("127.0.0.1", 4242)`.<br/>
+It's suffice to explicitly specify `uvw::IPv6` as the underlying protocol to use it.
 
 The API reference is the recommended documentation for further details about resources and their methods.
 
