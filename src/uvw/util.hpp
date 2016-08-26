@@ -198,9 +198,28 @@ struct Addr {
 
 
 /**
+ * \brief CPU information.
+ */
+struct CPUInfo {
+    using CPUTime = decltype(uv_cpu_info_t::cpu_times);
+
+    std::string model; /*!< The model of the CPU. */
+    int speed; /*!< The frequency of the CPU. */
+
+    /**
+     * @brief CPU times.
+     *
+     * It is built up of the following data members: `user`, `nice`, `sys`,
+     * `idle`, `irq`, all of them having type `uint64_t`.
+     */
+    CPUTime times;
+};
+
+
+/**
  * \brief Interface address.
  */
-struct Interface {
+struct InterfaceAddress {
     std::string name; /*!< The name of the interface (as an example _eth0_). */
     std::string physical; /*!< The physical address. */
     bool internal; /*!< True if it is an internal interface (as an example _loopback_), false otherwise. */
@@ -370,6 +389,37 @@ struct Utilities {
     }
 
 
+    /** @brief Gets information about the CPUs on the system.
+     *
+     * This function can be used to query the underlying system and get a set of
+     * descriptors of all the available CPUs.
+     *
+     * @return A set of descriptors of all the available CPUs.
+     */
+    static std::vector<CPUInfo> cpuInfo() noexcept {
+        std::vector<CPUInfo> cpuinfos;
+
+        uv_cpu_info_t *infos;
+        int count;
+
+        if(0 == uv_cpu_info(&infos, &count)) {
+            std::for_each(infos, infos+count, [&cpuinfos](const auto &info) {
+                CPUInfo cpuinfo;
+
+                cpuinfo.model = info.model;
+                cpuinfo.speed = info.speed;
+                cpuinfo.times = info.cpu_times;
+
+                cpuinfos.push_back(std::move(cpuinfo));
+            });
+
+            uv_free_cpu_info(infos, count);
+        }
+
+        return cpuinfos;
+    }
+
+
     /**
      * @brief Gets a set of descriptors of all the available interfaces.
      *
@@ -378,33 +428,33 @@ struct Utilities {
      *
      * @return A set of descriptors of all the available interfaces.
      */
-    static std::vector<Interface> interfaces() noexcept {
-        std::vector<Interface> interfaces;
+    static std::vector<InterfaceAddress> interfaceAddresses() noexcept {
+        std::vector<InterfaceAddress> interfaces;
 
         uv_interface_address_t *ifaces;
         int count;
 
-        uv_interface_addresses(&ifaces, &count);
+        if(0 == uv_interface_addresses(&ifaces, &count)) {
+            std::for_each(ifaces, ifaces+count, [&interfaces](const auto &iface) {
+                InterfaceAddress interface;
 
-        std::for_each(ifaces, ifaces+count, [&interfaces](const auto &iface) {
-            Interface interface;
+                interface.name = iface.name;
+                interface.physical = iface.phys_addr;
+                interface.internal = iface.is_internal;
 
-            interface.name = iface.name;
-            interface.physical = iface.phys_addr;
-            interface.internal = iface.is_internal;
+                if(iface.address.address4.sin_family == AF_INET) {
+                    interface.address = details::address<IPv4>(&iface.address.address4);
+                    interface.netmask = details::address<IPv4>(&iface.netmask.netmask4);
+                } else if(iface.address.address4.sin_family == AF_INET6) {
+                    interface.address = details::address<IPv6>(&iface.address.address6);
+                    interface.netmask = details::address<IPv6>(&iface.netmask.netmask6);
+                }
 
-            if(iface.address.address4.sin_family == AF_INET) {
-                interface.address = details::address<IPv4>(&iface.address.address4);
-                interface.netmask = details::address<IPv4>(&iface.netmask.netmask4);
-            } else if(iface.address.address4.sin_family == AF_INET6) {
-                interface.address = details::address<IPv6>(&iface.address.address6);
-                interface.netmask = details::address<IPv6>(&iface.netmask.netmask6);
-            }
+                interfaces.push_back(std::move(interface));
+            });
 
-            interfaces.push_back(std::move(interface));
-        });
-
-        uv_free_interface_addresses(ifaces, count);
+            uv_free_interface_addresses(ifaces, count);
+        }
 
         return interfaces;
     }
