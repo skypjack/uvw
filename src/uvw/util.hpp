@@ -493,8 +493,6 @@ struct Utilities {
  *
  * * uv_uptime
  * * uv_getrusage
- * * uv_cpu_info
- * * uv_free_cpu_info
  * * uv_loadavg
  * * uv_exepath
  * * uv_cwd
