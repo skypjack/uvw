@@ -8,6 +8,7 @@
 #include <utility>
 #include <string>
 #include <vector>
+#include <array>
 #include <uv.h>
 
 
@@ -345,7 +346,7 @@ struct Utilities {
      * * `HandleType::UDP`
      * * `HandleType::FILE`
      */
-    static HandleType guessHandle(FileHandle file) {
+    static HandleType guessHandle(FileHandle file) noexcept {
         auto type = uv_guess_handle(file);
 
         switch(type) {
@@ -482,8 +483,18 @@ struct Utilities {
      * @param freeFunc Replacement function for _free_.
      * @return True in case of success, false otherwise.
      */
-    static bool replaceAllocator(MallocFuncType mallocFunc, ReallocFuncType reallocFunc, CallocFuncType callocFunc, FreeFuncType freeFunc) {
+    static bool replaceAllocator(MallocFuncType mallocFunc, ReallocFuncType reallocFunc, CallocFuncType callocFunc, FreeFuncType freeFunc) noexcept {
         return (0 == uv_replace_allocator(mallocFunc, reallocFunc, callocFunc, freeFunc));
+    }
+
+    /**
+     * @brief Gets the load average.
+     * @return `[0,0,0]` on Windows (not available), the load average otherwise.
+     */
+    static std::array<double, 3> loadAverage() noexcept {
+        std::array<double, 3> avg;
+        uv_loadavg(avg.data());
+        return avg;
     }
 };
 
@@ -493,7 +504,6 @@ struct Utilities {
  *
  * * uv_uptime
  * * uv_getrusage
- * * uv_loadavg
  * * uv_exepath
  * * uv_cwd
  * * uv_chdir
