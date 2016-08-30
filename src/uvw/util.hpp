@@ -496,6 +496,14 @@ struct Utilities {
         uv_loadavg(avg.data());
         return avg;
     }
+
+    /**
+     * @brief Gets memory information (in bytes).
+     * @return Memory information.
+     */
+    static uint64_t totalMemory() noexcept {
+        return uv_get_total_memory();
+    }
 };
 
 
@@ -511,7 +519,6 @@ struct Utilities {
  * * uv_os_tmpdir
  * * uv_os_get_passwd
  * * uv_os_free_passwd
- * * uv_get_total_memory
  * * uv_hrtime
  */
 
