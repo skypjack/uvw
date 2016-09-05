@@ -357,9 +357,10 @@ public:
      * for further details.
      *
      * @param enable True to enable blocking mode, false otherwise.
+     * @return True in case of success, false otherwise.
      */
-    void blocking(bool enable = false) {
-        this->invoke(&uv_stream_set_blocking, this->template get<uv_stream_t>(), enable);
+    bool blocking(bool enable = false) {
+        return (0 == uv_stream_set_blocking(this->template get<uv_stream_t>(), enable));
     }
 };
 

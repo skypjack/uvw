@@ -36,22 +36,6 @@ class Handle: public BaseHandle, public Resource<T, U>
         ref.publish(CloseEvent{});
     }
 
-    template<typename F>
-    int setBufferSize(F &&f) {
-        int value = 0;
-
-        if(0 != invoke(std::forward<F>(f), this->template get<uv_handle_t>(), &value)) {
-            value = 0;
-        }
-
-        return 0;
-    }
-
-    template<typename F>
-    void getBufferSize(F &&f, int value) {
-        invoke(&std::forward<F>(f), this->template get<uv_handle_t>(), &value);
-    }
-
 protected:
     using Resource<T, U>::Resource;
 
@@ -177,10 +161,12 @@ public:
      * Unix and for TcpHandle and UDPHandle handles on Windows.<br/>
      * Note that Linux will return double the size of the original set value.
      *
-     * @return The size of the send buffer used for the socket.
+     * @return The size of the send buffer, 0 in case of errors.
      */
     int sendBufferSize() const {
-        return setBufferSize(&uv_send_buffer_size);
+        int value = 0;
+        auto err = uv_send_buffer_size(this->template get<uv_handle_t>(), &value);
+        return err ? 0 : value;
     }
 
     /**
@@ -191,9 +177,11 @@ public:
      * This function works for TcpHandle, PipeHandle and UDPHandle handles on
      * Unix and for TcpHandle and UDPHandle handles on Windows.<br/>
      * Note that Linux will set double the size.
+     *
+     * @return True in case of success, false otherwise.
      */
-    void sendBufferSize(int value) {
-        getBufferSize(&uv_send_buffer_size, value);
+    bool sendBufferSize(int value) {
+        return (0 == uv_send_buffer_size(this->template get<uv_handle_t>(), &value));
     }
 
     /**
@@ -205,10 +193,12 @@ public:
      * Unix and for TcpHandle and UDPHandle handles on Windows.<br/>
      * Note that Linux will return double the size of the original set value.
      *
-     * @return The size of the receive buffer used for the socket.
+     * @return The size of the receive buffer, 0 in case of errors.
      */
     int recvBufferSize() const {
-        return setBufferSize(&uv_recv_buffer_size);
+        int value = 0;
+        auto err = uv_recv_buffer_size(this->template get<uv_handle_t>(), &value);
+        return err ? 0 : value;
     }
 
     /**
@@ -219,9 +209,11 @@ public:
      * This function works for TcpHandle, PipeHandle and UDPHandle handles on
      * Unix and for TcpHandle and UDPHandle handles on Windows.<br/>
      * Note that Linux will set double the size.
+     *
+     * @return True in case of success, false otherwise.
      */
-    void recvBufferSize(int value) {
-        getBufferSize(&uv_recv_buffer_size, value);
+    bool recvBufferSize(int value) {
+        return (0 == uv_recv_buffer_size(this->template get<uv_handle_t>(), &value));
     }
 
     /**
@@ -248,7 +240,7 @@ public:
      */
     OSFileDescriptor fileno() const {
         uv_os_fd_t fd;
-        invoke(&uv_fileno, this->template get<uv_handle_t>(), &fd);
+        uv_fileno(this->template get<uv_handle_t>(), &fd);
         return fd;
     }
 };

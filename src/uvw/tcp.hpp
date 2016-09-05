@@ -92,18 +92,20 @@ public:
     /**
      * @brief Enables/Disables Nagle’s algorithm.
      * @param value True to enable it, false otherwise.
+     * @return True in case of success, false otherwise.
      */
-    void noDelay(bool value = false) {
-        invoke(&uv_tcp_nodelay, get<uv_tcp_t>(), value);
+    bool noDelay(bool value = false) {
+        return (0 == uv_tcp_nodelay(get<uv_tcp_t>(), value));
     }
 
     /**
      * @brief Enables/Disables TCP keep-alive.
      * @param enable True to enable it, false otherwise.
      * @param time Initial delay in seconds (use `std::chrono::seconds`).
+     * @return True in case of success, false otherwise.
      */
-    void keepAlive(bool enable = false, Time time = Time{0}) {
-        invoke(&uv_tcp_keepalive, get<uv_tcp_t>(), enable, time.count());
+    bool keepAlive(bool enable = false, Time time = Time{0}) {
+        return (0 == uv_tcp_keepalive(get<uv_tcp_t>(), enable, time.count()));
     }
 
     /**
@@ -118,9 +120,10 @@ public:
      * lead to uneven load distribution in multi-process setups.
      *
      * @param enable True to enable it, false otherwise.
+     * @return True in case of success, false otherwise.
      */
-    void simultaneousAccepts(bool enable = true) {
-        invoke(&uv_tcp_simultaneous_accepts, get<uv_tcp_t>(), enable);
+    bool simultaneousAccepts(bool enable = true) {
+        return (0 == uv_tcp_simultaneous_accepts(get<uv_tcp_t>(), enable));
     }
 
     /**

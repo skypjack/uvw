@@ -249,10 +249,11 @@ public:
      * @param multicast Multicast address to set membership for.
      * @param interface Interface address.
      * @param membership Action to be performed.
+     * @return True in case of success, false otherwise.
      */
     template<typename I = IPv4>
-    void multicastMembership(std::string multicast, std::string interface, Membership membership) {
-        invoke(&uv_udp_set_membership, get<uv_udp_t>(), multicast.data(), interface.data(), static_cast<uv_membership>(membership));
+    bool multicastMembership(std::string multicast, std::string interface, Membership membership) {
+        return (0 == uv_udp_set_membership(get<uv_udp_t>(), multicast.data(), interface.data(), static_cast<uv_membership>(membership)));
     }
 
     /**
@@ -261,42 +262,47 @@ public:
      * This makes multicast packets loop back to local sockets.
      *
      * @param enable True to enable multicast loop, false otherwise.
+     * @return True in case of success, false otherwise.
      */
-    void multicastLoop(bool enable = true) {
-        invoke(&uv_udp_set_multicast_loop, get<uv_udp_t>(), enable);
+    bool multicastLoop(bool enable = true) {
+        return (0 == uv_udp_set_multicast_loop(get<uv_udp_t>(), enable));
     }
 
     /**
      * @brief Sets the multicast ttl.
      * @param val A value in the range `[1, 255]`.
+     * @return True in case of success, false otherwise.
      */
-    void multicastTtl(int val) {
-        invoke(&uv_udp_set_multicast_ttl, get<uv_udp_t>(), val > 255 ? 255 : val);
+    bool multicastTtl(int val) {
+        return (0 == uv_udp_set_multicast_ttl(get<uv_udp_t>(), val > 255 ? 255 : val));
     }
 
     /**
      * @brief Sets the multicast interface to send or receive data on.
      * @param interface Interface address.
+     * @return True in case of success, false otherwise.
      */
     template<typename I = IPv4>
-    void multicastInterface(std::string interface) {
-        invoke(&uv_udp_set_multicast_interface, get<uv_udp_t>(), interface.data());
+    bool multicastInterface(std::string interface) {
+        return (0 == uv_udp_set_multicast_interface(get<uv_udp_t>(), interface.data()));
     }
 
     /**
      * @brief Sets broadcast on or off.
      * @param enable True to set broadcast on, false otherwise.
+     * @return True in case of success, false otherwise.
      */
-    void broadcast(bool enable = false) {
-        invoke(&uv_udp_set_broadcast, get<uv_udp_t>(), enable);
+    bool broadcast(bool enable = false) {
+        return (0 == uv_udp_set_broadcast(get<uv_udp_t>(), enable));
     }
 
     /**
      * @brief Sets the time to live.
      * @param val A value in the range `[1, 255]`.
+     * @return True in case of success, false otherwise.
      */
-    void ttl(int val) {
-        invoke(&uv_udp_set_ttl, get<uv_udp_t>(), val > 255 ? 255 : val);
+    bool ttl(int val) {
+        return (0 == uv_udp_set_ttl(get<uv_udp_t>(), val > 255 ? 255 : val));
     }
 
     /**

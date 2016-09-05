@@ -100,19 +100,18 @@ public:
      * for further details.
      *
      * @param m The mode to be set.
+     * @return True in case of success, false otherwise.
      */
-    void mode(Mode m) {
-        // uv_tty_set_mode is inline, it cannot be used with invoke directly
-        invoke([](auto *handle, auto m) {
-            return uv_tty_set_mode(handle, m);
-        }, get<uv_tty_t>(), static_cast<std::underlying_type_t<Mode>>(m));
+    bool mode(Mode m) {
+        return (0 == uv_tty_set_mode(get<uv_tty_t>(), static_cast<std::underlying_type_t<Mode>>(m)));
     }
 
     /**
-     * @brief Resets TTY settings to default values..
+     * @brief Resets TTY settings to default values.
+     * @return True in case of success, false otherwise.
      */
-    void reset() noexcept {
-        invoke(&uv_tty_reset_mode);
+    bool reset() noexcept {
+        return (0 == uv_tty_reset_mode());
     }
 
     /**
@@ -122,7 +121,7 @@ public:
     WinSize getWinSize() {
         WinSize size;
 
-        if(0 != invoke(&uv_tty_get_winsize, get<uv_tty_t>(), &size.width, &size.height)) {
+        if(0 != uv_tty_get_winsize(get<uv_tty_t>(), &size.width, &size.height)) {
             size.width = -1;
             size.height = -1;
         }

@@ -56,10 +56,11 @@ public:
     * See the official
     * [documentation](http://docs.libuv.org/en/v1.x/request.html#c.uv_cancel)
     * for further details.
+    *
+    * @return True in case of success, false otherwise.
     */
-    void cancel() {
-        auto err = uv_cancel(this->template get<uv_req_t>());
-        if(err) { Emitter<T>::publish(ErrorEvent{err}); }
+    bool cancel() {
+        return (0 == uv_cancel(this->template get<uv_req_t>()));
     }
 
     /**
