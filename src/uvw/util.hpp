@@ -232,6 +232,9 @@ struct InterfaceAddress {
 namespace details {
 
 
+static constexpr std::size_t DEFAULT_SIZE = 128;
+
+
 template<typename>
 struct IpTraits;
 
@@ -258,12 +261,12 @@ struct IpTraits<IPv6> {
 };
 
 
-template<typename I, typename..., std::size_t N = 128>
+template<typename I>
 Addr address(const typename details::IpTraits<I>::Type *aptr) noexcept {
     Addr addr;
-    char name[N];
+    char name[DEFAULT_SIZE];
 
-    int err = details::IpTraits<I>::nameFunc(aptr, name, N);
+    int err = details::IpTraits<I>::nameFunc(aptr, name, DEFAULT_SIZE);
 
     if(0 == err) {
         addr.port = ntohs(details::IpTraits<I>::sinPort(aptr));
@@ -291,16 +294,16 @@ Addr address(F &&f, const H *handle) noexcept {
 }
 
 
-template<typename F, typename H, typename..., std::size_t N = 128>
-std::string path(F &&f, H *handle) noexcept {
-    std::size_t size = N;
+template<typename F, typename... Args>
+std::string path(F &&f, Args... args) noexcept {
+    std::size_t size = DEFAULT_SIZE;
     char buf[size];
     std::string str{};
-    auto err = std::forward<F>(f)(handle, buf, &size);
+    auto err = std::forward<F>(f)(args..., buf, &size);
 
     if(UV_ENOBUFS == err) {
         std::unique_ptr<char[]> data{new char[size]};
-        err = std::forward<F>(f)(handle, data.get(), &size);
+        err = std::forward<F>(f)(args..., data.get(), &size);
 
         if(0 == err) {
             str = data.get();
@@ -534,6 +537,14 @@ struct Utilities {
     }
 
     /**
+     * @brief Gets the current working directory.
+     * @return The current working directory.
+     */
+    static std::string cwd() noexcept {
+        return details::path(&uv_cwd);
+    }
+
+    /**
      * @brief Changes the current working directory.
      * @param dir The working directory to be set.
      * @return True in case of success, false otherwise.
@@ -549,7 +560,6 @@ struct Utilities {
  *
  * * uv_getrusage
  * * uv_exepath
- * * uv_cwd
  * * uv_os_homedir
  * * uv_os_tmpdir
  * * uv_os_get_passwd
