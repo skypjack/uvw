@@ -518,6 +518,20 @@ struct Utilities {
 
         return ret;
     }
+
+    /**
+     * @brief Gets the current high-resolution real time.
+     *
+     * The time is expressed in nanoseconds. It is relative to an arbitrary time
+     * in the past. It is not related to the time of the day and therefore not
+     * subject to clock drift. The primary use is for measuring performance
+     * between interval.
+     *
+     * @return The current high-resolution real time.
+     */
+    static uint64_t hrtime() noexcept {
+        return uv_hrtime();
+    }
 };
 
 
@@ -532,7 +546,6 @@ struct Utilities {
  * * uv_os_tmpdir
  * * uv_os_get_passwd
  * * uv_os_free_passwd
- * * uv_hrtime
  */
 
 
