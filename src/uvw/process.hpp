@@ -119,7 +119,7 @@ public:
      * [documentation](http://docs.libuv.org/en/v1.x/process.html)
      * for further details.
      *
-     * @param file Path pointing to the program to be executed..
+     * @param file Path pointing to the program to be executed.
      * @param args Command line arguments.
      * @param env Optional environment for the new process.
      */
