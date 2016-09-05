@@ -504,13 +504,26 @@ struct Utilities {
     static uint64_t totalMemory() noexcept {
         return uv_get_total_memory();
     }
+
+    /**
+     * @brief Gets the current system uptime.
+     * @return The current system uptime or 0 in case of errors.
+     */
+    static double uptime() noexcept {
+        double ret;
+
+        if(0 != uv_uptime(&ret)) {
+            ret = 0;
+        }
+
+        return ret;
+    }
 };
 
 
 /**
  * TODO
  *
- * * uv_uptime
  * * uv_getrusage
  * * uv_exepath
  * * uv_cwd
