@@ -532,6 +532,15 @@ struct Utilities {
     static uint64_t hrtime() noexcept {
         return uv_hrtime();
     }
+
+    /**
+     * @brief Changes the current working directory.
+     * @param dir The working directory to be set.
+     * @return True in case of success, false otherwise.
+     */
+    static bool chdir(const std::string &dir) noexcept {
+        return (0 == uv_chdir(dir.data()));
+    }
 };
 
 
@@ -541,7 +550,6 @@ struct Utilities {
  * * uv_getrusage
  * * uv_exepath
  * * uv_cwd
- * * uv_chdir
  * * uv_os_homedir
  * * uv_os_tmpdir
  * * uv_os_get_passwd
