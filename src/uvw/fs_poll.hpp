@@ -8,6 +8,7 @@
 #include "event.hpp"
 #include "handle.hpp"
 #include "util.hpp"
+#include "loop.hpp"
 
 
 namespace uvw {
@@ -60,12 +61,11 @@ class FsPollHandle final: public Handle<FsPollHandle, uv_fs_poll_t> {
 public:
     /**
      * @brief Creates a new fs poll handle.
-     * @param args A pointer to the loop from which the handle generated.
+     * @param loop A pointer to the loop from which the handle generated.
      * @return A pointer to the newly created handle.
      */
-    template<typename... Args>
-    static std::shared_ptr<FsPollHandle> create(Args&&... args) {
-        return std::shared_ptr<FsPollHandle>{new FsPollHandle{std::forward<Args>(args)...}};
+    static std::shared_ptr<FsPollHandle> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<FsPollHandle>{new FsPollHandle{std::move(loop)}};
     }
 
     /**

@@ -6,6 +6,7 @@
 #include <uv.h>
 #include "event.hpp"
 #include "handle.hpp"
+#include "loop.hpp"
 
 
 namespace uvw {
@@ -36,12 +37,11 @@ class AsyncHandle final: public Handle<AsyncHandle, uv_async_t> {
 public:
     /**
      * @brief Creates a new async handle.
-     * @param args A pointer to the loop from which the handle generated.
+     * @param loop A pointer to the loop from which the handle generated.
      * @return A pointer to the newly created handle.
      */
-    template<typename... Args>
-    static std::shared_ptr<AsyncHandle> create(Args&&... args) {
-        return std::shared_ptr<AsyncHandle>{new AsyncHandle{std::forward<Args>(args)...}};
+    static std::shared_ptr<AsyncHandle> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<AsyncHandle>{new AsyncHandle{std::move(loop)}};
     }
 
     /**

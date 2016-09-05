@@ -6,6 +6,7 @@
 #include <string>
 #include <uv.h>
 #include "loop.hpp"
+#include "loop.hpp"
 
 
 namespace uvw {
@@ -38,16 +39,12 @@ class SharedLib final {
 public:
     /**
      * @brief Creates a new shared library object.
-     * @param args
-     *
-     * * A pointer to the loop from which the handle generated.
-     * * The filename of the library in UTF8.
-     *
+     * @param loop A pointer to the loop from which the handle generated.
+     * @param filename The filename of the library in UTF8.
      * @return A pointer to the newly created handle.
      */
-    template<typename... Args>
-    static std::shared_ptr<SharedLib> create(Args&&... args) noexcept {
-        return std::shared_ptr<SharedLib>{new SharedLib{std::forward<Args>(args)...}};
+    static std::shared_ptr<SharedLib> create(std::shared_ptr<Loop> loop, std::string filename) noexcept {
+        return std::shared_ptr<SharedLib>{new SharedLib{std::move(loop), std::move(filename)}};
     }
 
     SharedLib(const SharedLib &) = delete;

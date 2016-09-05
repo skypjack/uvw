@@ -9,6 +9,7 @@
 #include "handle.hpp"
 #include "stream.hpp"
 #include "util.hpp"
+#include "loop.hpp"
 
 
 namespace uvw {
@@ -67,12 +68,11 @@ public:
 
     /**
      * @brief Creates a new check handle.
-     * @param args A pointer to the loop from which the handle generated.
+     * @param loop A pointer to the loop from which the handle generated.
      * @return A pointer to the newly created handle.
      */
-    template<typename... Args>
-    static std::shared_ptr<ProcessHandle> create(Args&&... args) {
-        return std::shared_ptr<ProcessHandle>{new ProcessHandle{std::forward<Args>(args)...}};
+    static std::shared_ptr<ProcessHandle> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<ProcessHandle>{new ProcessHandle{std::move(loop)}};
     }
 
     /**

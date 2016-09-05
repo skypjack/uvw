@@ -8,6 +8,7 @@
 #include "event.hpp"
 #include "request.hpp"
 #include "util.hpp"
+#include "loop.hpp"
 
 
 namespace uvw {
@@ -110,12 +111,11 @@ class GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
 public:
     /**
      * @brief Creates a new `getaddrinfo` wrapper request.
-     * @param args A pointer to the loop from which the handle generated.
+     * @param loop A pointer to the loop from which the handle generated.
      * @return A pointer to the newly created handle.
      */
-    template<typename... Args>
-    static std::shared_ptr<GetAddrInfoReq> create(Args&&... args) {
-        return std::shared_ptr<GetAddrInfoReq>{new GetAddrInfoReq{std::forward<Args>(args)...}};
+    static std::shared_ptr<GetAddrInfoReq> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<GetAddrInfoReq>{new GetAddrInfoReq{std::move(loop)}};
     }
 
     /**
@@ -200,12 +200,11 @@ class GetNameInfoReq final: public Request<GetNameInfoReq, uv_getnameinfo_t> {
 public:
     /**
      * @brief Creates a new `getnameinfo` wrapper request.
-     * @param args A pointer to the loop from which the handle generated.
+     * @param loop A pointer to the loop from which the handle generated.
      * @return A pointer to the newly created handle.
      */
-    template<typename... Args>
-    static std::shared_ptr<GetNameInfoReq> create(Args&&... args) {
-        return std::shared_ptr<GetNameInfoReq>{new GetNameInfoReq{std::forward<Args>(args)...}};
+    static std::shared_ptr<GetNameInfoReq> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<GetNameInfoReq>{new GetNameInfoReq{std::move(loop)}};
     }
 
     /**

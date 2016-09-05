@@ -84,9 +84,8 @@ class ThreadLocalStorage final {
     }
 
 public:
-    template<typename... Args>
-    static std::shared_ptr<ThreadLocalStorage> create(Args&&... args) {
-        return std::shared_ptr<ThreadLocalStorage>{new ThreadLocalStorage{std::forward<Args>(args)...}};
+    static std::shared_ptr<ThreadLocalStorage> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<ThreadLocalStorage>{new ThreadLocalStorage{std::move(loop)}};
     }
 
     ~ThreadLocalStorage() noexcept {
@@ -122,9 +121,8 @@ class Once final {
     }
 
 public:
-    template<typename... Args>
-    static std::shared_ptr<Once> create(Args&&... args) {
-        return std::shared_ptr<Once>{new Once{std::forward<Args>(args)...}};
+    static std::shared_ptr<Once> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<Once>{new Once{std::move(loop)}};
     }
 
     template<typename F>
@@ -152,9 +150,8 @@ class Mutex final {
     }
 
 public:
-    template<typename... Args>
-    static std::shared_ptr<Mutex> create(Args&&... args) {
-        return std::shared_ptr<Mutex>{new Mutex{std::forward<Args>(args)...}};
+    static std::shared_ptr<Mutex> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<Mutex>{new Mutex{std::move(loop)}};
     }
 
     ~Mutex() noexcept {
@@ -189,9 +186,8 @@ class RWLock final {
     }
 
 public:
-    template<typename... Args>
-    static std::shared_ptr<RWLock> create(Args&&... args) {
-        return std::shared_ptr<RWLock>{new RWLock{std::forward<Args>(args)...}};
+    static std::shared_ptr<RWLock> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<RWLock>{new RWLock{std::move(loop)}};
     }
 
     ~RWLock() noexcept {
@@ -238,9 +234,8 @@ class Semaphore final {
     }
 
 public:
-    template<typename... Args>
-    static std::shared_ptr<Semaphore> create(Args&&... args) {
-        return std::shared_ptr<Semaphore>{new Semaphore{std::forward<Args>(args)...}};
+    static std::shared_ptr<Semaphore> create(std::shared_ptr<Loop> loop, unsigned int value) {
+        return std::shared_ptr<Semaphore>{new Semaphore{std::move(loop), value}};
     }
 
     ~Semaphore() noexcept {
@@ -275,9 +270,8 @@ class Condition final {
     }
 
 public:
-    template<typename... Args>
-    static std::shared_ptr<Condition> create(Args&&... args) {
-        return std::shared_ptr<Condition>{new Condition{std::forward<Args>(args)...}};
+    static std::shared_ptr<Condition> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<Condition>{new Condition{std::move(loop)}};
     }
 
     ~Condition() noexcept {
@@ -316,9 +310,8 @@ class Barrier final {
     }
 
 public:
-    template<typename... Args>
-    static std::shared_ptr<Barrier> create(Args&&... args) {
-        return std::shared_ptr<Barrier>{new Barrier{std::forward<Args>(args)...}};
+    static std::shared_ptr<Barrier> create(std::shared_ptr<Loop> loop, unsigned int count) {
+        return std::shared_ptr<Barrier>{new Barrier{std::move(loop), count}};
     }
 
     ~Barrier() noexcept {

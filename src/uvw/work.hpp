@@ -7,6 +7,7 @@
 #include <uv.h>
 #include "event.hpp"
 #include "request.hpp"
+#include "loop.hpp"
 
 
 namespace uvw {
@@ -46,17 +47,13 @@ public:
 
     /**
      * @brief Creates a new work request.
-     * @param args
-     *
-     * * A pointer to the loop from which the handle generated.
-     * * A valid instance of a `Task`, that is of type
+     * @param loop A pointer to the loop from which the handle generated.
+     * @param task A valid instance of a `Task`, that is of type
      * `std::function<void(void)>`.
-     *
      * @return A pointer to the newly created request.
      */
-    template<typename... Args>
-    static std::shared_ptr<WorkReq> create(Args&&... args) {
-        return std::shared_ptr<WorkReq>{new WorkReq{std::forward<Args>(args)...}};
+    static std::shared_ptr<WorkReq> create(std::shared_ptr<Loop> loop, Task task) {
+        return std::shared_ptr<WorkReq>{new WorkReq{std::move(loop), std::move(task)}};
     }
 
     /**

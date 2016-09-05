@@ -9,6 +9,7 @@
 #include "event.hpp"
 #include "request.hpp"
 #include "util.hpp"
+#include "loop.hpp"
 
 
 namespace uvw {
@@ -491,12 +492,11 @@ class FileReq final: public FsRequest<FileReq> {
 public:
     /**
      * @brief Creates a new file request.
-     * @param args A pointer to the loop from which the handle generated.
+     * @param loop A pointer to the loop from which the handle generated.
      * @return A pointer to the newly created request.
      */
-    template<typename... Args>
-    static std::shared_ptr<FileReq> create(Args&&... args) {
-        return std::shared_ptr<FileReq>{new FileReq{std::forward<Args>(args)...}};
+    static std::shared_ptr<FileReq> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<FileReq>{new FileReq{std::move(loop)}};
     }
 
     ~FileReq() noexcept {
@@ -838,12 +838,11 @@ class FsReq final: public FsRequest<FsReq> {
 public:
     /**
      * @brief Creates a new file request.
-     * @param args A pointer to the loop from which the handle generated.
+     * @param loop A pointer to the loop from which the handle generated.
      * @return A pointer to the newly created request.
      */
-    template<typename... Args>
-    static std::shared_ptr<FsReq> create(Args&&... args) {
-        return std::shared_ptr<FsReq>{new FsReq{std::forward<Args>(args)...}};
+    static std::shared_ptr<FsReq> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<FsReq>{new FsReq{std::move(loop)}};
     }
 
     ~FsReq() noexcept {

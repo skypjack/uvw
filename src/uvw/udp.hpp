@@ -84,9 +84,8 @@ class Send final: public Request<Send, uv_udp_send_t> {
     using Request::Request;
 
 public:
-    template<typename... Args>
-    static std::shared_ptr<Send> create(Args&&... args) {
-        return std::shared_ptr<Send>{new Send{std::forward<Args>(args)...}};
+    static std::shared_ptr<Send> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<Send>{new Send{std::move(loop)}};
     }
 
     void send(uv_udp_t *handle, const uv_buf_t bufs[], unsigned int nbufs, const struct sockaddr* addr) {

@@ -9,6 +9,7 @@
 #include "event.hpp"
 #include "request.hpp"
 #include "handle.hpp"
+#include "loop.hpp"
 
 
 namespace uvw {
@@ -89,9 +90,8 @@ class ConnectReq final: public Request<ConnectReq, uv_connect_t> {
     using Request::Request;
 
 public:
-    template<typename... Args>
-    static std::shared_ptr<ConnectReq> create(Args&&... args) {
-        return std::shared_ptr<ConnectReq>{new ConnectReq{std::forward<Args>(args)...}};
+    static std::shared_ptr<ConnectReq> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<ConnectReq>{new ConnectReq{std::move(loop)}};
     }
 
     template<typename F, typename... Args>
@@ -105,9 +105,8 @@ class ShutdownReq final: public Request<ShutdownReq, uv_shutdown_t> {
     using Request::Request;
 
 public:
-    template<typename... Args>
-    static std::shared_ptr<ShutdownReq> create(Args&&... args) {
-        return std::shared_ptr<ShutdownReq>{new ShutdownReq{std::forward<Args>(args)...}};
+    static std::shared_ptr<ShutdownReq> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<ShutdownReq>{new ShutdownReq{std::move(loop)}};
     }
 
     void shutdown(uv_stream_t *handle) {
@@ -120,9 +119,8 @@ class WriteReq final: public Request<WriteReq, uv_write_t> {
     using Request::Request;
 
 public:
-    template<typename... Args>
-    static std::shared_ptr<WriteReq> create(Args&&... args) {
-        return std::shared_ptr<WriteReq>{new WriteReq{std::forward<Args>(args)...}};
+    static std::shared_ptr<WriteReq> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<WriteReq>{new WriteReq{std::move(loop)}};
     }
 
     void write(uv_stream_t *handle, const uv_buf_t bufs[], unsigned int nbufs) {

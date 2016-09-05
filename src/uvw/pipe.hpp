@@ -10,6 +10,7 @@
 #include "request.hpp"
 #include "stream.hpp"
 #include "util.hpp"
+#include "loop.hpp"
 
 
 namespace uvw {
@@ -29,17 +30,13 @@ class PipeHandle final: public StreamHandle<PipeHandle, uv_pipe_t> {
 public:
     /**
      * @brief Creates a new poll handle.
-     * @param args
-     *
-     * * A pointer to the loop from which the handle generated.
-     * * An optional boolean value (_ipc_) that indicates if this pipe will be
-     * used for handle passing between processes.
-     *
+     * @param loop A pointer to the loop from which the handle generated.
+     * @param pass An optional boolean value (_ipc_) that indicates if this pipe
+     * will be used for handle passing between processes.
      * @return A pointer to the newly created handle.
      */
-    template<typename... Args>
-    static std::shared_ptr<PipeHandle> create(Args&&... args) {
-        return std::shared_ptr<PipeHandle>{new PipeHandle{std::forward<Args>(args)...}};
+    static std::shared_ptr<PipeHandle> create(std::shared_ptr<Loop> loop, bool pass) {
+        return std::shared_ptr<PipeHandle>{new PipeHandle{std::move(loop), pass}};
     }
 
     /**

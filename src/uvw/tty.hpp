@@ -54,15 +54,14 @@ public:
 
     /**
      * @brief Creates a new tty handle.
-     * @param args
-     *
-     * * A pointer to the loop from which the handle generated.
-     * * A valid FileHandle. Usually the file descriptor will be:
+     * @param loop A pointer to the loop from which the handle generated.
+     * @param desc A valid FileHandle. Usually the file descriptor will be:
      *     * `0` = `stdin`
      *     * `1` = `stdout`
      *     * `2` = `stderr`
-     * * A boolean value (_readable_) that specifies the plan on calling `read()` with this
-     * stream. Remember that `stdin` is readable, `stdout` is not.
+     * @param readable A boolean value (_readable_) that specifies the plan on
+     * calling `read()` with this stream. Remember that `stdin` is readable,
+     * `stdout` is not.
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/tty.html#c.uv_tty_init)
@@ -70,12 +69,11 @@ public:
      *
      * @return A pointer to the newly created handle.
      */
-    template<typename... Args>
-    static std::shared_ptr<TTYHandle> create(Args&&... args) {
+    static std::shared_ptr<TTYHandle> create(std::shared_ptr<Loop> loop, FileHandle desc, bool readable) {
         static std::weak_ptr<details::ResetModeMemo> rmm;
         auto ptr = rmm.lock();
         if(!ptr) { rmm = ptr = std::make_shared<details::ResetModeMemo>(); }
-        return std::shared_ptr<TTYHandle>{new TTYHandle{std::forward<Args>(args)..., ptr}};
+        return std::shared_ptr<TTYHandle>{new TTYHandle{std::move(loop), std::move(desc), readable, ptr}};
     }
 
     /**

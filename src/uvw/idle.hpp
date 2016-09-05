@@ -6,6 +6,7 @@
 #include <uv.h>
 #include "event.hpp"
 #include "handle.hpp"
+#include "loop.hpp"
 
 
 namespace uvw {
@@ -43,12 +44,11 @@ class IdleHandle final: public Handle<IdleHandle, uv_idle_t> {
 public:
     /**
      * @brief Creates a new check handle.
-     * @param args A pointer to the loop from which the handle generated.
+     * @param loop A pointer to the loop from which the handle generated.
      * @return A pointer to the newly created handle.
      */
-    template<typename... Args>
-    static std::shared_ptr<IdleHandle> create(Args&&... args) {
-        return std::shared_ptr<IdleHandle>{new IdleHandle{std::forward<Args>(args)...}};
+    static std::shared_ptr<IdleHandle> create(std::shared_ptr<Loop> loop) {
+        return std::shared_ptr<IdleHandle>{new IdleHandle{std::move(loop)}};
     }
 
     /**
