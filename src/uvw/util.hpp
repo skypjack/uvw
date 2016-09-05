@@ -537,8 +537,16 @@ struct Utilities {
     }
 
     /**
+     * @brief Gets the executable path.
+     * @return The executable path, an empty string in case of errors.
+     */
+    static std::string exepath() noexcept {
+        return details::path(&uv_exepath);
+    }
+
+    /**
      * @brief Gets the current working directory.
-     * @return The current working directory.
+     * @return The current working directory, an empty string in case of errors.
      */
     static std::string cwd() noexcept {
         return details::path(&uv_cwd);
@@ -559,7 +567,6 @@ struct Utilities {
  * TODO
  *
  * * uv_getrusage
- * * uv_exepath
  * * uv_os_homedir
  * * uv_os_tmpdir
  * * uv_os_get_passwd
