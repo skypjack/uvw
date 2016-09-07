@@ -172,6 +172,9 @@ using Stat = uv_stat_t;
 using Uid = uv_uid_t;
 using Gid = uv_gid_t;
 
+using TimeVal = uv_timeval_t;
+using RUsage = uv_rusage_t;
+
 
 /**
  * @brief The IPv4 tag.
@@ -523,6 +526,16 @@ struct Utilities {
     }
 
     /**
+     * @brief Gets the resource usage measures for the current process.
+     * @return Resource usage measures, zeroes-filled object in case of errors.
+     */
+    static RUsage rusage() noexcept {
+        RUsage ru;
+        auto err = uv_getrusage(&ru);
+        return err ? RUsage{} : ru;
+    }
+
+    /**
      * @brief Gets the current high-resolution real time.
      *
      * The time is expressed in nanoseconds. It is relative to an arbitrary time
@@ -566,7 +579,6 @@ struct Utilities {
 /**
  * TODO
  *
- * * uv_getrusage
  * * uv_os_homedir
  * * uv_os_tmpdir
  * * uv_os_get_passwd
