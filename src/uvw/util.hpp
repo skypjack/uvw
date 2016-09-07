@@ -333,6 +333,28 @@ struct Utilities {
     using CallocFuncType = void*(*)(size_t, size_t);
     using FreeFuncType = void(*)(void*);
 
+    struct OS {
+        /**
+         * TODO
+         *
+         * * uv_os_tmpdir
+         * * uv_os_get_passwd
+         * * uv_os_free_passwd
+         */
+
+        /**
+         * @brief Gets the current user's home directory.
+         *
+         * See the official
+         * [documentation](http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_homedir)
+         * for further details.
+         *
+         * @return The current user's home directory.
+         */
+        static std::string homedir() noexcept {
+            return details::path(&uv_os_homedir);
+        }
+    };
 
     /**
      * @brief Gets the type of the stream to be used with the given descriptor.
@@ -574,16 +596,6 @@ struct Utilities {
         return (0 == uv_chdir(dir.data()));
     }
 };
-
-
-/**
- * TODO
- *
- * * uv_os_homedir
- * * uv_os_tmpdir
- * * uv_os_get_passwd
- * * uv_os_free_passwd
- */
 
 
 }
