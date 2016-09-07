@@ -337,7 +337,6 @@ struct Utilities {
         /**
          * TODO
          *
-         * * uv_os_tmpdir
          * * uv_os_get_passwd
          * * uv_os_free_passwd
          */
@@ -353,6 +352,19 @@ struct Utilities {
          */
         static std::string homedir() noexcept {
             return details::path(&uv_os_homedir);
+        }
+
+        /**
+         * @brief Gets the temp directory.
+         *
+         * See the official
+         * [documentation](http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_tmpdir)
+         * for further details.
+         *
+         * @return The temp directory.
+         */
+        static std::string tmpdir() noexcept {
+            return details::path(&uv_os_tmpdir);
         }
     };
 
