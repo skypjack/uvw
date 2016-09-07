@@ -102,12 +102,12 @@ The following sections will explain in short what it means to initialize and ter
 #### Handles
 
 Initialization is usually performed under the hood and can be even passed over, as far as handles are created using the `Loop::resource` member method.<br/>
-On the other side, handles keep themselves alive until one explicitly closes them. Because of that, leaks are possible if users simply forget about a handle.<br/>
+On the other side, handles keep themselves alive until one explicitly closes them. Because of that, memory usage will grow up if users simply forget about a handle.<br/>
 Thus the rule quickly becomes *always close your handles*. It's simple as calling the `close` member method on them.
 
 #### Requests
 
-Usually initialization is not required for requests objects. Anyway, the recommended way to create a request is still the `Loop::resource` member method.<br/>
+Usually initializing a request object is not required. Anyway, the recommended way to create a request is still through the `Loop::resource` member method.<br/>
 Requests will keep themselves alive as long as they are bound to unfinished underlying activities. This means that users have not to discard explicitly a request.<br/>
 Thus the rule quickly becomes *feel free to make a request and forget about it*. It's simple as calling a member method on them.
 
