@@ -176,6 +176,20 @@ using TimeVal = uv_timeval_t;
 using RUsage = uv_rusage_t;
 
 
+struct Passwd {
+    Passwd(std::shared_ptr<uv_passwd_t> passwd): passwd{passwd} { }
+
+    std::string username() const noexcept { return passwd->username; }
+    Uid uid() const noexcept { return passwd->uid; }
+    Gid gid() const noexcept { return passwd->gid; }
+    std::string shell() const noexcept { return passwd->shell; }
+    std::string homedir() const noexcept { return passwd->homedir; }
+
+private:
+    std::shared_ptr<uv_passwd_t> passwd;
+};
+
+
 /**
  * @brief The IPv4 tag.
  *
@@ -335,13 +349,6 @@ struct Utilities {
 
     struct OS {
         /**
-         * TODO
-         *
-         * * uv_os_get_passwd
-         * * uv_os_free_passwd
-         */
-
-        /**
          * @brief Gets the current user's home directory.
          *
          * See the official
@@ -365,6 +372,29 @@ struct Utilities {
          */
         static std::string tmpdir() noexcept {
             return details::path(&uv_os_tmpdir);
+        }
+
+        /**
+         * @brief Gets a subset of the password file entry.
+         *
+         * This function can be used to get the subset of the password file
+         * entry for the current effective uid (not the real uid).
+         *
+         * See the official
+         * [documentation](http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_get_passwd)
+         * for further details.
+         *
+         * @return The accessible subset of the password file entry.
+         */
+        static Passwd passwd() noexcept {
+            auto deleter = [](uv_passwd_t *passwd){
+                uv_os_free_passwd(passwd);
+                delete passwd;
+            };
+
+            std::shared_ptr<uv_passwd_t> ptr{new uv_passwd_t, std::move(deleter)};
+            uv_os_get_passwd(ptr.get());
+            return ptr;
         }
     };
 
