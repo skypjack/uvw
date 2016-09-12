@@ -16,6 +16,7 @@ set(
     ${CMAKE_THREAD_LIBS_INIT}
     ${GOOGLETEST_LIBRARIES}
     ${UV_LIBRARIES}
+    ${LIBRT_LIBRARIES}
 )
 
 # List of available targets

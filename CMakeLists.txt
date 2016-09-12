@@ -92,6 +92,7 @@ find_package(UV REQUIRED)
 find_package(Threads REQUIRED)
 find_package(GoogleTest)
 find_package(Doxygen 1.8)
+find_package(LibRt)
 
 #
 # Referenced directories and targets
