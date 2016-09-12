@@ -1,0 +1,27 @@
+sudo: false
+language: generic
+
+cache:
+  apt: true
+
+matrix:
+  include:
+  - os: linux
+    compiler: gcc
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - cmake
+        - g++-5
+    env: COMPILER=g++-5
+
+before_script:
+- cmake --version
+- ./deps.sh
+
+script:
+- mkdir build
+- cd build
+- cmake -DCMAKE_CXX_COMPILER=$COMPILER .. && make && make test
