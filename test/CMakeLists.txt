@@ -19,6 +19,9 @@ set(
     ${LIBRT_LIBRARIES}
 )
 
+add_library(odr OBJECT odr.cpp)
+target_include_directories(odr PRIVATE ${COMMON_INCLUDE_DIRS})
+
 # List of available targets
 
 set(TARGET_MAIN main)
@@ -34,7 +37,7 @@ set(TARGET_WORK work)
 
 # Test TARGET_MAIN
 
-set(TARGET_MAIN_SOURCES odr.cpp main.cpp)
+set(TARGET_MAIN_SOURCES $<TARGET_OBJECTS:odr> main.cpp)
 add_executable(${TARGET_MAIN} ${TARGET_MAIN_SOURCES})
 target_include_directories(${TARGET_MAIN} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_MAIN} PRIVATE ${COMMON_LINK_LIBS})
@@ -42,7 +45,7 @@ add_test(NAME ${TARGET_MAIN} COMMAND ${TARGET_MAIN})
 
 # Test TARGET_ASYNC
 
-set(TARGET_ASYNC_SOURCES odr.cpp uvw/async.cpp)
+set(TARGET_ASYNC_SOURCES $<TARGET_OBJECTS:odr> uvw/async.cpp)
 add_executable(${TARGET_ASYNC} ${TARGET_ASYNC_SOURCES})
 target_include_directories(${TARGET_ASYNC} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_ASYNC} PRIVATE ${COMMON_LINK_LIBS})
@@ -50,7 +53,7 @@ add_test(NAME ${TARGET_ASYNC} COMMAND ${TARGET_ASYNC})
 
 # Test TARGET_CHECK
 
-set(TARGET_CHECK_SOURCES odr.cpp uvw/check.cpp)
+set(TARGET_CHECK_SOURCES $<TARGET_OBJECTS:odr> uvw/check.cpp)
 add_executable(${TARGET_CHECK} ${TARGET_CHECK_SOURCES})
 target_include_directories(${TARGET_CHECK} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_CHECK} PRIVATE ${COMMON_LINK_LIBS})
@@ -58,7 +61,7 @@ add_test(NAME ${TARGET_CHECK} COMMAND ${TARGET_CHECK})
 
 # Test TARGET_EMITTER
 
-set(TARGET_EMITTER_SOURCES odr.cpp uvw/emitter.cpp)
+set(TARGET_EMITTER_SOURCES $<TARGET_OBJECTS:odr> uvw/emitter.cpp)
 add_executable(${TARGET_EMITTER} ${TARGET_EMITTER_SOURCES})
 target_include_directories(${TARGET_EMITTER} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_EMITTER} PRIVATE ${COMMON_LINK_LIBS})
@@ -66,7 +69,7 @@ add_test(NAME ${TARGET_EMITTER} COMMAND ${TARGET_EMITTER})
 
 # Test TARGET_IDLE
 
-set(TARGET_IDLE_SOURCES odr.cpp uvw/idle.cpp)
+set(TARGET_IDLE_SOURCES $<TARGET_OBJECTS:odr> uvw/idle.cpp)
 add_executable(${TARGET_IDLE} ${TARGET_IDLE_SOURCES})
 target_include_directories(${TARGET_IDLE} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_IDLE} PRIVATE ${COMMON_LINK_LIBS})
@@ -74,7 +77,7 @@ add_test(NAME ${TARGET_IDLE} COMMAND ${TARGET_IDLE})
 
 # Test TARGET_LOOP
 
-set(TARGET_LOOP_SOURCES odr.cpp uvw/loop.cpp)
+set(TARGET_LOOP_SOURCES $<TARGET_OBJECTS:odr> uvw/loop.cpp)
 add_executable(${TARGET_LOOP} ${TARGET_LOOP_SOURCES})
 target_include_directories(${TARGET_LOOP} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_LOOP} PRIVATE ${COMMON_LINK_LIBS})
@@ -82,7 +85,7 @@ add_test(NAME ${TARGET_LOOP} COMMAND ${TARGET_LOOP})
 
 # Test TARGET_PREPARE
 
-set(TARGET_PREPARE_SOURCES odr.cpp uvw/prepare.cpp)
+set(TARGET_PREPARE_SOURCES $<TARGET_OBJECTS:odr> uvw/prepare.cpp)
 add_executable(${TARGET_PREPARE} ${TARGET_PREPARE_SOURCES})
 target_include_directories(${TARGET_PREPARE} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_PREPARE} PRIVATE ${COMMON_LINK_LIBS})
@@ -90,7 +93,7 @@ add_test(NAME ${TARGET_PREPARE} COMMAND ${TARGET_PREPARE})
 
 # Test TARGET_SIGNAL
 
-set(TARGET_SIGNAL_SOURCES odr.cpp uvw/signal.cpp)
+set(TARGET_SIGNAL_SOURCES $<TARGET_OBJECTS:odr> uvw/signal.cpp)
 add_executable(${TARGET_SIGNAL} ${TARGET_SIGNAL_SOURCES})
 target_include_directories(${TARGET_SIGNAL} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_SIGNAL} PRIVATE ${COMMON_LINK_LIBS})
@@ -98,7 +101,7 @@ add_test(NAME ${TARGET_SIGNAL} COMMAND ${TARGET_SIGNAL})
 
 # Test TARGET_TIMER
 
-set(TARGET_TIMER_SOURCES odr.cpp uvw/timer.cpp)
+set(TARGET_TIMER_SOURCES $<TARGET_OBJECTS:odr> uvw/timer.cpp)
 add_executable(${TARGET_TIMER} ${TARGET_TIMER_SOURCES})
 target_include_directories(${TARGET_TIMER} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_TIMER} PRIVATE ${COMMON_LINK_LIBS})
@@ -106,7 +109,7 @@ add_test(NAME ${TARGET_TIMER} COMMAND ${TARGET_TIMER})
 
 # Test TARGET_WORK
 
-set(TARGET_WORK_SOURCES odr.cpp uvw/work.cpp)
+set(TARGET_WORK_SOURCES $<TARGET_OBJECTS:odr> uvw/work.cpp)
 add_executable(${TARGET_WORK} ${TARGET_WORK_SOURCES})
 target_include_directories(${TARGET_WORK} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_WORK} PRIVATE ${COMMON_LINK_LIBS})
