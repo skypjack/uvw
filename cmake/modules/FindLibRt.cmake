@@ -1,14 +1,7 @@
-#.rst:
 # FindLibRt
 # --------
 #
 # Find the native realtime includes and library.
-#
-# IMPORTED Targets
-# ^^^^^^^^^^^^^^^^
-#
-# This module defines :prop_tgt:`IMPORTED` target ``LIBRT::LIBRT``, if
-# LIBRT has been found.
 #
 # Result Variables
 # ^^^^^^^^^^^^^^^^
