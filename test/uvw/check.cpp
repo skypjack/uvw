@@ -38,7 +38,7 @@ TEST(Check, Fake) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::CheckHandle>();
 
-    auto l = [](const auto &, auto &) { ASSERT_FALSE(true); };
+    auto l = [](const auto &, auto &) { FAIL(); };
     handle->on<uvw::ErrorEvent>(l);
     handle->on<uvw::CheckEvent>(l);
 
