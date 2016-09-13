@@ -10,9 +10,9 @@ TEST(Signal, Fake) {
     handle->on<uvw::ErrorEvent>(l);
     handle->on<uvw::CheckEvent>(l);
 
-    handle->start(42);
+    handle->start(2);
 
-    ASSERT_EQ(42, handle->signal());
+    ASSERT_EQ(2, handle->signal());
 
     handle->stop();
     handle->close();

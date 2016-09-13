@@ -15,9 +15,12 @@ set(
     COMMON_LINK_LIBS
     ${CMAKE_THREAD_LIBS_INIT}
     ${GOOGLETEST_LIBRARIES}
-    ${UV_LIBRARIES}
-    ${LIBRT_LIBRARIES}
+    ${UV_STATIC_LIBRARY}
 )
+
+if(${LIBRT_FOUND})
+    list(APPEND COMMON_LINK_LIBS ${LIBRT_LIBRARIES})
+endif(${LIBRT_FOUND})
 
 add_library(odr OBJECT odr.cpp)
 target_include_directories(odr PRIVATE ${COMMON_INCLUDE_DIRS})
