@@ -2,7 +2,7 @@
 
 # uvw
 
-[![Build Status](https://travis-ci.org/tusharpm/uvw.svg?branch=master)](https://travis-ci.org/tusharpm/uvw)
+[![Build Status](https://travis-ci.org/skypjack/uvw.svg?branch=master)](https://travis-ci.org/skypjack/uvw)
 
 # Introduction
 
