@@ -2,6 +2,8 @@
 
 # uvw
 
+[![Build Status](https://travis-ci.org/skypjack/uvw.svg?branch=master)](https://travis-ci.org/skypjack/uvw)
+
 # Introduction
 
 `uvw` is a header-only, event based, tiny and easy to use *libuv* wrapper in modern C++.<br/>
