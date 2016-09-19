@@ -9,13 +9,13 @@ TEST(Loop, PartiallyDone) {
     ASSERT_FALSE(def->alive());
     ASSERT_NO_THROW(def->stop());
 
-    def->walk([](uvw::BaseHandle &) { ASSERT_TRUE(false); });
+    def->walk([](uvw::BaseHandle &) { FAIL(); });
 
     auto loop = uvw::Loop::create();
     auto handle = loop->resource<uvw::PrepareHandle>();
-    auto req = loop->resource<uvw::WorkReq>([]() {});
+    auto req = loop->resource<uvw::WorkReq>([]{});
 
-    auto err = [](const auto &, auto &) { ASSERT_TRUE(false); };
+    auto err = [](const auto &, auto &) { FAIL(); };
 
     loop->on<uvw::ErrorEvent>(err);
     req->on<uvw::ErrorEvent>(err);
@@ -40,7 +40,7 @@ TEST(Loop, PartiallyDone) {
     ASSERT_TRUE(loop->alive());
     ASSERT_NO_THROW(loop->run());
 
-    loop->walk([](uvw::BaseHandle &) { ASSERT_TRUE(false); });
+    loop->walk([](uvw::BaseHandle &) { FAIL(); });
 
     ASSERT_NO_THROW(loop->run<uvw::Loop::Mode::ONCE>());
     ASSERT_NO_THROW(loop->run<uvw::Loop::Mode::NOWAIT>());
