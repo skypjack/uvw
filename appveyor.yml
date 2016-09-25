@@ -4,7 +4,7 @@ version: 1.0.{build}
 image: Visual Studio 2015
 
 environment:
-  BUILD_DIR: "%APPVEYOR_BUILD_FOLDER%/build"
+  BUILD_DIR: "%APPVEYOR_BUILD_FOLDER%\\build"
 
 platform:
   - Win32
@@ -23,4 +23,4 @@ build:
   project: build/uvw.sln
   verbosity: minimal
 
-test_script: "%BUILD_DIR%/runtests.bat"
+test_script: "%APPVEYOR_BUILD_FOLDER%\\runtests.bat"
