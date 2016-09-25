@@ -28,7 +28,7 @@ enum class UVProcessFlags: std::underlying_type_t<uv_process_flags> {
 
 
 enum class UVStdIOFlags: std::underlying_type_t<uv_stdio_flags> {
-    IGNORE = UV_IGNORE,
+    IO_IGNORE = UV_IGNORE,
     CREATE_PIPE = UV_CREATE_PIPE,
     INHERIT_FD = UV_INHERIT_FD,
     INHERIT_STREAM = UV_INHERIT_STREAM,

@@ -171,7 +171,9 @@ class StreamHandle: public Handle<T, U> {
     }
 
 protected:
-    using Handle<T, U>::Handle;
+	StreamHandle(std::shared_ptr<Loop> ref) noexcept
+        : Handle{std::move(ref)}
+    { }
 
 public:
     /**

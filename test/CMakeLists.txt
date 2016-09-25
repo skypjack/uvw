@@ -22,6 +22,10 @@ if(${LIBRT_FOUND})
     list(APPEND COMMON_LINK_LIBS ${LIBRT_LIBRARIES})
 endif(${LIBRT_FOUND})
 
+if(WIN32)
+    list(APPEND COMMON_LINK_LIBS ws2_32)
+endif(WIN32)
+
 add_library(odr OBJECT odr.cpp)
 target_include_directories(odr PRIVATE ${COMMON_INCLUDE_DIRS})
 
