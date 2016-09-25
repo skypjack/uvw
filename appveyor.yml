@@ -7,7 +7,7 @@ environment:
   BUILD_DIR: "%APPVEYOR_BUILD_FOLDER%/build"
 
 platform:
-  - x86
+  - Win32
   - x64
 
 configuration:

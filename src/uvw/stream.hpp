@@ -171,9 +171,13 @@ class StreamHandle: public Handle<T, U> {
     }
 
 protected:
+#ifdef _WIN32
 	StreamHandle(std::shared_ptr<Loop> ref) noexcept
         : Handle{std::move(ref)}
     { }
+#else
+    using Handle<T, U>::Handle;
+#endif
 
 public:
     /**

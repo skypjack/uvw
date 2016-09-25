@@ -2,7 +2,8 @@
 
 set SRC_DIR=%~dp0
 
-if not defined platform set platform=x86
+if not defined ARCH set ARCH=x86
+if defined platform if "%platform%"=="x64" set ARCH=x64
 
 @rem init/update submodules
 cd %SRC_DIR%
@@ -16,7 +17,7 @@ git submodule update --init
 
 cd %SRC_DIR%deps\libuv
 @rem the arguments to vcbuild make all the difference to further builds
-call vcbuild.bat release %platform% shared
+call vcbuild.bat release %ARCH% shared
 
 if "%msbuild_platform%"=="x64" (
     set CMAKE_GENERATOR_NAME=Visual Studio 14 2015 Win64
