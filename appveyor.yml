@@ -1,5 +1,5 @@
 # can use variables like {build} and {branch}
-version: 1.0.0
+version: 1.0.{build}
 
 image: Visual Studio 2015
 
@@ -20,7 +20,7 @@ before_build:
 
 build:
   parallel: true
-  project: "%BUILD_DIR%/uvw.sln"
+  project: build/uvw.sln
   verbosity: minimal
 
 test_script: "%BUILD_DIR%/runtests.bat"
