@@ -199,7 +199,7 @@ public:
      *
      * Available flags are:
      *
-     * * `ProcessHandle::StdIO::IGNORE`
+     * * `ProcessHandle::StdIO::IO_IGNORE`
      * * `ProcessHandle::StdIO::CREATE_PIPE`
      * * `ProcessHandle::StdIO::INHERIT_FD`
      * * `ProcessHandle::StdIO::INHERIT_STREAM`
@@ -229,7 +229,7 @@ public:
      *
      * Available flags are:
      *
-     * * `ProcessHandle::StdIO::IGNORE`
+     * * `ProcessHandle::StdIO::IO_IGNORE`
      * * `ProcessHandle::StdIO::CREATE_PIPE`
      * * `ProcessHandle::StdIO::INHERIT_FD`
      * * `ProcessHandle::StdIO::INHERIT_STREAM`

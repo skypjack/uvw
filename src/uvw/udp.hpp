@@ -246,13 +246,13 @@ public:
      * * `UDPHandle::Membership::JOIN_GROUP`
      *
      * @param multicast Multicast address to set membership for.
-     * @param interface_addr Interface address.
+     * @param iface Interface address.
      * @param membership Action to be performed.
      * @return True in case of success, false otherwise.
      */
     template<typename I = IPv4>
-    bool multicastMembership(std::string multicast, std::string interface_addr, Membership membership) {
-        return (0 == uv_udp_set_membership(get<uv_udp_t>(), multicast.data(), interface_addr.data(), static_cast<uv_membership>(membership)));
+    bool multicastMembership(std::string multicast, std::string iface, Membership membership) {
+        return (0 == uv_udp_set_membership(get<uv_udp_t>(), multicast.data(), iface.data(), static_cast<uv_membership>(membership)));
     }
 
     /**
@@ -278,12 +278,12 @@ public:
 
     /**
      * @brief Sets the multicast interface to send or receive data on.
-     * @param interface_addr Interface address.
+     * @param iface Interface address.
      * @return True in case of success, false otherwise.
      */
     template<typename I = IPv4>
-    bool multicastInterface(std::string interface_addr) {
-        return (0 == uv_udp_set_multicast_interface(get<uv_udp_t>(), interface_addr.data()));
+    bool multicastInterface(std::string iface) {
+        return (0 == uv_udp_set_multicast_interface(get<uv_udp_t>(), iface.data()));
     }
 
     /**
