@@ -28,7 +28,7 @@ enum class UVProcessFlags: std::underlying_type_t<uv_process_flags> {
 
 
 enum class UVStdIOFlags: std::underlying_type_t<uv_stdio_flags> {
-    IGNORE = UV_IGNORE,
+    IGNORE_STREAM = UV_IGNORE,
     CREATE_PIPE = UV_CREATE_PIPE,
     INHERIT_FD = UV_INHERIT_FD,
     INHERIT_STREAM = UV_INHERIT_STREAM,
@@ -199,7 +199,7 @@ public:
      *
      * Available flags are:
      *
-     * * `ProcessHandle::StdIO::IGNORE`
+     * * `ProcessHandle::StdIO::IGNORE_STREAM`
      * * `ProcessHandle::StdIO::CREATE_PIPE`
      * * `ProcessHandle::StdIO::INHERIT_FD`
      * * `ProcessHandle::StdIO::INHERIT_STREAM`
@@ -229,7 +229,7 @@ public:
      *
      * Available flags are:
      *
-     * * `ProcessHandle::StdIO::IGNORE`
+     * * `ProcessHandle::StdIO::IGNORE_STREAM`
      * * `ProcessHandle::StdIO::CREATE_PIPE`
      * * `ProcessHandle::StdIO::INHERIT_FD`
      * * `ProcessHandle::StdIO::INHERIT_STREAM`

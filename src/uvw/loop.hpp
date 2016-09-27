@@ -1,5 +1,8 @@
 #pragma once
 
+#ifdef _WIN32
+#include <ciso646>
+#endif
 
 #include <new>
 #include <memory>

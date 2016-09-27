@@ -11,6 +11,12 @@
 #include <array>
 #include <uv.h>
 
+#ifdef _WIN32
+// MSVC doesn't have C++14 relaxed constexpr support yet. Hence the jugglery.
+#define R_CONSTEXPR
+#else
+#define R_CONSTEXPR constexpr
+#endif
 
 namespace uvw {
 
@@ -97,12 +103,12 @@ public:
 
     ~Flags() noexcept { static_assert(std::is_enum<E>::value, "!"); }
 
-    constexpr Flags& operator=(const Flags &f) noexcept {
+    R_CONSTEXPR Flags& operator=(const Flags &f) noexcept {
         flags = f.flags;
         return *this;
     }
 
-    constexpr Flags& operator=(Flags &&f) noexcept {
+    R_CONSTEXPR Flags& operator=(Flags &&f) noexcept {
         flags = std::move(f.flags);
         return *this;
     }
@@ -314,7 +320,7 @@ Addr address(F &&f, const H *handle) noexcept {
 template<typename F, typename... Args>
 std::string path(F &&f, Args... args) noexcept {
     std::size_t size = DEFAULT_SIZE;
-    char buf[size];
+    char buf[DEFAULT_SIZE];
     std::string str{};
     auto err = std::forward<F>(f)(args..., buf, &size);
 
@@ -475,13 +481,7 @@ struct Utilities {
 
         if(0 == uv_cpu_info(&infos, &count)) {
             std::for_each(infos, infos+count, [&cpuinfos](const auto &info) {
-                CPUInfo cpuinfo;
-
-                cpuinfo.model = info.model;
-                cpuinfo.speed = info.speed;
-                cpuinfo.times = info.cpu_times;
-
-                cpuinfos.push_back(std::move(cpuinfo));
+                cpuinfos.push_back({ info.model, info.speed, info.cpu_times });
             });
 
             uv_free_cpu_info(infos, count);
@@ -507,21 +507,23 @@ struct Utilities {
 
         if(0 == uv_interface_addresses(&ifaces, &count)) {
             std::for_each(ifaces, ifaces+count, [&interfaces](const auto &iface) {
-                InterfaceAddress interface;
-
-                interface.name = iface.name;
-                interface.physical = iface.phys_addr;
-                interface.internal = iface.is_internal;
-
                 if(iface.address.address4.sin_family == AF_INET) {
-                    interface.address = details::address<IPv4>(&iface.address.address4);
-                    interface.netmask = details::address<IPv4>(&iface.netmask.netmask4);
+                    interfaces.push_back({
+                        iface.name,
+                        iface.phys_addr,
+                        iface.is_internal == 0 ? false : true,
+                        details::address<IPv4>(&iface.address.address4),
+                        details::address<IPv4>(&iface.netmask.netmask4)
+                    });
                 } else if(iface.address.address4.sin_family == AF_INET6) {
-                    interface.address = details::address<IPv6>(&iface.address.address6);
-                    interface.netmask = details::address<IPv6>(&iface.netmask.netmask6);
+                    interfaces.push_back({
+                        iface.name,
+                        iface.phys_addr,
+                        iface.is_internal == 0 ? false : true,
+                        details::address<IPv6>(&iface.address.address6),
+                        details::address<IPv6>(&iface.netmask.netmask6)
+                    });
                 }
-
-                interfaces.push_back(std::move(interface));
             });
 
             uv_free_interface_addresses(ifaces, count);

@@ -22,14 +22,16 @@ find_path(
 )
 
 find_library(
-    UV_STATIC_LIBRARY NAMES libuv.a
-    PATHS ${BUILD_DEPS_DIR}/${UV_DEPS_DIR}/.libs/
+    UV_STATIC_LIBRARY NAMES libuv.a libuv
+    PATHS ${BUILD_DEPS_DIR}/${UV_DEPS_DIR}
+    PATH_SUFFIXES .libs Release
     NO_DEFAULT_PATH
 )
 
 find_library(
-    UV_SHARED_LIBRARY NAMES uv
-    PATHS ${BUILD_DEPS_DIR}/${UV_DEPS_DIR}/.libs/
+    UV_SHARED_LIBRARY NAMES uv libuv
+    PATHS ${BUILD_DEPS_DIR}/${UV_DEPS_DIR}
+    PATH_SUFFIXES .libs Release
     NO_DEFAULT_PATH
 )
 

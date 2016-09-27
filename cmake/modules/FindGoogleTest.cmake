@@ -30,24 +30,28 @@ find_path(
 find_library(
     GOOGLETEST_LIBRARY NAMES gtest
     PATHS ${BUILD_DEPS_DIR}/${GOOGLETEST_DEPS_DIR}/build/googlemock/gtest/
+    PATH_SUFFIXES Release
     NO_DEFAULT_PATH
 )
 
 find_library(
     GOOGLETEST_MAIN_LIBRARY NAMES gtest_main
     PATHS ${BUILD_DEPS_DIR}/${GOOGLETEST_DEPS_DIR}/build/googlemock/gtest/
+    PATH_SUFFIXES Release
     NO_DEFAULT_PATH
 )
 
 find_library(
     GOOGLEMOCK_LIBRARY NAMES gmock
     PATHS ${BUILD_DEPS_DIR}/${GOOGLETEST_DEPS_DIR}/build/googlemock/
+    PATH_SUFFIXES Release
     NO_DEFAULT_PATH
 )
 
 find_library(
     GOOGLEMOCK_MAIN_LIBRARY NAMES gmock_main
     PATHS ${BUILD_DEPS_DIR}/${GOOGLETEST_DEPS_DIR}/build/googlemock/
+    PATH_SUFFIXES Release
     NO_DEFAULT_PATH
 )
 
