@@ -481,13 +481,7 @@ struct Utilities {
 
         if(0 == uv_cpu_info(&infos, &count)) {
             std::for_each(infos, infos+count, [&cpuinfos](const auto &info) {
-                CPUInfo cpuinfo;
-
-                cpuinfo.model = info.model;
-                cpuinfo.speed = info.speed;
-                cpuinfo.times = info.cpu_times;
-
-                cpuinfos.push_back(std::move(cpuinfo));
+                cpuinfos.push_back({ info.model, info.speed, info.cpu_times });
             });
 
             uv_free_cpu_info(infos, count);
@@ -513,21 +507,23 @@ struct Utilities {
 
         if(0 == uv_interface_addresses(&ifaces, &count)) {
             std::for_each(ifaces, ifaces+count, [&interfaces](const auto &iface) {
-                InterfaceAddress tInterface;
-
-                tInterface.name = iface.name;
-                tInterface.physical = iface.phys_addr;
-                tInterface.internal = iface.is_internal;
-
                 if(iface.address.address4.sin_family == AF_INET) {
-                    tInterface.address = details::address<IPv4>(&iface.address.address4);
-                    tInterface.netmask = details::address<IPv4>(&iface.netmask.netmask4);
+                    interfaces.push_back({
+                        iface.name,
+                        iface.phys_addr,
+                        iface.is_internal,
+                        details::address<IPv4>(&iface.address.address4),
+                        details::address<IPv4>(&iface.netmask.netmask4)
+                    });
                 } else if(iface.address.address4.sin_family == AF_INET6) {
-                    tInterface.address = details::address<IPv6>(&iface.address.address6);
-                    tInterface.netmask = details::address<IPv6>(&iface.netmask.netmask6);
+                    interfaces.push_back({
+                        iface.name,
+                        iface.phys_addr,
+                        iface.is_internal,
+                        details::address<IPv6>(&iface.address.address6),
+                        details::address<IPv6>(&iface.netmask.netmask6)
+                    });
                 }
-
-                interfaces.push_back(std::move(tInterface));
             });
 
             uv_free_interface_addresses(ifaces, count);
