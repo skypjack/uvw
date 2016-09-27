@@ -511,7 +511,7 @@ struct Utilities {
                     interfaces.push_back({
                         iface.name,
                         iface.phys_addr,
-                        iface.is_internal,
+                        iface.is_internal == 0 ? false : true,
                         details::address<IPv4>(&iface.address.address4),
                         details::address<IPv4>(&iface.netmask.netmask4)
                     });
@@ -519,7 +519,7 @@ struct Utilities {
                     interfaces.push_back({
                         iface.name,
                         iface.phys_addr,
-                        iface.is_internal,
+                        iface.is_internal == 0 ? false : true,
                         details::address<IPv6>(&iface.address.address6),
                         details::address<IPv6>(&iface.netmask.netmask6)
                     });
