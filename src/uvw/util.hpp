@@ -11,12 +11,14 @@
 #include <array>
 #include <uv.h>
 
+
 #ifdef _WIN32
 // MSVC doesn't have C++14 relaxed constexpr support yet. Hence the jugglery.
 #define R_CONSTEXPR
 #else
 #define R_CONSTEXPR constexpr
 #endif
+
 
 namespace uvw {
 
