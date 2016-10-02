@@ -243,7 +243,7 @@ public:
      * An EndEvent event will be emitted when there is no more data to read.
      */
     void read() {
-        this->invoke(&uv_read_start, this->template get<uv_stream_t>(), &allocCallback, &readCallback);
+        this->invoke(&uv_read_start, this->template get<uv_stream_t>(), &this->allocCallback, &readCallback);
     }
 
     /**

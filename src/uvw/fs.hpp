@@ -428,13 +428,13 @@ protected:
 
     template<typename... Args>
     void cleanupAndInvoke(Args&&... args) {
-        uv_fs_req_cleanup(get());
+        uv_fs_req_cleanup(this->get());
         this->invoke(std::forward<Args>(args)...);
     }
 
     template<typename F, typename... Args>
     void cleanupAndInvokeSync(F &&f, Args&&... args) {
-        uv_fs_req_cleanup(get());
+        uv_fs_req_cleanup(this->get());
         std::forward<F>(f)(std::forward<Args>(args)..., nullptr);
     }
 
