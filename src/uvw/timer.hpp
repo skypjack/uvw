@@ -65,14 +65,14 @@ public:
      * @param repeat Milliseconds between successive events.
      */
     void start(Time timeout, Time repeat) {
-        invoke(&uv_timer_start, get<uv_timer_t>(), &startCallback, timeout.count(), repeat.count());
+        invoke(&uv_timer_start, get(), &startCallback, timeout.count(), repeat.count());
     }
 
     /**
      * @brief Stops the handle.
      */
     void stop() {
-        invoke(&uv_timer_stop, get<uv_timer_t>());
+        invoke(&uv_timer_stop, get());
     }
 
     /**
@@ -83,7 +83,7 @@ public:
      * If the timer has never been started before it emits an ErrorEvent event.
      */
     void again() {
-        invoke(&uv_timer_again, get<uv_timer_t>());
+        invoke(&uv_timer_again, get());
     }
 
     /**
@@ -104,7 +104,7 @@ public:
      * @param repeat Repeat interval in milliseconds.
      */
     void repeat(Time repeat) {
-        uv_timer_set_repeat(get<uv_timer_t>(), repeat.count());
+        uv_timer_set_repeat(get(), repeat.count());
     }
 
     /**
@@ -112,7 +112,7 @@ public:
      * @return Timer repeat value in milliseconds.
      */
     Time repeat() {
-        return Time{uv_timer_get_repeat(get<uv_timer_t>())};
+        return Time{uv_timer_get_repeat(get())};
     }
 };
 

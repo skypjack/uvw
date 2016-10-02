@@ -29,19 +29,19 @@ protected:
           pLoop{std::move(ref)},
           resource{}
     {
-        this->template get<U>()->data = static_cast<T*>(this);
+        resource.data = static_cast<T*>(this);
     }
 
     auto parent() const noexcept {
         return pLoop->loop.get();
     }
 
-    template<typename R>
+    template<typename R = U>
     auto get() noexcept {
         return reinterpret_cast<R*>(&resource);
     }
 
-    template<typename R>
+    template<typename R = U>
     auto get() const noexcept {
         return reinterpret_cast<const R*>(&resource);
     }

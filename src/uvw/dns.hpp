@@ -98,11 +98,11 @@ class GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
     using Request::Request;
 
     void getNodeAddrInfo(const char *node, const char *service, addrinfo *hints = nullptr) {
-        invoke(&uv_getaddrinfo, parent(), get<uv_getaddrinfo_t>(), &getAddrInfoCallback, node, service, hints);
+        invoke(&uv_getaddrinfo, parent(), get(), &getAddrInfoCallback, node, service, hints);
     }
 
     auto getNodeAddrInfoSync(const char *node, const char *service, addrinfo *hints = nullptr) {
-        auto req = get<uv_getaddrinfo_t>();
+        auto req = get();
         auto err = uv_getaddrinfo(parent(), req, nullptr, node, service, hints);
         auto ptr = std::unique_ptr<addrinfo, void(*)(addrinfo *)>{req->addrinfo, [](addrinfo *res){ uv_freeaddrinfo(res); }};
         return std::make_pair(ErrorEvent{err}, AddrInfoEvent{std::move(ptr)});
@@ -217,7 +217,7 @@ public:
     void getNameInfo(std::string ip, unsigned int port, int flags = 0) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
-        invoke(&uv_getnameinfo, parent(), get<uv_getnameinfo_t>(), &getNameInfoCallback, &addr, flags);
+        invoke(&uv_getnameinfo, parent(), get(), &getNameInfoCallback, &addr, flags);
     }
 
     /**
@@ -240,7 +240,7 @@ public:
     auto getNameInfoSync(std::string ip, unsigned int port, int flags = 0) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
-        auto req = get<uv_getnameinfo_t>();
+        auto req = get();
         auto err = uv_getnameinfo(parent(), req, nullptr, &addr, flags);
         return std::make_pair(ErrorEvent{err}, NameInfoEvent{req->host, req->service});
     }

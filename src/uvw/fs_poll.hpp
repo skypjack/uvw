@@ -85,14 +85,14 @@ public:
      * @param interval Milliseconds between successive checks.
      */
     void start(std::string file, unsigned int interval) {
-        invoke(&uv_fs_poll_start, get<uv_fs_poll_t>(), &startCallback, file.data(), interval);
+        invoke(&uv_fs_poll_start, get(), &startCallback, file.data(), interval);
     }
 
     /**
      * @brief Stops the handle.
      */
     void stop() {
-        invoke(&uv_fs_poll_stop, get<uv_fs_poll_t>());
+        invoke(&uv_fs_poll_stop, get());
     }
 
     /**
@@ -100,7 +100,7 @@ public:
      * @return The path being monitored by the handle.
      */
     std::string path() noexcept {
-        return details::path(&uv_fs_poll_getpath, get<uv_fs_poll_t>());
+        return details::path(&uv_fs_poll_getpath, get());
     }
 };
 

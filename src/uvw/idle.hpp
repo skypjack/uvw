@@ -66,14 +66,14 @@ public:
      * polling the PrepareHandle handles.
      */
     void start() {
-        invoke(&uv_idle_start, get<uv_idle_t>(), &startCallback);
+        invoke(&uv_idle_start, get(), &startCallback);
     }
 
     /**
      * @brief Stops the handle.
      */
     void stop() {
-        invoke(&uv_idle_stop, get<uv_idle_t>());
+        invoke(&uv_idle_stop, get());
     }
 };
 

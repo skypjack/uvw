@@ -139,7 +139,7 @@ public:
         po.uid = poUid;
         po.gid = poGid;
 
-        invoke(&uv_spawn, parent(), get<uv_process_t>(), &po);
+        invoke(&uv_spawn, parent(), get(), &po);
     }
 
     /**
@@ -147,7 +147,7 @@ public:
      * @param signum A valid signal identifier.
      */
     void kill(int signum) {
-        invoke(&uv_process_kill, get<uv_process_t>(), signum);
+        invoke(&uv_process_kill, get(), signum);
     }
 
     /**
@@ -158,7 +158,7 @@ public:
      * @return The PID of the spawned process.
      */
     int pid() noexcept {
-        return get<uv_process_t>()->pid;
+        return get()->pid;
     }
 
     /**

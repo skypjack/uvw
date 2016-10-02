@@ -101,7 +101,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool mode(Mode m) {
-        return (0 == uv_tty_set_mode(get<uv_tty_t>(), static_cast<std::underlying_type_t<Mode>>(m)));
+        return (0 == uv_tty_set_mode(get(), static_cast<std::underlying_type_t<Mode>>(m)));
     }
 
     /**
@@ -119,7 +119,7 @@ public:
     WinSize getWinSize() {
         WinSize size;
 
-        if(0 != uv_tty_get_winsize(get<uv_tty_t>(), &size.width, &size.height)) {
+        if(0 != uv_tty_get_winsize(get(), &size.width, &size.height)) {
             size.width = -1;
             size.height = -1;
         }

@@ -67,7 +67,7 @@ public:
      * for further details.
      */
     void send() {
-        invoke(&uv_async_send, get<uv_async_t>());
+        invoke(&uv_async_send, get());
     }
 };
 

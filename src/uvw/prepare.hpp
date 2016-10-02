@@ -61,14 +61,14 @@ public:
      * The handle will start emitting PrepareEvent when needed.
      */
     void start() {
-        invoke(&uv_prepare_start, get<uv_prepare_t>(), &startCallback);
+        invoke(&uv_prepare_start, get(), &startCallback);
     }
 
     /**
      * @brief Stops the handle.
      */
     void stop() {
-        invoke(&uv_prepare_stop, get<uv_prepare_t>());
+        invoke(&uv_prepare_stop, get());
     }
 };
 

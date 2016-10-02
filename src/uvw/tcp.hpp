@@ -86,7 +86,7 @@ public:
      * @param sock A valid socket handle (either a file descriptor or a SOCKET).
      */
     void open(OSSocketHandle sock) {
-        invoke(&uv_tcp_open, get<uv_tcp_t>(), sock);
+        invoke(&uv_tcp_open, get(), sock);
     }
 
     /**
@@ -95,7 +95,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool noDelay(bool value = false) {
-        return (0 == uv_tcp_nodelay(get<uv_tcp_t>(), value));
+        return (0 == uv_tcp_nodelay(get(), value));
     }
 
     /**
@@ -105,7 +105,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool keepAlive(bool enable = false, Time time = Time{0}) {
-        return (0 == uv_tcp_keepalive(get<uv_tcp_t>(), enable, time.count()));
+        return (0 == uv_tcp_keepalive(get(), enable, time.count()));
     }
 
     /**
@@ -123,7 +123,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool simultaneousAccepts(bool enable = true) {
-        return (0 == uv_tcp_simultaneous_accepts(get<uv_tcp_t>(), enable));
+        return (0 == uv_tcp_simultaneous_accepts(get(), enable));
     }
 
     /**
@@ -147,7 +147,7 @@ public:
     void bind(std::string ip, unsigned int port, Flags<Bind> flags = Flags<Bind>{}) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        invoke(&uv_tcp_bind, get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags);
+        invoke(&uv_tcp_bind, get(), reinterpret_cast<const sockaddr *>(&addr), flags);
     }
 
     /**
@@ -177,7 +177,7 @@ public:
      */
     template<typename I = IPv4>
     Addr sock() const noexcept {
-        return details::address<I>(&uv_tcp_getsockname, get<uv_tcp_t>());
+        return details::address<I>(&uv_tcp_getsockname, get());
     }
 
     /**
@@ -186,7 +186,7 @@ public:
      */
     template<typename I = IPv4>
     Addr peer() const noexcept {
-        return details::address<I>(&uv_tcp_getpeername, get<uv_tcp_t>());
+        return details::address<I>(&uv_tcp_getpeername, get());
     }
 
     /**
@@ -211,7 +211,7 @@ public:
         auto connect = loop().resource<details::ConnectReq>();
         connect->once<ErrorEvent>(listener);
         connect->once<ConnectEvent>(listener);
-        connect->connect(&uv_tcp_connect, get<uv_tcp_t>(), reinterpret_cast<const sockaddr *>(&addr));
+        connect->connect(&uv_tcp_connect, get(), reinterpret_cast<const sockaddr *>(&addr));
     }
 
     /**
