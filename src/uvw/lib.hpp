@@ -6,7 +6,6 @@
 #include <string>
 #include <uv.h>
 #include "loop.hpp"
-#include "loop.hpp"
 
 
 namespace uvw {

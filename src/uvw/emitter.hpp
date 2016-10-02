@@ -7,7 +7,6 @@
 #include <cstddef>
 #include <vector>
 #include <memory>
-#include <tuple>
 #include <list>
 #include "event.hpp"
 
