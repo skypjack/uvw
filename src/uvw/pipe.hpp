@@ -44,7 +44,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool init() {
-        return initialize<uv_pipe_t>(&uv_pipe_init, ipc);
+        return initialize(&uv_pipe_init, ipc);
     }
 
     /**

@@ -65,7 +65,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool init() {
-        return initialize<uv_signal_t>(&uv_signal_init);
+        return initialize(&uv_signal_init);
     }
 
     /**

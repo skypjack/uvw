@@ -73,8 +73,8 @@ public:
      */
     bool init() {
         return (tag == FLAGS)
-                ? initialize<uv_tcp_t>(&uv_tcp_init_ex, flags)
-                : initialize<uv_tcp_t>(&uv_tcp_init);
+                ? initialize(&uv_tcp_init_ex, flags)
+                : initialize(&uv_tcp_init);
     }
 
     /**

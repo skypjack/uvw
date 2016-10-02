@@ -73,7 +73,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool init() {
-        return initialize<uv_fs_poll_t>(&uv_fs_poll_init);
+        return initialize(&uv_fs_poll_init);
     }
 
     /**

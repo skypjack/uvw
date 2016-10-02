@@ -56,7 +56,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool init() {
-        return initialize<uv_idle_t>(&uv_idle_init);
+        return initialize(&uv_idle_init);
     }
 
     /**

@@ -165,8 +165,8 @@ public:
      */
     bool init() {
         return (tag == FLAGS)
-                ? initialize<uv_udp_t>(&uv_udp_init_ex, flags)
-                : initialize<uv_udp_t>(&uv_udp_init);
+                ? initialize(&uv_udp_init_ex, flags)
+                : initialize(&uv_udp_init);
     }
 
     /**

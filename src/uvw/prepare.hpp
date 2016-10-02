@@ -49,7 +49,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool init() {
-        return initialize<uv_prepare_t>(&uv_prepare_init);
+        return initialize(&uv_prepare_init);
     }
 
     /**

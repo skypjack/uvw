@@ -51,7 +51,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool init() {
-        return initialize<uv_timer_t>(&uv_timer_init);
+        return initialize(&uv_timer_init);
     }
 
     /**

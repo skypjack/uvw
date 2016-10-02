@@ -81,7 +81,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool init() {
-        return initialize<uv_tty_t>(&uv_tty_init, fd, rw);
+        return initialize(&uv_tty_init, fd, rw);
     }
 
     /**

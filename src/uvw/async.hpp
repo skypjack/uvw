@@ -53,7 +53,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool init() {
-        return initialize<uv_async_t>(&uv_async_init, &sendCallback);
+        return initialize(&uv_async_init, &sendCallback);
     }
 
     /**

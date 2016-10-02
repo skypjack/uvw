@@ -109,8 +109,8 @@ public:
      */
     bool init() {
         return (tag == SOCKET)
-                ? initialize<uv_poll_t>(&uv_poll_init_socket, socket)
-                : initialize<uv_poll_t>(&uv_poll_init, fd);
+                ? initialize(&uv_poll_init_socket, socket)
+                : initialize(&uv_poll_init, fd);
     }
 
     /**

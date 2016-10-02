@@ -43,10 +43,10 @@ protected:
         *buf = uv_buf_init(new char[suggested], suggested);
     }
 
-    template<typename H, typename F, typename... Args>
+    template<typename F, typename... Args>
     bool initialize(F &&f, Args&&... args) {
         if(!this->self()) {
-            auto err = std::forward<F>(f)(this->parent(), this->template get<H>(), std::forward<Args>(args)...);
+            auto err = std::forward<F>(f)(this->parent(), this->get(), std::forward<Args>(args)...);
 
             if(err) {
                 this->publish(ErrorEvent{err});

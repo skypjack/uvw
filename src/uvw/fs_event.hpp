@@ -109,7 +109,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool init() {
-        return initialize<uv_fs_event_t>(&uv_fs_event_init);
+        return initialize(&uv_fs_event_init);
     }
 
     /**
