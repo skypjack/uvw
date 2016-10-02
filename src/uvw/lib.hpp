@@ -4,21 +4,12 @@
 #include <utility>
 #include <memory>
 #include <string>
+#include <type_traits>
 #include <uv.h>
 #include "loop.hpp"
 
 
 namespace uvw {
-
-
-namespace details {
-
-
-template<typename T> struct IsFunc: std::false_type { };
-template<typename R, typename... A> struct IsFunc<R(A...)>: std::true_type { };
-
-
-}
 
 
 /**
@@ -73,7 +64,7 @@ public:
      */
     template<typename F>
     F * sym(std::string name) {
-        static_assert(details::IsFunc<F>::value, "!");
+        static_assert(std::is_function<F>::value, "!");
         F *func;
         auto err = uv_dlsym(&lib, name.data(), reinterpret_cast<void**>(&func));
         if(err) { func = nullptr; }
