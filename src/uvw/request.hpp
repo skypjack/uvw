@@ -22,8 +22,8 @@ protected:
         return ptr;
     }
 
-    template<typename R, typename E>
-    static void defaultCallback(R *req, int status) {
+    template<typename E>
+    static void defaultCallback(U *req, int status) {
         auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
         if(status) { ptr->publish(ErrorEvent{status}); }
         else { ptr->publish(E{}); }

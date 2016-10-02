@@ -64,7 +64,7 @@ public:
      * This request can be cancelled with `cancel()`.
      */
     void queue() {
-        invoke(&uv_queue_work, parent(), get(), &workCallback, &defaultCallback<uv_work_t, WorkEvent>);
+        invoke(&uv_queue_work, parent(), get(), &workCallback, &defaultCallback<WorkEvent>);
     }
 
 private:

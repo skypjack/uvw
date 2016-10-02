@@ -89,7 +89,7 @@ public:
     }
 
     void send(uv_udp_t *handle, const uv_buf_t bufs[], unsigned int nbufs, const struct sockaddr* addr) {
-        invoke(&uv_udp_send, get(), handle, bufs, nbufs, addr, &defaultCallback<uv_udp_send_t, SendEvent>);
+        invoke(&uv_udp_send, get(), handle, bufs, nbufs, addr, &defaultCallback<SendEvent>);
     }
 };
 
