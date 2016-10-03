@@ -177,9 +177,7 @@ public:
      */
     void clearAll() noexcept {
         for(auto &&h: handlers) {
-            if (h) {
-                h->clear();
-            }
+            h->clear();
         }
     }
 
@@ -194,7 +192,7 @@ public:
 
         return (!(type < handlers.size()) ||
                 !handlers[type] ||
-                handlers[type]->empty());
+                static_cast<Handler<E>&>(*handlers[type]).empty());
     }
 
     /**
