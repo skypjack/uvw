@@ -36,13 +36,23 @@ protected:
         return pLoop->loop.get();
     }
 
-    template<typename R = U>
     auto get() noexcept {
+        return &resource;
+    }
+
+    const auto get() const noexcept {
+        return &resource;
+    }
+
+    template<typename R>
+    auto get() noexcept {
+        static_assert(not std::is_same<R, U>::value, "!");
         return reinterpret_cast<R*>(&resource);
     }
 
-    template<typename R = U>
+    template<typename R>
     auto get() const noexcept {
+        static_assert(not std::is_same<R, U>::value, "!");
         return reinterpret_cast<const R*>(&resource);
     }
 
