@@ -3,6 +3,7 @@
 
 #include <type_traits>
 #include <functional>
+#include <algorithm>
 #include <utility>
 #include <cstddef>
 #include <vector>
@@ -46,13 +47,11 @@ class Emitter {
         }
 
         Connection once(Listener f) {
-            auto conn = onceL.insert(onceL.cbegin(), std::move(f));
-            return { onceL, std::move(conn) };
+            return { onceL, onceL.insert(onceL.cbegin(), std::move(f)) };
         }
 
         Connection on(Listener f) {
-            auto conn = onL.insert(onL.cbegin(), std::move(f));
-            return { onL, std::move(conn) };
+            return { onL, onL.insert(onL.cbegin(), std::move(f)) };
         }
 
         void erase(Connection conn) noexcept {
@@ -60,8 +59,9 @@ class Emitter {
         }
 
         void publish(const E &event, T &ref) {
-            for(auto &&listener: onceL) { listener(event, ref); }
-            for(auto &&listener: onL) { listener(event, ref); }
+            auto op = [&event, &ref](auto &&listener){ listener(event, ref); };
+            std::for_each(onceL.begin(), onceL.end(), op);
+            std::for_each(onL.begin(), onL.end(), op);
             onceL.clear();
         }
 
@@ -177,9 +177,8 @@ public:
      * @brief Disconnects all the listeners.
      */
     void clearAll() noexcept {
-        for(auto &&h: handlers) {
-            h->clear();
-        }
+        std::for_each(handlers.begin(), handlers.end(),
+                      [](auto &&handler){ if(handler) { handler->clear(); } });
     }
 
     /**
@@ -202,14 +201,8 @@ public:
      * false otherwise.
      */
     bool empty() const noexcept {
-        bool empty = true;
-
-        for(auto &&h: handlers) {
-            empty = !h || h->empty();
-            if(!empty) { break; }
-        }
-
-        return empty;
+        return std::all_of(handlers.cbegin(), handlers.cend(),
+                           [](auto &&handler){ return !handler || handler->empty(); });
     }
 
 private:
