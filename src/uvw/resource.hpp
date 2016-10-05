@@ -40,8 +40,8 @@ protected:
         return &resource;
     }
 
-    const auto get() const noexcept {
-        return &resource;
+    auto get() const noexcept {
+        return const_cast<const U *>(&resource);
     }
 
     template<typename R>
