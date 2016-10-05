@@ -89,7 +89,7 @@ public:
     }
 
     void send(uv_udp_t *handle, const uv_buf_t bufs[], unsigned int nbufs, const struct sockaddr* addr) {
-        invoke(&uv_udp_send, get<uv_udp_send_t>(), handle, bufs, nbufs, addr, &defaultCallback<uv_udp_send_t, SendEvent>);
+        invoke(&uv_udp_send, get(), handle, bufs, nbufs, addr, &defaultCallback<SendEvent>);
     }
 };
 
@@ -165,8 +165,8 @@ public:
      */
     bool init() {
         return (tag == FLAGS)
-                ? initialize<uv_udp_t>(&uv_udp_init_ex, flags)
-                : initialize<uv_udp_t>(&uv_udp_init);
+                ? initialize(&uv_udp_init_ex, flags)
+                : initialize(&uv_udp_init);
     }
 
     /**
@@ -182,7 +182,7 @@ public:
      * @param sock A valid socket handle (either a file descriptor or a SOCKET).
      */
     void open(OSSocketHandle sock) {
-        invoke(&uv_udp_open, get<uv_udp_t>(), sock);
+        invoke(&uv_udp_open, get(), sock);
     }
 
     /**
@@ -205,7 +205,7 @@ public:
     void bind(std::string ip, unsigned int port, Flags<Bind> flags = Flags<Bind>{}) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        invoke(&uv_udp_bind, get<uv_udp_t>(), reinterpret_cast<const sockaddr *>(&addr), flags);
+        invoke(&uv_udp_bind, get(), reinterpret_cast<const sockaddr *>(&addr), flags);
     }
 
     /**
@@ -234,7 +234,7 @@ public:
      */
     template<typename I = IPv4>
     Addr sock() const noexcept {
-        return details::address<I>(&uv_udp_getsockname, get<uv_udp_t>());
+        return details::address<I>(&uv_udp_getsockname, get());
     }
 
     /**
@@ -252,7 +252,7 @@ public:
      */
     template<typename I = IPv4>
     bool multicastMembership(std::string multicast, std::string iface, Membership membership) {
-        return (0 == uv_udp_set_membership(get<uv_udp_t>(), multicast.data(), iface.data(), static_cast<uv_membership>(membership)));
+        return (0 == uv_udp_set_membership(get(), multicast.data(), iface.data(), static_cast<uv_membership>(membership)));
     }
 
     /**
@@ -264,7 +264,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool multicastLoop(bool enable = true) {
-        return (0 == uv_udp_set_multicast_loop(get<uv_udp_t>(), enable));
+        return (0 == uv_udp_set_multicast_loop(get(), enable));
     }
 
     /**
@@ -273,7 +273,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool multicastTtl(int val) {
-        return (0 == uv_udp_set_multicast_ttl(get<uv_udp_t>(), val > 255 ? 255 : val));
+        return (0 == uv_udp_set_multicast_ttl(get(), val > 255 ? 255 : val));
     }
 
     /**
@@ -283,7 +283,7 @@ public:
      */
     template<typename I = IPv4>
     bool multicastInterface(std::string iface) {
-        return (0 == uv_udp_set_multicast_interface(get<uv_udp_t>(), iface.data()));
+        return (0 == uv_udp_set_multicast_interface(get(), iface.data()));
     }
 
     /**
@@ -292,7 +292,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool broadcast(bool enable = false) {
-        return (0 == uv_udp_set_broadcast(get<uv_udp_t>(), enable));
+        return (0 == uv_udp_set_broadcast(get(), enable));
     }
 
     /**
@@ -301,7 +301,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool ttl(int val) {
-        return (0 == uv_udp_set_ttl(get<uv_udp_t>(), val > 255 ? 255 : val));
+        return (0 == uv_udp_set_ttl(get(), val > 255 ? 255 : val));
     }
 
     /**
@@ -333,7 +333,7 @@ public:
         auto send = loop().resource<details::Send>();
         send->once<ErrorEvent>(listener);
         send->once<SendEvent>(listener);
-        send->send(get<uv_udp_t>(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
+        send->send(get(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
     }
 
     /**
@@ -354,7 +354,7 @@ public:
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
         uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
-        auto bw = uv_udp_try_send(get<uv_udp_t>(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
+        auto bw = uv_udp_try_send(get(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
 
         if(bw < 0) {
             publish(ErrorEvent{bw});
@@ -376,14 +376,14 @@ public:
      */
     template<typename I = IPv4>
     void recv() {
-        invoke(&uv_udp_recv_start, get<uv_udp_t>(), &allocCallback, &recvCallback<I>);
+        invoke(&uv_udp_recv_start, get(), &allocCallback, &recvCallback<I>);
     }
 
     /**
      * @brief Stops listening for incoming datagrams.
      */
     void stop() {
-        invoke(&uv_udp_recv_stop, get<uv_udp_t>());
+        invoke(&uv_udp_recv_stop, get());
     }
 
 private:

@@ -53,7 +53,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool init() {
-        return initialize<uv_async_t>(&uv_async_init, &sendCallback);
+        return initialize(&uv_async_init, &sendCallback);
     }
 
     /**
@@ -67,7 +67,7 @@ public:
      * for further details.
      */
     void send() {
-        invoke(&uv_async_send, get<uv_async_t>());
+        invoke(&uv_async_send, get());
     }
 };
 

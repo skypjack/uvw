@@ -109,7 +109,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool init() {
-        return initialize<uv_fs_event_t>(&uv_fs_event_init);
+        return initialize(&uv_fs_event_init);
     }
 
     /**
@@ -130,7 +130,7 @@ public:
      * @param flags Additional flags to control the behavior.
      */
     void start(std::string path, Flags<Watch> flags = Flags<Watch>{}) {
-        invoke(&uv_fs_event_start, get<uv_fs_event_t>(), &startCallback, path.data(), flags);
+        invoke(&uv_fs_event_start, get(), &startCallback, path.data(), flags);
     }
 
     /**
@@ -158,7 +158,7 @@ public:
      * @brief Stops polling the file descriptor.
      */
     void stop() {
-        invoke(&uv_fs_event_stop, get<uv_fs_event_t>());
+        invoke(&uv_fs_event_stop, get());
     }
 
     /**
@@ -166,7 +166,7 @@ public:
      * @return The path being monitored.
      */
     std::string path() noexcept {
-        return details::path(&uv_fs_event_getpath, get<uv_fs_event_t>());
+        return details::path(&uv_fs_event_getpath, get());
     }
 };
 

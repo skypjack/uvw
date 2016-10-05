@@ -109,8 +109,8 @@ public:
      */
     bool init() {
         return (tag == SOCKET)
-                ? initialize<uv_poll_t>(&uv_poll_init_socket, socket)
-                : initialize<uv_poll_t>(&uv_poll_init, fd);
+                ? initialize(&uv_poll_init_socket, socket)
+                : initialize(&uv_poll_init, fd);
     }
 
     /**
@@ -132,7 +132,7 @@ public:
      * @param flags The events to which the caller is interested.
      */
     void start(Flags<Event> flags) {
-        invoke(&uv_poll_start, get<uv_poll_t>(), flags, &startCallback);
+        invoke(&uv_poll_start, get(), flags, &startCallback);
     }
 
     /**
@@ -161,7 +161,7 @@ public:
      * @brief Stops polling the file descriptor.
      */
     void stop() {
-        invoke(&uv_poll_stop, get<uv_poll_t>());
+        invoke(&uv_poll_stop, get());
     }
 
 private:

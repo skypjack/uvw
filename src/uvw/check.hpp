@@ -49,7 +49,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool init() {
-        return initialize<uv_check_t>(&uv_check_init);
+        return initialize(&uv_check_init);
     }
 
     /**
@@ -59,14 +59,14 @@ public:
      * polling for I/O.
      */
     void start() {
-        invoke(&uv_check_start, get<uv_check_t>(), &startCallback);
+        invoke(&uv_check_start, get(), &startCallback);
     }
 
     /**
      * @brief Stops the handle.
      */
     void stop() {
-        invoke(&uv_check_stop, get<uv_check_t>());
+        invoke(&uv_check_stop, get());
     }
 };
 

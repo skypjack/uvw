@@ -65,7 +65,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool init() {
-        return initialize<uv_signal_t>(&uv_signal_init);
+        return initialize(&uv_signal_init);
     }
 
     /**
@@ -76,14 +76,14 @@ public:
      * @param signum The signal to be monitored.
      */
     void start(int signum) {
-        invoke(&uv_signal_start, get<uv_signal_t>(), &startCallback, signum);
+        invoke(&uv_signal_start, get(), &startCallback, signum);
     }
 
     /**
      * @brief Stops the handle.
      */
     void stop() {
-        invoke(&uv_signal_stop, get<uv_signal_t>());
+        invoke(&uv_signal_stop, get());
     }
 
     /**
@@ -91,7 +91,7 @@ public:
      * @return The signal being monitored.
      */
     int signal() const noexcept {
-        return get<uv_signal_t>()->signum;
+        return get()->signum;
     }
 };
 

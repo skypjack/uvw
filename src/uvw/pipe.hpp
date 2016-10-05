@@ -44,7 +44,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool init() {
-        return initialize<uv_pipe_t>(&uv_pipe_init, ipc);
+        return initialize(&uv_pipe_init, ipc);
     }
 
     /**
@@ -56,7 +56,7 @@ public:
      * @param file A valid file handle (either a file descriptor or a HANDLE).
      */
     void open(FileHandle file) {
-        invoke(&uv_pipe_open, get<uv_pipe_t>(), file);
+        invoke(&uv_pipe_open, get(), file);
     }
 
     /**
@@ -67,7 +67,7 @@ public:
      * @param name A valid file path.
      */
     void bind(std::string name) {
-        invoke(&uv_pipe_bind, get<uv_pipe_t>(), name.data());
+        invoke(&uv_pipe_bind, get(), name.data());
     }
 
     /**
@@ -85,7 +85,7 @@ public:
         auto connect = loop().resource<details::ConnectReq>();
         connect->once<ErrorEvent>(listener);
         connect->once<ConnectEvent>(listener);
-        connect->connect(&uv_pipe_connect, get<uv_pipe_t>(), name.data());
+        connect->connect(&uv_pipe_connect, get(), name.data());
     }
 
     /**
@@ -93,7 +93,7 @@ public:
      * @return The name of the Unix domain socket or the named pipe.
      */
     std::string sock() const noexcept {
-        return details::path(&uv_pipe_getsockname, get<uv_pipe_t>());
+        return details::path(&uv_pipe_getsockname, get());
     }
 
     /**
@@ -103,7 +103,7 @@ public:
      * the handle is connected.
      */
     std::string peer() const noexcept {
-        return details::path(&uv_pipe_getpeername, get<uv_pipe_t>());
+        return details::path(&uv_pipe_getpeername, get());
     }
 
     /**
@@ -116,7 +116,7 @@ public:
      * @param count The number of accepted pending pipe.
      */
     void pending(int count) noexcept {
-        uv_pipe_pending_instances(get<uv_pipe_t>(), count);
+        uv_pipe_pending_instances(get(), count);
     }
 
     /**
@@ -124,7 +124,7 @@ public:
      * @return The number of pending pipe this instance can handle.
      */
     int pending() noexcept {
-        return uv_pipe_pending_count(get<uv_pipe_t>());
+        return uv_pipe_pending_count(get());
     }
 
     /**
@@ -144,7 +144,7 @@ public:
      * * `HandleType::UNKNOWN`
      */
     HandleType receive() noexcept {
-        auto type = uv_pipe_pending_type(get<uv_pipe_t>());
+        auto type = uv_pipe_pending_type(get());
         return Utilities::guessHandle(type);
     }
 

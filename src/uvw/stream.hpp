@@ -96,7 +96,7 @@ public:
 
     template<typename F, typename... Args>
     void connect(F &&f, Args... args) {
-        invoke(std::forward<F>(f), get<uv_connect_t>(), std::forward<Args>(args)..., &defaultCallback<uv_connect_t, ConnectEvent>);
+        invoke(std::forward<F>(f), get(), std::forward<Args>(args)..., &defaultCallback<ConnectEvent>);
     }
 };
 
@@ -110,7 +110,7 @@ public:
     }
 
     void shutdown(uv_stream_t *handle) {
-        invoke(&uv_shutdown, get<uv_shutdown_t>(), handle, &defaultCallback<uv_shutdown_t, ShutdownEvent>);
+        invoke(&uv_shutdown, get(), handle, &defaultCallback<ShutdownEvent>);
     }
 };
 
@@ -124,11 +124,11 @@ public:
     }
 
     void write(uv_stream_t *handle, const uv_buf_t bufs[], unsigned int nbufs) {
-        invoke(&uv_write, get<uv_write_t>(), handle, bufs, nbufs, &defaultCallback<uv_write_t, WriteEvent>);
+        invoke(&uv_write, get(), handle, bufs, nbufs, &defaultCallback<WriteEvent>);
     }
 
     void write(uv_stream_t *handle, const uv_buf_t bufs[], unsigned int nbufs, uv_stream_t *send) {
-        invoke(&uv_write2, get<uv_write_t>(), handle, bufs, nbufs, send, &defaultCallback<uv_write_t, WriteEvent>);
+        invoke(&uv_write2, get(), handle, bufs, nbufs, send, &defaultCallback<WriteEvent>);
     }
 };
 
