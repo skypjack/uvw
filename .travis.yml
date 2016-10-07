@@ -44,7 +44,7 @@ matrix:
     before_script:
     - pip install --user cpp-coveralls
     after_success:
-    - coveralls --gcov gcov-6 --gcov-options '\-lp' --exclude deps
+    - coveralls --gcov gcov-6 --gcov-options '\-lp' --root ${TRAVIS_BUILD_DIR} --build-root ${TRAVIS_BUILD_DIR}/build --exclude deps --include src
 
 notifications:
   email:
