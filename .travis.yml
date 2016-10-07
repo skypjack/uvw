@@ -32,6 +32,20 @@ matrix:
     compiler: clang
     env: COMPILER=clang++
 
+  - os: linux
+    compiler: gcc
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: ['g++-6']
+    env:
+    - COMPILER=g++-6
+    - CXXFLAGS="-O0 --coverage"
+    before_script:
+    - pip install --user cpp-coveralls
+    after_success:
+    - coveralls --gcov gcov-6 --gcov-options '\-lp' --exclude deps
+
 notifications:
   email:
     on_success: never
