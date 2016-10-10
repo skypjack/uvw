@@ -1,42 +1,67 @@
-os:
-- linux
+language: cpp
 
 matrix:
   include:
+  - os: linux
+    compiler: gcc
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: ['g++-5']
+    env: COMPILER=g++-5
+  - os: linux
+    compiler: gcc
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: ['g++-6']
+    env: COMPILER=g++-6
+  - os: linux
+    compiler: clang
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
+        packages: ['clang-3.8']
+    env: COMPILER=clang++-3.8
   - os: osx
     osx_image: xcode7.3
+    compiler: clang
+    env: COMPILER=clang++
+  - os: osx
+    osx_image: xcode8
+    compiler: clang
+    env: COMPILER=clang++
 
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    - llvm-toolchain-precise-3.8
-    packages:
-    - gcc-5
-    - g++-5
-    - clang-3.8
-
-language: cpp
-compiler:
-- gcc
-- clang
+  - os: linux
+    compiler: gcc
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: ['g++-6']
+    env:
+    - COMPILER=g++-6
+    - CXXFLAGS="-O0 --coverage"
+    before_script:
+    - pip install --user cpp-coveralls
+    after_success:
+    - coveralls --gcov gcov-6 --gcov-options '\-lp' --root ${TRAVIS_BUILD_DIR} --build-root ${TRAVIS_BUILD_DIR}/build --exclude deps --include src
 
 notifications:
   email:
     on_success: never
     on_failure: always
 
-before_install: ./travis.sh
-
 install:
-- if [ "$CXX" = "g++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="g++-5" CC="gcc-5"; fi
-- if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="clang++-3.8" CC="clang-3.8"; fi
 - echo ${PATH}
+- ./travis.sh
+- cmake --version
+- export CXX=${COMPILER}
 - echo ${CXX}
 - ${CXX} --version
 - ${CXX} -v
-- cmake --version
+- ./deps.sh
 
-before_script: ./deps.sh
-
-script: mkdir -p build && cd build && cmake .. && make && make test
+script:
+- mkdir -p build && cd build
+- cmake .. && make -j4
+- CTEST_OUTPUT_ON_FAILURE=1 make test
