@@ -163,7 +163,7 @@ public:
      *
      * @return The size of the send buffer, 0 in case of errors.
      */
-    int sendBufferSize() const {
+    int sendBufferSize() {
         int value = 0;
         auto err = uv_send_buffer_size(this->template get<uv_handle_t>(), &value);
         return err ? 0 : value;
@@ -195,7 +195,7 @@ public:
      *
      * @return The size of the receive buffer, 0 in case of errors.
      */
-    int recvBufferSize() const {
+    int recvBufferSize() {
         int value = 0;
         auto err = uv_recv_buffer_size(this->template get<uv_handle_t>(), &value);
         return err ? 0 : value;

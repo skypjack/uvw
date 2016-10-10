@@ -35,6 +35,7 @@ set(TARGET_MAIN main)
 set(TARGET_ASYNC async)
 set(TARGET_CHECK check)
 set(TARGET_EMITTER emitter)
+set(TARGET_HANDLE handle)
 set(TARGET_IDLE idle)
 set(TARGET_LOOP loop)
 set(TARGET_PREPARE prepare)
@@ -73,6 +74,14 @@ add_executable(${TARGET_EMITTER} ${TARGET_EMITTER_SOURCES})
 target_include_directories(${TARGET_EMITTER} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_EMITTER} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_EMITTER} COMMAND ${TARGET_EMITTER})
+
+# Test TARGET_HANDLE
+
+set(TARGET_HANDLE_SOURCES $<TARGET_OBJECTS:odr> uvw/handle.cpp)
+add_executable(${TARGET_HANDLE} ${TARGET_HANDLE_SOURCES})
+target_include_directories(${TARGET_HANDLE} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_HANDLE} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_HANDLE} COMMAND ${TARGET_HANDLE})
 
 # Test TARGET_IDLE
 
