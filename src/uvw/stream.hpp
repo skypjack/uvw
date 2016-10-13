@@ -61,25 +61,12 @@ struct WriteEvent: Event<WriteEvent> { };
  * It will be emitted by StreamHandle according with its functionalities.
  */
 struct DataEvent: Event<DataEvent> {
-    explicit DataEvent(std::unique_ptr<const char[]> ptr, ssize_t l) noexcept
-        : dt{std::move(ptr)}, len{l}
+    explicit DataEvent(std::unique_ptr<const char[]> data, ssize_t length) noexcept
+        : data{std::move(data)}, length{length}
     { }
 
-    /**
-     * @brief Gets the data read on the stream.
-     * @return A bunch of data read on the stream.
-     */
-    const char * data() const noexcept { return dt.get(); }
-
-    /**
-     * @brief Gets the amount of data read on the stream.
-     * @return The amount of data read on the stream.
-     */
-    ssize_t length() const noexcept { return len; }
-
-private:
-    std::unique_ptr<const char[]> dt;
-    const ssize_t len;
+    std::unique_ptr<const char[]> data; /*!< A bunch of data read on the stream. */
+    ssize_t length; /*!< The amount of data read on the stream. */
 };
 
 

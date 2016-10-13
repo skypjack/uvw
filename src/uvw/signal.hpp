@@ -20,14 +20,7 @@ namespace uvw {
 struct SignalEvent: Event<SignalEvent> {
     explicit SignalEvent(int sig) noexcept: signum(sig) { }
 
-    /**
-     * @brief Gets the signal being monitored by this handle.
-     * @return The signal being monitored by this handle.
-     */
-    int signal() const noexcept { return signum; }
-
-private:
-    const int signum;
+    int signum; /*!< The signal being monitored by this handle. */
 };
 
 

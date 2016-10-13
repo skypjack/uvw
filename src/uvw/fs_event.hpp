@@ -39,35 +39,27 @@ enum class UVFsEvent: std::underlying_type_t<uv_fs_event> {
  * It will be emitted by FsEventHandle according with its functionalities.
  */
 struct FsEventEvent: Event<FsEventEvent> {
-    FsEventEvent(std::string fPath, Flags<details::UVFsEvent> f)
-        : flgs{std::move(f)}, relPath{std::move(fPath)}
+    FsEventEvent(const char * filename, Flags<details::UVFsEvent> flags)
+        : filename{filename}, flags{std::move(flags)}
     { }
 
     /**
-     * @brief Gets the path to the file being monitored.
+     * @brief The path to the file being monitored.
      *
      * If the handle was started with a directory, the filename parameter will
      * be a relative path to a file contained in the directory.
-     *
-     * @return The path to the file being monitored.
      */
-    const char * filename() const noexcept { return relPath.data(); }
+    const char * filename;
 
     /**
-     * @brief Gets the detected events.
+     * @brief Detected events all in one.
      *
      * Available flags are:
      *
      * * `FsEventHandle::Watch::RENAME`
      * * `FsEventHandle::Watch::CHANGE`
-     *
-     * @return Detected events all in one.
      */
-    Flags<details::UVFsEvent> flags() const noexcept { return flgs; }
-
-private:
-    Flags<details::UVFsEvent> flgs;
-    std::string relPath;
+    Flags<details::UVFsEvent> flags;
 };
 
 

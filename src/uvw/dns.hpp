@@ -20,22 +20,19 @@ namespace uvw {
  * It will be emitted by GetAddrInfoReq according with its functionalities.
  */
 struct AddrInfoEvent: Event<AddrInfoEvent> {
-    AddrInfoEvent(std::unique_ptr<addrinfo, void(*)(addrinfo *)> ptr)
-        : dt{std::move(ptr)}
+    using Deleter = void(*)(addrinfo *);
+
+    AddrInfoEvent(std::unique_ptr<addrinfo, Deleter> data)
+        : data{std::move(data)}
     { }
 
     /**
-     * @brief Gets an instance of `addrinfo`.
+     * @brief An initialized instance of `addrinfo`.
      *
      * See [getaddrinfo](http://linux.die.net/man/3/getaddrinfo) for further
      * details.
-     *
-     * @return An initialized instance of `addrinfo`.
      */
-    addrinfo& data() const noexcept { return *dt; }
-
-private:
-    std::unique_ptr<addrinfo, void(*)(addrinfo *)> dt;
+    std::unique_ptr<addrinfo, Deleter> data;
 };
 
 
@@ -45,33 +42,25 @@ private:
  * It will be emitted by GetNameInfoReq according with its functionalities.
  */
 struct NameInfoEvent: Event<NameInfoEvent> {
-    NameInfoEvent(const char *h, const char *s)
-        : host{h}, serv{s}
+    NameInfoEvent(const char *hostname, const char *service)
+        : hostname{hostname}, service{service}
     { }
 
     /**
-     * @brief Gets the returned hostname.
+     * @brief A valid hostname.
      *
      * See [getnameinfo](http://linux.die.net/man/3/getnameinfo) for further
      * details.
-     *
-     * @return A valid hostname.
      */
-    const char* hostname() const noexcept { return host; }
+    const char * hostname;
 
     /**
-     * @brief Gets the returned service name.
+     * @brief A valid service name.
      *
      * See [getnameinfo](http://linux.die.net/man/3/getnameinfo) for further
      * details.
-     *
-     * @return A valid service name.
      */
-    const char* service() const noexcept { return serv; }
-
-private:
-    const char *host;
-    const char *serv;
+    const char * service;
 };
 
 
@@ -105,10 +94,12 @@ class GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
         auto req = get();
         auto err = uv_getaddrinfo(parent(), req, nullptr, node, service, hints);
         auto ptr = std::unique_ptr<addrinfo, void(*)(addrinfo *)>{req->addrinfo, [](addrinfo *res){ uv_freeaddrinfo(res); }};
-        return std::make_pair(ErrorEvent{err}, AddrInfoEvent{std::move(ptr)});
+        return std::make_pair(!err, std::move(ptr));
     }
 
 public:
+    using Deleter = void(*)(addrinfo *);
+
     /**
      * @brief Creates a new `getaddrinfo` wrapper request.
      * @param loop A pointer to the loop from which the handle generated.
@@ -130,11 +121,17 @@ public:
 
     /**
      * @brief Sync [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
+     *
      * @param node Either a numerical network address or a network hostname.
      * @param hints Optional `addrinfo` data structure with additional address
      * type constraints.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * A `std::unique_ptr<addrinfo, Deleter>` containing the data requested.
      */
-    auto getNodeAddrInfoSync(std::string node, addrinfo *hints = nullptr) {
+    std::pair<bool, std::unique_ptr<addrinfo, Deleter>>
+    getNodeAddrInfoSync(std::string node, addrinfo *hints = nullptr) {
         return getNodeAddrInfoSync(node.data(), nullptr, hints);
     }
 
@@ -150,12 +147,18 @@ public:
 
     /**
      * @brief Sync [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
+     *
      * @param service Either a service name or a port number as a string.
      * @param hints Optional `addrinfo` data structure with additional address
      * type constraints.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * A `std::unique_ptr<addrinfo, Deleter>` containing the data requested.
      */
-    auto getServiceAddrInfoSync(std::string service, addrinfo *hints = nullptr) {
-        return getNodeAddrInfo(nullptr, service.data(), hints);
+    std::pair<bool, std::unique_ptr<addrinfo, Deleter>>
+    getServiceAddrInfoSync(std::string service, addrinfo *hints = nullptr) {
+        return getNodeAddrInfoSync(nullptr, service.data(), hints);
     }
 
     /**
@@ -171,13 +174,19 @@ public:
 
     /**
      * @brief Sync [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
+     *
      * @param node Either a numerical network address or a network hostname.
      * @param service Either a service name or a port number as a string.
      * @param hints Optional `addrinfo` data structure with additional address
      * type constraints.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * A `std::unique_ptr<addrinfo, Deleter>` containing the data requested.
      */
-    auto getAddrInfoSync(std::string node, std::string service, addrinfo *hints = nullptr) {
-        return getNodeAddrInfo(node.data(), service.data(), hints);
+    std::pair<bool, std::unique_ptr<addrinfo, Deleter>>
+    getAddrInfoSync(std::string node, std::string service, addrinfo *hints = nullptr) {
+        return getNodeAddrInfoSync(node.data(), service.data(), hints);
     }
 };
 
@@ -232,27 +241,43 @@ public:
 
     /**
      * @brief Sync [getnameinfo](http://linux.die.net/man/3/getnameinfo).
+     *
      * @param ip A valid IP address.
      * @param port A valid port number.
      * @param flags Optional flags that modify the behavior of `getnameinfo`.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * A `std::pair` composed as it follows:
+     *   * A `const char *` containing a valid hostname.
+     *   * A `const char *` containing a valid service name.
      */
     template<typename I = IPv4>
-    auto getNameInfoSync(std::string ip, unsigned int port, int flags = 0) {
+    std::pair<bool, std::pair<const char *, const char *>>
+    getNameInfoSync(std::string ip, unsigned int port, int flags = 0) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::AddrFunc(ip.data(), port, &addr);
         auto req = get();
         auto err = uv_getnameinfo(parent(), req, nullptr, &addr, flags);
-        return std::make_pair(ErrorEvent{err}, NameInfoEvent{req->host, req->service});
+        return std::make_pair(!err, std::make_pair(req->host, req->service));
     }
 
     /**
      * @brief Sync [getnameinfo](http://linux.die.net/man/3/getnameinfo).
+     *
      * @param addr A valid instance of Addr.
      * @param flags Optional flags that modify the behavior of `getnameinfo`.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * A `std::pair` composed as it follows:
+     *   * A `const char *` containing a valid hostname.
+     *   * A `const char *` containing a valid service name.
      */
     template<typename I = IPv4>
-    auto getNameInfoSync(Addr addr, int flags = 0) {
-        getNameInfoSync<I>(addr.ip, addr.port, flags);
+    std::pair<bool, std::pair<const char *, const char *>>
+    getNameInfoSync(Addr addr, int flags = 0) {
+        return getNameInfoSync<I>(addr.ip, addr.port, flags);
     }
 };
 

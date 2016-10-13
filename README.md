@@ -21,7 +21,7 @@ As an example, a *handle* should be initialized before any other operation and c
 void listen(uvw::Loop &loop) {
     std::shared_ptr<uvw::TcpHandle> tcp = loop.resource<uvw::TcpHandle>();
 
-    tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &event, uvw::TcpHandle &srv) mutable {
+    tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &srv) mutable {
         std::shared_ptr<uvw::TcpHandle> client = srv.loop().resource<uvw::TcpHandle>();
 
         client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::TcpHandle &) mutable { ptr->close(); });
@@ -174,10 +174,17 @@ To know what are the available resources' types, please refer the API reference.
 
 For `uvw` offers an event-based approach, resources are small event emitters to which listeners can be attached.<br/>
 Attaching a listener to a resource is the recommended way to be notified about changes.<br/>
-Listeners must be callable objects of type `void(const EventType &, ResourceType &)`, where:
+Listeners must be callable objects of type `void(EventType &, ResourceType &)`, where:
 
 * `EventType` is the type of the event for which they have been designed
 * `ResourceType` is the type of the resource that has originated the event
+
+It means that the following function types are all valid:
+
+* `void(EventType &, ResourceType &)`
+* `void(const EventType &, ResourceType &)`
+* `void(EventType &, const ResourceType &)`
+* `void(const EventType &, const ResourceType &)`
 
 Once more, please note that there is no need to keep around references to the resources: they will pass themselves as an argument whenever an event is published.
 
@@ -199,9 +206,9 @@ The code below shows how to create a simple tcp server using `uvw`:
 auto loop = uvw::Loop::getDefault();
 auto tcp = loop.resource<uvw::TcpHandle>();
 
-tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &srv) { /* something went wrong */ });
+tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { /* something went wrong */ });
 
-tcp->on<uvw::ListenEvent>([](const uvw::ListenEvent &event, uvw::TcpHandle &srv) mutable {
+tcp->on<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &srv) mutable {
     std::shared_ptr<uvw::TcpHandle> client = srv.loop().resource<uvw::TcpHandle>();
     client->once<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &client) { client.close(); });
     client->on<uvw::DataEvent>([](const uvw::DataEvent &, uvw::TcpHandle &) { /* data received */ });

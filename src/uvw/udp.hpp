@@ -29,39 +29,14 @@ struct SendEvent: Event<SendEvent> { };
  * It will be emitted by UDPHandle according with its functionalities.
  */
 struct UDPDataEvent: Event<UDPDataEvent> {
-    explicit UDPDataEvent(Addr addr, std::unique_ptr<const char[]> ptr, ssize_t l, bool trunc) noexcept
-        : dt{std::move(ptr)}, len{l}, sndr(addr), part{trunc}
+    explicit UDPDataEvent(Addr sender, std::unique_ptr<const char[]> data, ssize_t length, bool partial) noexcept
+        : data{std::move(data)}, length{length}, sender(std::move(sender)), partial{partial}
     { }
 
-    /**
-     * @brief Gets the data read on the stream.
-     * @return A bunch of data read on the stream.
-     */
-    const char * data() const noexcept { return dt.get(); }
-
-    /**
-     * @brief Gets the amount of data read on the stream.
-     * @return The amount of data read on the stream.
-     */
-    ssize_t length() const noexcept { return len; }
-
-    /**
-     * @brief Gets the address of the sender.
-     * @return A valid instance of Addr.
-     */
-    Addr sender() const noexcept { return sndr; }
-
-    /**
-     * @brief Indicates if the message was truncated.
-     * @return True if the message was truncated, false otherwise.
-     */
-    bool partial() const noexcept { return part; }
-
-private:
-    std::unique_ptr<const char[]> dt;
-    const ssize_t len;
-    Addr sndr;
-    const bool part;
+    std::unique_ptr<const char[]> data; /*!< A bunch of data read on the stream. */
+    ssize_t length;  /*!< The amount of data read on the stream. */
+    Addr sender; /*!< A valid instance of Addr. */
+    bool partial; /*!< True if the message was truncated, false otherwise. */
 };
 
 

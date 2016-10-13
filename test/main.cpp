@@ -37,8 +37,8 @@ void listen(uvw::Loop &loop) {
         std::cout << "remote: " << remote.ip << " " << remote.port << std::endl;
 
         client->on<uvw::DataEvent>([](const uvw::DataEvent &event, uvw::TcpHandle &) {
-            std::cout.write(event.data(), event.length()) << std::endl;
-            std::cout << "data length: " << event.length() << std::endl;
+            std::cout.write(event.data.get(), event.length) << std::endl;
+            std::cout << "data length: " << event.length << std::endl;
         });
 
         client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &client) {

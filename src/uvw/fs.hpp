@@ -112,16 +112,9 @@ enum class UVDirentTypeT: std::underlying_type_t<uv_dirent_type_t> {
  */
 template<details::UVFsType e>
 struct FsEvent: Event<FsEvent<e>> {
-    FsEvent(const char *p) noexcept: rPath{p} { }
+    FsEvent(const char *path) noexcept: path{path} { }
 
-    /**
-     * @brief Gets the path affecting the request.
-     * @return The path affecting the request.
-     */
-    const char * path() const noexcept { return rPath; }
-
-private:
-    const char *rPath;
+    const char * path; /*!< The path affecting the request. */
 };
 
 
@@ -135,32 +128,13 @@ template<>
 struct FsEvent<details::UVFsType::READ>
         : Event<FsEvent<details::UVFsType::READ>>
 {
-    FsEvent(const char *p, std::unique_ptr<const char[]> ptr, ssize_t l) noexcept
-        : rPath{p}, dt{std::move(ptr)}, len{l}
+    FsEvent(const char *path, std::unique_ptr<const char[]> data, ssize_t size) noexcept
+        : path{path}, data{std::move(data)}, size{size}
     { }
 
-    /**
-     * @brief Gets the path affecting the request.
-     * @return The path affecting the request.
-     */
-    const char * path() const noexcept { return rPath; }
-
-    /**
-     * @brief Gets the data read from the given path.
-     * @return A bunch of data read from the given path.
-     */
-    const char * data() const noexcept { return dt.get(); }
-
-    /**
-     * @brief Gets the amount of data read from the given path.
-     * @return The amount of data read from the given path.
-     */
-    ssize_t length() const noexcept { return len; }
-
-private:
-    const char *rPath;
-    std::unique_ptr<const char[]> dt;
-    const ssize_t len;
+    const char * path; /*!< The path affecting the request. */
+    std::unique_ptr<const char[]> data; /*!< A bunch of data read from the given path. */
+    ssize_t size; /*!< The amount of data read from the given path. */
 };
 
 
@@ -174,25 +148,12 @@ template<>
 struct FsEvent<details::UVFsType::WRITE>
         : Event<FsEvent<details::UVFsType::WRITE>>
 {
-    FsEvent(const char *p, ssize_t s) noexcept
-        : rPath{p}, sz{s}
+    FsEvent(const char *path, ssize_t size) noexcept
+        : path{path}, size{size}
     { }
 
-    /**
-     * @brief Gets the path affecting the request.
-     * @return The path affecting the request.
-     */
-    const char * path() const noexcept { return rPath; }
-
-    /**
-     * @brief Gets the amount of data written to the given path.
-     * @return The amount of data written to the given path.
-     */
-    ssize_t amount() const noexcept { return sz; }
-
-private:
-    const char *rPath;
-    const ssize_t sz;
+    const char * path; /*!< The path affecting the request. */
+    ssize_t size; /*!< The amount of data written to the given path. */
 };
 
 
@@ -206,25 +167,12 @@ template<>
 struct FsEvent<details::UVFsType::SENDFILE>
         : Event<FsEvent<details::UVFsType::SENDFILE>>
 {
-    FsEvent(const char *p, ssize_t s) noexcept
-        : rPath{p}, sz{s}
+    FsEvent(const char *path, ssize_t size) noexcept
+        : path{path}, size{size}
     { }
 
-    /**
-     * @brief Gets the path affecting the request.
-     * @return The path affecting the request.
-     */
-    const char * path() const noexcept { return rPath; }
-
-    /**
-     * @brief Gets the amount of data transferred.
-     * @return The amount of data transferred.
-     */
-    ssize_t amount() const noexcept { return sz; }
-
-private:
-    const char *rPath;
-    const ssize_t sz;
+    const char * path; /*!< The path affecting the request. */
+    ssize_t size; /*!< The amount of data transferred. */
 };
 
 
@@ -238,25 +186,12 @@ template<>
 struct FsEvent<details::UVFsType::STAT>
         : Event<FsEvent<details::UVFsType::STAT>>
 {
-    FsEvent(const char *p, const Stat &s) noexcept
-        : rPath{p}, fsStat(s)
+    FsEvent(const char *path, Stat stat) noexcept
+        : path{path}, stat(std::move(stat))
     { }
 
-    /**
-     * @brief Gets the path affecting the request.
-     * @return The path affecting the request.
-     */
-    const char * path() const noexcept { return rPath; }
-
-    /**
-     * @brief Gets an initialized instance of Stat.
-     * @return An initialized instance of Stat.
-     */
-    const Stat & stat() const noexcept { return fsStat; }
-
-private:
-    const char *rPath;
-    Stat fsStat;
+    const char * path; /*!< The path affecting the request. */
+    Stat stat; /*!< An initialized instance of Stat. */
 };
 
 
@@ -270,25 +205,12 @@ template<>
 struct FsEvent<details::UVFsType::FSTAT>
         : Event<FsEvent<details::UVFsType::FSTAT>>
 {
-    FsEvent(const char *p, const Stat &s) noexcept
-        : rPath{p}, fsStat(s)
+    FsEvent(const char *path, Stat stat) noexcept
+        : path{path}, stat(std::move(stat))
     { }
 
-    /**
-     * @brief Gets the path affecting the request.
-     * @return The path affecting the request.
-     */
-    const char * path() const noexcept { return rPath; }
-
-    /**
-     * @brief Gets an initialized instance of Stat.
-     * @return An initialized instance of Stat.
-     */
-    const Stat & stat() const noexcept { return fsStat; }
-
-private:
-    const char *rPath;
-    Stat fsStat;
+    const char * path; /*!< The path affecting the request. */
+    Stat stat; /*!< An initialized instance of Stat. */
 };
 
 
@@ -302,25 +224,12 @@ template<>
 struct FsEvent<details::UVFsType::LSTAT>
         : Event<FsEvent<details::UVFsType::LSTAT>>
 {
-    FsEvent(const char *p, const Stat &s) noexcept
-        : rPath{p}, fsStat(s)
+    FsEvent(const char *path, Stat stat) noexcept
+        : path{path}, stat(std::move(stat))
     { }
 
-    /**
-     * @brief Gets the path affecting the request.
-     * @return The path affecting the request.
-     */
-    const char * path() const noexcept { return rPath; }
-
-    /**
-     * @brief Gets an initialized instance of Stat.
-     * @return An initialized instance of Stat.
-     */
-    const Stat & stat() const noexcept { return fsStat; }
-
-private:
-    const char *rPath;
-    Stat fsStat;
+    const char * path; /*!< The path affecting the request. */
+    Stat stat; /*!< An initialized instance of Stat. */
 };
 
 
@@ -334,25 +243,12 @@ template<>
 struct FsEvent<details::UVFsType::SCANDIR>
         : Event<FsEvent<details::UVFsType::SCANDIR>>
 {
-    FsEvent(const char *p, ssize_t s) noexcept
-        : rPath{p}, sz{s}
+    FsEvent(const char *path, ssize_t size) noexcept
+        : path{path}, size{size}
     { }
 
-    /**
-     * @brief Gets the path affecting the request.
-     * @return The path affecting the request.
-     */
-    const char * path() const noexcept { return rPath; }
-
-    /**
-     * @brief Gets the number of directory entries selected.
-     * @return The number of directory entries selected.
-     */
-    ssize_t amount() const noexcept { return sz; }
-
-private:
-    const char *rPath;
-    const ssize_t sz;
+    const char * path; /*!< The path affecting the request. */
+    ssize_t size; /*!< The number of directory entries selected. */
 };
 
 
@@ -366,32 +262,13 @@ template<>
 struct FsEvent<details::UVFsType::READLINK>
         : Event<FsEvent<details::UVFsType::READLINK>>
 {
-    explicit FsEvent(const char *p, const char *d, ssize_t l) noexcept
-        : rPath{p}, dt{d}, len{l}
+    explicit FsEvent(const char *path, const char *data, ssize_t size) noexcept
+        : path{path}, data{data}, size{size}
     { }
 
-    /**
-     * @brief Gets the path affecting the request.
-     * @return The path affecting the request.
-     */
-    const char * path() const noexcept { return rPath; }
-
-    /**
-     * @brief Gets the data read from the given path.
-     * @return A bunch of data read from the given path.
-     */
-    const char * data() const noexcept { return dt; }
-
-    /**
-     * @brief Gets the amount of data read from the given path.
-     * @return The amount of data read from the given path.
-     */
-    ssize_t length() const noexcept { return len; }
-
-private:
-    const char *rPath;
-    const char *dt;
-    const ssize_t len;
+    const char * path; /*!< The path affecting the request. */
+    const char * data; /*!< A bunch of data read from the given path. */
+    ssize_t size; /*!< The amount of data read from the given path. */
 };
 
 
@@ -515,13 +392,13 @@ public:
 
     /**
      * @brief Sync [close](http://linux.die.net/man/2/close).
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::CLOSE> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto closeSync() {
+    bool closeSync() {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_close, parent(), req, file);
         if(req->result >= 0) { file = BAD_FD; }
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::CLOSE>{req->path});
+        return !req->result;
     }
 
     /**
@@ -543,13 +420,13 @@ public:
      * @param path A valid path name for a file.
      * @param flags Flags, as described in the official documentation.
      * @param mode Mode, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::OPEN> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto openSync(std::string path, int flags, int mode) {
+    bool openSync(std::string path, int flags, int mode) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_open, parent(), req, path.data(), flags, mode);
         if(req->result >= 0) { file = static_cast<uv_file>(req->result); }
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::OPEN>{req->path});
+        return !req->result;
     }
 
     /**
@@ -570,17 +447,24 @@ public:
 
     /**
      * @brief Sync [read](http://linux.die.net/man/2/preadv).
+     *
      * @param offset Offset, as described in the official documentation.
      * @param len Length, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::READ> }`.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * A `std::pair` composed as it follows:
+     *   * A bunch of data read from the given path.
+     *   * The amount of data read from the given path.
      */
-    auto readSync(int64_t offset, unsigned int len) {
+    std::pair<bool, std::pair<std::unique_ptr<const char[]>, ssize_t>>
+    readSync(int64_t offset, unsigned int len) {
         data = std::unique_ptr<char[]>{new char[len]};
         buffer = uv_buf_init(data.get(), len);
         uv_buf_t bufs[] = { buffer };
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_read, parent(), req, file, bufs, 1, offset);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::READ>{req->path, std::move(data), req->result});
+        return std::make_pair(!req->result, std::make_pair(std::move(data), req->result));
     }
 
     /**
@@ -600,16 +484,20 @@ public:
 
     /**
      * @brief Sync [write](http://linux.die.net/man/2/pwritev).
+     *
      * @param data The data to be written.
      * @param len The lenght of the submitted data.
      * @param offset Offset, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::WRITE> }`.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * The amount of data written to the given path.
      */
-    auto writeSync(std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
+    std::pair<bool, ssize_t> writeSync(std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
         uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_write, parent(), req, file, bufs, 1, offset);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::WRITE>{req->path, req->result});
+        return std::make_pair(!req->result, req->result);
     }
 
     /**
@@ -624,12 +512,15 @@ public:
 
     /**
      * @brief Sync [fstat](http://linux.die.net/man/2/fstat).
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::FSTAT> }`.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * An initialized instance of Stat.
      */
-    auto fstatSync() {
+    std::pair<bool, Stat> fstatSync() {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_fstat, parent(), req, file);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FSTAT>{req->path, req->statbuf});
+        return std::make_pair(!req->result, req->statbuf);
     }
 
     /**
@@ -644,12 +535,12 @@ public:
 
     /**
      * @brief Sync [fsync](http://linux.die.net/man/2/fsync).
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::FSYNC> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto fsyncSync() {
+    bool fsyncSync() {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_fsync, parent(), req, file);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FSYNC>{req->path});
+        return !req->result;
     }
 
     /**
@@ -664,12 +555,12 @@ public:
 
     /**
      * @brief Sync [fdatasync](http://linux.die.net/man/2/fdatasync).
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::FDATASYNC> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto fdatasyncSync() {
+    bool fdatasyncSync() {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_fdatasync, parent(), req, file);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FDATASYNC>{req->path});
+        return !req->result;
     }
 
     /**
@@ -687,12 +578,12 @@ public:
     /**
      * @brief Sync [ftruncate](http://linux.die.net/man/2/ftruncate).
      * @param offset Offset, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::FTRUNCATE> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto ftruncateSync(int64_t offset) {
+    bool ftruncateSync(int64_t offset) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_ftruncate, parent(), req, file, offset);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FTRUNCATE>{req->path});
+        return !req->result;
     }
 
     /**
@@ -711,15 +602,19 @@ public:
 
     /**
      * @brief Sync [sendfile](http://linux.die.net/man/2/sendfile).
+     *
      * @param out A valid instance of FileHandle.
      * @param offset Offset, as described in the official documentation.
      * @param length Length, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::SENDFILE> }`.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * The amount of data transferred.
      */
-    auto sendfileSync(FileHandle out, int64_t offset, size_t length) {
+    std::pair<bool, ssize_t> sendfileSync(FileHandle out, int64_t offset, size_t length) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_sendfile, parent(), req, out, file, offset, length);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::SENDFILE>{req->path, req->result});
+        return std::make_pair(!req->result, req->result);
     }
 
     /**
@@ -737,12 +632,12 @@ public:
     /**
      * @brief Sync [fchmod](http://linux.die.net/man/2/fchmod).
      * @param mode Mode, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::FCHMOD> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto fchmodSync(int mode) {
+    bool fchmodSync(int mode) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_fchmod, parent(), req, file, mode);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FCHMOD>{req->path});
+        return !req->result;
     }
 
     /**
@@ -766,12 +661,12 @@ public:
      * in the official documentation.
      * @param mtime `std::chrono::seconds`, having the same meaning as described
      * in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::FUTIME> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto futimeSync(Time atime, Time mtime) {
+    bool futimeSync(Time atime, Time mtime) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_futime, parent(), req, file, atime.count(), mtime.count());
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FUTIME>{req->path});
+        return !req->result;
     }
 
     /**
@@ -791,12 +686,12 @@ public:
      * @brief Sync [fchown](http://linux.die.net/man/2/fchown).
      * @param uid UID, as described in the official documentation.
      * @param gid GID, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::FCHOWN> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto fchownSync(Uid uid, Gid gid) {
+    bool fchownSync(Uid uid, Gid gid) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_fchown, parent(), req, file, uid, gid);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::FCHOWN>{req->path});
+        return !req->result;
     }
 
     /**
@@ -864,12 +759,12 @@ public:
     /**
      * @brief Sync [unlink](http://linux.die.net/man/2/unlink).
      * @param path Path, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::UNLINK> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto unlinkSync(std::string path) {
+    bool unlinkSync(std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_unlink, parent(), req, path.data());
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::UNLINK>{req->path});
+        return !req->result;
     }
 
     /**
@@ -889,12 +784,12 @@ public:
      * @brief Sync [mkdir](http://linux.die.net/man/2/mkdir).
      * @param path Path, as described in the official documentation.
      * @param mode Mode, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::MKDIR> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto mkdirSync(std::string path, int mode) {
+    bool mkdirSync(std::string path, int mode) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_mkdir, parent(), req, path.data(), mode);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::MKDIR>{req->path});
+        return !req->result;
     }
 
     /**
@@ -912,12 +807,12 @@ public:
     /**
      * @brief Sync [mktemp](http://linux.die.net/man/3/mkdtemp).
      * @param tpl Template, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::MKDTEMP> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto mkdtempSync(std::string tpl) {
+    bool mkdtempSync(std::string tpl) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_mkdtemp, parent(), req, tpl.data());
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::MKDTEMP>{req->path});
+        return !req->result;
     }
 
     /**
@@ -935,12 +830,12 @@ public:
     /**
      * @brief Sync [rmdir](http://linux.die.net/man/2/rmdir).
      * @param path Path, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::RMDIR> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto rmdirSync(std::string path) {
+    bool rmdirSync(std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_rmdir, parent(), req, path.data());
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::RMDIR>{req->path});
+        return !req->result;
     }
 
     /**
@@ -958,14 +853,18 @@ public:
 
     /**
      * @brief Sync [scandir](http://linux.die.net/man/3/scandir).
+     *
      * @param path Path, as described in the official documentation.
      * @param flags Flags, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::SCANDIR> }`.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * The number of directory entries selected.
      */
-    auto scandirSync(std::string path, int flags) {
+    std::pair<bool, ssize_t> scandirSync(std::string path, int flags) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_scandir, parent(), req, path.data(), flags);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::SCANDIR>{req->path, req->result});
+        return std::make_pair(!req->result, req->result);
     }
 
     /**
@@ -1025,13 +924,17 @@ public:
 
     /**
      * @brief Sync [stat](http://linux.die.net/man/2/stat).
+     *
      * @param path Path, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::STAT> }`.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * An initialized instance of Stat.
      */
-    auto statSync(std::string path) {
+    std::pair<bool, Stat> statSync(std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_stat, parent(), req, path.data());
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::STAT>{req->path, req->statbuf});
+        return std::make_pair(!req->result, req->statbuf);
     }
 
     /**
@@ -1048,13 +951,17 @@ public:
 
     /**
      * @brief Sync [lstat](http://linux.die.net/man/2/lstat).
+     *
      * @param path Path, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::LSTAT> }`.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * An initialized instance of Stat.
      */
-    auto lstatSync(std::string path) {
+    std::pair<bool, Stat> lstatSync(std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_lstat, parent(), req, path.data());
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::LSTAT>{req->path, req->statbuf});
+        return std::make_pair(!req->result, req->statbuf);
     }
 
     /**
@@ -1074,12 +981,12 @@ public:
      * @brief Sync [rename](http://linux.die.net/man/2/rename).
      * @param old Old path, as described in the official documentation.
      * @param path New path, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::RENAME> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto renameSync(std::string old, std::string path) {
+    bool renameSync(std::string old, std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_rename, parent(), req, old.data(), path.data());
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::RENAME>{req->path});
+        return !req->result;
     }
 
     /**
@@ -1099,12 +1006,12 @@ public:
      * @brief Sync [access](http://linux.die.net/man/2/access).
      * @param path Path, as described in the official documentation.
      * @param mode Mode, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::ACCESS> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto accessSync(std::string path, int mode) {
+    bool accessSync(std::string path, int mode) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_access, parent(), req, path.data(), mode);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::ACCESS>{req->path});
+        return !req->result;
     }
 
     /**
@@ -1124,12 +1031,12 @@ public:
      * @brief Sync [chmod](http://linux.die.net/man/2/chmod).
      * @param path Path, as described in the official documentation.
      * @param mode Mode, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::CHMOD> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto chmodSync(std::string path, int mode) {
+    bool chmodSync(std::string path, int mode) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_chmod, parent(), req, path.data(), mode);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::CHMOD>{req->path});
+        return !req->result;
     }
 
     /**
@@ -1155,12 +1062,12 @@ public:
      * in the official documentation.
      * @param mtime `std::chrono::seconds`, having the same meaning as described
      * in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::UTIME> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto utimeSync(std::string path, Time atime, Time mtime) {
+    bool utimeSync(std::string path, Time atime, Time mtime) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_utime, parent(), req, path.data(), atime.count(), mtime.count());
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::UTIME>{req->path});
+        return !req->result;
     }
 
     /**
@@ -1180,12 +1087,12 @@ public:
      * @brief Sync [link](http://linux.die.net/man/2/link).
      * @param old Old path, as described in the official documentation.
      * @param path New path, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::LINK> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto linkSync(std::string old, std::string path) {
+    bool linkSync(std::string old, std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_link, parent(), req, old.data(), path.data());
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::LINK>{req->path});
+        return !req->result;
     }
 
     /**
@@ -1207,12 +1114,12 @@ public:
      * @param old Old path, as described in the official documentation.
      * @param path New path, as described in the official documentation.
      * @param flags Flags, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::SYMLINK> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto symlinkSync(std::string old, std::string path, int flags) {
+    bool symlinkSync(std::string old, std::string path, int flags) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_symlink, parent(), req, old.data(), path.data(), flags);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::SYMLINK>{req->path});
+        return !req->result;
     }
 
     /**
@@ -1229,13 +1136,20 @@ public:
 
     /**
      * @brief Sync [readlink](http://linux.die.net/man/2/readlink).
+     *
      * @param path Path, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::READLINK> }`.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * A `std::pair` composed as it follows:
+     *   * A bunch of data read from the given path.
+     *   * The amount of data read from the given path.
      */
-    auto readlinkSync(std::string path) {
+    std::pair<bool, std::pair<const char *, ssize_t>>
+    readlinkSync(std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_readlink, parent(), req, path.data());
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr), req->result});
+        return std::make_pair(!req->result, std::make_pair(static_cast<char *>(req->ptr), req->result));
     }
 
     /**
@@ -1253,12 +1167,12 @@ public:
     /**
      * @brief Sync [realpath](http://linux.die.net/man/3/realpath).
      * @param path Path, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::REALPATH> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto realpathSync(std::string path) {
+    bool realpathSync(std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_realpath, parent(), req, path.data());
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::REALPATH>{req->path});
+        return !req->result;
     }
 
     /**
@@ -1280,12 +1194,12 @@ public:
      * @param path Path, as described in the official documentation.
      * @param uid UID, as described in the official documentation.
      * @param gid GID, as described in the official documentation.
-     * @return A pair `{ ErrorEvent, FsEvent<FileReq::Type::CHOWN> }`.
+     * @return True in case of success, false otherwise.
      */
-    auto chownSync(std::string path, Uid uid, Gid gid) {
+    bool chownSync(std::string path, Uid uid, Gid gid) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_chown, parent(), req, path.data(), uid, gid);
-        return std::make_pair(ErrorEvent{req->result}, FsEvent<Type::CHOWN>{req->path});
+        return !req->result;
     }
 };
 

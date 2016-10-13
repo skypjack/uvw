@@ -26,32 +26,26 @@ enum class UVPollEvent: std::underlying_type_t<uv_poll_event> {
 }
 
 
-
 /**
  * @brief PollEvent event.
  *
  * It will be emitted by PollHandle according with its functionalities.
  */
 struct PollEvent: Event<PollEvent> {
-    explicit PollEvent(Flags<details::UVPollEvent> f) noexcept
-        : flgs{std::move(f)}
+    explicit PollEvent(Flags<details::UVPollEvent> flags) noexcept
+        : flags{std::move(flags)}
     { }
 
     /**
-     * @brief Gets the detected events.
+     * @brief Detected events all in one.
      *
      * Available flags are:
      *
      * * `PollHandle::Event::READABLE`
      * * `PollHandle::Event::WRITABLE`
      * * `PollHandle::Event::DISCONNECT`
-     *
-     * @return Detected events all in one.
      */
-    Flags<details::UVPollEvent> flags() const noexcept { return flgs; }
-
-private:
-    Flags<details::UVPollEvent> flgs;
+    Flags<details::UVPollEvent> flags;
 };
 
 

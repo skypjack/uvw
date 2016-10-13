@@ -30,8 +30,8 @@ class Emitter {
     };
 
     template<typename E>
-    struct Handler: BaseHandler {
-        using Listener = std::function<void(const E &, T &)>;
+    struct Handler final: BaseHandler {
+        using Listener = std::function<void(E &, T &)>;
         using ListenerList = std::list<Listener>;
         using ListenerIt = typename ListenerList::const_iterator;
         using Connection = std::pair<ListenerList &, ListenerIt>;
@@ -57,7 +57,7 @@ class Emitter {
             conn.first.erase(conn.second);
         }
 
-        void publish(const E &event, T &ref) {
+        void publish(E event, T &ref) {
             auto op = [&event, &ref](auto &&listener){ listener(event, ref); };
             std::for_each(onceL.begin(), onceL.end(), op);
             std::for_each(onL.begin(), onL.end(), op);
@@ -89,7 +89,7 @@ class Emitter {
 protected:
     template<typename E>
     void publish(E event) {
-        handler<E>().publish(event, *static_cast<T*>(this));
+        handler<E>().publish(std::move(event), *static_cast<T*>(this));
     }
 
 public:
