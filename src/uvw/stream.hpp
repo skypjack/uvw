@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <algorithm>
 #include <iterator>
 #include <cstddef>
 #include <utility>
@@ -103,20 +104,42 @@ public:
 
 
 class WriteReq final: public Request<WriteReq, uv_write_t> {
-    using Request::Request;
+    using Deleter = void(*)(uv_buf_t *);
+
+    template<std::size_t N>
+    static void deleter(uv_buf_t *bufs) {
+        std::for_each(bufs, bufs+N, [](uv_buf_t &buf){ delete[] buf.base; });
+        delete[] bufs;
+    }
+
+    template<std::size_t N>
+    WriteReq(std::shared_ptr<Loop> loop, const uv_buf_t (&arr)[N])
+        : Request<WriteReq, uv_write_t>{std::move(loop)},
+          bufs{new uv_buf_t[N], &deleter<N>},
+          nbufs{N}
+    {
+        for(std::size_t i = 0; i < N; ++i) {
+            bufs[i] = arr[i];
+        }
+    }
 
 public:
-    static std::shared_ptr<WriteReq> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<WriteReq>{new WriteReq{std::move(loop)}};
+    template<typename... Args>
+    static std::shared_ptr<WriteReq> create(Args&&... args) {
+        return std::shared_ptr<WriteReq>{new WriteReq{std::forward<Args>(args)...}};
     }
 
-    void write(uv_stream_t *handle, const uv_buf_t bufs[], unsigned int nbufs) {
-        invoke(&uv_write, get(), handle, bufs, nbufs, &defaultCallback<WriteEvent>);
+    void write(uv_stream_t *handle) {
+        invoke(&uv_write, get(), handle, bufs.get(), nbufs, &defaultCallback<WriteEvent>);
     }
 
-    void write(uv_stream_t *handle, const uv_buf_t bufs[], unsigned int nbufs, uv_stream_t *send) {
-        invoke(&uv_write2, get(), handle, bufs, nbufs, send, &defaultCallback<WriteEvent>);
+    void write(uv_stream_t *handle, uv_stream_t *send) {
+        invoke(&uv_write2, get(), handle, bufs.get(), nbufs, send, &defaultCallback<WriteEvent>);
     }
+
+private:
+    std::unique_ptr<uv_buf_t[], Deleter> bufs;
+    std::size_t nbufs;
 };
 
 
@@ -253,16 +276,16 @@ public:
      * @param len The lenght of the submitted data.
      */
     void write(std::unique_ptr<char[]> data, ssize_t len) {
-        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
+        const uv_buf_t bufs[] = { uv_buf_init(data.release(), len) };
 
         auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
             ptr->publish(event);
         };
 
-        auto write = this->loop().template resource<details::WriteReq>();
+        auto write = this->loop().template resource<details::WriteReq>(bufs);
         write->template once<ErrorEvent>(listener);
         write->template once<WriteEvent>(listener);
-        write->write(this->template get<uv_stream_t>(), bufs, 1);
+        write->write(this->template get<uv_stream_t>());
     }
 
 
@@ -284,16 +307,16 @@ public:
      */
     template<typename S>
     void write(S &send, std::unique_ptr<char[]> data, ssize_t len) {
-        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
+        const uv_buf_t bufs[] = { uv_buf_init(data.release(), len) };
 
         auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
             ptr->publish(event);
         };
 
-        auto write = this->loop().template resource<details::WriteReq>();
+        auto write = this->loop().template resource<details::WriteReq>(bufs);
         write->template once<ErrorEvent>(listener);
         write->template once<WriteEvent>(listener);
-        write->write(this->template get<uv_stream_t>(), bufs, 1, send.template get<uv_stream_t>());
+        write->write(this->template get<uv_stream_t>(), send.template get<uv_stream_t>());
     }
 
     /**

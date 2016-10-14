@@ -2,7 +2,9 @@
 
 
 #include <type_traits>
+#include <algorithm>
 #include <utility>
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <uv.h>
@@ -55,17 +57,39 @@ enum class UVMembership: std::underlying_type_t<uv_membership> {
 };
 
 
-class Send final: public Request<Send, uv_udp_send_t> {
-    using Request::Request;
+class SendReq final: public Request<SendReq, uv_udp_send_t> {
+    using Deleter = void(*)(uv_buf_t *);
+
+    template<std::size_t N>
+    static void deleter(uv_buf_t *bufs) {
+        std::for_each(bufs, bufs+N, [](uv_buf_t &buf){ delete[] buf.base; });
+        delete[] bufs;
+    }
+
+    template<std::size_t N>
+    SendReq(std::shared_ptr<Loop> loop, const uv_buf_t (&arr)[N])
+        : Request<SendReq, uv_udp_send_t>{std::move(loop)},
+          bufs{new uv_buf_t[N], &deleter<N>},
+          nbufs{N}
+    {
+        for(std::size_t i = 0; i < N; ++i) {
+            bufs[i] = arr[i];
+        }
+    }
 
 public:
-    static std::shared_ptr<Send> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<Send>{new Send{std::move(loop)}};
+    template<typename... Args>
+    static std::shared_ptr<SendReq> create(Args&&... args) {
+        return std::shared_ptr<SendReq>{new SendReq{std::forward<Args>(args)...}};
     }
 
-    void send(uv_udp_t *handle, const uv_buf_t bufs[], unsigned int nbufs, const struct sockaddr* addr) {
-        invoke(&uv_udp_send, get(), handle, bufs, nbufs, addr, &defaultCallback<SendEvent>);
+    void send(uv_udp_t *handle, const struct sockaddr* addr) {
+        invoke(&uv_udp_send, get(), handle, bufs.get(), nbufs, addr, &defaultCallback<SendEvent>);
     }
+
+private:
+    std::unique_ptr<uv_buf_t[], Deleter> bufs;
+    std::size_t nbufs;
 };
 
 
@@ -299,16 +323,16 @@ public:
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
-        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
+        const uv_buf_t bufs[] = { uv_buf_init(data.release(), len) };
 
-        auto listener = [ptr = shared_from_this()](const auto &event, details::Send &) {
+        auto listener = [ptr = shared_from_this()](const auto &event, details::SendReq &) {
             ptr->publish(event);
         };
 
-        auto send = loop().resource<details::Send>();
+        auto send = loop().resource<details::SendReq>(bufs);
         send->once<ErrorEvent>(listener);
         send->once<SendEvent>(listener);
-        send->send(get(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
+        send->send(get(), reinterpret_cast<const sockaddr *>(&addr));
     }
 
     /**
