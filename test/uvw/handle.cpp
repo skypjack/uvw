@@ -11,6 +11,10 @@ TEST(Handle, Functionalities) {
     ASSERT_NO_THROW(handle->close());
     ASSERT_FALSE(handle->active());
 
+    // this forces an internal call to the close callback
+    // (possible leak detected by valgrind otherwise)
+    loop->run();
+
     ASSERT_NO_THROW(handle->reference());
     ASSERT_TRUE(handle->referenced());
     ASSERT_NO_THROW(handle->unreference());

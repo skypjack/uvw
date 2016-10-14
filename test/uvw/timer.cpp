@@ -108,6 +108,11 @@ TEST(Timer, Repeat) {
 
     ASSERT_NO_THROW(handle->repeat(uvw::TimerHandle::Time{42}));
     ASSERT_EQ(handle->repeat(), uvw::TimerHandle::Time{42});
+    ASSERT_NO_THROW(handle->close());
+
+    // this forces an internal call to the close callback
+    // (possible leak detected by valgrind otherwise)
+    loop->run();
 }
 
 
