@@ -2,7 +2,7 @@
 #include <uvw.hpp>
 
 
-TEST(Loop, PartiallyDone) {
+TEST(Loop, DefaultLoop) {
     auto def = uvw::Loop::getDefault();
 
     ASSERT_TRUE(static_cast<bool>(def));
@@ -10,6 +10,13 @@ TEST(Loop, PartiallyDone) {
     ASSERT_NO_THROW(def->stop());
 
     def->walk([](uvw::BaseHandle &) { FAIL(); });
+
+    auto def2 = uvw::Loop::getDefault();
+    ASSERT_EQ(def, def2);
+}
+
+
+TEST(Loop, PartiallyDone) {
 
     auto loop = uvw::Loop::create();
     auto handle = loop->resource<uvw::PrepareHandle>();
