@@ -282,21 +282,21 @@ class FsRequest: public Request<T, uv_fs_t> {
 protected:
     template<details::UVFsType e>
     static void fsGenericCallback(uv_fs_t *req) {
-        auto ptr = Request<T, uv_fs_t>::reserve(reinterpret_cast<uv_req_t*>(req));
+        auto ptr = Request<T, uv_fs_t>::reserve(req);
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<e>{req->path}); }
     }
 
     template<details::UVFsType e>
     static void fsResultCallback(uv_fs_t *req) {
-        auto ptr = Request<T, uv_fs_t>::reserve(reinterpret_cast<uv_req_t*>(req));
+        auto ptr = Request<T, uv_fs_t>::reserve(req);
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<e>{req->path, req->result}); }
     }
 
     template<details::UVFsType e>
     static void fsStatCallback(uv_fs_t *req) {
-        auto ptr = Request<T, uv_fs_t>::reserve(reinterpret_cast<uv_req_t*>(req));
+        auto ptr = Request<T, uv_fs_t>::reserve(req);
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<e>{req->path, req->statbuf}); }
     }
@@ -337,7 +337,7 @@ class FileReq final: public FsRequest<FileReq> {
     static constexpr uv_file BAD_FD = -1;
 
     static void fsOpenCallback(uv_fs_t *req) {
-        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        auto ptr = reserve(req);
 
         if(req->result < 0) {
             ptr->publish(ErrorEvent{req->result});
@@ -348,7 +348,7 @@ class FileReq final: public FsRequest<FileReq> {
     }
 
     static void fsCloseCallback(uv_fs_t *req) {
-        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        auto ptr = reserve(req);
 
         if(req->result < 0) {
             ptr->publish(ErrorEvent{req->result});
@@ -359,7 +359,7 @@ class FileReq final: public FsRequest<FileReq> {
     }
 
     static void fsReadCallback(uv_fs_t *req) {
-        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        auto ptr = reserve(req);
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<Type::READ>{req->path, std::move(ptr->data), req->result}); }
     }
@@ -725,7 +725,7 @@ private:
  */
 class FsReq final: public FsRequest<FsReq> {
     static void fsReadlinkCallback(uv_fs_t *req) {
-        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        auto ptr = reserve(req);
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr), req->result}); }
     }
