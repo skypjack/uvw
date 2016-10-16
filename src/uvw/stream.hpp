@@ -118,9 +118,7 @@ class WriteReq final: public Request<WriteReq, uv_write_t> {
           bufs{new uv_buf_t[N], &deleter<N>},
           nbufs{N}
     {
-        for(std::size_t i = 0; i < N; ++i) {
-            bufs[i] = arr[i];
-        }
+        std::copy_n(std::begin(arr), N, bufs.get());
     }
 
 public:
