@@ -1,3 +1,4 @@
+#include <memory>
 #include <type_traits>
 #include <gtest/gtest.h>
 #include <uvw.hpp>
@@ -14,7 +15,12 @@ TEST(Resource, Basics) {
     ASSERT_FALSE(std::is_move_assignable<uvw::AsyncHandle>::value);
 
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::AsyncHandle>();
+    auto resource = loop->resource<uvw::AsyncHandle>();
 
-    ASSERT_NO_THROW(handle->loop());
+    ASSERT_NO_THROW(resource->loop());
+
+    auto data = std::make_shared<int>(42);
+
+    ASSERT_NO_THROW(resource->data(data));
+    ASSERT_EQ(*std::static_pointer_cast<int>(resource->data()), 42);
 }

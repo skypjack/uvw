@@ -147,7 +147,7 @@ In order to create a resource and to bind it to the given loop, just do the foll
 
     auto tcp = loop.resource<uvw::TcpHandle>();
 
-The line above will create and initialize a tcp handle, thus a shared pointer to that resource will be returned.<br/>
+The line above will create and initialize a tcp handle, then a shared pointer to that resource will be returned.<br/>
 Users should check if pointers have been correctly initialized: in case of errors, they won't be.<br/>
 Another way to create a resource is:
 
@@ -155,6 +155,14 @@ Another way to create a resource is:
     tcp->init();
 
 Pretty annoying indeed. Using a loop is the recommended approach.
+
+The resources also accept arbitrary user-data that won't be touched in any case.<br/>
+Users can set and get them through the `data` member function as it follows:
+
+    resource->data(std::make_shared<int>(42));
+    auto data = std::static_pointer_cast<int>(resource->data());
+
+`uvw` expects a `std::shared_pointer<void>` and returns it, thus any kind of data is welcome.
 
 Remember from the previous section that a handle will keep itself alive until one invokes the `close` member method on it.<br/>
 To know what are the handles that are still alive and bound to a given loop, just do the following:

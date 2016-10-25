@@ -85,7 +85,24 @@ public:
      */
     Loop& loop() const noexcept { return *pLoop; }
 
+    /**
+     * @brief Gets user-defined data. `uvw` won't use this field in any case.
+     * @return User-defined data if any, an invalid pointer otherwise.
+     */
+    std::shared_ptr<void> data() const {
+        return userData;
+    }
+
+    /**
+     * @brief Sets arbitrary data. `uvw` won't use this field in any case.
+     * @param uData User-defined arbitrary data.
+     */
+    void data(std::shared_ptr<void> uData) {
+        userData = std::move(uData);
+    }
+
 private:
+    std::shared_ptr<void> userData{nullptr};
     std::shared_ptr<void> ptr{nullptr};
     std::shared_ptr<Loop> pLoop;
     U resource;
