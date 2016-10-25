@@ -7,11 +7,14 @@ struct Res: uvw::Resource<Res, int> { };
 
 
 TEST(Resource, Basics) {
-    ASSERT_FALSE(std::is_copy_constructible<Res>::value);
-    ASSERT_FALSE(std::is_copy_assignable<Res>::value);
+    ASSERT_FALSE(std::is_copy_constructible<uvw::AsyncHandle>::value);
+    ASSERT_FALSE(std::is_copy_assignable<uvw::AsyncHandle>::value);
 
-    ASSERT_FALSE(std::is_move_constructible<Res>::value);
-    ASSERT_FALSE(std::is_move_assignable<Res>::value);
+    ASSERT_FALSE(std::is_move_constructible<uvw::AsyncHandle>::value);
+    ASSERT_FALSE(std::is_move_assignable<uvw::AsyncHandle>::value);
 
-    ASSERT_NO_THROW(uvw::Loop::getDefault()->resource<uvw::AsyncHandle>()->loop());
+    auto loop = uvw::Loop::getDefault();
+    auto handle = loop->resource<uvw::AsyncHandle>();
+
+    ASSERT_NO_THROW(handle->loop());
 }
