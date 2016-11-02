@@ -398,7 +398,7 @@ public:
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_close, parent(), req, file);
         if(req->result >= 0) { file = BAD_FD; }
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -426,7 +426,7 @@ public:
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_open, parent(), req, path.data(), flags, mode);
         if(req->result >= 0) { file = static_cast<uv_file>(req->result); }
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -464,7 +464,7 @@ public:
         uv_buf_t bufs[] = { buffer };
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_read, parent(), req, file, bufs, 1, offset);
-        return std::make_pair(!req->result, std::make_pair(std::move(data), req->result));
+        return std::make_pair(!(req->result < 0), std::make_pair(std::move(data), req->result));
     }
 
     /**
@@ -497,7 +497,7 @@ public:
         uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_write, parent(), req, file, bufs, 1, offset);
-        return std::make_pair(!req->result, req->result);
+        return std::make_pair(!(req->result < 0), req->result);
     }
 
     /**
@@ -520,7 +520,7 @@ public:
     std::pair<bool, Stat> fstatSync() {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_fstat, parent(), req, file);
-        return std::make_pair(!req->result, req->statbuf);
+        return std::make_pair(!(req->result < 0), req->statbuf);
     }
 
     /**
@@ -540,7 +540,7 @@ public:
     bool fsyncSync() {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_fsync, parent(), req, file);
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -560,7 +560,7 @@ public:
     bool fdatasyncSync() {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_fdatasync, parent(), req, file);
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -583,7 +583,7 @@ public:
     bool ftruncateSync(int64_t offset) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_ftruncate, parent(), req, file, offset);
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -614,7 +614,7 @@ public:
     std::pair<bool, ssize_t> sendfileSync(FileHandle out, int64_t offset, size_t length) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_sendfile, parent(), req, out, file, offset, length);
-        return std::make_pair(!req->result, req->result);
+        return std::make_pair(!(req->result < 0), req->result);
     }
 
     /**
@@ -637,7 +637,7 @@ public:
     bool fchmodSync(int mode) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_fchmod, parent(), req, file, mode);
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -666,7 +666,7 @@ public:
     bool futimeSync(Time atime, Time mtime) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_futime, parent(), req, file, atime.count(), mtime.count());
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -691,7 +691,7 @@ public:
     bool fchownSync(Uid uid, Gid gid) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_fchown, parent(), req, file, uid, gid);
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -764,7 +764,7 @@ public:
     bool unlinkSync(std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_unlink, parent(), req, path.data());
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -789,7 +789,7 @@ public:
     bool mkdirSync(std::string path, int mode) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_mkdir, parent(), req, path.data(), mode);
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -812,7 +812,7 @@ public:
     bool mkdtempSync(std::string tpl) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_mkdtemp, parent(), req, tpl.data());
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -835,7 +835,7 @@ public:
     bool rmdirSync(std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_rmdir, parent(), req, path.data());
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -864,7 +864,7 @@ public:
     std::pair<bool, ssize_t> scandirSync(std::string path, int flags) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_scandir, parent(), req, path.data(), flags);
-        return std::make_pair(!req->result, req->result);
+        return std::make_pair(!(req->result < 0), req->result);
     }
 
     /**
@@ -934,7 +934,7 @@ public:
     std::pair<bool, Stat> statSync(std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_stat, parent(), req, path.data());
-        return std::make_pair(!req->result, req->statbuf);
+        return std::make_pair(!(req->result < 0), req->statbuf);
     }
 
     /**
@@ -961,7 +961,7 @@ public:
     std::pair<bool, Stat> lstatSync(std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_lstat, parent(), req, path.data());
-        return std::make_pair(!req->result, req->statbuf);
+        return std::make_pair(!(req->result < 0), req->statbuf);
     }
 
     /**
@@ -986,7 +986,7 @@ public:
     bool renameSync(std::string old, std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_rename, parent(), req, old.data(), path.data());
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -1011,7 +1011,7 @@ public:
     bool accessSync(std::string path, int mode) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_access, parent(), req, path.data(), mode);
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -1036,7 +1036,7 @@ public:
     bool chmodSync(std::string path, int mode) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_chmod, parent(), req, path.data(), mode);
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -1067,7 +1067,7 @@ public:
     bool utimeSync(std::string path, Time atime, Time mtime) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_utime, parent(), req, path.data(), atime.count(), mtime.count());
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -1092,7 +1092,7 @@ public:
     bool linkSync(std::string old, std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_link, parent(), req, old.data(), path.data());
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -1119,7 +1119,7 @@ public:
     bool symlinkSync(std::string old, std::string path, int flags) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_symlink, parent(), req, old.data(), path.data(), flags);
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -1149,7 +1149,7 @@ public:
     readlinkSync(std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_readlink, parent(), req, path.data());
-        return std::make_pair(!req->result, std::make_pair(static_cast<char *>(req->ptr), req->result));
+        return std::make_pair(!(req->result < 0), std::make_pair(static_cast<char *>(req->ptr), req->result));
     }
 
     /**
@@ -1172,7 +1172,7 @@ public:
     bool realpathSync(std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_realpath, parent(), req, path.data());
-        return !req->result;
+        return !(req->result < 0);
     }
 
     /**
@@ -1199,7 +1199,7 @@ public:
     bool chownSync(std::string path, Uid uid, Gid gid) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_chown, parent(), req, path.data(), uid, gid);
-        return !req->result;
+        return !(req->result < 0);
     }
 };
 
