@@ -478,7 +478,8 @@ public:
      * @param offset Offset, as described in the official documentation.
      */
     void write(std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
-        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
+        this->data = std::move(data);
+        uv_buf_t bufs[] = { uv_buf_init(this->data.get(), len) };
         cleanupAndInvoke(&uv_fs_write, parent(), get(), file, bufs, 1, offset, &fsResultCallback<Type::WRITE>);
     }
 
@@ -494,7 +495,8 @@ public:
      * * The amount of data written to the given path.
      */
     std::pair<bool, ssize_t> writeSync(std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
-        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
+        this->data = std::move(data);
+        uv_buf_t bufs[] = { uv_buf_init(this->data.get(), len) };
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_write, parent(), req, file, bufs, 1, offset);
         return std::make_pair(!(req->result < 0), req->result);
