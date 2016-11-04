@@ -508,7 +508,7 @@ public:
      * Emit a `FsEvent<FileReq::Type::FSTAT>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      */
-    void fstat() {
+    void stat() {
         cleanupAndInvoke(&uv_fs_fstat, parent(), get(), file, &fsStatCallback<Type::FSTAT>);
     }
 
@@ -519,7 +519,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * An initialized instance of Stat.
      */
-    std::pair<bool, Stat> fstatSync() {
+    std::pair<bool, Stat> statSync() {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_fstat, parent(), req, file);
         return std::make_pair(!(req->result < 0), req->statbuf);
@@ -531,7 +531,7 @@ public:
      * Emit a `FsEvent<FileReq::Type::FSYNC>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      */
-    void fsync() {
+    void sync() {
         cleanupAndInvoke(&uv_fs_fsync, parent(), get(), file, &fsGenericCallback<Type::FSYNC>);
     }
 
@@ -539,7 +539,7 @@ public:
      * @brief Sync [fsync](http://linux.die.net/man/2/fsync).
      * @return True in case of success, false otherwise.
      */
-    bool fsyncSync() {
+    bool syncSync() {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_fsync, parent(), req, file);
         return !(req->result < 0);
@@ -551,7 +551,7 @@ public:
      * Emit a `FsEvent<FileReq::Type::FDATASYNC>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      */
-    void fdatasync() {
+    void datasync() {
         cleanupAndInvoke(&uv_fs_fdatasync, parent(), get(), file, &fsGenericCallback<Type::FDATASYNC>);
     }
 
@@ -559,7 +559,7 @@ public:
      * @brief Sync [fdatasync](http://linux.die.net/man/2/fdatasync).
      * @return True in case of success, false otherwise.
      */
-    bool fdatasyncSync() {
+    bool datasyncSync() {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_fdatasync, parent(), req, file);
         return !(req->result < 0);
@@ -573,7 +573,7 @@ public:
      *
      * @param offset Offset, as described in the official documentation.
      */
-    void ftruncate(int64_t offset) {
+    void truncate(int64_t offset) {
         cleanupAndInvoke(&uv_fs_ftruncate, parent(), get(), file, offset, &fsGenericCallback<Type::FTRUNCATE>);
     }
 
@@ -582,7 +582,7 @@ public:
      * @param offset Offset, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool ftruncateSync(int64_t offset) {
+    bool truncateSync(int64_t offset) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_ftruncate, parent(), req, file, offset);
         return !(req->result < 0);
@@ -627,7 +627,7 @@ public:
      *
      * @param mode Mode, as described in the official documentation.
      */
-    void fchmod(int mode) {
+    void chmod(int mode) {
         cleanupAndInvoke(&uv_fs_fchmod, parent(), get(), file, mode, &fsGenericCallback<Type::FCHMOD>);
     }
 
@@ -636,7 +636,7 @@ public:
      * @param mode Mode, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool fchmodSync(int mode) {
+    bool chmodSync(int mode) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_fchmod, parent(), req, file, mode);
         return !(req->result < 0);
@@ -653,7 +653,7 @@ public:
      * @param mtime `std::chrono::seconds`, having the same meaning as described
      * in the official documentation.
      */
-    void futime(Time atime, Time mtime) {
+    void utime(Time atime, Time mtime) {
         cleanupAndInvoke(&uv_fs_futime, parent(), get(), file, atime.count(), mtime.count(), &fsGenericCallback<Type::FUTIME>);
     }
 
@@ -665,7 +665,7 @@ public:
      * in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool futimeSync(Time atime, Time mtime) {
+    bool utimeSync(Time atime, Time mtime) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_futime, parent(), req, file, atime.count(), mtime.count());
         return !(req->result < 0);
@@ -680,7 +680,7 @@ public:
      * @param uid UID, as described in the official documentation.
      * @param gid GID, as described in the official documentation.
      */
-    void fchown(Uid uid, Gid gid) {
+    void chown(Uid uid, Gid gid) {
         cleanupAndInvoke(&uv_fs_fchown, parent(), get(), file, uid, gid, &fsGenericCallback<Type::FCHOWN>);
     }
 
@@ -690,7 +690,7 @@ public:
      * @param gid GID, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool fchownSync(Uid uid, Gid gid) {
+    bool chownSync(Uid uid, Gid gid) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_fchown, parent(), req, file, uid, gid);
         return !(req->result < 0);
