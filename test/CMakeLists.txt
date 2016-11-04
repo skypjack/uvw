@@ -36,6 +36,7 @@ set(TARGET_ASYNC async)
 set(TARGET_CHECK check)
 set(TARGET_EMITTER emitter)
 set(TARGET_EVENT event)
+set(TARGET_FS fs)
 set(TARGET_HANDLE handle)
 set(TARGET_IDLE idle)
 set(TARGET_LOOP loop)
@@ -84,6 +85,17 @@ add_executable(${TARGET_EVENT} ${TARGET_EVENT_SOURCES})
 target_include_directories(${TARGET_EVENT} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_EVENT} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_EVENT} COMMAND ${TARGET_EVENT})
+
+# Test TARGET_FS
+
+set(TARGET_FS_SOURCES $<TARGET_OBJECTS:odr> uvw/fs.cpp)
+set(TARGET_FS_DIR ${CMAKE_CURRENT_BINARY_DIR}/fs)
+file(MAKE_DIRECTORY ${TARGET_FS_DIR})
+add_executable(${TARGET_FS} ${TARGET_FS_SOURCES})
+target_include_directories(${TARGET_FS} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_FS} PRIVATE ${COMMON_LINK_LIBS})
+target_compile_definitions(${TARGET_FS} PRIVATE TARGET_FS_DIR="${TARGET_FS_DIR}")
+add_test(NAME ${TARGET_FS} COMMAND ${TARGET_FS})
 
 # Test TARGET_HANDLE
 
