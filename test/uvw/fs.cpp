@@ -12,29 +12,34 @@ TEST(FileReq, OpenAndClose) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-    bool checkErrorEvent = false;
-    bool checkFsEvent = false;
+    bool checkFsOpenEvent = false;
+    bool checkFsCloseEvent = false;
 
-    request->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &) {
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&checkFsEvent](const auto &, auto &request) {
-        ASSERT_FALSE(checkFsEvent);
-        checkFsEvent = true;
+    request->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&checkFsCloseEvent](const auto &, auto &request) {
+        ASSERT_FALSE(checkFsCloseEvent);
+        checkFsCloseEvent = true;
+    });
+
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&checkFsOpenEvent](const auto &, auto &request) {
+        ASSERT_FALSE(checkFsOpenEvent);
+        checkFsOpenEvent = true;
         request.close();
     });
 
 #ifdef _WIN32
-    request->open(filename, _O_RDWR | _O_CREAT | _O_TRUNC, 0644);
+    request->open(filename, _O_CREAT | _O_WRONLY, 0644);
 #else
-    request->open(filename, O_RDWR | O_CREAT | O_TRUNC, 0644);
+    request->open(filename, O_CREAT | O_WRONLY, 0644);
 #endif
 
     loop->run();
 
-    ASSERT_FALSE(checkErrorEvent);
-    ASSERT_TRUE(checkFsEvent);
+    ASSERT_TRUE(checkFsOpenEvent);
+    ASSERT_TRUE(checkFsCloseEvent);
 }
 
 
@@ -45,9 +50,9 @@ TEST(FileReq, OpenAndCloseSync) {
     auto request = loop->resource<uvw::FileReq>();
 
 #ifdef _WIN32
-    ASSERT_TRUE(request->openSync(filename, _O_RDWR | _O_CREAT | _O_TRUNC, 0644));
+    ASSERT_TRUE(request->openSync(filename, _O_CREAT | _O_WRONLY, 0644));
 #else
-    ASSERT_TRUE(request->openSync(filename, O_RDWR | O_CREAT | O_TRUNC, 0644));
+    ASSERT_TRUE(request->openSync(filename, O_CREAT | O_WRONLY, 0644));
 #endif
 
     ASSERT_TRUE(request->closeSync());
@@ -56,12 +61,50 @@ TEST(FileReq, OpenAndCloseSync) {
 }
 
 
-/*
 TEST(FileReq, RW) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto request = loop->resource<uvw::FileReq>();
+
+    bool checkFsWriteEvent = false;
+    bool checkFsReadEvent = false;
+
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    request->on<uvw::FsEvent<uvw::FileReq::Type::READ>>([&checkFsReadEvent](const auto &event, auto &request) {
+        ASSERT_FALSE(checkFsReadEvent);
+        ASSERT_EQ(event.data[0], 42);
+        checkFsReadEvent = true;
+        request.close();
+    });
+
+    request->on<uvw::FsEvent<uvw::FileReq::Type::WRITE>>([&checkFsWriteEvent](const auto &, auto &request) {
+        ASSERT_FALSE(checkFsWriteEvent);
+        checkFsWriteEvent = true;
+        request.read(0, 1);
+    });
+
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
+        request.write(std::unique_ptr<char[]>{new char[1]{ 42 }}, 1, 0);
+    });
+
+#ifdef _WIN32
+    request->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
+#else
+    request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+#endif
+
+    loop->run();
+
+    ASSERT_TRUE(checkFsWriteEvent);
+    ASSERT_TRUE(checkFsReadEvent);
 }
 
 
+/*
 TEST(FileReq, RWSync) {
     // TODO
 }
