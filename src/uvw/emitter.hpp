@@ -58,10 +58,11 @@ class Emitter {
         }
 
         void publish(E event, T &ref) {
+            ListenerList currentL;
+            onceL.swap(currentL);
             auto op = [&event, &ref](auto &&listener){ listener(event, ref); };
-            std::for_each(onceL.begin(), onceL.end(), op);
+            std::for_each(currentL.begin(), currentL.end(), op);
             std::for_each(onL.begin(), onL.end(), op);
-            onceL.clear();
         }
 
     private:
