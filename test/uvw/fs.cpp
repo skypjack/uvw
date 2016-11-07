@@ -26,9 +26,9 @@ TEST(FileReq, OpenAndClose) {
     });
 
 #ifdef _WIN32
-    request->open(filename, _O_RDWR | _O_CREAT, 0644);
+    request->open(filename, _O_RDWR | _O_CREAT | _O_TRUNC, 0644);
 #else
-    request->open(filename, O_RDWR | O_CREAT, 0644);
+    request->open(filename, O_RDWR | O_CREAT | O_TRUNC, 0644);
 #endif
 
     loop->run();
@@ -45,9 +45,9 @@ TEST(FileReq, OpenAndCloseSync) {
     auto request = loop->resource<uvw::FileReq>();
 
 #ifdef _WIN32
-    ASSERT_TRUE(request->openSync(filename, _O_RDWR | _O_CREAT, 0644));
+    ASSERT_TRUE(request->openSync(filename, _O_RDWR | _O_CREAT | _O_TRUNC, 0644));
 #else
-    ASSERT_TRUE(request->openSync(filename, O_RDWR | O_CREAT, 0644));
+    ASSERT_TRUE(request->openSync(filename, O_RDWR | O_CREAT | O_TRUNC, 0644));
 #endif
 
     ASSERT_TRUE(request->closeSync());
