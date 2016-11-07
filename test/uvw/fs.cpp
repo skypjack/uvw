@@ -21,7 +21,13 @@ TEST(FileReq, OpenAndClose) {
         request.close();
     });
 
-    request->open(filename, O_RDWR | O_CREAT, S_IRWXU);
+#ifdef _WIN32
+    auto flags = _O_RDWR | _O_CREAT;
+#else
+    auto flags = O_RDWR | O_CREAT;
+#endif
+
+    request->open(filename, flags, 0644);
 
     loop->run();
 
@@ -36,7 +42,13 @@ TEST(FileReq, OpenAndCloseSync) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-    ASSERT_TRUE(request->openSync(filename, O_RDWR | O_CREAT, S_IRWXU));
+#ifdef _WIN32
+    auto flags = _O_RDWR | _O_CREAT;
+#else
+    auto flags = O_RDWR | O_CREAT;
+#endif
+
+    ASSERT_TRUE(request->openSync(filename, flags, 0644));
     ASSERT_TRUE(request->closeSync());
 
     loop->run();
