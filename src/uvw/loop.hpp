@@ -1,9 +1,5 @@
 #pragma once
 
-#ifdef _WIN32
-#include <ciso646>
-#endif
-
 #include <new>
 #include <memory>
 #include <utility>
@@ -11,6 +7,10 @@
 #include <chrono>
 #include <uv.h>
 #include "emitter.hpp"
+
+#ifdef _WIN32
+#include <ciso646>
+#endif
 
 
 namespace uvw {

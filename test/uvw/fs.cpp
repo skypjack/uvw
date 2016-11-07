@@ -1,6 +1,10 @@
 #include <gtest/gtest.h>
 #include <uvw.hpp>
 
+#ifdef _WIN32
+#include <fcntl.h>
+#endif
+
 
 TEST(FileReq, OpenAndClose) {
     const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
@@ -22,12 +26,10 @@ TEST(FileReq, OpenAndClose) {
     });
 
 #ifdef _WIN32
-    auto flags = _O_RDWR | _O_CREAT;
+    request->open(filename, _O_RDWR | _O_CREAT, 0644);
 #else
-    auto flags = O_RDWR | O_CREAT;
+    request->open(filename, O_RDWR | O_CREAT, 0644);
 #endif
-
-    request->open(filename, flags, 0644);
 
     loop->run();
 
@@ -43,12 +45,11 @@ TEST(FileReq, OpenAndCloseSync) {
     auto request = loop->resource<uvw::FileReq>();
 
 #ifdef _WIN32
-    auto flags = _O_RDWR | _O_CREAT;
+    ASSERT_TRUE(request->openSync(filename, _O_RDWR | _O_CREAT, 0644));
 #else
-    auto flags = O_RDWR | O_CREAT;
+    ASSERT_TRUE(request->openSync(filename, O_RDWR | O_CREAT, 0644));
 #endif
 
-    ASSERT_TRUE(request->openSync(filename, flags, 0644));
     ASSERT_TRUE(request->closeSync());
 
     loop->run();
