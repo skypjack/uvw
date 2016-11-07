@@ -111,9 +111,9 @@ TEST(FileReq, RWSync) {
     auto request = loop->resource<uvw::FileReq>();
 
 #ifdef _WIN32
-    request->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
+    ASSERT_TRUE(request->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
 #else
-    request->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+    ASSERT_TRUE(request->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
 #endif
 
     auto writeR = request->writeSync(std::unique_ptr<char[]>{new char[1]{ 42 }}, 1, 0);
@@ -168,12 +168,30 @@ TEST(FileReq, Stat) {
 }
 
 
-/*
+
 TEST(FileReq, StatSync) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto request = loop->resource<uvw::FileReq>();
+
+#ifdef _WIN32
+    ASSERT_TRUE(request->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
+#else
+    ASSERT_TRUE(request->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
+#endif
+
+    auto statR = request->statSync();
+
+    ASSERT_TRUE(statR.first);
+
+    ASSERT_TRUE(request->closeSync());
+
+    loop->run();
 }
 
 
+/*
 TEST(FileReq, Sync) {
     // TODO
 }
