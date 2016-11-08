@@ -545,17 +545,44 @@ TEST(FsReq, MkdirAndRmdirSync) {
 }
 
 
-/*
 TEST(FsReq, Mkdtemp) {
-    // TODO
+    const std::string dirname = std::string{TARGET_FS_DIR} + std::string{"/test.dir.XXXXXX"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto request = loop->resource<uvw::FsReq>();
+
+    bool checkFsMkdtempEvent = false;
+
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    request->on<uvw::FsEvent<uvw::FileReq::Type::MKDTEMP>>([&checkFsMkdtempEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkFsMkdtempEvent);
+        checkFsMkdtempEvent = true;
+    });
+
+    request->mkdtemp(dirname);
+
+    loop->run();
+
+    ASSERT_TRUE(checkFsMkdtempEvent);
 }
 
 
 TEST(FsReq, MkdtempSync) {
-    // TODO
+    const std::string dirname = std::string{TARGET_FS_DIR} + std::string{"/test.dir.XXXXXX"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto request = loop->resource<uvw::FsReq>();
+
+    ASSERT_TRUE(request->mkdtempSync(dirname));
+
+    loop->run();
 }
 
 
+/*
 TEST(FsReq, Scandir) {
     // TODO
 }
