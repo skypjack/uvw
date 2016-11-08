@@ -12,21 +12,21 @@ TEST(FileReq, OpenAndClose) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-    bool checkFsOpenEvent = false;
-    bool checkFsCloseEvent = false;
+    bool checkFileOpenEvent = false;
+    bool checkFileCloseEvent = false;
 
     request->on<uvw::ErrorEvent>([](const auto &, auto &) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&checkFsCloseEvent](const auto &, auto &request) {
-        ASSERT_FALSE(checkFsCloseEvent);
-        checkFsCloseEvent = true;
+    request->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&checkFileCloseEvent](const auto &, auto &request) {
+        ASSERT_FALSE(checkFileCloseEvent);
+        checkFileCloseEvent = true;
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&checkFsOpenEvent](const auto &, auto &request) {
-        ASSERT_FALSE(checkFsOpenEvent);
-        checkFsOpenEvent = true;
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&checkFileOpenEvent](const auto &, auto &request) {
+        ASSERT_FALSE(checkFileOpenEvent);
+        checkFileOpenEvent = true;
         request.close();
     });
 
@@ -38,8 +38,8 @@ TEST(FileReq, OpenAndClose) {
 
     loop->run();
 
-    ASSERT_TRUE(checkFsOpenEvent);
-    ASSERT_TRUE(checkFsCloseEvent);
+    ASSERT_TRUE(checkFileOpenEvent);
+    ASSERT_TRUE(checkFileCloseEvent);
 }
 
 
@@ -67,23 +67,23 @@ TEST(FileReq, RW) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-    bool checkFsWriteEvent = false;
-    bool checkFsReadEvent = false;
+    bool checkFileWriteEvent = false;
+    bool checkFileReadEvent = false;
 
     request->on<uvw::ErrorEvent>([](const auto &, auto &) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::READ>>([&checkFsReadEvent](const auto &event, auto &request) {
-        ASSERT_FALSE(checkFsReadEvent);
+    request->on<uvw::FsEvent<uvw::FileReq::Type::READ>>([&checkFileReadEvent](const auto &event, auto &request) {
+        ASSERT_FALSE(checkFileReadEvent);
         ASSERT_EQ(event.data[0], 42);
-        checkFsReadEvent = true;
+        checkFileReadEvent = true;
         request.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::WRITE>>([&checkFsWriteEvent](const auto &, auto &request) {
-        ASSERT_FALSE(checkFsWriteEvent);
-        checkFsWriteEvent = true;
+    request->on<uvw::FsEvent<uvw::FileReq::Type::WRITE>>([&checkFileWriteEvent](const auto &, auto &request) {
+        ASSERT_FALSE(checkFileWriteEvent);
+        checkFileWriteEvent = true;
         request.read(0, 1);
     });
 
@@ -99,8 +99,8 @@ TEST(FileReq, RW) {
 
     loop->run();
 
-    ASSERT_TRUE(checkFsWriteEvent);
-    ASSERT_TRUE(checkFsReadEvent);
+    ASSERT_TRUE(checkFileWriteEvent);
+    ASSERT_TRUE(checkFileReadEvent);
 }
 
 
@@ -140,15 +140,15 @@ TEST(FileReq, Stat) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-    bool checkFsStatEvent = false;
+    bool checkFileStatEvent = false;
 
     request->on<uvw::ErrorEvent>([](const auto &, auto &) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FSTAT>>([&checkFsStatEvent](const auto &, auto &request) {
-        ASSERT_FALSE(checkFsStatEvent);
-        checkFsStatEvent = true;
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FSTAT>>([&checkFileStatEvent](const auto &, auto &request) {
+        ASSERT_FALSE(checkFileStatEvent);
+        checkFileStatEvent = true;
         request.close();
     });
 
@@ -164,7 +164,7 @@ TEST(FileReq, Stat) {
 
     loop->run();
 
-    ASSERT_TRUE(checkFsStatEvent);
+    ASSERT_TRUE(checkFileStatEvent);
 }
 
 
@@ -197,15 +197,15 @@ TEST(FileReq, Sync) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-    bool checkFsSyncEvent = false;
+    bool checkFileSyncEvent = false;
 
     request->on<uvw::ErrorEvent>([](const auto &, auto &) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FSYNC>>([&checkFsSyncEvent](const auto &, auto &request) {
-        ASSERT_FALSE(checkFsSyncEvent);
-        checkFsSyncEvent = true;
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FSYNC>>([&checkFileSyncEvent](const auto &, auto &request) {
+        ASSERT_FALSE(checkFileSyncEvent);
+        checkFileSyncEvent = true;
         request.close();
     });
 
@@ -221,7 +221,7 @@ TEST(FileReq, Sync) {
 
     loop->run();
 
-    ASSERT_TRUE(checkFsSyncEvent);
+    ASSERT_TRUE(checkFileSyncEvent);
 }
 
 
@@ -250,15 +250,15 @@ TEST(FileReq, Datasync) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-    bool checkFsDatasyncEvent = false;
+    bool checkFileDatasyncEvent = false;
 
     request->on<uvw::ErrorEvent>([](const auto &, auto &) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FDATASYNC>>([&checkFsDatasyncEvent](const auto &, auto &request) {
-        ASSERT_FALSE(checkFsDatasyncEvent);
-        checkFsDatasyncEvent = true;
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FDATASYNC>>([&checkFileDatasyncEvent](const auto &, auto &request) {
+        ASSERT_FALSE(checkFileDatasyncEvent);
+        checkFileDatasyncEvent = true;
         request.close();
     });
 
@@ -274,7 +274,7 @@ TEST(FileReq, Datasync) {
 
     loop->run();
 
-    ASSERT_TRUE(checkFsDatasyncEvent);
+    ASSERT_TRUE(checkFileDatasyncEvent);
 }
 
 
@@ -303,15 +303,15 @@ TEST(FileReq, Truncate) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-    bool checkFsTruncateEvent = false;
+    bool checkFileTruncateEvent = false;
 
     request->on<uvw::ErrorEvent>([](const auto &, auto &) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FTRUNCATE>>([&checkFsTruncateEvent](const auto &, auto &request) {
-        ASSERT_FALSE(checkFsTruncateEvent);
-        checkFsTruncateEvent = true;
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FTRUNCATE>>([&checkFileTruncateEvent](const auto &, auto &request) {
+        ASSERT_FALSE(checkFileTruncateEvent);
+        checkFileTruncateEvent = true;
         request.close();
     });
 
@@ -327,7 +327,7 @@ TEST(FileReq, Truncate) {
 
     loop->run();
 
-    ASSERT_TRUE(checkFsTruncateEvent);
+    ASSERT_TRUE(checkFileTruncateEvent);
 }
 
 
@@ -479,18 +479,72 @@ TEST(FsReq, Access) {
 TEST(FsReq, AccessSync) {
     // TODO
 }
+*/
 
 
 TEST(FsReq, Chmod) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+    bool checkFsChmodEvent = false;
+
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fsReq->on<uvw::FsEvent<uvw::FileReq::Type::CHMOD>>([&checkFsChmodEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkFsChmodEvent);
+        checkFsChmodEvent = true;
+    });
+
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename](const auto &, auto &) {
+        fsReq->chmod(filename, 0644);
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
+        request.close();
+    });
+
+#ifdef _WIN32
+    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
+#else
+    fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+#endif
+
+    loop->run();
+
+    ASSERT_TRUE(checkFsChmodEvent);
 }
 
 
 TEST(FsReq, ChmodSync) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+#ifdef _WIN32
+    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
+#else
+    ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
+#endif
+
+    ASSERT_TRUE(fileReq->closeSync());
+    ASSERT_TRUE(fsReq->chmodSync(filename, 0644));
+
+    loop->run();
 }
 
 
+/*
 TEST(FsReq, Utime) {
     // TODO
 }
