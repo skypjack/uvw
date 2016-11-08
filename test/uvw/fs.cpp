@@ -360,17 +360,60 @@ TEST(FileReq, SendFile) {
 TEST(FileReq, SendFileSync) {
     // TODO
 }
+*/
 
 
 TEST(FileReq, Chmod) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto request = loop->resource<uvw::FileReq>();
+
+    bool checkFileChmodEvent = false;
+
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FCHMOD>>([&checkFileChmodEvent](const auto &, auto &request) {
+        ASSERT_FALSE(checkFileChmodEvent);
+        checkFileChmodEvent = true;
+        request.close();
+    });
+
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
+        request.chmod(0644);
+    });
+
+#ifdef _WIN32
+    request->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
+#else
+    request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+#endif
+
+    loop->run();
+
+    ASSERT_TRUE(checkFileChmodEvent);
 }
 
 
 TEST(FileReq, ChmodSync) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto request = loop->resource<uvw::FileReq>();
+
+#ifdef _WIN32
+    ASSERT_TRUE(request->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
+#else
+    ASSERT_TRUE(request->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
+#endif
+
+    ASSERT_TRUE(request->chmodSync(0644));
+    ASSERT_TRUE(request->closeSync());
+
+    loop->run();
 }
-*/
 
 
 TEST(FileReq, Utime) {
@@ -407,7 +450,6 @@ TEST(FileReq, Utime) {
     loop->run();
 
     ASSERT_TRUE(checkFileUtimeEvent);
-
 }
 
 
