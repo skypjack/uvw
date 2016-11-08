@@ -8,7 +8,7 @@
 
 
 TEST(FileReq, OpenAndClose) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -45,7 +45,7 @@ TEST(FileReq, OpenAndClose) {
 
 
 TEST(FileReq, OpenAndCloseSync) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -63,7 +63,7 @@ TEST(FileReq, OpenAndCloseSync) {
 
 
 TEST(FileReq, RW) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -106,7 +106,7 @@ TEST(FileReq, RW) {
 
 
 TEST(FileReq, RWSync) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -136,7 +136,7 @@ TEST(FileReq, RWSync) {
 
 
 TEST(FileReq, Stat) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -171,7 +171,7 @@ TEST(FileReq, Stat) {
 
 
 TEST(FileReq, StatSync) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -193,7 +193,7 @@ TEST(FileReq, StatSync) {
 
 
 TEST(FileReq, Sync) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -227,7 +227,7 @@ TEST(FileReq, Sync) {
 
 
 TEST(FileReq, SyncSync) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -246,7 +246,7 @@ TEST(FileReq, SyncSync) {
 
 
 TEST(FileReq, Datasync) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -280,7 +280,7 @@ TEST(FileReq, Datasync) {
 
 
 TEST(FileReq, DatasyncSync) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -299,7 +299,7 @@ TEST(FileReq, DatasyncSync) {
 
 
 TEST(FileReq, Truncate) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -333,7 +333,7 @@ TEST(FileReq, Truncate) {
 
 
 TEST(FileReq, TruncateSync) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -364,7 +364,7 @@ TEST(FileReq, SendFileSync) {
 
 
 TEST(FileReq, Chmod) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -398,7 +398,7 @@ TEST(FileReq, Chmod) {
 
 
 TEST(FileReq, ChmodSync) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -417,7 +417,7 @@ TEST(FileReq, ChmodSync) {
 
 
 TEST(FileReq, Utime) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -454,7 +454,7 @@ TEST(FileReq, Utime) {
 
 
 TEST(FileReq, UtimeSync) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -496,34 +496,62 @@ TEST(FsReq, Unlink) {
 TEST(FsReq, UnlinkSync) {
     // TODO
 }
+*/
 
 
-TEST(FsReq, Mkdir) {
-    // TODO
+TEST(FsReq, MkdirAndRmdir) {
+    const std::string dirname = std::string{TARGET_FS_DIR} + std::string{"/test.dir"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto request = loop->resource<uvw::FsReq>();
+
+    bool checkFsMkdirEvent = false;
+    bool checkFsRmdirEvent = false;
+
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    request->on<uvw::FsEvent<uvw::FileReq::Type::RMDIR>>([&checkFsRmdirEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkFsRmdirEvent);
+        checkFsRmdirEvent = true;
+    });
+
+    request->on<uvw::FsEvent<uvw::FileReq::Type::MKDIR>>([&checkFsMkdirEvent, &dirname](const auto &, auto &request) {
+        ASSERT_FALSE(checkFsMkdirEvent);
+        checkFsMkdirEvent = true;
+        request.rmdir(dirname);
+    });
+
+    request->mkdir(dirname, 0755);
+
+    loop->run();
+
+    ASSERT_TRUE(checkFsMkdirEvent);
+    ASSERT_TRUE(checkFsRmdirEvent);
 }
 
 
-TEST(FsReq, MkdirSync) {
-    // TODO
+TEST(FsReq, MkdirAndRmdirSync) {
+    const std::string dirname = std::string{TARGET_FS_DIR} + std::string{"/test.dir"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto request = loop->resource<uvw::FsReq>();
+
+    ASSERT_TRUE(request->mkdirSync(dirname, 0755));
+    ASSERT_TRUE(request->rmdirSync(dirname));
+
+    loop->run();
 }
 
 
+/*
 TEST(FsReq, Mkdtemp) {
     // TODO
 }
 
 
 TEST(FsReq, MkdtempSync) {
-    // TODO
-}
-
-
-TEST(FsReq, Rmdir) {
-    // TODO
-}
-
-
-TEST(FsReq, RmdirSync) {
     // TODO
 }
 
@@ -580,7 +608,7 @@ TEST(FsReq, AccessSync) {
 
 
 TEST(FsReq, Chmod) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto fileReq = loop->resource<uvw::FileReq>();
@@ -622,7 +650,7 @@ TEST(FsReq, Chmod) {
 
 
 TEST(FsReq, ChmodSync) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto fileReq = loop->resource<uvw::FileReq>();
@@ -642,7 +670,7 @@ TEST(FsReq, ChmodSync) {
 
 
 TEST(FsReq, Utime) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto fileReq = loop->resource<uvw::FileReq>();
@@ -687,7 +715,7 @@ TEST(FsReq, Utime) {
 
 
 TEST(FsReq, UtimeSync) {
-    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
     auto fileReq = loop->resource<uvw::FileReq>();
