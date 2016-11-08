@@ -246,7 +246,7 @@ public:
     /**
      * @brief Starts reading data from an incoming stream.
      *
-     * A ReadEvent event will be emitted several times until there is no more
+     * A DataEvent event will be emitted several times until there is no more
      * data to read or `stop()` is called.<br/>
      * An EndEvent event will be emitted when there is no more data to read.
      */

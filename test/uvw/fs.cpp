@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <uvw.hpp>
+#include <chrono>
 
 #ifdef _WIN32
 #include <fcntl.h>
@@ -544,17 +545,77 @@ TEST(FsReq, ChmodSync) {
 }
 
 
-/*
 TEST(FsReq, Utime) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+    bool checkFsUtimeEvent = false;
+
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fsReq->on<uvw::FsEvent<uvw::FileReq::Type::UTIME>>([&checkFsUtimeEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkFsUtimeEvent);
+        checkFsUtimeEvent = true;
+    });
+
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename](const auto &, auto &) {
+        auto now = std::chrono::system_clock::now();
+        auto epoch = now.time_since_epoch();
+        auto value = std::chrono::duration_cast<std::chrono::seconds>(epoch);
+
+        fsReq->utime(filename, value, value);
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
+        request.close();
+    });
+
+#ifdef _WIN32
+    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
+#else
+    fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+#endif
+
+    loop->run();
+
+    ASSERT_TRUE(checkFsUtimeEvent);
 }
 
 
 TEST(FsReq, UtimeSync) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.fs"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+#ifdef _WIN32
+    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
+#else
+    ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
+#endif
+
+    auto now = std::chrono::system_clock::now();
+    auto epoch = now.time_since_epoch();
+    auto value = std::chrono::duration_cast<std::chrono::seconds>(epoch);
+
+    ASSERT_TRUE(fileReq->closeSync());
+    ASSERT_TRUE(fsReq->utimeSync(filename, value, value));
+
+    loop->run();
 }
 
 
+/*
 TEST(FsReq, Link) {
     // TODO
 }
