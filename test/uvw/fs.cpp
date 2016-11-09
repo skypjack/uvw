@@ -486,16 +486,6 @@ TEST(FileReq, Chown) {
 TEST(FileReq, ChownSync) {
     // TODO
 }
-
-
-TEST(FsReq, Unlink) {
-    // TODO
-}
-
-
-TEST(FsReq, UnlinkSync) {
-    // TODO
-}
 */
 
 
@@ -616,7 +606,7 @@ TEST(FsReq, LstatSync) {
 
 TEST(FsReq, Rename) {
     const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
-    const std::string rename = std::string{TARGET_FS_DIR} + std::string{"/rename.file"};
+    const std::string rename = std::string{TARGET_FS_DIR} + std::string{"/test.rename"};
 
     auto loop = uvw::Loop::getDefault();
     auto fileReq = loop->resource<uvw::FileReq>();
@@ -659,7 +649,7 @@ TEST(FsReq, Rename) {
 
 TEST(FsReq, RenameSync) {
     const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
-    const std::string rename = std::string{TARGET_FS_DIR} + std::string{"/rename.file"};
+    const std::string rename = std::string{TARGET_FS_DIR} + std::string{"/test.rename"};
 
     auto loop = uvw::Loop::getDefault();
     auto fileReq = loop->resource<uvw::FileReq>();
@@ -821,23 +811,86 @@ TEST(FsReq, UtimeSync) {
 }
 
 
+TEST(FsReq, LinkAndUnlink) {
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
+    const std::string linkname = std::string{TARGET_FS_DIR} + std::string{"/test.link"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+    bool checkFsLinkEvent = false;
+    bool checkFsUnlinkEvent = false;
+
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fsReq->on<uvw::FsEvent<uvw::FileReq::Type::UNLINK>>([&checkFsUnlinkEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkFsUnlinkEvent);
+        checkFsUnlinkEvent = true;
+    });
+
+    fsReq->on<uvw::FsEvent<uvw::FileReq::Type::LINK>>([&checkFsLinkEvent, &linkname](const auto &, auto &request) {
+        ASSERT_FALSE(checkFsLinkEvent);
+        checkFsLinkEvent = true;
+        request.unlink(linkname);
+    });
+
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename, &linkname](const auto &, auto &) {
+        fsReq->link(filename, linkname);
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
+        request.close();
+    });
+
+#ifdef _WIN32
+    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
+#else
+    fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+#endif
+
+    loop->run();
+
+    ASSERT_TRUE(checkFsLinkEvent);
+    ASSERT_TRUE(checkFsUnlinkEvent);
+}
+
+
+TEST(FsReq, LinkAndUnlinkSync) {
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
+    const std::string linkname = std::string{TARGET_FS_DIR} + std::string{"/test.link"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+#ifdef _WIN32
+    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
+#else
+    ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
+#endif
+
+    ASSERT_TRUE(fileReq->closeSync());
+    ASSERT_TRUE(fsReq->linkSync(filename, linkname));
+    ASSERT_TRUE(fsReq->unlinkSync(linkname));
+
+    loop->run();
+}
+
+
 /*
-TEST(FsReq, Link) {
+TEST(FsReq, SymlinkAndUnlink) {
     // TODO
 }
 
 
-TEST(FsReq, LinkSync) {
-    // TODO
-}
-
-
-TEST(FsReq, Symlink) {
-    // TODO
-}
-
-
-TEST(FsReq, SymlinkSync) {
+TEST(FsReq, SymlinkAndUnlinkSync) {
     // TODO
 }
 
