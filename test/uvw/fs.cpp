@@ -611,18 +611,74 @@ TEST(FsReq, Lstat) {
 TEST(FsReq, LstatSync) {
     // TODO
 }
+*/
 
 
 TEST(FsReq, Rename) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
+    const std::string rename = std::string{TARGET_FS_DIR} + std::string{"/rename.file"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+    bool checkFsRenameEvent = false;
+
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fsReq->on<uvw::FsEvent<uvw::FileReq::Type::RENAME>>([&checkFsRenameEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkFsRenameEvent);
+        checkFsRenameEvent = true;
+    });
+
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename, &rename](const auto &, auto &) {
+        fsReq->rename(filename, rename);
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
+        request.close();
+    });
+
+#ifdef _WIN32
+    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
+#else
+    fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+#endif
+
+    loop->run();
+
+    ASSERT_TRUE(checkFsRenameEvent);
 }
 
 
 TEST(FsReq, RenameSync) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
+    const std::string rename = std::string{TARGET_FS_DIR} + std::string{"/rename.file"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+#ifdef _WIN32
+    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
+#else
+    ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
+#endif
+
+    ASSERT_TRUE(fileReq->closeSync());
+    ASSERT_TRUE(fsReq->renameSync(filename, rename));
+
+    loop->run();
 }
 
 
+/*
 TEST(FsReq, Access) {
     // TODO
 }
