@@ -127,7 +127,6 @@ TEST(FileReq, RWSync) {
     ASSERT_TRUE(readR.first);
     ASSERT_EQ(readR.second.first[0], 42);
     ASSERT_EQ(readR.second.second, 1);
-
     ASSERT_TRUE(request->closeSync());
 
     loop->run();
@@ -185,7 +184,6 @@ TEST(FileReq, StatSync) {
     auto statR = request->statSync();
 
     ASSERT_TRUE(statR.first);
-
     ASSERT_TRUE(request->closeSync());
 
     loop->run();
@@ -640,18 +638,75 @@ TEST(FsReq, Scandir) {
 TEST(FsReq, ScandirSync) {
     // TODO
 }
+*/
 
 
 TEST(FsReq, Stat) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+    bool checkFsStatEvent = false;
+
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fsReq->on<uvw::FsEvent<uvw::FileReq::Type::STAT>>([&checkFsStatEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkFsStatEvent);
+        checkFsStatEvent = true;
+    });
+
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename](const auto &, auto &) {
+        fsReq->stat(filename);
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
+        request.close();
+    });
+
+#ifdef _WIN32
+    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
+#else
+    fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+#endif
+
+    loop->run();
+
+    ASSERT_TRUE(checkFsStatEvent);
 }
 
 
 TEST(FsReq, StatSync) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+#ifdef _WIN32
+    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
+#else
+    ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
+#endif
+
+    ASSERT_TRUE(fileReq->closeSync());
+
+    auto statR = fsReq->statSync(filename);
+
+    ASSERT_TRUE(statR.first);
+
+    loop->run();
 }
 
 
+/*
 TEST(FsReq, Lstat) {
     // TODO
 }
