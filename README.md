@@ -253,7 +253,8 @@ Federico Bertolucci aka [lessness](https://github.com/lessness)<br/>
 Luca Martini aka [lordlukas](https://github.com/lucamartini)<br/>
 Elia Mazzuoli aka [Zikoel](https://github.com/Zikoel)<br/>
 Francesco De Felice aka [fradefe](https://github.com/fradefe)<br/>
-Tushar Maheshwari aka [tusharpm](https://github.com/tusharpm)
+Tushar Maheshwari aka [tusharpm](https://github.com/tusharpm)<br/>
+Paolo Monteverde aka [morbo84](https://github.com/morbo84)
 
 If you want to contribute, please send patches as pull requests against the branch master.
 

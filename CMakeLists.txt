@@ -135,7 +135,7 @@ include(CPack)
 
 file(
     GLOB_RECURSE PROJECT_FILES FOLLOW_SYMLINKS
-    *.txt *.c *.cpp *.hpp *.h *.in *.cmake *.sh Makefile *.md
+    *.txt *.c *.cpp *.hpp *.h *.in *.cmake *.sh *.md AUTHORS
 )
 
 add_custom_target(

@@ -209,7 +209,7 @@ public:
     /**
      * @brief Starts listening for incoming connections.
      *
-     * When a new incoming connection is received, a ConnectEvent event is
+     * When a new incoming connection is received, a ListenEvent event is
      * emitted.<br/>
      * An ErrorEvent event will be emitted in case of errors.
      *
@@ -224,15 +224,15 @@ public:
      * @brief Accepts incoming connections.
      *
      * This call is used in conjunction with `listen()` to accept incoming
-     * connections. Call this function after receiving a ConnectEvent event to
+     * connections. Call this function after receiving a ListenEvent event to
      * accept the connection. Before calling this function, the submitted handle
      * must be initialized.<br>
      * An ErrorEvent event will be emitted in case of errors.
      *
-     * When the ConnectEvent event is emitted it is guaranteed that this
+     * When the ListenEvent event is emitted it is guaranteed that this
      * function will complete successfully the first time. If you attempt to use
      * it more than once, it may fail.<br/>
-     * It is suggested to only call this function once per ConnectEvent event.
+     * It is suggested to only call this function once per ListenEvent event.
      *
      * **Note**: both the handles must be running on the same loop.
      *
