@@ -477,16 +477,64 @@ TEST(FileReq, UtimeSync) {
 }
 
 
-/*
 TEST(FileReq, Chown) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto request = loop->resource<uvw::FileReq>();
+
+    bool checkFileChownEvent = false;
+
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FCHOWN>>([&checkFileChownEvent](const auto &, auto &request) {
+        ASSERT_FALSE(checkFileChownEvent);
+        checkFileChownEvent = true;
+        request.close();
+    });
+
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FSTAT>>([](const auto &event, auto &request) {
+        request.chown(event.stat.st_uid, event.stat.st_gid);
+    });
+
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
+        request.stat();
+    });
+
+#ifdef _WIN32
+    request->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
+#else
+    request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+#endif
+
+    loop->run();
+
+    ASSERT_TRUE(checkFileChownEvent);
 }
 
 
 TEST(FileReq, ChownSync) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto request = loop->resource<uvw::FileReq>();
+
+#ifdef _WIN32
+    ASSERT_TRUE(request->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
+#else
+    ASSERT_TRUE(request->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
+#endif
+
+    auto statR = request->statSync();
+
+    ASSERT_TRUE(statR.first);
+    ASSERT_TRUE(request->chownSync(statR.second.st_uid, statR.second.st_gid));
+    ASSERT_TRUE(request->closeSync());
+
+    loop->run();
 }
-*/
 
 
 TEST(FsReq, MkdirAndRmdir) {
