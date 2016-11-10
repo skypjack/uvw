@@ -884,17 +884,80 @@ TEST(FsReq, LinkAndUnlinkSync) {
 }
 
 
-/*
 TEST(FsReq, SymlinkAndUnlink) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
+    const std::string linkname = std::string{TARGET_FS_DIR} + std::string{"/test.link"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+    bool checkFsLinkEvent = false;
+    bool checkFsUnlinkEvent = false;
+
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fsReq->on<uvw::FsEvent<uvw::FileReq::Type::UNLINK>>([&checkFsUnlinkEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkFsUnlinkEvent);
+        checkFsUnlinkEvent = true;
+    });
+
+    fsReq->on<uvw::FsEvent<uvw::FileReq::Type::SYMLINK>>([&checkFsLinkEvent, &linkname](const auto &, auto &request) {
+        ASSERT_FALSE(checkFsLinkEvent);
+        checkFsLinkEvent = true;
+        request.unlink(linkname);
+    });
+
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename, &linkname](const auto &, auto &) {
+        fsReq->symlink(filename, linkname, 0);
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
+        request.close();
+    });
+
+#ifdef _WIN32
+    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
+#else
+    fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+#endif
+
+    loop->run();
+
+    ASSERT_TRUE(checkFsLinkEvent);
+    ASSERT_TRUE(checkFsUnlinkEvent);
 }
 
 
 TEST(FsReq, SymlinkAndUnlinkSync) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
+    const std::string linkname = std::string{TARGET_FS_DIR} + std::string{"/test.link"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+#ifdef _WIN32
+    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
+#else
+    ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
+#endif
+
+    ASSERT_TRUE(fileReq->closeSync());
+    ASSERT_TRUE(fsReq->symlinkSync(filename, linkname, 0));
+    ASSERT_TRUE(fsReq->unlinkSync(linkname));
+
+    loop->run();
 }
 
 
+/*
 TEST(FsReq, Readlink) {
     // TODO
 }
