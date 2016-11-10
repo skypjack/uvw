@@ -808,13 +808,17 @@ public:
 
     /**
      * @brief Sync [mktemp](http://linux.die.net/man/3/mkdtemp).
+     *
      * @param tpl Template, as described in the official documentation.
-     * @return True in case of success, false otherwise.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * The actual path of the newly created directoy.
      */
-    bool mkdtempSync(std::string tpl) {
+    std::pair<bool, const char *> mkdtempSync(std::string tpl) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_mkdtemp, parent(), req, tpl.data());
-        return !(req->result < 0);
+        return std::make_pair(!(req->result < 0), req->path);
     }
 
     /**

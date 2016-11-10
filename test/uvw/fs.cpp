@@ -535,21 +535,28 @@ TEST(FsReq, MkdirAndRmdirSync) {
 }
 
 
-TEST(FsReq, Mkdtemp) {
+TEST(FsReq, MkdtempAndRmdir) {
     const std::string dirname = std::string{TARGET_FS_DIR} + std::string{"/test.dir.XXXXXX"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FsReq>();
 
     bool checkFsMkdtempEvent = false;
+    bool checkFsRmdirEvent = false;
 
     request->on<uvw::ErrorEvent>([](const auto &, auto &) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::MKDTEMP>>([&checkFsMkdtempEvent](const auto &, auto &) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::RMDIR>>([&checkFsRmdirEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkFsRmdirEvent);
+        checkFsRmdirEvent = true;
+    });
+
+    request->on<uvw::FsEvent<uvw::FileReq::Type::MKDTEMP>>([&checkFsMkdtempEvent](const auto &event, auto &request) {
         ASSERT_FALSE(checkFsMkdtempEvent);
         checkFsMkdtempEvent = true;
+        request.rmdir(event.path);
     });
 
     request->mkdtemp(dirname);
@@ -557,16 +564,20 @@ TEST(FsReq, Mkdtemp) {
     loop->run();
 
     ASSERT_TRUE(checkFsMkdtempEvent);
+    ASSERT_TRUE(checkFsRmdirEvent);
 }
 
 
-TEST(FsReq, MkdtempSync) {
+TEST(FsReq, MkdtempAndRmdirSync) {
     const std::string dirname = std::string{TARGET_FS_DIR} + std::string{"/test.dir.XXXXXX"};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FsReq>();
 
-    ASSERT_TRUE(request->mkdtempSync(dirname));
+    auto mkdtempR = request->mkdtempSync(dirname);
+
+    ASSERT_TRUE(mkdtempR.first);
+    ASSERT_TRUE(request->rmdirSync(mkdtempR.second));
 
     loop->run();
 }
