@@ -706,16 +706,69 @@ TEST(FsReq, StatSync) {
 }
 
 
-/*
 TEST(FsReq, Lstat) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+    bool checkFsLstatEvent = false;
+
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fsReq->on<uvw::FsEvent<uvw::FileReq::Type::LSTAT>>([&checkFsLstatEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkFsLstatEvent);
+        checkFsLstatEvent = true;
+    });
+
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename](const auto &, auto &) {
+        fsReq->lstat(filename);
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
+        request.close();
+    });
+
+#ifdef _WIN32
+    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
+#else
+    fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+#endif
+
+    loop->run();
+
+    ASSERT_TRUE(checkFsLstatEvent);
 }
 
 
 TEST(FsReq, LstatSync) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+#ifdef _WIN32
+    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
+#else
+    ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
+#endif
+
+    ASSERT_TRUE(fileReq->closeSync());
+
+    auto statR = fsReq->lstatSync(filename);
+
+    ASSERT_TRUE(statR.first);
+
+    loop->run();
 }
-*/
 
 
 TEST(FsReq, Rename) {
