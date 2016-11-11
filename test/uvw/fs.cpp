@@ -601,6 +601,7 @@ TEST(FsReq, MkdtempAndRmdir) {
 
     request->on<uvw::FsEvent<uvw::FsReq::Type::MKDTEMP>>([&checkFsMkdtempEvent](const auto &event, auto &request) {
         ASSERT_FALSE(checkFsMkdtempEvent);
+        ASSERT_NE(event.path, nullptr);
         checkFsMkdtempEvent = true;
         request.rmdir(event.path);
     });
@@ -623,6 +624,7 @@ TEST(FsReq, MkdtempAndRmdirSync) {
     auto mkdtempR = request->mkdtempSync(dirname);
 
     ASSERT_TRUE(mkdtempR.first);
+    ASSERT_NE(mkdtempR.second, nullptr);
     ASSERT_TRUE(request->rmdirSync(mkdtempR.second));
 
     loop->run();
@@ -1133,17 +1135,74 @@ TEST(FsReq, Readlink) {
 TEST(FsReq, ReadlinkSync) {
     // TODO
 }
+*/
 
 
 TEST(FsReq, Realpath) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+    bool checkFsRealpathEvent = false;
+
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fsReq->on<uvw::FsEvent<uvw::FsReq::Type::REALPATH>>([&checkFsRealpathEvent](const auto &event, auto &) {
+        ASSERT_FALSE(checkFsRealpathEvent);
+        ASSERT_NE(event.path, nullptr);
+        checkFsRealpathEvent = true;
+    });
+
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename](const auto &, auto &) {
+        fsReq->realpath(filename);
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
+        request.close();
+    });
+
+#ifdef _WIN32
+    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
+#else
+    fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+#endif
+
+    loop->run();
+
+    ASSERT_TRUE(checkFsRealpathEvent);
 }
 
 
 TEST(FsReq, RealpathSync) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+#ifdef _WIN32
+    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
+#else
+    ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
+#endif
+
+    ASSERT_TRUE(fileReq->closeSync());
+
+    auto realpathR = fsReq->realpathSync(filename);
+
+    ASSERT_TRUE(realpathR.first);
+    ASSERT_NE(realpathR.second, nullptr);
+
+    loop->run();
 }
-*/
 
 
 TEST(FsReq, Chown) {

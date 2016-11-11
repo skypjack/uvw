@@ -1172,13 +1172,17 @@ public:
 
     /**
      * @brief Sync [realpath](http://linux.die.net/man/3/realpath).
+     *
      * @param path Path, as described in the official documentation.
-     * @return True in case of success, false otherwise.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * The canonicalized absolute pathname.
      */
-    bool realpathSync(std::string path) {
+    std::pair<bool, const char *> realpathSync(std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_realpath, parent(), req, path.data());
-        return !(req->result < 0);
+        return std::make_pair(!(req->result < 0), req->path);
     }
 
     /**
