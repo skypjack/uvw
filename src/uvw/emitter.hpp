@@ -46,11 +46,11 @@ class Emitter {
         }
 
         Connection once(Listener f) {
-            return { onceL, onceL.insert(onceL.cend(), std::move(f)) };
+            return { onceL, onceL.insert(onceL.cbegin(), std::move(f)) };
         }
 
         Connection on(Listener f) {
-            return { onL, onL.insert(onL.cend(), std::move(f)) };
+            return { onL, onL.insert(onL.cbegin(), std::move(f)) };
         }
 
         void erase(Connection conn) noexcept {
@@ -61,8 +61,8 @@ class Emitter {
             ListenerList currentL;
             onceL.swap(currentL);
             auto op = [&event, &ref](auto &&listener){ listener(event, ref); };
-            std::for_each(currentL.begin(), currentL.end(), op);
             std::for_each(onL.begin(), onL.end(), op);
+            std::for_each(currentL.begin(), currentL.end(), op);
         }
 
     private:
