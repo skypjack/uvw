@@ -46,11 +46,11 @@ class Emitter {
         }
 
         Connection once(Listener f) {
-            return { onceL, onceL.insert(onceL.cbegin(), std::move(f)) };
+            return { onceL, onceL.insert(onceL.cend(), std::move(f)) };
         }
 
         Connection on(Listener f) {
-            return { onL, onL.insert(onL.cbegin(), std::move(f)) };
+            return { onL, onL.insert(onL.cend(), std::move(f)) };
         }
 
         void erase(Connection conn) noexcept {
