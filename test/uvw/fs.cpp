@@ -837,16 +837,66 @@ TEST(FsReq, RenameSync) {
 }
 
 
-/*
 TEST(FsReq, Access) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+    bool checkFsAccessEvent = false;
+
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fsReq->on<uvw::FsEvent<uvw::FsReq::Type::ACCESS>>([&checkFsAccessEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkFsAccessEvent);
+        checkFsAccessEvent = true;
+    });
+
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename](const auto &, auto &) {
+        fsReq->access(filename, R_OK);
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
+        request.close();
+    });
+
+#ifdef _WIN32
+    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
+#else
+    fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+#endif
+
+    loop->run();
+
+    ASSERT_TRUE(checkFsAccessEvent);
 }
 
 
 TEST(FsReq, AccessSync) {
-    // TODO
+    const std::string filename = std::string{TARGET_FS_DIR} + std::string{"/test.file"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+#ifdef _WIN32
+    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
+#else
+    ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
+#endif
+
+    ASSERT_TRUE(fileReq->closeSync());
+    ASSERT_TRUE(fsReq->accessSync(filename, R_OK));
+
+    loop->run();
 }
-*/
 
 
 TEST(FsReq, Chmod) {
