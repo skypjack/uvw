@@ -72,7 +72,7 @@ struct NameInfoEvent: Event<NameInfoEvent> {
  */
 class GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
     static void getAddrInfoCallback(uv_getaddrinfo_t *req, int status, addrinfo *res) {
-        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        auto ptr = reserve(req);
 
         if(status) {
             ptr->publish(ErrorEvent{status});
@@ -199,7 +199,7 @@ public:
  */
 class GetNameInfoReq final: public Request<GetNameInfoReq, uv_getnameinfo_t> {
     static void getNameInfoCallback(uv_getnameinfo_t *req, int status, const char *hostname, const char *service) {
-        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        auto ptr = reserve(req);
         if(status) { ptr->publish(ErrorEvent{status}); }
         else { ptr->publish(NameInfoEvent{hostname, service}); }
     }

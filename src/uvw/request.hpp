@@ -16,7 +16,7 @@ class Request: public Resource<T, U> {
 protected:
     using Resource<T, U>::Resource;
 
-    static auto reserve(uv_req_t *req) {
+    static auto reserve(U *req) {
         auto ptr = static_cast<T*>(req->data)->shared_from_this();
         ptr->reset();
         return ptr;
@@ -24,7 +24,7 @@ protected:
 
     template<typename E>
     static void defaultCallback(U *req, int status) {
-        auto ptr = reserve(reinterpret_cast<uv_req_t*>(req));
+        auto ptr = reserve(req);
         if(status) { ptr->publish(ErrorEvent{status}); }
         else { ptr->publish(E{}); }
     }
