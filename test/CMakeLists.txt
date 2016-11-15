@@ -36,7 +36,8 @@ set(TARGET_ASYNC async)
 set(TARGET_CHECK check)
 set(TARGET_EMITTER emitter)
 set(TARGET_EVENT event)
-set(TARGET_FS fs)
+set(TARGET_FS_REQ fs_req)
+set(TARGET_FILE_REQ file_req)
 set(TARGET_HANDLE handle)
 set(TARGET_IDLE idle)
 set(TARGET_LOOP loop)
@@ -86,16 +87,27 @@ target_include_directories(${TARGET_EVENT} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_EVENT} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_EVENT} COMMAND ${TARGET_EVENT})
 
-# Test TARGET_FS
+# Test TARGET_FS_REQ
 
-set(TARGET_FS_SOURCES $<TARGET_OBJECTS:odr> uvw/fs.cpp)
-set(TARGET_FS_DIR ${CMAKE_CURRENT_BINARY_DIR}/fs)
-file(MAKE_DIRECTORY ${TARGET_FS_DIR})
-add_executable(${TARGET_FS} ${TARGET_FS_SOURCES})
-target_include_directories(${TARGET_FS} PRIVATE ${COMMON_INCLUDE_DIRS})
-target_link_libraries(${TARGET_FS} PRIVATE ${COMMON_LINK_LIBS})
-target_compile_definitions(${TARGET_FS} PRIVATE TARGET_FS_DIR="${TARGET_FS_DIR}")
-add_test(NAME ${TARGET_FS} COMMAND ${TARGET_FS})
+set(TARGET_FS_REQ_SOURCES $<TARGET_OBJECTS:odr> uvw/fs_req.cpp)
+set(TARGET_FS_REQ_DIR ${CMAKE_CURRENT_BINARY_DIR}/fs_req)
+file(MAKE_DIRECTORY ${TARGET_FS_REQ_DIR})
+add_executable(${TARGET_FS_REQ} ${TARGET_FS_REQ_SOURCES})
+target_include_directories(${TARGET_FS_REQ} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_FS_REQ} PRIVATE ${COMMON_LINK_LIBS})
+target_compile_definitions(${TARGET_FS_REQ} PRIVATE TARGET_FS_REQ_DIR="${TARGET_FS_REQ_DIR}")
+add_test(NAME ${TARGET_FS_REQ} COMMAND ${TARGET_FS_REQ})
+
+# Test TARGET_FILE_REQ
+
+set(TARGET_FILE_REQ_SOURCES $<TARGET_OBJECTS:odr> uvw/file_req.cpp)
+set(TARGET_FILE_REQ_DIR ${CMAKE_CURRENT_BINARY_DIR}/file_req)
+file(MAKE_DIRECTORY ${TARGET_FILE_REQ_DIR})
+add_executable(${TARGET_FILE_REQ} ${TARGET_FILE_REQ_SOURCES})
+target_include_directories(${TARGET_FILE_REQ} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_FILE_REQ} PRIVATE ${COMMON_LINK_LIBS})
+target_compile_definitions(${TARGET_FILE_REQ} PRIVATE TARGET_FILE_REQ_DIR="${TARGET_FILE_REQ_DIR}")
+add_test(NAME ${TARGET_FILE_REQ} COMMAND ${TARGET_FILE_REQ})
 
 # Test TARGET_HANDLE
 
