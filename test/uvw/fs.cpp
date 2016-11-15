@@ -3,6 +3,7 @@
 #include <chrono>
 
 #ifdef _WIN32
+#define _CRT_DECLARE_NONSTDC_NAMES 1
 #include <fcntl.h>
 #endif
 
@@ -31,11 +32,7 @@ TEST(FileReq, OpenAndClose) {
         request.close();
     });
 
-#ifdef _WIN32
-    request->open(filename, _O_CREAT | _O_WRONLY, 0644);
-#else
     request->open(filename, O_CREAT | O_WRONLY, 0644);
-#endif
 
     loop->run();
 
@@ -50,11 +47,7 @@ TEST(FileReq, OpenAndCloseSync) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(request->openSync(filename, _O_CREAT | _O_WRONLY, 0644));
-#else
     ASSERT_TRUE(request->openSync(filename, O_CREAT | O_WRONLY, 0644));
-#endif
 
     ASSERT_TRUE(request->closeSync());
 
@@ -92,11 +85,7 @@ TEST(FileReq, RW) {
         request.write(std::unique_ptr<char[]>{new char[1]{ 42 }}, 1, 0);
     });
 
-#ifdef _WIN32
-    request->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -111,11 +100,7 @@ TEST(FileReq, RWSync) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(request->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(request->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     auto writeR = request->writeSync(std::unique_ptr<char[]>{new char[1]{ 42 }}, 1, 0);
 
@@ -156,11 +141,7 @@ TEST(FileReq, Stat) {
         request.stat();
     });
 
-#ifdef _WIN32
-    request->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -175,11 +156,7 @@ TEST(FileReq, StatSync) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(request->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(request->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     auto statR = request->statSync();
 
@@ -212,11 +189,7 @@ TEST(FileReq, Sync) {
         request.sync();
     });
 
-#ifdef _WIN32
-    request->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -230,11 +203,7 @@ TEST(FileReq, SyncSync) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(request->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(request->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     ASSERT_TRUE(request->syncSync());
     ASSERT_TRUE(request->closeSync());
@@ -265,11 +234,7 @@ TEST(FileReq, Datasync) {
         request.datasync();
     });
 
-#ifdef _WIN32
-    request->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -283,11 +248,7 @@ TEST(FileReq, DatasyncSync) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(request->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(request->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     ASSERT_TRUE(request->datasyncSync());
     ASSERT_TRUE(request->closeSync());
@@ -318,11 +279,7 @@ TEST(FileReq, Truncate) {
         request.truncate(0);
     });
 
-#ifdef _WIN32
-    request->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -336,11 +293,7 @@ TEST(FileReq, TruncateSync) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(request->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(request->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     ASSERT_TRUE(request->truncateSync(0));
     ASSERT_TRUE(request->closeSync());
@@ -383,11 +336,7 @@ TEST(FileReq, Chmod) {
         request.chmod(0644);
     });
 
-#ifdef _WIN32
-    request->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -401,11 +350,7 @@ TEST(FileReq, ChmodSync) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(request->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(request->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     ASSERT_TRUE(request->chmodSync(0644));
     ASSERT_TRUE(request->closeSync());
@@ -439,11 +384,7 @@ TEST(FileReq, Utime) {
         request.utime(value, value);
     });
 
-#ifdef _WIN32
-    request->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -457,11 +398,7 @@ TEST(FileReq, UtimeSync) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(request->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(request->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     auto now = std::chrono::system_clock::now();
     auto epoch = now.time_since_epoch();
@@ -501,11 +438,7 @@ TEST(FileReq, Chown) {
         request.stat();
     });
 
-#ifdef _WIN32
-    request->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -519,11 +452,7 @@ TEST(FileReq, ChownSync) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(request->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(request->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     auto statR = request->statSync();
 
@@ -673,11 +602,7 @@ TEST(FsReq, Stat) {
         request.close();
     });
 
-#ifdef _WIN32
-    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -692,11 +617,7 @@ TEST(FsReq, StatSync) {
     auto fileReq = loop->resource<uvw::FileReq>();
     auto fsReq = loop->resource<uvw::FsReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     ASSERT_TRUE(fileReq->closeSync());
 
@@ -738,11 +659,7 @@ TEST(FsReq, Lstat) {
         request.close();
     });
 
-#ifdef _WIN32
-    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -757,11 +674,7 @@ TEST(FsReq, LstatSync) {
     auto fileReq = loop->resource<uvw::FileReq>();
     auto fsReq = loop->resource<uvw::FsReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     ASSERT_TRUE(fileReq->closeSync());
 
@@ -804,11 +717,7 @@ TEST(FsReq, Rename) {
         request.close();
     });
 
-#ifdef _WIN32
-    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -824,11 +733,7 @@ TEST(FsReq, RenameSync) {
     auto fileReq = loop->resource<uvw::FileReq>();
     auto fsReq = loop->resource<uvw::FsReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     ASSERT_TRUE(fileReq->closeSync());
     ASSERT_TRUE(fsReq->renameSync(filename, rename));
@@ -867,11 +772,7 @@ TEST(FsReq, Access) {
         request.close();
     });
 
-#ifdef _WIN32
-    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -886,11 +787,7 @@ TEST(FsReq, AccessSync) {
     auto fileReq = loop->resource<uvw::FileReq>();
     auto fsReq = loop->resource<uvw::FsReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     ASSERT_TRUE(fileReq->closeSync());
     ASSERT_TRUE(fsReq->accessSync(filename, R_OK));
@@ -929,11 +826,7 @@ TEST(FsReq, Chmod) {
         request.close();
     });
 
-#ifdef _WIN32
-    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -948,11 +841,7 @@ TEST(FsReq, ChmodSync) {
     auto fileReq = loop->resource<uvw::FileReq>();
     auto fsReq = loop->resource<uvw::FsReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     ASSERT_TRUE(fileReq->closeSync());
     ASSERT_TRUE(fsReq->chmodSync(filename, 0644));
@@ -994,11 +883,7 @@ TEST(FsReq, Utime) {
         request.close();
     });
 
-#ifdef _WIN32
-    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -1013,11 +898,7 @@ TEST(FsReq, UtimeSync) {
     auto fileReq = loop->resource<uvw::FileReq>();
     auto fsReq = loop->resource<uvw::FsReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     auto now = std::chrono::system_clock::now();
     auto epoch = now.time_since_epoch();
@@ -1068,11 +949,7 @@ TEST(FsReq, LinkAndUnlink) {
         request.close();
     });
 
-#ifdef _WIN32
-    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -1089,11 +966,7 @@ TEST(FsReq, LinkAndUnlinkSync) {
     auto fileReq = loop->resource<uvw::FileReq>();
     auto fsReq = loop->resource<uvw::FsReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     ASSERT_TRUE(fileReq->closeSync());
     ASSERT_TRUE(fsReq->linkSync(filename, linkname));
@@ -1141,11 +1014,7 @@ TEST(FsReq, SymlinkAndUnlink) {
         request.close();
     });
 
-#ifdef _WIN32
-    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -1162,11 +1031,7 @@ TEST(FsReq, SymlinkAndUnlinkSync) {
     auto fileReq = loop->resource<uvw::FileReq>();
     auto fsReq = loop->resource<uvw::FsReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     ASSERT_TRUE(fileReq->closeSync());
     ASSERT_TRUE(fsReq->symlinkSync(filename, linkname, 0));
@@ -1212,11 +1077,7 @@ TEST(FsReq, Readlink) {
         request.close();
     });
 
-#ifdef _WIN32
-    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -1232,11 +1093,7 @@ TEST(FsReq, ReadlinkSync) {
     auto fileReq = loop->resource<uvw::FileReq>();
     auto fsReq = loop->resource<uvw::FsReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     ASSERT_TRUE(fileReq->closeSync());
     ASSERT_TRUE(fsReq->symlinkSync(filename, linkname, 0));
@@ -1281,11 +1138,7 @@ TEST(FsReq, Realpath) {
         request.close();
     });
 
-#ifdef _WIN32
-    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -1300,11 +1153,7 @@ TEST(FsReq, RealpathSync) {
     auto fileReq = loop->resource<uvw::FileReq>();
     auto fsReq = loop->resource<uvw::FsReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     ASSERT_TRUE(fileReq->closeSync());
 
@@ -1351,11 +1200,7 @@ TEST(FsReq, Chown) {
         request.close();
     });
 
-#ifdef _WIN32
-    fileReq->open(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644);
-#else
     fileReq->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
-#endif
 
     loop->run();
 
@@ -1370,11 +1215,7 @@ TEST(FsReq, ChownSync) {
     auto fileReq = loop->resource<uvw::FileReq>();
     auto fsReq = loop->resource<uvw::FsReq>();
 
-#ifdef _WIN32
-    ASSERT_TRUE(fileReq->openSync(filename, _O_CREAT | _O_RDWR | _O_TRUNC, 0644));
-#else
     ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
-#endif
 
     ASSERT_TRUE(fileReq->closeSync());
 
