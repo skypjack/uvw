@@ -63,11 +63,11 @@ struct WriteEvent: Event<WriteEvent> { };
  */
 struct DataEvent: Event<DataEvent> {
     explicit DataEvent(std::unique_ptr<const char[]> data, ssize_t length) noexcept
-        : data{std::move(data)}, length{length}
+        : data{std::move(data)}, length(length)
     { }
 
     std::unique_ptr<const char[]> data; /*!< A bunch of data read on the stream. */
-    ssize_t length; /*!< The amount of data read on the stream. */
+    std::size_t length; /*!< The amount of data read on the stream. */
 };
 
 
@@ -273,7 +273,7 @@ public:
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
      */
-    void write(std::unique_ptr<char[]> data, ssize_t len) {
+    void write(std::unique_ptr<char[]> data, std::size_t len) {
         const uv_buf_t bufs[] = { uv_buf_init(data.release(), len) };
 
         auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
@@ -304,7 +304,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     template<typename S>
-    void write(S &send, std::unique_ptr<char[]> data, ssize_t len) {
+    void write(S &send, std::unique_ptr<char[]> data, std::size_t len) {
         const uv_buf_t bufs[] = { uv_buf_init(data.release(), len) };
 
         auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
@@ -328,7 +328,7 @@ public:
      * @param len The lenght of the submitted data.
      * @return Number of bytes written.
      */
-    int tryWrite(std::unique_ptr<char[]> data, ssize_t len) {
+    int tryWrite(std::unique_ptr<char[]> data, std::size_t len) {
         uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
         auto bw = uv_try_write(this->template get<uv_stream_t>(), bufs, 1);
 

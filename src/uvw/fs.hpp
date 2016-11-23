@@ -129,12 +129,12 @@ struct FsEvent<details::UVFsType::READ>
         : Event<FsEvent<details::UVFsType::READ>>
 {
     FsEvent(const char *path, std::unique_ptr<const char[]> data, ssize_t size) noexcept
-        : path{path}, data{std::move(data)}, size{size}
+        : path{path}, data{std::move(data)}, size(size)
     { }
 
     const char * path; /*!< The path affecting the request. */
     std::unique_ptr<const char[]> data; /*!< A bunch of data read from the given path. */
-    ssize_t size; /*!< The amount of data read from the given path. */
+    std::size_t size; /*!< The amount of data read from the given path. */
 };
 
 
@@ -149,11 +149,11 @@ struct FsEvent<details::UVFsType::WRITE>
         : Event<FsEvent<details::UVFsType::WRITE>>
 {
     FsEvent(const char *path, ssize_t size) noexcept
-        : path{path}, size{size}
+        : path{path}, size(size)
     { }
 
     const char * path; /*!< The path affecting the request. */
-    ssize_t size; /*!< The amount of data written to the given path. */
+    std::size_t size; /*!< The amount of data written to the given path. */
 };
 
 
@@ -168,11 +168,11 @@ struct FsEvent<details::UVFsType::SENDFILE>
         : Event<FsEvent<details::UVFsType::SENDFILE>>
 {
     FsEvent(const char *path, ssize_t size) noexcept
-        : path{path}, size{size}
+        : path{path}, size(size)
     { }
 
     const char * path; /*!< The path affecting the request. */
-    ssize_t size; /*!< The amount of data transferred. */
+    std::size_t size; /*!< The amount of data transferred. */
 };
 
 
@@ -187,7 +187,7 @@ struct FsEvent<details::UVFsType::STAT>
         : Event<FsEvent<details::UVFsType::STAT>>
 {
     FsEvent(const char *path, Stat stat) noexcept
-        : path{path}, stat(std::move(stat))
+        : path{path}, stat{std::move(stat)}
     { }
 
     const char * path; /*!< The path affecting the request. */
@@ -206,7 +206,7 @@ struct FsEvent<details::UVFsType::FSTAT>
         : Event<FsEvent<details::UVFsType::FSTAT>>
 {
     FsEvent(const char *path, Stat stat) noexcept
-        : path{path}, stat(std::move(stat))
+        : path{path}, stat{std::move(stat)}
     { }
 
     const char * path; /*!< The path affecting the request. */
@@ -225,7 +225,7 @@ struct FsEvent<details::UVFsType::LSTAT>
         : Event<FsEvent<details::UVFsType::LSTAT>>
 {
     FsEvent(const char *path, Stat stat) noexcept
-        : path{path}, stat(std::move(stat))
+        : path{path}, stat{std::move(stat)}
     { }
 
     const char * path; /*!< The path affecting the request. */
@@ -244,11 +244,11 @@ struct FsEvent<details::UVFsType::SCANDIR>
         : Event<FsEvent<details::UVFsType::SCANDIR>>
 {
     FsEvent(const char *path, ssize_t size) noexcept
-        : path{path}, size{size}
+        : path{path}, size(size)
     { }
 
     const char * path; /*!< The path affecting the request. */
-    ssize_t size; /*!< The number of directory entries selected. */
+    std::size_t size; /*!< The number of directory entries selected. */
 };
 
 
@@ -263,12 +263,12 @@ struct FsEvent<details::UVFsType::READLINK>
         : Event<FsEvent<details::UVFsType::READLINK>>
 {
     explicit FsEvent(const char *path, const char *data, ssize_t size) noexcept
-        : path{path}, data{data}, size{size}
+        : path{path}, data{data}, size(size)
     { }
 
     const char * path; /*!< The path affecting the request. */
     const char * data; /*!< A bunch of data read from the given path. */
-    ssize_t size; /*!< The amount of data read from the given path. */
+    std::size_t size; /*!< The amount of data read from the given path. */
 };
 
 
@@ -457,14 +457,15 @@ public:
      *   * A bunch of data read from the given path.
      *   * The amount of data read from the given path.
      */
-    std::pair<bool, std::pair<std::unique_ptr<const char[]>, ssize_t>>
+    std::pair<bool, std::pair<std::unique_ptr<const char[]>, std::size_t>>
     readSync(int64_t offset, unsigned int len) {
         data = std::unique_ptr<char[]>{new char[len]};
         buffer = uv_buf_init(data.get(), len);
         uv_buf_t bufs[] = { buffer };
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_read, parent(), req, file, bufs, 1, offset);
-        return std::make_pair(!(req->result < 0), std::make_pair(std::move(data), req->result));
+        bool err = req->result < 0;
+        return std::make_pair(!err, std::make_pair(std::move(data), err ? 0 : std::size_t(req->result)));
     }
 
     /**
@@ -477,7 +478,7 @@ public:
      * @param len The lenght of the submitted data.
      * @param offset Offset, as described in the official documentation.
      */
-    void write(std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
+    void write(std::unique_ptr<char[]> data, std::size_t len, int64_t offset) {
         this->data = std::move(data);
         uv_buf_t bufs[] = { uv_buf_init(this->data.get(), len) };
         cleanupAndInvoke(&uv_fs_write, parent(), get(), file, bufs, 1, offset, &fsResultCallback<Type::WRITE>);
@@ -494,12 +495,13 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The amount of data written to the given path.
      */
-    std::pair<bool, ssize_t> writeSync(std::unique_ptr<char[]> data, ssize_t len, int64_t offset) {
+    std::pair<bool, std::size_t> writeSync(std::unique_ptr<char[]> data, std::size_t len, int64_t offset) {
         this->data = std::move(data);
         uv_buf_t bufs[] = { uv_buf_init(this->data.get(), len) };
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_write, parent(), req, file, bufs, 1, offset);
-        return std::make_pair(!(req->result < 0), req->result);
+        bool err = req->result < 0;
+        return std::make_pair(!err, err ? 0 : std::size_t(req->result));
     }
 
     /**
@@ -598,7 +600,7 @@ public:
      * @param offset Offset, as described in the official documentation.
      * @param length Length, as described in the official documentation.
      */
-    void sendfile(FileHandle out, int64_t offset, size_t length) {
+    void sendfile(FileHandle out, int64_t offset, std::size_t length) {
         cleanupAndInvoke(&uv_fs_sendfile, parent(), get(), out, file, offset, length, &fsResultCallback<Type::SENDFILE>);
     }
 
@@ -613,10 +615,11 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The amount of data transferred.
      */
-    std::pair<bool, ssize_t> sendfileSync(FileHandle out, int64_t offset, size_t length) {
+    std::pair<bool, std::size_t> sendfileSync(FileHandle out, int64_t offset, std::size_t length) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_sendfile, parent(), req, out, file, offset, length);
-        return std::make_pair(!(req->result < 0), req->result);
+        bool err = req->result < 0;
+        return std::make_pair(!err, err ? 0 : std::size_t(req->result));
     }
 
     /**
@@ -867,10 +870,11 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The number of directory entries selected.
      */
-    std::pair<bool, ssize_t> scandirSync(std::string path, int flags) {
+    std::pair<bool, std::size_t> scandirSync(std::string path, int flags) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_scandir, parent(), req, path.data(), flags);
-        return std::make_pair(!(req->result < 0), req->result);
+        bool err = req->result < 0;
+        return std::make_pair(!err, err ? 0 : std::size_t(req->result));
     }
 
     /**
@@ -1151,11 +1155,12 @@ public:
      *   * A bunch of data read from the given path.
      *   * The amount of data read from the given path.
      */
-    std::pair<bool, std::pair<const char *, ssize_t>>
+    std::pair<bool, std::pair<const char *, std::size_t>>
     readlinkSync(std::string path) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_readlink, parent(), req, path.data());
-        return std::make_pair(!(req->result < 0), std::make_pair(static_cast<char *>(req->ptr), req->result));
+        bool err = req->result < 0;
+        return std::make_pair(!err, std::make_pair(static_cast<char *>(req->ptr), err ? 0 : std::size_t(req->result)));
     }
 
     /**

@@ -104,13 +104,13 @@ TEST(FileReq, RWSync) {
     auto writeR = request->writeSync(std::unique_ptr<char[]>{new char[1]{ 42 }}, 1, 0);
 
     ASSERT_TRUE(writeR.first);
-    ASSERT_EQ(writeR.second, 1);
+    ASSERT_EQ(writeR.second, std::size_t{1});
 
     auto readR = request->readSync(0, 1);
 
     ASSERT_TRUE(readR.first);
     ASSERT_EQ(readR.second.first[0], 42);
-    ASSERT_EQ(readR.second.second, 1);
+    ASSERT_EQ(readR.second.second, std::size_t{1});
     ASSERT_TRUE(request->closeSync());
 
     loop->run();

@@ -31,10 +31,7 @@ class Thread final {
     }
 
     explicit Thread(std::shared_ptr<Loop> ref, InternalTask t, std::shared_ptr<void> d = nullptr) noexcept
-        : pLoop{std::move(ref)},
-          data{std::move(d)},
-          thread{},
-          task{std::move(t)}
+        : pLoop{std::move(ref)}, data{std::move(d)}, thread{}, task{std::move(t)}
     { }
 
 public:

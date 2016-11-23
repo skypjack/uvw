@@ -33,11 +33,11 @@ struct SendEvent: Event<SendEvent> { };
  */
 struct UDPDataEvent: Event<UDPDataEvent> {
     explicit UDPDataEvent(Addr sender, std::unique_ptr<const char[]> data, ssize_t length, bool partial) noexcept
-        : data{std::move(data)}, length{length}, sender(std::move(sender)), partial{partial}
+        : data{std::move(data)}, length(length), sender{std::move(sender)}, partial{partial}
     { }
 
     std::unique_ptr<const char[]> data; /*!< A bunch of data read on the stream. */
-    ssize_t length;  /*!< The amount of data read on the stream. */
+    std::size_t length;  /*!< The amount of data read on the stream. */
     Addr sender; /*!< A valid instance of Addr. */
     bool partial; /*!< True if the message was truncated, false otherwise. */
 };
@@ -318,7 +318,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     template<typename I = IPv4>
-    void send(std::string ip, unsigned int port, std::unique_ptr<char[]> data, ssize_t len) {
+    void send(std::string ip, unsigned int port, std::unique_ptr<char[]> data, std::size_t len) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
@@ -347,7 +347,7 @@ public:
      * @return Number of bytes written.
      */
     template<typename I = IPv4>
-    int trySend(std::string ip, unsigned int port, std::unique_ptr<char[]> data, ssize_t len) {
+    int trySend(std::string ip, unsigned int port, std::unique_ptr<char[]> data, std::size_t len) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 

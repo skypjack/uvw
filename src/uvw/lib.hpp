@@ -20,8 +20,7 @@ namespace uvw {
  */
 class SharedLib final {
     explicit SharedLib(std::shared_ptr<Loop> ref, std::string filename) noexcept
-        : pLoop{std::move(ref)},
-          lib{}
+        : pLoop{std::move(ref)}, lib{}
     {
         opened = (0 == uv_dlopen(filename.data(), &lib));
     }
