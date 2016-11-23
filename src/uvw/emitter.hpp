@@ -32,37 +32,47 @@ class Emitter {
     template<typename E>
     struct Handler final: BaseHandler {
         using Listener = std::function<void(E &, T &)>;
-        using ListenerList = std::list<Listener>;
-        using ListenerIt = typename ListenerList::const_iterator;
-        using Connection = std::pair<ListenerList &, ListenerIt>;
+        using Element = std::pair<bool, Listener>;
+        using ListenerList = std::list<Element>;
+        using Connection = typename ListenerList::iterator;
 
         bool empty() const noexcept override {
-            return onceL.empty() && onL.empty();
+            auto pred = [](auto &&element){ return element.first; };
+
+            return std::all_of(onceL.cbegin(), onceL.cend(), pred) &&
+                    std::all_of(onL.cbegin(), onL.cend(), pred);
         }
 
         void clear() noexcept override {
-            onceL.clear();
-            onL.clear();
+            auto func = [](auto &&element){ element.first = true; };
+            std::for_each(onceL.begin(), onceL.end(), func);
+            std::for_each(onL.begin(), onL.end(), func);
         }
 
         Connection once(Listener f) {
-            return { onceL, onceL.insert(onceL.cbegin(), std::move(f)) };
+            return onceL.emplace(onceL.cend(), false, std::move(f));
         }
 
         Connection on(Listener f) {
-            return { onL, onL.insert(onL.cbegin(), std::move(f)) };
+            return onL.emplace(onL.cbegin(), false, std::move(f));
         }
 
         void erase(Connection conn) noexcept {
-            conn.first.erase(conn.second);
+            conn->first = true;
         }
 
         void publish(E event, T &ref) {
             ListenerList currentL;
             onceL.swap(currentL);
-            auto op = [&event, &ref](auto &&listener){ listener(event, ref); };
-            std::for_each(onL.begin(), onL.end(), op);
-            std::for_each(currentL.begin(), currentL.end(), op);
+
+            auto func = [&event, &ref](auto &&element) {
+                return element.first ? void() : element.second(event, ref);
+            };
+
+            std::for_each(onL.rbegin(), onL.rend(), func);
+            std::for_each(currentL.rbegin(), currentL.rend(), func);
+
+            onL.remove_if([](auto &&element){ return element.first; });
         }
 
     private:
@@ -107,9 +117,17 @@ public:
     template<typename E>
     struct Connection: private Handler<E>::Connection {
         template<typename> friend class Emitter;
+
+        Connection() = default;
+        Connection(const Connection &) = default;
+        Connection(Connection &&) = default;
+
         Connection(typename Handler<E>::Connection conn)
             : Handler<E>::Connection{std::move(conn)}
         { }
+
+        Connection & operator=(const Connection &) = default;
+        Connection & operator=(Connection &&) = default;
     };
 
     virtual ~Emitter() noexcept {
