@@ -44,9 +44,14 @@ class Emitter {
         }
 
         void clear() noexcept override {
-            auto func = [](auto &&element){ element.first = true; };
-            std::for_each(onceL.begin(), onceL.end(), func);
-            std::for_each(onL.begin(), onL.end(), func);
+            if(publishing) {
+                auto func = [](auto &&element){ element.first = true; };
+                std::for_each(onceL.begin(), onceL.end(), func);
+                std::for_each(onL.begin(), onL.end(), func);
+            } else {
+                onceL.clear();
+                onL.clear();
+            }
         }
 
         Connection once(Listener f) {
@@ -59,6 +64,12 @@ class Emitter {
 
         void erase(Connection conn) noexcept {
             conn->first = true;
+
+            if(!publishing) {
+                auto pred = [](auto &&element){ return element.first; };
+                onceL.remove_if(pred);
+                onL.remove_if(pred);
+            }
         }
 
         void publish(E event, T &ref) {
@@ -69,13 +80,18 @@ class Emitter {
                 return element.first ? void() : element.second(event, ref);
             };
 
+            publishing = true;
+
             std::for_each(onL.rbegin(), onL.rend(), func);
             std::for_each(currentL.rbegin(), currentL.rend(), func);
+
+            publishing = false;
 
             onL.remove_if([](auto &&element){ return element.first; });
         }
 
     private:
+        bool publishing{false};
         ListenerList onceL{};
         ListenerList onL{};
     };
