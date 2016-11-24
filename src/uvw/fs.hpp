@@ -301,8 +301,6 @@ protected:
         else { ptr->publish(FsEvent<e>{req->path, req->statbuf}); }
     }
 
-    using Request<T, uv_fs_t>::Request;
-
     template<typename... Args>
     void cleanupAndInvoke(Args&&... args) {
         uv_fs_req_cleanup(this->get());
@@ -320,6 +318,8 @@ public:
     using Type = details::UVFsType;
     using EntryType = details::UVDirentTypeT;
     using Entry = std::pair<EntryType, std::string>;
+
+    using Request<T, uv_fs_t>::Request;
 };
 
 
@@ -328,6 +328,8 @@ public:
  *
  * Cross-platform sync and async filesystem operations.<br/>
  * All file operations are run on the threadpool.
+ *
+ * To create a `FileReq` through a `Loop`, no arguments are required.
  *
  * See the official
  * [documentation](http://docs.libuv.org/en/v1.x/fs.html)
@@ -364,17 +366,8 @@ class FileReq final: public FsRequest<FileReq> {
         else { ptr->publish(FsEvent<Type::READ>{req->path, std::move(ptr->data), req->result}); }
     }
 
-    using FsRequest::FsRequest;
-
 public:
-    /**
-     * @brief Creates a new file request.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @return A pointer to the newly created request.
-     */
-    static std::shared_ptr<FileReq> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<FileReq>{new FileReq{std::move(loop)}};
-    }
+    using FsRequest::FsRequest;
 
     ~FileReq() noexcept {
         uv_fs_req_cleanup(get());
@@ -722,6 +715,8 @@ private:
  * Cross-platform sync and async filesystem operations.<br/>
  * All file operations are run on the threadpool.
  *
+ * To create a `FsReq` through a `Loop`, no arguments are required.
+ *
  * See the official
  * [documentation](http://docs.libuv.org/en/v1.x/fs.html)
  * for further details.
@@ -733,17 +728,8 @@ class FsReq final: public FsRequest<FsReq> {
         else { ptr->publish(FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr), req->result}); }
     }
 
-    using FsRequest::FsRequest;
-
 public:
-    /**
-     * @brief Creates a new file request.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @return A pointer to the newly created request.
-     */
-    static std::shared_ptr<FsReq> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<FsReq>{new FsReq{std::move(loop)}};
-    }
+    using FsRequest::FsRequest;
 
     ~FsReq() noexcept {
         uv_fs_req_cleanup(get());

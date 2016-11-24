@@ -32,6 +32,8 @@ struct IdleEvent: Event<IdleEvent> { };
  *
  * **Note**: despite the name, idle handles will emit events on every loop
  * iteration, not when the loop is actually _idle_.
+ *
+ * To create an `IdleHandle` through a `Loop`, no arguments are required.
  */
 class IdleHandle final: public Handle<IdleHandle, uv_idle_t> {
     static void startCallback(uv_idle_t *handle) {
@@ -39,17 +41,8 @@ class IdleHandle final: public Handle<IdleHandle, uv_idle_t> {
         idle.publish(IdleEvent{});
     }
 
-    using Handle::Handle;
-
 public:
-    /**
-     * @brief Creates a new check handle.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @return A pointer to the newly created handle.
-     */
-    static std::shared_ptr<IdleHandle> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<IdleHandle>{new IdleHandle{std::move(loop)}};
-    }
+    using Handle::Handle;
 
     /**
      * @brief Initializes the handle.

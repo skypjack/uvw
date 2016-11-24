@@ -60,20 +60,11 @@ class ProcessHandle final: public Handle<ProcessHandle, uv_process_t> {
         process.publish(ExitEvent{});
     }
 
-    using Handle::Handle;
-
 public:
     using Process = details::UVProcessFlags;
     using StdIO = details::UVStdIOFlags;
 
-    /**
-     * @brief Creates a new check handle.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @return A pointer to the newly created handle.
-     */
-    static std::shared_ptr<ProcessHandle> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<ProcessHandle>{new ProcessHandle{std::move(loop)}};
-    }
+    using Handle::Handle;
 
     /**
      * @brief Disables inheritance for file descriptors/handles.

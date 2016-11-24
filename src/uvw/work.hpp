@@ -27,6 +27,10 @@ struct WorkEvent: Event<WorkEvent> { };
  * It runs user code using a thread from the threadpool and gets notified in the
  * loop thread by means of an event.
  *
+ * To create a `WorkReq` through a `Loop`, arguments follow:
+ *
+ * * A valid instance of a `Task`, that is of type `std::function<void(void)>`.
+ *
  * See the official
  * [documentation](http://docs.libuv.org/en/v1.x/threadpool.html)
  * for further details.
@@ -38,23 +42,12 @@ class WorkReq final: public Request<WorkReq, uv_work_t> {
         static_cast<WorkReq*>(req->data)->task();
     }
 
-    explicit WorkReq(std::shared_ptr<Loop> ref, InternalTask t)
-        : Request{std::move(ref)}, task{t}
-    { }
-
 public:
     using Task = InternalTask;
 
-    /**
-     * @brief Creates a new work request.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @param task A valid instance of a `Task`, that is of type
-     * `std::function<void(void)>`.
-     * @return A pointer to the newly created request.
-     */
-    static std::shared_ptr<WorkReq> create(std::shared_ptr<Loop> loop, Task task) {
-        return std::shared_ptr<WorkReq>{new WorkReq{std::move(loop), std::move(task)}};
-    }
+    explicit WorkReq(ConstructorAccess ca, std::shared_ptr<Loop> ref, InternalTask t)
+        : Request{std::move(ca), std::move(ref)}, task{t}
+    { }
 
     /**
      * @brief Runs the given task in a separate thread.

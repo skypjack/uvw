@@ -21,23 +21,17 @@ namespace uvw {
  *
  * Pipe handles provide an abstraction over local domain sockets on Unix and
  * named pipes on Windows.
+ *
+ * To create a `PipeHandle` through a `Loop`, arguments follow:
+ *
+ * * An optional boolean value that indicates if this pipe will be used for
+ * handle passing between processes.
  */
 class PipeHandle final: public StreamHandle<PipeHandle, uv_pipe_t> {
-    explicit PipeHandle(std::shared_ptr<Loop> ref, bool pass = false)
-        : StreamHandle{std::move(ref)}, ipc{pass}
-    { }
-
 public:
-    /**
-     * @brief Creates a new poll handle.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @param pass An optional boolean value (_ipc_) that indicates if this pipe
-     * will be used for handle passing between processes.
-     * @return A pointer to the newly created handle.
-     */
-    static std::shared_ptr<PipeHandle> create(std::shared_ptr<Loop> loop, bool pass) {
-        return std::shared_ptr<PipeHandle>{new PipeHandle{std::move(loop), pass}};
-    }
+    explicit PipeHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, bool pass = false)
+        : StreamHandle{std::move(ca), std::move(ref)}, ipc{pass}
+    { }
 
     /**
      * @brief Initializes the handle.

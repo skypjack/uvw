@@ -25,6 +25,8 @@ struct TimerEvent: Event<TimerEvent> { };
  * @brief The TimerHandle handle.
  *
  * Timer handles are used to schedule events to be emitted in the future.
+ *
+ * To create a `TimerHandle` through a `Loop`, no arguments are required.
  */
 class TimerHandle final: public Handle<TimerHandle, uv_timer_t> {
     static void startCallback(uv_timer_t *handle) {
@@ -32,19 +34,10 @@ class TimerHandle final: public Handle<TimerHandle, uv_timer_t> {
         timer.publish(TimerEvent{});
     }
 
-    using Handle::Handle;
-
 public:
     using Time = std::chrono::milliseconds;
 
-    /**
-     * @brief Creates a new check handle.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @return A pointer to the newly created handle.
-     */
-    static std::shared_ptr<TimerHandle> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<TimerHandle>{new TimerHandle{std::move(loop)}};
-    }
+    using Handle::Handle;
 
     /**
      * @brief Initializes the handle.

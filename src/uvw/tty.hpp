@@ -37,44 +37,37 @@ enum class UVTTYModeT: std::underlying_type_t<uv_tty_mode_t> {
  * @brief The TTYHandle handle.
  *
  * TTY handles represent a stream for the console.
+ *
+ * To create a `TTYHandle` through a `Loop`, arguments follow:
+ *
+ * * A valid FileHandle. Usually the file descriptor will be:
+ *     * `0` = `stdin`
+ *     * `1` = `stdout`
+ *     * `2` = `stderr`
+ * * A boolean value that specifies the plan on calling `read()` with this
+ * stream. Remember that `stdin` is readable, `stdout` is not.
+ *
+ * See the official
+ * [documentation](http://docs.libuv.org/en/v1.x/tty.html#c.uv_tty_init)
+ * for further details.
  */
 class TTYHandle final: public StreamHandle<TTYHandle, uv_tty_t> {
-    explicit TTYHandle(std::shared_ptr<Loop> ref,
-                 FileHandle desc,
-                 bool readable,
-                 std::shared_ptr<details::ResetModeMemo> rmm)
-        : StreamHandle{std::move(ref)},
-          memo{std::move(rmm)},
-          fd{desc},
-          rw{readable}
-    { }
+    static auto resetModeMemo() {
+        static std::weak_ptr<details::ResetModeMemo> weak;
+        auto shared = weak.lock();
+        if(!shared) { weak = shared = std::make_shared<details::ResetModeMemo>(); }
+        return shared;
+    }
 
 public:
     using Mode = details::UVTTYModeT;
 
-    /**
-     * @brief Creates a new tty handle.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @param desc A valid FileHandle. Usually the file descriptor will be:
-     *     * `0` = `stdin`
-     *     * `1` = `stdout`
-     *     * `2` = `stderr`
-     * @param readable A boolean value (_readable_) that specifies the plan on
-     * calling `read()` with this stream. Remember that `stdin` is readable,
-     * `stdout` is not.
-     *
-     * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/tty.html#c.uv_tty_init)
-     * for further details.
-     *
-     * @return A pointer to the newly created handle.
-     */
-    static std::shared_ptr<TTYHandle> create(std::shared_ptr<Loop> loop, FileHandle desc, bool readable) {
-        static std::weak_ptr<details::ResetModeMemo> rmm;
-        auto ptr = rmm.lock();
-        if(!ptr) { rmm = ptr = std::make_shared<details::ResetModeMemo>(); }
-        return std::shared_ptr<TTYHandle>{new TTYHandle{std::move(loop), std::move(desc), readable, ptr}};
-    }
+    explicit TTYHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, FileHandle desc, bool readable)
+        : StreamHandle{std::move(ca), std::move(ref)},
+          memo{resetModeMemo()},
+          fd{desc},
+          rw{readable}
+    { }
 
     /**
      * @brief Initializes the handle.

@@ -70,6 +70,8 @@ struct FsEventEvent: Event<FsEventEvent> {
  * example, if the file was renamed or there was a generic change in it. The
  * best backend for the job on each platform is chosen by the handle.
  *
+ * To create a `FsEventHandle` through a `Loop`, no arguments are required.
+ *
  * See the official
  * [documentation](http://docs.libuv.org/en/v1.x/fs_event.html)
  * for further details.
@@ -81,20 +83,11 @@ class FsEventHandle final: public Handle<FsEventHandle, uv_fs_event_t> {
         else { fsEvent.publish(FsEventEvent{filename, static_cast<std::underlying_type_t<Event>>(events)}); }
     }
 
-    using Handle::Handle;
-
 public:
     using Watch = details::UVFsEvent;
     using Event = details::UVFsEventFlags;
 
-    /**
-     * @brief Creates a new fs event handle.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @return A pointer to the newly created handle.
-     */
-    static std::shared_ptr<FsEventHandle> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<FsEventHandle>{new FsEventHandle{std::move(loop)}};
-    }
+    using Handle::Handle;
 
     /**
      * @brief Initializes the handle.

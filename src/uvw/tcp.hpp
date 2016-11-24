@@ -33,39 +33,30 @@ enum class UVTcpFlags: std::underlying_type_t<uv_tcp_flags> {
  * TCP handles are used to represent both TCP streams and servers.<br/>
  * By default, _IPv4_ is used as a template parameter. The handle already
  * supports _IPv6_ out-of-the-box by using `uvw::IPv6`.
+ *
+ * To create a `TcpHandle` through a `Loop`, arguments follow:
+ *
+ * * An optional integer value that indicates the flags used to initialize
+ * the socket.
+ *
+ * See the official
+ * [documentation](http://docs.libuv.org/en/v1.x/tcp.html#c.uv_tcp_init_ex)
+ * for further details.
  */
 class TcpHandle final: public StreamHandle<TcpHandle, uv_tcp_t> {
-    explicit TcpHandle(std::shared_ptr<Loop> ref)
-        : StreamHandle{std::move(ref)}, tag{DEFAULT}, flags{}
-    { }
-
-    explicit TcpHandle(std::shared_ptr<Loop> ref, unsigned int f)
-        : StreamHandle{std::move(ref)}, tag{FLAGS}, flags{f}
-    { }
-
 public:
     using Time = std::chrono::seconds;
     using Bind = details::UVTcpFlags;
     using IPv4 = uvw::IPv4;
     using IPv6 = uvw::IPv6;
 
-    /**
-     * @brief Creates a new tcp handle.
-     * @param args
-     *
-     * * A pointer to the loop from which the handle generated.
-     * * An optional integer value (_flags_) that indicates optional flags used
-     * to initialize the socket.<br/>
-     * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/tcp.html#c.uv_tcp_init_ex)
-     * for further details.
-     *
-     * @return A pointer to the newly created handle.
-     */
-    template<typename... Args>
-    static std::shared_ptr<TcpHandle> create(Args&&... args) {
-        return std::shared_ptr<TcpHandle>{new TcpHandle{std::forward<Args>(args)...}};
-    }
+    explicit TcpHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref)
+        : StreamHandle{std::move(ca), std::move(ref)}, tag{DEFAULT}, flags{}
+    { }
+
+    explicit TcpHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
+        : StreamHandle{std::move(ca), std::move(ref)}, tag{FLAGS}, flags{f}
+    { }
 
     /**
      * @brief Initializes the handle. No socket is created as of yet.

@@ -16,6 +16,8 @@ namespace uvw {
  * @brief CheckEvent event.
  *
  * It will be emitted by CheckHandle according with its functionalities.
+ *
+ * To create a `CheckHandle` through a `Loop`, no arguments are required.
  */
 struct CheckEvent: Event<CheckEvent> { };
 
@@ -32,17 +34,8 @@ class CheckHandle final: public Handle<CheckHandle, uv_check_t> {
         check.publish(CheckEvent{});
     }
 
-    using Handle::Handle;
-
 public:
-    /**
-     * @brief Creates a new check handle.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @return A pointer to the newly created handle.
-     */
-    static std::shared_ptr<CheckHandle> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<CheckHandle>{new CheckHandle{std::move(loop)}};
-    }
+    using Handle::Handle;
 
     /**
      * @brief Initializes the handle.

@@ -74,13 +74,8 @@ struct DataEvent: Event<DataEvent> {
 namespace details {
 
 
-class ConnectReq final: public Request<ConnectReq, uv_connect_t> {
+struct ConnectReq final: public Request<ConnectReq, uv_connect_t> {
     using Request::Request;
-
-public:
-    static std::shared_ptr<ConnectReq> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<ConnectReq>{new ConnectReq{std::move(loop)}};
-    }
 
     template<typename F, typename... Args>
     void connect(F &&f, Args... args) {
@@ -89,13 +84,8 @@ public:
 };
 
 
-class ShutdownReq final: public Request<ShutdownReq, uv_shutdown_t> {
+struct ShutdownReq final: public Request<ShutdownReq, uv_shutdown_t> {
     using Request::Request;
-
-public:
-    static std::shared_ptr<ShutdownReq> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<ShutdownReq>{new ShutdownReq{std::move(loop)}};
-    }
 
     void shutdown(uv_stream_t *handle) {
         invoke(&uv_shutdown, get(), handle, &defaultCallback<ShutdownEvent>);
@@ -112,19 +102,14 @@ class WriteReq final: public Request<WriteReq, uv_write_t> {
         delete[] bufs;
     }
 
+public:
     template<std::size_t N>
-    WriteReq(std::shared_ptr<Loop> loop, const uv_buf_t (&arr)[N])
-        : Request<WriteReq, uv_write_t>{std::move(loop)},
+    WriteReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, const uv_buf_t (&arr)[N])
+        : Request<WriteReq, uv_write_t>{std::move(ca), std::move(loop)},
           bufs{new uv_buf_t[N], &deleter<N>},
           nbufs{N}
     {
         std::copy_n(std::begin(arr), N, bufs.get());
-    }
-
-public:
-    template<typename... Args>
-    static std::shared_ptr<WriteReq> create(Args&&... args) {
-        return std::shared_ptr<WriteReq>{new WriteReq{std::forward<Args>(args)...}};
     }
 
     void write(uv_stream_t *handle) {
@@ -178,16 +163,15 @@ class StreamHandle: public Handle<T, U> {
         else { ref.publish(ListenEvent{}); }
     }
 
-protected:
+public:
 #ifdef _WIN32
-	StreamHandle(std::shared_ptr<Loop> ref)
-        : Handle{std::move(ref)}
+    StreamHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref)
+        : Handle{std::move(ca), std::move(ref)}
     { }
 #else
     using Handle<T, U>::Handle;
 #endif
 
-public:
     /**
      * @brief Shutdowns the outgoing (write) side of a duplex stream.
      *

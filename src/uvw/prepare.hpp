@@ -16,6 +16,8 @@ namespace uvw {
  * @brief PrepareEvent event.
  *
  * It will be emitted by PrepareHandle according with its functionalities.
+ *
+ * To create a `PrepareHandle` through a `Loop`, no arguments are required.
  */
 struct PrepareEvent: Event<PrepareEvent> { };
 
@@ -32,17 +34,8 @@ class PrepareHandle final: public Handle<PrepareHandle, uv_prepare_t> {
         prepare.publish(PrepareEvent{});
     }
 
-    using Handle::Handle;
-
 public:
-    /**
-     * @brief Creates a new check handle.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @return A pointer to the newly created handle.
-     */
-    static std::shared_ptr<PrepareHandle> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<PrepareHandle>{new PrepareHandle{std::move(loop)}};
-    }
+    using Handle::Handle;
 
     /**
      * @brief Initializes the handle.

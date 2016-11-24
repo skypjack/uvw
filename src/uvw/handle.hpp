@@ -37,8 +37,6 @@ class Handle: public BaseHandle, public Resource<T, U>
     }
 
 protected:
-    using Resource<T, U>::Resource;
-
     static void allocCallback(uv_handle_t *, std::size_t suggested, uv_buf_t *buf) {
         *buf = uv_buf_init(new char[suggested], suggested);
     }
@@ -66,6 +64,8 @@ protected:
     }
 
 public:
+    using Resource<T, U>::Resource;
+
     /**
      * @brief Checks if the handle is active.
      *

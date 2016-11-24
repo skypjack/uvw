@@ -55,6 +55,12 @@ struct PollEvent: Event<PollEvent> {
  * Poll handles are used to watch file descriptors for readability, writability
  * and disconnection.
  *
+ * To create a `PollHandle` through a `Loop`, arguments follow:
+ *
+ * * A descriptor that can be:
+ *     * either an `int` file descriptor
+ *     * or a `OSSocketHandle` socket descriptor
+ *
  * See the official
  * [documentation](http://docs.libuv.org/en/v1.x/poll.html)
  * for further details.
@@ -66,36 +72,16 @@ class PollHandle final: public Handle<PollHandle, uv_poll_t> {
         else { poll.publish(PollEvent{static_cast<std::underlying_type_t<Event>>(events)}); }
     }
 
-    explicit PollHandle(std::shared_ptr<Loop> ref, int desc)
-        : Handle{std::move(ref)}, tag{FD}, fd{desc}
-    { }
-
-    explicit PollHandle(std::shared_ptr<Loop> ref, OSSocketHandle sock)
-        : Handle{std::move(ref)}, tag{SOCKET}, socket{sock}
-    { }
-
 public:
     using Event = details::UVPollEvent;
 
-    /**
-     * @brief Creates a new poll handle.
-     * @param args
-     *
-     * * A pointer to the loop from which the handle generated.
-     * * A descriptor that can be:
-     *     * either an `int` file descriptor
-     *     * or a `OSSocketHandle` socket descriptor
-     *
-     * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/poll.html)
-     * for further details.
-     *
-     * @return A pointer to the newly created handle.
-     */
-    template<typename... Args>
-    static std::shared_ptr<PollHandle> create(Args&&... args) {
-        return std::shared_ptr<PollHandle>{new PollHandle{std::forward<Args>(args)...}};
-    }
+    explicit PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, int desc)
+        : Handle{std::move(ca), std::move(ref)}, tag{FD}, fd{desc}
+    { }
+
+    explicit PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, OSSocketHandle sock)
+        : Handle{std::move(ca), std::move(ref)}, tag{SOCKET}, socket{sock}
+    { }
 
     /**
      * @brief Initializes the handle.

@@ -10,7 +10,7 @@ struct TestEmitter: uvw::Emitter<TestEmitter> {
 };
 
 
-TEST(Emitter, ClearAndClearAll) {
+TEST(Emitter, ClearAndClear) {
     TestEmitter emitter{};
 
     ASSERT_TRUE(emitter.empty());
@@ -40,7 +40,7 @@ TEST(Emitter, ClearAndClearAll) {
     ASSERT_FALSE(emitter.empty<uvw::ErrorEvent>());
     ASSERT_FALSE(emitter.empty<FakeEvent>());
 
-    emitter.clearAll();
+    emitter.clear();
 
     ASSERT_TRUE(emitter.empty());
     ASSERT_TRUE(emitter.empty<uvw::ErrorEvent>());

@@ -67,19 +67,14 @@ class SendReq final: public Request<SendReq, uv_udp_send_t> {
         delete[] bufs;
     }
 
+public:
     template<std::size_t N>
-    SendReq(std::shared_ptr<Loop> loop, const uv_buf_t (&arr)[N])
-        : Request<SendReq, uv_udp_send_t>{std::move(loop)},
+    SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, const uv_buf_t (&arr)[N])
+        : Request<SendReq, uv_udp_send_t>{std::move(ca), std::move(loop)},
           bufs{new uv_buf_t[N], &deleter<N>},
           nbufs{N}
     {
         std::copy_n(std::begin(arr), N, bufs.get());
-    }
-
-public:
-    template<typename... Args>
-    static std::shared_ptr<SendReq> create(Args&&... args) {
-        return std::shared_ptr<SendReq>{new SendReq{std::forward<Args>(args)...}};
     }
 
     void send(uv_udp_t *handle, const struct sockaddr* addr) {
@@ -101,6 +96,15 @@ private:
  * UDP handles encapsulate UDP communication for both clients and servers.<br/>
  * By default, _IPv4_ is used as a template parameter. The handle already
  * supports _IPv6_ out-of-the-box by using `uvw::IPv6`.
+ *
+ * To create an `UDPHandle` through a `Loop`, arguments follow:
+ *
+ * * An optional integer value that indicates optional flags used to initialize
+ * the socket.
+ *
+ * See the official
+ * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_init_ex)
+ * for further details.
  */
 class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
     template<typename I>
@@ -125,37 +129,19 @@ class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
         }
     }
 
-    explicit UDPHandle(std::shared_ptr<Loop> ref)
-        : Handle{std::move(ref)}, tag{DEFAULT}, flags{}
-    { }
-
-    explicit UDPHandle(std::shared_ptr<Loop> ref, unsigned int f)
-        : Handle{std::move(ref)}, tag{FLAGS}, flags{f}
-    { }
-
 public:
     using Membership = details::UVMembership;
     using Bind = details::UVUdpFlags;
     using IPv4 = uvw::IPv4;
     using IPv6 = uvw::IPv6;
 
-    /**
-     * @brief Creates a new udp handle.
-     * @param args
-     *
-     * * A pointer to the loop from which the handle generated.
-     * * An optional integer value (_flags_) that indicates optional flags used
-     * to initialize the socket.<br/>
-     * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_init_ex)
-     * for further details.
-     *
-     * @return A pointer to the newly created handle.
-     */
-    template<typename... Args>
-    static std::shared_ptr<UDPHandle> create(Args&&... args) {
-        return std::shared_ptr<UDPHandle>{new UDPHandle{std::forward<Args>(args)...}};
-    }
+    explicit UDPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref)
+        : Handle{std::move(ca), std::move(ref)}, tag{DEFAULT}, flags{}
+    { }
+
+    explicit UDPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
+        : Handle{std::move(ca), std::move(ref)}, tag{FLAGS}, flags{f}
+    { }
 
     /**
      * @brief Initializes the handle. The actual socket is created lazily.

@@ -69,6 +69,8 @@ struct NameInfoEvent: Event<NameInfoEvent> {
  *
  * Wrapper for [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).<br/>
  * It offers either asynchronous and synchronous access methods.
+ *
+ * To create a `GetAddrInfoReq` through a `Loop`, no arguments are required.
  */
 class GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
     static void getAddrInfoCallback(uv_getaddrinfo_t *req, int status, addrinfo *res) {
@@ -84,8 +86,6 @@ class GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
         }
     }
 
-    using Request::Request;
-
     void getNodeAddrInfo(const char *node, const char *service, addrinfo *hints = nullptr) {
         invoke(&uv_getaddrinfo, parent(), get(), &getAddrInfoCallback, node, service, hints);
     }
@@ -100,14 +100,7 @@ class GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
 public:
     using Deleter = void(*)(addrinfo *);
 
-    /**
-     * @brief Creates a new `getaddrinfo` wrapper request.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @return A pointer to the newly created handle.
-     */
-    static std::shared_ptr<GetAddrInfoReq> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<GetAddrInfoReq>{new GetAddrInfoReq{std::move(loop)}};
-    }
+    using Request::Request;
 
     /**
      * @brief Async [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
@@ -196,6 +189,8 @@ public:
  *
  * Wrapper for [getnameinfo](http://linux.die.net/man/3/getnameinfo).<br/>
  * It offers either asynchronous and synchronous access methods.
+ *
+ * To create a `GetNameInfoReq` through a `Loop`, no arguments are required.
  */
 class GetNameInfoReq final: public Request<GetNameInfoReq, uv_getnameinfo_t> {
     static void getNameInfoCallback(uv_getnameinfo_t *req, int status, const char *hostname, const char *service) {
@@ -204,17 +199,8 @@ class GetNameInfoReq final: public Request<GetNameInfoReq, uv_getnameinfo_t> {
         else { ptr->publish(NameInfoEvent{hostname, service}); }
     }
 
-    using Request::Request;
-
 public:
-    /**
-     * @brief Creates a new `getnameinfo` wrapper request.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @return A pointer to the newly created handle.
-     */
-    static std::shared_ptr<GetNameInfoReq> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<GetNameInfoReq>{new GetNameInfoReq{std::move(loop)}};
-    }
+    using Request::Request;
 
     /**
      * @brief Async [getnameinfo](http://linux.die.net/man/3/getnameinfo).

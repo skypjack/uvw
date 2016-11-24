@@ -14,8 +14,6 @@ namespace uvw {
 template<typename T, typename U>
 class Request: public Resource<T, U> {
 protected:
-    using Resource<T, U>::Resource;
-
     static auto reserve(U *req) {
         auto ptr = static_cast<T*>(req->data)->shared_from_this();
         ptr->reset();
@@ -46,6 +44,8 @@ protected:
     }
 
 public:
+    using Resource<T, U>::Resource;
+
     /**
     * @brief Cancels a pending request.
     *

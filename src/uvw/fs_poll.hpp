@@ -35,6 +35,8 @@ struct FsPollEvent: Event<FsPollEvent> {
  * It allows the user to monitor a given path for changes. Unlike FsEventHandle
  * handles, FsPollHandle handles use stat to detect when a file has changed so
  * they can work on file systems where FsEventHandle handles can’t.
+ *
+ * To create a `FsPollHandle` through a `Loop`, no arguments are required.
  */
 class FsPollHandle final: public Handle<FsPollHandle, uv_fs_poll_t> {
     static void startCallback(uv_fs_poll_t *handle, int status, const uv_stat_t *prev, const uv_stat_t *curr) {
@@ -43,17 +45,8 @@ class FsPollHandle final: public Handle<FsPollHandle, uv_fs_poll_t> {
         else { fsPoll.publish(FsPollEvent{ *prev, *curr }); }
     }
 
-    using Handle::Handle;
-
 public:
-    /**
-     * @brief Creates a new fs poll handle.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @return A pointer to the newly created handle.
-     */
-    static std::shared_ptr<FsPollHandle> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<FsPollHandle>{new FsPollHandle{std::move(loop)}};
-    }
+    using Handle::Handle;
 
     /**
      * @brief Initializes the handle.

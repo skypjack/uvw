@@ -25,6 +25,8 @@ struct AsyncEvent: Event<AsyncEvent> { };
  *
  * Async handles allow the user to _wakeup_ the event loop and get an event
  * emitted from another thread.
+ *
+ * To create an `AsyncHandle` through a `Loop`, no arguments are required.
  */
 class AsyncHandle final: public Handle<AsyncHandle, uv_async_t> {
     static void sendCallback(uv_async_t *handle) {
@@ -32,17 +34,8 @@ class AsyncHandle final: public Handle<AsyncHandle, uv_async_t> {
         async.publish(AsyncEvent{});
     }
 
-    using Handle::Handle;
-
 public:
-    /**
-     * @brief Creates a new async handle.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @return A pointer to the newly created handle.
-     */
-    static std::shared_ptr<AsyncHandle> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<AsyncHandle>{new AsyncHandle{std::move(loop)}};
-    }
+    using Handle::Handle;
 
     /**
      * @brief Initializes the handle.

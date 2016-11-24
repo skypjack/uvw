@@ -31,6 +31,8 @@ struct SignalEvent: Event<SignalEvent> {
  * bases.<br/>
  * Reception of some signals is emulated on Windows.
  *
+ * To create a `SignalHandle` through a `Loop`, no arguments are required.
+ *
  * See the official
  * [documentation](http://docs.libuv.org/en/v1.x/signal.html)
  * for further details.
@@ -41,17 +43,8 @@ class SignalHandle final: public Handle<SignalHandle, uv_signal_t> {
         signal.publish(SignalEvent{signum});
     }
 
-    using Handle::Handle;
-
 public:
-    /**
-     * @brief Creates a new signal handle.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @return A pointer to the newly created handle.
-     */
-    static std::shared_ptr<SignalHandle> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<SignalHandle>{new SignalHandle{std::move(loop)}};
-    }
+    using Handle::Handle;
 
     /**
      * @brief Initializes the handle.

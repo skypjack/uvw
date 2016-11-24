@@ -194,7 +194,7 @@ public:
     /**
      * @brief Disconnects all the listeners.
      */
-    void clearAll() noexcept {
+    void clear() noexcept {
         std::for_each(handlers.begin(), handlers.end(),
                       [](auto &&handler){ if(handler) { handler->clear(); } });
     }
