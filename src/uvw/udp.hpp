@@ -135,9 +135,7 @@ public:
     using IPv4 = uvw::IPv4;
     using IPv6 = uvw::IPv6;
 
-    explicit UDPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref)
-        : Handle{std::move(ca), std::move(ref)}, tag{DEFAULT}, flags{}
-    { }
+    using Handle::Handle;
 
     explicit UDPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
         : Handle{std::move(ca), std::move(ref)}, tag{FLAGS}, flags{f}
@@ -371,7 +369,7 @@ public:
     }
 
 private:
-    enum { DEFAULT, FLAGS } tag;
+    enum { DEFAULT, FLAGS } tag{DEFAULT};
     unsigned int flags;
 };
 

@@ -50,9 +50,7 @@ public:
     using IPv4 = uvw::IPv4;
     using IPv6 = uvw::IPv6;
 
-    explicit TcpHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref)
-        : StreamHandle{std::move(ca), std::move(ref)}, tag{DEFAULT}, flags{}
-    { }
+    using StreamHandle::StreamHandle;
 
     explicit TcpHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
         : StreamHandle{std::move(ca), std::move(ref)}, tag{FLAGS}, flags{f}
@@ -220,7 +218,7 @@ public:
     }
 
 private:
-    enum { DEFAULT, FLAGS } tag;
+    enum { DEFAULT, FLAGS } tag{DEFAULT};
     unsigned int flags;
 };
 

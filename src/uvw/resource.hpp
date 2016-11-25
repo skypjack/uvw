@@ -88,8 +88,8 @@ public:
      * @return A pointer to the newly created resource.
      */
     template<typename... Args>
-    static std::shared_ptr<T> create(std::shared_ptr<Loop> loop, Args&&... args) {
-        return std::make_shared<T>(ConstructorAccess{0}, std::move(loop), std::forward<Args>(args)...);
+    static std::shared_ptr<T> create(Args&&... args) {
+        return std::make_shared<T>(ConstructorAccess{0}, std::forward<Args>(args)...);
     }
 
     /**
