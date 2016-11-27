@@ -219,7 +219,7 @@ public:
 
 private:
     enum { DEFAULT, FLAGS } tag{DEFAULT};
-    unsigned int flags;
+    unsigned int flags{};
 };
 
 
