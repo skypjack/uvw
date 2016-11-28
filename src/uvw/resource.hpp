@@ -83,13 +83,12 @@ public:
 
     /**
      * @brief Creates a new resource of the given type.
-     * @param loop A pointer to the loop from which the handle generated.
      * @param args Arguments to be forwarded to the actual constructor (if any).
      * @return A pointer to the newly created resource.
      */
     template<typename... Args>
-    static std::shared_ptr<T> create(std::shared_ptr<Loop> loop, Args&&... args) {
-        return std::make_shared<T>(ConstructorAccess{0}, std::move(loop), std::forward<Args>(args)...);
+    static std::shared_ptr<T> create(Args&&... args) {
+        return std::make_shared<T>(ConstructorAccess{0}, std::forward<Args>(args)...);
     }
 
     /**
