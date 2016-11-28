@@ -83,7 +83,6 @@ public:
 
     /**
      * @brief Creates a new resource of the given type.
-     * @param loop A pointer to the loop from which the handle generated.
      * @param args Arguments to be forwarded to the actual constructor (if any).
      * @return A pointer to the newly created resource.
      */
