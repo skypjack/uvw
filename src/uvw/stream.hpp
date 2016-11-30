@@ -62,11 +62,11 @@ struct WriteEvent: Event<WriteEvent> { };
  * It will be emitted by StreamHandle according with its functionalities.
  */
 struct DataEvent: Event<DataEvent> {
-    explicit DataEvent(std::unique_ptr<const char[]> data, ssize_t length) noexcept
+    explicit DataEvent(std::unique_ptr<char[]> data, ssize_t length) noexcept
         : data{std::move(data)}, length(length)
     { }
 
-    std::unique_ptr<const char[]> data; /*!< A bunch of data read on the stream. */
+    std::unique_ptr<char[]> data; /*!< A bunch of data read on the stream. */
     std::size_t length; /*!< The amount of data read on the stream. */
 };
 
@@ -143,7 +143,7 @@ class StreamHandle: public Handle<T, U> {
     static void readCallback(uv_stream_t *handle, ssize_t nread, const uv_buf_t *buf) {
         T &ref = *(static_cast<T*>(handle->data));
         // data will be destroyed no matter of what the value of nread is
-        std::unique_ptr<const char[]> data{buf->base};
+        std::unique_ptr<char[]> data{buf->base};
 
         if(nread == UV_EOF) {
             // end of stream
