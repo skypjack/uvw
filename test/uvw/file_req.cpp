@@ -54,7 +54,7 @@ TEST(FileReq, OpenAndCloseSync) {
 }
 
 
-TEST(FileReq, RW) {
+TEST(FileReq, RWChecked) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
@@ -82,6 +82,46 @@ TEST(FileReq, RW) {
 
     request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
         request.write(std::unique_ptr<char[]>{new char[1]{ 42 }}, 1, 0);
+    });
+
+    request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+
+    loop->run();
+
+    ASSERT_TRUE(checkFileWriteEvent);
+    ASSERT_TRUE(checkFileReadEvent);
+}
+
+
+TEST(FileReq, RWUnchecked) {
+    const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
+    std::unique_ptr<char[]> data{new char[1]{ 42 }};
+
+    auto loop = uvw::Loop::getDefault();
+    auto request = loop->resource<uvw::FileReq>();
+
+    bool checkFileWriteEvent = false;
+    bool checkFileReadEvent = false;
+
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
+    });
+
+    request->on<uvw::FsEvent<uvw::FileReq::Type::READ>>([&checkFileReadEvent](const auto &event, auto &request) {
+        ASSERT_FALSE(checkFileReadEvent);
+        ASSERT_EQ(event.data[0], 42);
+        checkFileReadEvent = true;
+        request.close();
+    });
+
+    request->on<uvw::FsEvent<uvw::FileReq::Type::WRITE>>([&checkFileWriteEvent](const auto &, auto &request) {
+        ASSERT_FALSE(checkFileWriteEvent);
+        checkFileWriteEvent = true;
+        request.read(0, 1);
+    });
+
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&data](const auto &, auto &request) {
+        request.write(data.get(), 1, 0);
     });
 
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);

@@ -464,6 +464,9 @@ public:
     /**
      * @brief Async [write](http://linux.die.net/man/2/pwritev).
      *
+     * The request takes the ownership of the data and it is in charge of delete
+     * them.
+     *
      * Emit a `FsEvent<FileReq::Type::WRITE>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
@@ -474,6 +477,24 @@ public:
     void write(std::unique_ptr<char[]> data, std::size_t len, int64_t offset) {
         this->data = std::move(data);
         uv_buf_t bufs[] = { uv_buf_init(this->data.get(), len) };
+        cleanupAndInvoke(&uv_fs_write, parent(), get(), file, bufs, 1, offset, &fsResultCallback<Type::WRITE>);
+    }
+
+    /**
+     * @brief Async [write](http://linux.die.net/man/2/pwritev).
+     *
+     * The request doesn't take the ownership of the data. Be sure that their
+     * lifetime overcome the one of the request.
+     *
+     * Emit a `FsEvent<FileReq::Type::WRITE>` event when completed.<br/>
+     * Emit an ErrorEvent event in case of errors.
+     *
+     * @param data The data to be written.
+     * @param len The lenght of the submitted data.
+     * @param offset Offset, as described in the official documentation.
+     */
+    void write(char *data, std::size_t len, int64_t offset) {
+        uv_buf_t bufs[] = { uv_buf_init(data, len) };
         cleanupAndInvoke(&uv_fs_write, parent(), get(), file, bufs, 1, offset, &fsResultCallback<Type::WRITE>);
     }
 

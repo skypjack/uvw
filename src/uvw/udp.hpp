@@ -59,23 +59,14 @@ enum class UVMembership: std::underlying_type_t<uv_membership> {
 
 
 class SendReq final: public Request<SendReq, uv_udp_send_t> {
+public:
     using Deleter = void(*)(uv_buf_t *);
 
-    template<std::size_t N>
-    static void deleter(uv_buf_t *bufs) {
-        std::for_each(bufs, bufs+N, [](uv_buf_t &buf){ delete[] buf.base; });
-        delete[] bufs;
-    }
-
-public:
-    template<std::size_t N>
-    SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, const uv_buf_t (&arr)[N])
+    SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<uv_buf_t[], Deleter> bufs, std::size_t nbufs)
         : Request<SendReq, uv_udp_send_t>{std::move(ca), std::move(loop)},
-          bufs{new uv_buf_t[N], &deleter<N>},
-          nbufs{N}
-    {
-        std::copy_n(std::begin(arr), N, bufs.get());
-    }
+          bufs{std::move(bufs)},
+          nbufs{nbufs}
+    { }
 
     void send(uv_udp_t *handle, const struct sockaddr* addr) {
         invoke(&uv_udp_send, get(), handle, bufs.get(), nbufs, addr, &defaultCallback<SendEvent>);
@@ -293,6 +284,9 @@ public:
      * will be bound to `0.0.0.0` (the _all interfaces_ IPv4 address) and a
      * random port number.
      *
+     * The handle takes the ownership of the data and it is in charge of delete
+     * them.
+     *
      * A SendEvent event will be emitted when the data have been sent.<br/>
      * An ErrorEvent event will be emitted in case of errors.
      *
@@ -303,16 +297,64 @@ public:
      */
     template<typename I = IPv4>
     void send(std::string ip, unsigned int port, std::unique_ptr<char[]> data, std::size_t len) {
+        constexpr std::size_t N = 1;
+
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
-        const uv_buf_t bufs[] = { uv_buf_init(data.release(), len) };
+        auto send = loop().resource<details::SendReq>(
+                    std::unique_ptr<uv_buf_t[], details::SendReq::Deleter>{
+                        new uv_buf_t[N]{ uv_buf_init(data.release(), len) },
+                        [](uv_buf_t *bufs) {
+                            std::for_each(bufs, bufs+N, [](uv_buf_t &buf){ delete[] buf.base; });
+                            delete[] bufs;
+                        }
+                    }, N);
 
         auto listener = [ptr = shared_from_this()](const auto &event, details::SendReq &) {
             ptr->publish(event);
         };
 
-        auto send = loop().resource<details::SendReq>(bufs);
+        send->once<ErrorEvent>(listener);
+        send->once<SendEvent>(listener);
+        send->send(get(), reinterpret_cast<const sockaddr *>(&addr));
+    }
+
+    /**
+     * @brief Sends data over the UDP socket.
+     *
+     * Note that if the socket has not previously been bound with `bind()`, it
+     * will be bound to `0.0.0.0` (the _all interfaces_ IPv4 address) and a
+     * random port number.
+     *
+     * The handle doesn't take the ownership of the data. Be sure that their
+     * lifetime overcome the one of the request.
+     *
+     * A SendEvent event will be emitted when the data have been sent.<br/>
+     * An ErrorEvent event will be emitted in case of errors.
+     *
+     * @param ip The address to which to send data.
+     * @param port The port to which to send data.
+     * @param data The data to be sent.
+     * @param len The lenght of the submitted data.
+     */
+    template<typename I = IPv4>
+    void send(std::string ip, unsigned int port, char *data, std::size_t len) {
+        constexpr std::size_t N = 1;
+
+        typename details::IpTraits<I>::Type addr;
+        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
+
+        auto send = loop().resource<details::SendReq>(
+                    std::unique_ptr<uv_buf_t[], details::SendReq::Deleter>{
+                        new uv_buf_t[N]{ uv_buf_init(data, len) },
+                        [](uv_buf_t *bufs) { delete[] bufs; }
+                    }, N);
+
+        auto listener = [ptr = shared_from_this()](const auto &event, details::SendReq &) {
+            ptr->publish(event);
+        };
+
         send->once<ErrorEvent>(listener);
         send->once<SendEvent>(listener);
         send->send(get(), reinterpret_cast<const sockaddr *>(&addr));

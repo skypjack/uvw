@@ -167,7 +167,7 @@ public:
             auto def = uv_default_loop();
 
             if(def) {
-                auto ptr = std::unique_ptr<uv_loop_t, Deleter>(def, [](uv_loop_t *){ });
+                auto ptr = std::unique_ptr<uv_loop_t, Deleter>(def, [](uv_loop_t *){});
                 loop = std::shared_ptr<Loop>(new Loop{std::move(ptr)});
             }
 

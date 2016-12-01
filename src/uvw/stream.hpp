@@ -94,23 +94,14 @@ struct ShutdownReq final: public Request<ShutdownReq, uv_shutdown_t> {
 
 
 class WriteReq final: public Request<WriteReq, uv_write_t> {
+public:
     using Deleter = void(*)(uv_buf_t *);
 
-    template<std::size_t N>
-    static void deleter(uv_buf_t *bufs) {
-        std::for_each(bufs, bufs+N, [](uv_buf_t &buf){ delete[] buf.base; });
-        delete[] bufs;
-    }
-
-public:
-    template<std::size_t N>
-    WriteReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, const uv_buf_t (&arr)[N])
+    WriteReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<uv_buf_t[], Deleter> bufs, std::size_t nbufs)
         : Request<WriteReq, uv_write_t>{std::move(ca), std::move(loop)},
-          bufs{new uv_buf_t[N], &deleter<N>},
-          nbufs{N}
-    {
-        std::copy_n(std::begin(arr), N, bufs.get());
-    }
+          bufs{std::move(bufs)},
+          nbufs{nbufs}
+    { }
 
     void write(uv_stream_t *handle) {
         invoke(&uv_write, get(), handle, bufs.get(), nbufs, &defaultCallback<WriteEvent>);
@@ -250,7 +241,9 @@ public:
     /**
      * @brief Writes data to the stream.
      *
-     * Data are written in order.<br/>
+     * Data are written in order. The handle takes the ownership of the data and
+     * it is in charge of delete them.
+     *
      * A WriteEvent event will be emitted when the data have been written.<br/>
      * An ErrorEvent event will be emitted in case of errors.
      *
@@ -258,18 +251,55 @@ public:
      * @param len The lenght of the submitted data.
      */
     void write(std::unique_ptr<char[]> data, std::size_t len) {
-        const uv_buf_t bufs[] = { uv_buf_init(data.release(), len) };
+        constexpr std::size_t N = 1;
+
+        auto write = this->loop().template resource<details::WriteReq>(
+                    std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
+                        new uv_buf_t[N]{ uv_buf_init(data.release(), len) },
+                        [](uv_buf_t *bufs) {
+                            std::for_each(bufs, bufs+N, [](uv_buf_t &buf){ delete[] buf.base; });
+                            delete[] bufs;
+                        }
+                    }, N);
 
         auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
             ptr->publish(event);
         };
 
-        auto write = this->loop().template resource<details::WriteReq>(bufs);
         write->template once<ErrorEvent>(listener);
         write->template once<WriteEvent>(listener);
         write->write(this->template get<uv_stream_t>());
     }
 
+    /**
+     * @brief Writes data to the stream.
+     *
+     * Data are written in order. The handle doesn't take the ownership of the
+     * data. Be sure that their lifetime overcome the one of the request.
+     *
+     * A WriteEvent event will be emitted when the data have been written.<br/>
+     * An ErrorEvent event will be emitted in case of errors.
+     *
+     * @param data The data to be written to the stream.
+     * @param len The lenght of the submitted data.
+     */
+    void write(char *data, std::size_t len) {
+        constexpr std::size_t N = 1;
+
+        auto write = this->loop().template resource<details::WriteReq>(
+                    std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
+                        new uv_buf_t[N]{ uv_buf_init(data, len) },
+                        [](uv_buf_t *bufs) { delete[] bufs; }
+                    }, N);
+
+        auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
+            ptr->publish(event);
+        };
+
+        write->template once<ErrorEvent>(listener);
+        write->template once<WriteEvent>(listener);
+        write->write(this->template get<uv_stream_t>());
+    }
 
     /**
      * @brief Extended write function for sending handles over a pipe handle.
@@ -280,6 +310,9 @@ public:
      * connection (listening or connected state). Bound sockets or pipes will be
      * assumed to be servers.
      *
+     * The handle takes the ownership of the data and it is in charge of delete
+     * them.
+     *
      * A WriteEvent event will be emitted when the data have been written.<br/>
      * An ErrorEvent wvent will be emitted in case of errors.
      *
@@ -289,13 +322,59 @@ public:
      */
     template<typename S>
     void write(S &send, std::unique_ptr<char[]> data, std::size_t len) {
-        const uv_buf_t bufs[] = { uv_buf_init(data.release(), len) };
+        constexpr std::size_t N = 1;
+
+        auto write = this->loop().template resource<details::WriteReq>(
+                    std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
+                        new uv_buf_t[N]{ uv_buf_init(data.release(), len) },
+                        [](uv_buf_t *bufs) {
+                            std::for_each(bufs, bufs+N, [](uv_buf_t &buf){ delete[] buf.base; });
+                            delete[] bufs;
+                        }
+                    }, N);
 
         auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
             ptr->publish(event);
         };
 
-        auto write = this->loop().template resource<details::WriteReq>(bufs);
+        write->template once<ErrorEvent>(listener);
+        write->template once<WriteEvent>(listener);
+        write->write(this->template get<uv_stream_t>(), send.template get<uv_stream_t>());
+    }
+
+    /**
+     * @brief Extended write function for sending handles over a pipe handle.
+     *
+     * The pipe must be initialized with `ipc == true`.
+     *
+     * `send` must be a TcpHandle or PipeHandle handle, which is a server or a
+     * connection (listening or connected state). Bound sockets or pipes will be
+     * assumed to be servers.
+     *
+     * The handle doesn't take the ownership of the data. Be sure that their
+     * lifetime overcome the one of the request.
+     *
+     * A WriteEvent event will be emitted when the data have been written.<br/>
+     * An ErrorEvent wvent will be emitted in case of errors.
+     *
+     * @param send The handle over which to write data.
+     * @param data The data to be written to the stream.
+     * @param len The lenght of the submitted data.
+     */
+    template<typename S>
+    void write(S &send, char *data, std::size_t len) {
+        constexpr std::size_t N = 1;
+
+        auto write = this->loop().template resource<details::WriteReq>(
+                    std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
+                        new uv_buf_t[N]{ uv_buf_init(data, len) },
+                        [](uv_buf_t *bufs) { delete[] bufs; }
+                    }, N);
+
+        auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
+            ptr->publish(event);
+        };
+
         write->template once<ErrorEvent>(listener);
         write->template once<WriteEvent>(listener);
         write->write(this->template get<uv_stream_t>(), send.template get<uv_stream_t>());
