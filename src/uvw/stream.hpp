@@ -251,16 +251,11 @@ public:
      * @param len The lenght of the submitted data.
      */
     void write(std::unique_ptr<char[]> data, std::size_t len) {
-        constexpr std::size_t N = 1;
-
         auto write = this->loop().template resource<details::WriteReq>(
                     std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
-                        new uv_buf_t[N]{ uv_buf_init(data.release(), len) },
-                        [](uv_buf_t *bufs) {
-                            std::for_each(bufs, bufs+N, [](uv_buf_t &buf){ delete[] buf.base; });
-                            delete[] bufs;
-                        }
-                    }, N);
+                        new uv_buf_t[1]{ uv_buf_init(data.release(), len) },
+                        [](uv_buf_t *bufs) { delete[] bufs->base; delete[] bufs; }
+                    }, 1);
 
         auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
             ptr->publish(event);
@@ -284,13 +279,11 @@ public:
      * @param len The lenght of the submitted data.
      */
     void write(char *data, std::size_t len) {
-        constexpr std::size_t N = 1;
-
         auto write = this->loop().template resource<details::WriteReq>(
                     std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
-                        new uv_buf_t[N]{ uv_buf_init(data, len) },
+                        new uv_buf_t[1]{ uv_buf_init(data, len) },
                         [](uv_buf_t *bufs) { delete[] bufs; }
-                    }, N);
+                    }, 1);
 
         auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
             ptr->publish(event);
@@ -322,16 +315,11 @@ public:
      */
     template<typename S>
     void write(S &send, std::unique_ptr<char[]> data, std::size_t len) {
-        constexpr std::size_t N = 1;
-
         auto write = this->loop().template resource<details::WriteReq>(
                     std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
-                        new uv_buf_t[N]{ uv_buf_init(data.release(), len) },
-                        [](uv_buf_t *bufs) {
-                            std::for_each(bufs, bufs+N, [](uv_buf_t &buf){ delete[] buf.base; });
-                            delete[] bufs;
-                        }
-                    }, N);
+                        new uv_buf_t[1]{ uv_buf_init(data.release(), len) },
+                        [](uv_buf_t *bufs) { delete[] bufs->base; delete[] bufs; }
+                    }, 1);
 
         auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
             ptr->publish(event);
@@ -363,13 +351,11 @@ public:
      */
     template<typename S>
     void write(S &send, char *data, std::size_t len) {
-        constexpr std::size_t N = 1;
-
         auto write = this->loop().template resource<details::WriteReq>(
                     std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
-                        new uv_buf_t[N]{ uv_buf_init(data, len) },
+                        new uv_buf_t[1]{ uv_buf_init(data, len) },
                         [](uv_buf_t *bufs) { delete[] bufs; }
-                    }, N);
+                    }, 1);
 
         auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
             ptr->publish(event);

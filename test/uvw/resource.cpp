@@ -23,4 +23,7 @@ TEST(Resource, Basics) {
 
     ASSERT_NO_THROW(resource->data(data));
     ASSERT_EQ(*std::static_pointer_cast<int>(resource->data()), 42);
+
+    resource->close();
+    loop->run();
 }

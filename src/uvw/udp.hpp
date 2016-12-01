@@ -297,19 +297,14 @@ public:
      */
     template<typename I = IPv4>
     void send(std::string ip, unsigned int port, std::unique_ptr<char[]> data, std::size_t len) {
-        constexpr std::size_t N = 1;
-
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
         auto send = loop().resource<details::SendReq>(
                     std::unique_ptr<uv_buf_t[], details::SendReq::Deleter>{
-                        new uv_buf_t[N]{ uv_buf_init(data.release(), len) },
-                        [](uv_buf_t *bufs) {
-                            std::for_each(bufs, bufs+N, [](uv_buf_t &buf){ delete[] buf.base; });
-                            delete[] bufs;
-                        }
-                    }, N);
+                        new uv_buf_t[1]{ uv_buf_init(data.release(), len) },
+                        [](uv_buf_t *bufs) { delete[] bufs->base; delete[] bufs; }
+                    }, 1);
 
         auto listener = [ptr = shared_from_this()](const auto &event, details::SendReq &) {
             ptr->publish(event);
@@ -340,16 +335,14 @@ public:
      */
     template<typename I = IPv4>
     void send(std::string ip, unsigned int port, char *data, std::size_t len) {
-        constexpr std::size_t N = 1;
-
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
         auto send = loop().resource<details::SendReq>(
                     std::unique_ptr<uv_buf_t[], details::SendReq::Deleter>{
-                        new uv_buf_t[N]{ uv_buf_init(data, len) },
+                        new uv_buf_t[1]{ uv_buf_init(data, len) },
                         [](uv_buf_t *bufs) { delete[] bufs; }
-                    }, N);
+                    }, 1);
 
         auto listener = [ptr = shared_from_this()](const auto &event, details::SendReq &) {
             ptr->publish(event);
