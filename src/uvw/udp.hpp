@@ -32,8 +32,8 @@ struct SendEvent: Event<SendEvent> { };
  * It will be emitted by UDPHandle according with its functionalities.
  */
 struct UDPDataEvent: Event<UDPDataEvent> {
-    explicit UDPDataEvent(Addr sender, std::unique_ptr<const char[]> data, ssize_t length, bool partial) noexcept
-        : data{std::move(data)}, length(length), sender{std::move(sender)}, partial{partial}
+    explicit UDPDataEvent(Addr sender, std::unique_ptr<const char[]> data, std::size_t length, bool partial) noexcept
+        : data{std::move(data)}, length{length}, sender{std::move(sender)}, partial{partial}
     { }
 
     std::unique_ptr<const char[]> data; /*!< A bunch of data read on the stream. */

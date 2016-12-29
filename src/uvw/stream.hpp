@@ -62,8 +62,8 @@ struct WriteEvent: Event<WriteEvent> { };
  * It will be emitted by StreamHandle according with its functionalities.
  */
 struct DataEvent: Event<DataEvent> {
-    explicit DataEvent(std::unique_ptr<char[]> data, ssize_t length) noexcept
-        : data{std::move(data)}, length(length)
+    explicit DataEvent(std::unique_ptr<char[]> data, std::size_t length) noexcept
+        : data{std::move(data)}, length{length}
     { }
 
     std::unique_ptr<char[]> data; /*!< A bunch of data read on the stream. */
@@ -141,7 +141,7 @@ class StreamHandle: public Handle<T, U> {
             ref.publish(EndEvent{});
         } else if(nread > 0) {
             // data available
-            ref.publish(DataEvent{std::move(data), nread});
+            ref.publish(DataEvent{std::move(data), static_cast<std::size_t>(nread)});
         } else {
             // transmission error
             ref.publish(ErrorEvent(nread));

@@ -128,8 +128,8 @@ template<>
 struct FsEvent<details::UVFsType::READ>
         : Event<FsEvent<details::UVFsType::READ>>
 {
-    FsEvent(const char *path, std::unique_ptr<const char[]> data, ssize_t size) noexcept
-        : path{path}, data{std::move(data)}, size(size)
+    FsEvent(const char *path, std::unique_ptr<const char[]> data, std::size_t size) noexcept
+        : path{path}, data{std::move(data)}, size{size}
     { }
 
     const char * path; /*!< The path affecting the request. */
@@ -148,8 +148,8 @@ template<>
 struct FsEvent<details::UVFsType::WRITE>
         : Event<FsEvent<details::UVFsType::WRITE>>
 {
-    FsEvent(const char *path, ssize_t size) noexcept
-        : path{path}, size(size)
+    FsEvent(const char *path, std::size_t size) noexcept
+        : path{path}, size{size}
     { }
 
     const char * path; /*!< The path affecting the request. */
@@ -167,8 +167,8 @@ template<>
 struct FsEvent<details::UVFsType::SENDFILE>
         : Event<FsEvent<details::UVFsType::SENDFILE>>
 {
-    FsEvent(const char *path, ssize_t size) noexcept
-        : path{path}, size(size)
+    FsEvent(const char *path, std::size_t size) noexcept
+        : path{path}, size{size}
     { }
 
     const char * path; /*!< The path affecting the request. */
@@ -243,8 +243,8 @@ template<>
 struct FsEvent<details::UVFsType::SCANDIR>
         : Event<FsEvent<details::UVFsType::SCANDIR>>
 {
-    FsEvent(const char *path, ssize_t size) noexcept
-        : path{path}, size(size)
+    FsEvent(const char *path, std::size_t size) noexcept
+        : path{path}, size{size}
     { }
 
     const char * path; /*!< The path affecting the request. */
@@ -262,8 +262,8 @@ template<>
 struct FsEvent<details::UVFsType::READLINK>
         : Event<FsEvent<details::UVFsType::READLINK>>
 {
-    explicit FsEvent(const char *path, const char *data, ssize_t size) noexcept
-        : path{path}, data{data}, size(size)
+    explicit FsEvent(const char *path, const char *data, std::size_t size) noexcept
+        : path{path}, data{data}, size{size}
     { }
 
     const char * path; /*!< The path affecting the request. */
@@ -291,7 +291,7 @@ protected:
     static void fsResultCallback(uv_fs_t *req) {
         auto ptr = Request<T, uv_fs_t>::reserve(req);
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
-        else { ptr->publish(FsEvent<e>{req->path, req->result}); }
+        else { ptr->publish(FsEvent<e>{req->path, static_cast<std::size_t>(req->result)}); }
     }
 
     template<details::UVFsType e>
@@ -363,7 +363,7 @@ class FileReq final: public FsRequest<FileReq> {
     static void fsReadCallback(uv_fs_t *req) {
         auto ptr = reserve(req);
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
-        else { ptr->publish(FsEvent<Type::READ>{req->path, std::move(ptr->data), req->result}); }
+        else { ptr->publish(FsEvent<Type::READ>{req->path, std::move(ptr->data), static_cast<std::size_t>(req->result)}); }
     }
 
 public:
@@ -746,7 +746,7 @@ class FsReq final: public FsRequest<FsReq> {
     static void fsReadlinkCallback(uv_fs_t *req) {
         auto ptr = reserve(req);
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
-        else { ptr->publish(FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr), req->result}); }
+        else { ptr->publish(FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr), static_cast<std::size_t>(req->result)}); }
     }
 
 public:
