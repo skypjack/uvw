@@ -41,7 +41,7 @@ enum class UVFsEvent: std::underlying_type_t<uv_fs_event> {
 struct FsEventEvent: Event<FsEventEvent> {
     FsEventEvent(const char * filename, Flags<details::UVFsEvent> flags)
         : filename{filename}, flags{std::move(flags)}
-    { }
+    {}
 
     /**
      * @brief The path to the file being monitored.

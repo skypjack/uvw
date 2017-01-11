@@ -21,7 +21,7 @@ namespace uvw {
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct ConnectEvent: Event<ConnectEvent> { };
+struct ConnectEvent: Event<ConnectEvent> {};
 
 
 /**
@@ -29,7 +29,7 @@ struct ConnectEvent: Event<ConnectEvent> { };
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct EndEvent: Event<EndEvent> { };
+struct EndEvent: Event<EndEvent> {};
 
 
 /**
@@ -37,7 +37,7 @@ struct EndEvent: Event<EndEvent> { };
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct ListenEvent: Event<ListenEvent> { };
+struct ListenEvent: Event<ListenEvent> {};
 
 
 /**
@@ -45,7 +45,7 @@ struct ListenEvent: Event<ListenEvent> { };
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct ShutdownEvent: Event<ShutdownEvent> { };
+struct ShutdownEvent: Event<ShutdownEvent> {};
 
 
 /**
@@ -53,7 +53,7 @@ struct ShutdownEvent: Event<ShutdownEvent> { };
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct WriteEvent: Event<WriteEvent> { };
+struct WriteEvent: Event<WriteEvent> {};
 
 
 /**
@@ -64,7 +64,7 @@ struct WriteEvent: Event<WriteEvent> { };
 struct DataEvent: Event<DataEvent> {
     explicit DataEvent(std::unique_ptr<char[]> data, std::size_t length) noexcept
         : data{std::move(data)}, length{length}
-    { }
+    {}
 
     std::unique_ptr<char[]> data; /*!< A bunch of data read on the stream. */
     std::size_t length; /*!< The amount of data read on the stream. */
@@ -101,7 +101,7 @@ public:
         : Request<WriteReq, uv_write_t>{std::move(ca), std::move(loop)},
           bufs{std::move(bufs)},
           nbufs{nbufs}
-    { }
+    {}
 
     void write(uv_stream_t *handle) {
         invoke(&uv_write, get(), handle, bufs.get(), nbufs, &defaultCallback<WriteEvent>);
@@ -158,7 +158,7 @@ public:
 #ifdef _WIN32
     StreamHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref)
         : Handle{std::move(ca), std::move(ref)}
-    { }
+    {}
 #else
     using Handle<T, U>::Handle;
 #endif

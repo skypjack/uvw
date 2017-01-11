@@ -34,7 +34,7 @@ enum class UVPollEvent: std::underlying_type_t<uv_poll_event> {
 struct PollEvent: Event<PollEvent> {
     explicit PollEvent(Flags<details::UVPollEvent> flags) noexcept
         : flags{std::move(flags)}
-    { }
+    {}
 
     /**
      * @brief Detected events all in one.
@@ -77,11 +77,11 @@ public:
 
     explicit PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, int desc)
         : Handle{std::move(ca), std::move(ref)}, tag{FD}, fd{desc}
-    { }
+    {}
 
     explicit PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, OSSocketHandle sock)
         : Handle{std::move(ca), std::move(ref)}, tag{SOCKET}, socket{sock}
-    { }
+    {}
 
     /**
      * @brief Initializes the handle.

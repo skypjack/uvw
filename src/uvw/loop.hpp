@@ -125,7 +125,7 @@ class Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop
 
     Loop(std::unique_ptr<uv_loop_t, Deleter> ptr) noexcept
         : loop{std::move(ptr)}
-    { }
+    {}
 
 public:
     using Time = std::chrono::milliseconds;

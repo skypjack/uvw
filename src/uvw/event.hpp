@@ -13,7 +13,7 @@ namespace details {
 
 
 struct BaseEvent {
-    virtual ~BaseEvent() noexcept { }
+    virtual ~BaseEvent() noexcept {}
 
     static std::size_t next() noexcept {
         static std::size_t cnt = 0;
@@ -53,7 +53,7 @@ struct ErrorEvent: Event<ErrorEvent> {
     template<typename U, typename = std::enable_if_t<std::is_integral<U>::value>>
     explicit ErrorEvent(U val) noexcept
         : ec{static_cast<int>(val)}, str{uv_strerror(ec)}
-    { }
+    {}
 
     /**
      * @brief Returns the error message for the given error code.

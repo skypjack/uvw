@@ -22,7 +22,7 @@ namespace uvw {
 struct FsPollEvent: Event<FsPollEvent> {
     explicit FsPollEvent(Stat prev, Stat curr) noexcept
         : prev{std::move(prev)}, curr{std::move(curr)}
-    { }
+    {}
 
     Stat prev; /*!< The old Stat struct. */
     Stat curr; /*!< The new Stat struct. */

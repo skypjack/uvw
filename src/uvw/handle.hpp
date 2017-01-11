@@ -17,7 +17,7 @@ namespace uvw {
  *
  * It will be emitted by the handles according with their functionalities.
  */
-struct CloseEvent: Event<CloseEvent> { };
+struct CloseEvent: Event<CloseEvent> {};
 
 
 /**

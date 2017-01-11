@@ -140,7 +140,7 @@ public:
 
         Connection(typename Handler<E>::Connection conn)
             : Handler<E>::Connection{std::move(conn)}
-        { }
+        {}
 
         Connection & operator=(const Connection &) = default;
         Connection & operator=(Connection &&) = default;

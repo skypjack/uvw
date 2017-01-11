@@ -112,7 +112,7 @@ enum class UVDirentTypeT: std::underlying_type_t<uv_dirent_type_t> {
  */
 template<details::UVFsType e>
 struct FsEvent: Event<FsEvent<e>> {
-    FsEvent(const char *path) noexcept: path{path} { }
+    FsEvent(const char *path) noexcept: path{path} {}
 
     const char * path; /*!< The path affecting the request. */
 };
@@ -130,7 +130,7 @@ struct FsEvent<details::UVFsType::READ>
 {
     FsEvent(const char *path, std::unique_ptr<const char[]> data, std::size_t size) noexcept
         : path{path}, data{std::move(data)}, size{size}
-    { }
+    {}
 
     const char * path; /*!< The path affecting the request. */
     std::unique_ptr<const char[]> data; /*!< A bunch of data read from the given path. */
@@ -150,7 +150,7 @@ struct FsEvent<details::UVFsType::WRITE>
 {
     FsEvent(const char *path, std::size_t size) noexcept
         : path{path}, size{size}
-    { }
+    {}
 
     const char * path; /*!< The path affecting the request. */
     std::size_t size; /*!< The amount of data written to the given path. */
@@ -169,7 +169,7 @@ struct FsEvent<details::UVFsType::SENDFILE>
 {
     FsEvent(const char *path, std::size_t size) noexcept
         : path{path}, size{size}
-    { }
+    {}
 
     const char * path; /*!< The path affecting the request. */
     std::size_t size; /*!< The amount of data transferred. */
@@ -188,7 +188,7 @@ struct FsEvent<details::UVFsType::STAT>
 {
     FsEvent(const char *path, Stat stat) noexcept
         : path{path}, stat{std::move(stat)}
-    { }
+    {}
 
     const char * path; /*!< The path affecting the request. */
     Stat stat; /*!< An initialized instance of Stat. */
@@ -207,7 +207,7 @@ struct FsEvent<details::UVFsType::FSTAT>
 {
     FsEvent(const char *path, Stat stat) noexcept
         : path{path}, stat{std::move(stat)}
-    { }
+    {}
 
     const char * path; /*!< The path affecting the request. */
     Stat stat; /*!< An initialized instance of Stat. */
@@ -226,7 +226,7 @@ struct FsEvent<details::UVFsType::LSTAT>
 {
     FsEvent(const char *path, Stat stat) noexcept
         : path{path}, stat{std::move(stat)}
-    { }
+    {}
 
     const char * path; /*!< The path affecting the request. */
     Stat stat; /*!< An initialized instance of Stat. */
@@ -245,7 +245,7 @@ struct FsEvent<details::UVFsType::SCANDIR>
 {
     FsEvent(const char *path, std::size_t size) noexcept
         : path{path}, size{size}
-    { }
+    {}
 
     const char * path; /*!< The path affecting the request. */
     std::size_t size; /*!< The number of directory entries selected. */
@@ -264,7 +264,7 @@ struct FsEvent<details::UVFsType::READLINK>
 {
     explicit FsEvent(const char *path, const char *data, std::size_t size) noexcept
         : path{path}, data{data}, size{size}
-    { }
+    {}
 
     const char * path; /*!< The path affecting the request. */
     const char * data; /*!< A bunch of data read from the given path. */

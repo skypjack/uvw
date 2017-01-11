@@ -45,7 +45,7 @@ enum class UVStdIOFlags: std::underlying_type_t<uv_stdio_flags> {
  *
  * It will be emitted by ProcessHandle according with its functionalities.
  */
-struct ExitEvent: Event<ExitEvent> { };
+struct ExitEvent: Event<ExitEvent> {};
 
 
 /**

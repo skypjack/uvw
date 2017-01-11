@@ -17,7 +17,7 @@ namespace uvw {
  *
  * It will be emitted by AsyncHandle according with its functionalities.
  */
-struct AsyncEvent: Event<AsyncEvent> { };
+struct AsyncEvent: Event<AsyncEvent> {};
 
 
 /**

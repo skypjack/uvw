@@ -19,7 +19,7 @@ namespace uvw {
  *
  * To create a `CheckHandle` through a `Loop`, no arguments are required.
  */
-struct CheckEvent: Event<CheckEvent> { };
+struct CheckEvent: Event<CheckEvent> {};
 
 
 /**

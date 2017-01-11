@@ -54,7 +54,7 @@ public:
 
     explicit TcpHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
         : StreamHandle{std::move(ca), std::move(ref)}, tag{FLAGS}, flags{f}
-    { }
+    {}
 
     /**
      * @brief Initializes the handle. No socket is created as of yet.

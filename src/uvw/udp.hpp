@@ -23,7 +23,7 @@ namespace uvw {
  *
  * It will be emitted by UDPHandle according with its functionalities.
  */
-struct SendEvent: Event<SendEvent> { };
+struct SendEvent: Event<SendEvent> {};
 
 
 /**
@@ -34,7 +34,7 @@ struct SendEvent: Event<SendEvent> { };
 struct UDPDataEvent: Event<UDPDataEvent> {
     explicit UDPDataEvent(Addr sender, std::unique_ptr<const char[]> data, std::size_t length, bool partial) noexcept
         : data{std::move(data)}, length{length}, sender{std::move(sender)}, partial{partial}
-    { }
+    {}
 
     std::unique_ptr<const char[]> data; /*!< A bunch of data read on the stream. */
     std::size_t length;  /*!< The amount of data read on the stream. */
@@ -66,7 +66,7 @@ public:
         : Request<SendReq, uv_udp_send_t>{std::move(ca), std::move(loop)},
           bufs{std::move(bufs)},
           nbufs{nbufs}
-    { }
+    {}
 
     void send(uv_udp_t *handle, const struct sockaddr* addr) {
         invoke(&uv_udp_send, get(), handle, bufs.get(), nbufs, addr, &defaultCallback<SendEvent>);
@@ -130,7 +130,7 @@ public:
 
     explicit UDPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
         : Handle{std::move(ca), std::move(ref)}, tag{FLAGS}, flags{f}
-    { }
+    {}
 
     /**
      * @brief Initializes the handle. The actual socket is created lazily.

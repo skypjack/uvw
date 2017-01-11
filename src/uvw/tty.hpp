@@ -67,7 +67,7 @@ public:
           memo{resetModeMemo()},
           fd{desc},
           rw{readable}
-    { }
+    {}
 
     /**
      * @brief Initializes the handle.

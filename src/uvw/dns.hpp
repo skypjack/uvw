@@ -24,7 +24,7 @@ struct AddrInfoEvent: Event<AddrInfoEvent> {
 
     AddrInfoEvent(std::unique_ptr<addrinfo, Deleter> data)
         : data{std::move(data)}
-    { }
+    {}
 
     /**
      * @brief An initialized instance of `addrinfo`.
@@ -44,7 +44,7 @@ struct AddrInfoEvent: Event<AddrInfoEvent> {
 struct NameInfoEvent: Event<NameInfoEvent> {
     NameInfoEvent(const char *hostname, const char *service)
         : hostname{hostname}, service{service}
-    { }
+    {}
 
     /**
      * @brief A valid hostname.

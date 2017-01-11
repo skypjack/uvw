@@ -52,7 +52,7 @@ template<typename T>
 struct UVTypeWrapper {
     using Type = T;
 
-    constexpr UVTypeWrapper(Type val): value{val} { }
+    constexpr UVTypeWrapper(Type val): value{val} {}
     constexpr operator Type() const noexcept { return value; }
 
 private:
@@ -86,19 +86,19 @@ public:
      * @brief Constructs a Flags object from a value of the enum `E`.
      * @param flag An value of the enum `E`.
      */
-    constexpr Flags(E flag) noexcept: flags{toInnerType(flag)} { }
+    constexpr Flags(E flag) noexcept: flags{toInnerType(flag)} {}
 
     /**
      * @brief Constructs a Flags object from an instance of the underlying type
      * of the enum `E`.
      * @param f An instance of the underlying type of the enum `E`.
      */
-    constexpr Flags(Type f): flags{f} { }
+    constexpr Flags(Type f): flags{f} {}
 
     /**
      * @brief Constructs an uninitialized Flags object.
      */
-    constexpr Flags(): flags{} { }
+    constexpr Flags(): flags{} {}
 
     constexpr Flags(const Flags &f) noexcept: flags{f.flags} {  }
     constexpr Flags(Flags &&f) noexcept: flags{std::move(f.flags)} {  }
@@ -185,7 +185,7 @@ using RUsage = uv_rusage_t;
 
 
 struct Passwd {
-    Passwd(std::shared_ptr<uv_passwd_t> passwd): passwd{passwd} { }
+    Passwd(std::shared_ptr<uv_passwd_t> passwd): passwd{passwd} {}
 
     std::string username() const noexcept { return passwd->username; }
     Uid uid() const noexcept { return passwd->uid; }
@@ -203,7 +203,7 @@ private:
  *
  * To be used as template parameter to switch between IPv4 and IPv6.
  */
-struct IPv4 { };
+struct IPv4 {};
 
 
 /**
@@ -211,7 +211,7 @@ struct IPv4 { };
  *
  * To be used as template parameter to switch between IPv4 and IPv6.
  */
-struct IPv6 { };
+struct IPv6 {};
 
 
 /**

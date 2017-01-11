@@ -32,7 +32,7 @@ class Thread final {
 
     explicit Thread(std::shared_ptr<Loop> ref, InternalTask t, std::shared_ptr<void> d = nullptr) noexcept
         : pLoop{std::move(ref)}, data{std::move(d)}, thread{}, task{std::move(t)}
-    { }
+    {}
 
 public:
     using Task = InternalTask;
@@ -110,7 +110,7 @@ private:
 class Once final {
     explicit Once(std::shared_ptr<Loop> ref) noexcept
         : pLoop{std::move(ref)}
-    { }
+    {}
 
     static uv_once_t* guard() noexcept {
         static uv_once_t once = UV_ONCE_INIT;

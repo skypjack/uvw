@@ -19,7 +19,7 @@ namespace uvw {
  *
  * To create a `PrepareHandle` through a `Loop`, no arguments are required.
  */
-struct PrepareEvent: Event<PrepareEvent> { };
+struct PrepareEvent: Event<PrepareEvent> {};
 
 
 /**

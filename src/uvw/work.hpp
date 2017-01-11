@@ -18,7 +18,7 @@ namespace uvw {
  *
  * It will be emitted by WorkReq according with its functionalities.
  */
-struct WorkEvent: Event<WorkEvent> { };
+struct WorkEvent: Event<WorkEvent> {};
 
 
 /**
@@ -47,7 +47,7 @@ public:
 
     explicit WorkReq(ConstructorAccess ca, std::shared_ptr<Loop> ref, InternalTask t)
         : Request{std::move(ca), std::move(ref)}, task{t}
-    { }
+    {}
 
     /**
      * @brief Runs the given task in a separate thread.
