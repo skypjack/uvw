@@ -320,7 +320,7 @@ Addr address(F &&f, const H *handle) noexcept {
 
 
 template<typename F, typename... Args>
-std::string path(F &&f, Args... args) noexcept {
+std::string path(F &&f, Args&&... args) noexcept {
     std::size_t size = DEFAULT_SIZE;
     char buf[DEFAULT_SIZE];
     std::string str{};

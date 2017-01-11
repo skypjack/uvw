@@ -78,7 +78,7 @@ struct ConnectReq final: public Request<ConnectReq, uv_connect_t> {
     using Request::Request;
 
     template<typename F, typename... Args>
-    void connect(F &&f, Args... args) {
+    void connect(F &&f, Args&&... args) {
         invoke(std::forward<F>(f), get(), std::forward<Args>(args)..., &defaultCallback<ConnectEvent>);
     }
 };
