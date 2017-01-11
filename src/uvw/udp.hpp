@@ -146,7 +146,7 @@ public:
      * @brief Opens an existing file descriptor or SOCKET as a UDP handle.
      *
      * The passed file descriptor or SOCKET is not checked for its type, but
-     * it’s required that it represents a valid stream socket.
+     * it’s required that it represents a valid datagram socket.
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_open)
