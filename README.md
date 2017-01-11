@@ -120,15 +120,15 @@ The following sections will explain in short what it means to initialize and ter
 
 #### Handles
 
-Initialization is usually performed under the hood and can be even passed over, as far as handles are created using the `Loop::resource` member method.<br/>
+Initialization is usually performed under the hood and can be even passed over, as far as handles are created using the `Loop::resource` member function.<br/>
 On the other side, handles keep themselves alive until one explicitly closes them. Because of that, memory usage will grow up if users simply forget about a handle.<br/>
-Thus the rule quickly becomes *always close your handles*. It's simple as calling the `close` member method on them.
+Therefore the rule quickly becomes *always close your handles*. It's simple as calling the `close` member function on them.
 
 #### Requests
 
-Usually initializing a request object is not required. Anyway, the recommended way to create a request is still through the `Loop::resource` member method.<br/>
+Usually initializing a request object is not required. Anyway, the recommended way to create a request is still through the `Loop::resource` member function.<br/>
 Requests will keep themselves alive as long as they are bound to unfinished underlying activities. This means that users have not to discard explicitly a request.<br/>
-Thus the rule quickly becomes *feel free to make a request and forget about it*. It's simple as calling a member method on them.
+Therefore the rule quickly becomes *feel free to make a request and forget about it*. It's simple as calling a member function on them.
 
 #### The Loop and the Resource
 
@@ -136,8 +136,8 @@ The first thing to do to use `uvw` is to create a loop. In case the default one 
 
     auto loop = uvw::Loop::getDefault();
 
-Note that loop objects don't require to be closed explicitly, even if they offer the `close` member method in case an user wants to do that.<br/>
-Loops can be started using the `run` member method. The two calls below are equivalent:
+Note that loop objects don't require to be closed explicitly, even if they offer the `close` member function in case an user wants to do that.<br/>
+Loops can be started using the `run` member function. The two calls below are equivalent:
 
     loop->run();
     loop->run<uvw::Loop::Mode::DEFAULT>
@@ -161,11 +161,14 @@ The resources also accept arbitrary user-data that won't be touched in any case.
 Users can set and get them through the `data` member function as it follows:
 
     resource->data(std::make_shared<int>(42));
-    auto data = std::static_pointer_cast<int>(resource->data());
+    std::shared_ptr<void> data = resource->data();
 
-`uvw` expects a `std::shared_pointer<void>` and returns it, thus any kind of data is welcome.
+Resources expect a `std::shared_pointer<void>` and return it, therefore any kind of data is welcome.<br/>
+Users can explicitly specify a type other than `void` when calling the `data` member function:
 
-Remember from the previous section that a handle will keep itself alive until one invokes the `close` member method on it.<br/>
+    std::shared_ptr<int> data = resource->data<int>();
+
+Remember from the previous section that a handle will keep itself alive until one invokes the `close` member function on it.<br/>
 To know what are the handles that are still alive and bound to a given loop, just do the following:
 
     loop.walk([](uvw::BaseHandle &){ /* application code here */ });
@@ -203,8 +206,8 @@ There exist two methods to attach an event to a resource:
 * `resource.on<EventType>(listener)`: to be used for long-running listeners
 
 Both of them return an object of type `ResourceType::Connection` (as an example, `TcpHandle::Connection`).<br/>
-A connection object can be used later as an argument to the `erase` member method of the resource to remove the listener.<br/>
-There exists also the `clear` member method to drop all the listeners at once.
+A connection object can be used later as an argument to the `erase` member function of the resource to remove the listener.<br/>
+There exists also the `clear` member function to drop all the listeners at once.
 
 Almost all the resources use to emit `ErrorEvent` events in case of errors.<br/>
 All the other events are specific for the given resource and documented in the API reference.

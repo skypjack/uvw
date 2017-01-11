@@ -101,8 +101,9 @@ public:
      * @brief Gets user-defined data. `uvw` won't use this field in any case.
      * @return User-defined data if any, an invalid pointer otherwise.
      */
-    std::shared_ptr<void> data() const {
-        return userData;
+    template<typename R = void>
+    std::shared_ptr<R> data() const {
+        return std::static_pointer_cast<R>(userData);
     }
 
     /**
