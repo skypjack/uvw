@@ -69,12 +69,12 @@ The main reason for which `uvw` has been written is the fact that it does not ex
 To be able to use `uvw`, users must provide the following system-wide tools:
 
 * A full-featured compiler that supports at least C++14
-* `libuv` version 1.9.0 or successive
+* `libuv` version 1.9.0 or later
 
 The requirements below are mandatory to compile the tests and to extract the documentation:
 
-* CMake version 3.4 or successive
-* Doxygen version 1.8 or successive
+* CMake version 3.4 or later
+* Doxygen version 1.8 or later
 
 Note that `libuv` is part of the dependencies of the project and it will be cloned by executing the script `deps.sh` (see below for further details).<br/>
 Because of that, users have not to install it to compile and execute the tests.
