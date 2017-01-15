@@ -108,12 +108,12 @@ class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
 
         if(nread > 0) {
             // data available (can be truncated)
-            udp.publish(UDPDataEvent{details::address<I>(aptr), std::move(data), static_cast<size_t>(nread), static_cast<bool>(flags & UV_UDP_PARTIAL)});
+            udp.publish(UDPDataEvent{details::address<I>(aptr), std::move(data), static_cast<std::size_t>(nread), static_cast<bool>(flags & UV_UDP_PARTIAL)});
         } else if(nread == 0 && addr == nullptr) {
             // no more data to be read, doing nothing is fine
         } else if(nread == 0 && addr != nullptr) {
             // empty udp packet
-            udp.publish(UDPDataEvent{details::address<I>(aptr), std::move(data), static_cast<size_t>(nread), false});
+            udp.publish(UDPDataEvent{details::address<I>(aptr), std::move(data), static_cast<std::size_t>(nread), false});
         } else {
             // transmission error
             udp.publish(ErrorEvent(nread));
