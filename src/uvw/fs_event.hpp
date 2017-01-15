@@ -39,8 +39,8 @@ enum class UVFsEvent: std::underlying_type_t<uv_fs_event> {
  * It will be emitted by FsEventHandle according with its functionalities.
  */
 struct FsEventEvent: Event<FsEventEvent> {
-    FsEventEvent(const char * filename, Flags<details::UVFsEvent> flags)
-        : filename{filename}, flags{std::move(flags)}
+    FsEventEvent(const char * _filename, Flags<details::UVFsEvent> _flags)
+        : filename{_filename}, flags{std::move(_flags)}
     {}
 
     /**

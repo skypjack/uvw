@@ -74,8 +74,8 @@ public:
      *
      * @param sock A valid socket handle (either a file descriptor or a SOCKET).
      */
-    void open(OSSocketHandle sock) {
-        invoke(&uv_tcp_open, get(), sock);
+    void open(OSSocketHandle _sock) {
+        invoke(&uv_tcp_open, get(), _sock);
     }
 
     /**
@@ -133,10 +133,10 @@ public:
      * @param flags Optional additional flags.
      */
     template<typename I = IPv4>
-    void bind(std::string ip, unsigned int port, Flags<Bind> flags = Flags<Bind>{}) {
+    void bind(std::string ip, unsigned int port, Flags<Bind> _flags = Flags<Bind>{}) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        invoke(&uv_tcp_bind, get(), reinterpret_cast<const sockaddr *>(&addr), flags);
+        invoke(&uv_tcp_bind, get(), reinterpret_cast<const sockaddr *>(&addr), _flags);
     }
 
     /**
@@ -156,8 +156,8 @@ public:
      * @param flags Optional additional flags.
      */
     template<typename I = IPv4>
-    void bind(Addr addr, Flags<Bind> flags = Flags<Bind>{}) {
-        bind<I>(addr.ip, addr.port, flags);
+    void bind(Addr addr, Flags<Bind> _flags = Flags<Bind>{}) {
+        bind<I>(addr.ip, addr.port, _flags);
     }
 
     /**
@@ -197,10 +197,10 @@ public:
             ptr->publish(event);
         };
 
-        auto connect = loop().resource<details::ConnectReq>();
-        connect->once<ErrorEvent>(listener);
-        connect->once<ConnectEvent>(listener);
-        connect->connect(&uv_tcp_connect, get(), reinterpret_cast<const sockaddr *>(&addr));
+        auto _connect = loop().resource<details::ConnectReq>();
+        _connect->once<ErrorEvent>(listener);
+        _connect->once<ConnectEvent>(listener);
+        _connect->connect(&uv_tcp_connect, get(), reinterpret_cast<const sockaddr *>(&addr));
     }
 
     /**

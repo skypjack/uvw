@@ -20,8 +20,8 @@ namespace uvw {
  * It will be emitted by FsPollHandle according with its functionalities.
  */
 struct FsPollEvent: Event<FsPollEvent> {
-    explicit FsPollEvent(Stat prev, Stat curr) noexcept
-        : prev{std::move(prev)}, curr{std::move(curr)}
+    explicit FsPollEvent(Stat _prev, Stat _curr) noexcept
+        : prev{std::move(_prev)}, curr{std::move(_curr)}
     {}
 
     Stat prev; /*!< The old Stat struct. */

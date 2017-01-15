@@ -22,8 +22,8 @@ namespace uvw {
 struct AddrInfoEvent: Event<AddrInfoEvent> {
     using Deleter = void(*)(addrinfo *);
 
-    AddrInfoEvent(std::unique_ptr<addrinfo, Deleter> data)
-        : data{std::move(data)}
+    AddrInfoEvent(std::unique_ptr<addrinfo, Deleter> _data)
+        : data{std::move(_data)}
     {}
 
     /**
@@ -42,8 +42,8 @@ struct AddrInfoEvent: Event<AddrInfoEvent> {
  * It will be emitted by GetNameInfoReq according with its functionalities.
  */
 struct NameInfoEvent: Event<NameInfoEvent> {
-    NameInfoEvent(const char *hostname, const char *service)
-        : hostname{hostname}, service{service}
+    NameInfoEvent(const char *_hostname, const char *_service)
+        : hostname{_hostname}, service{_service}
     {}
 
     /**
@@ -80,7 +80,7 @@ class GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
             ptr->publish(ErrorEvent{status});
         } else {
             auto data = std::unique_ptr<addrinfo, void(*)(addrinfo *)>{
-                res, [](addrinfo *res){ uv_freeaddrinfo(res); }};
+                res, [](addrinfo *_res){ uv_freeaddrinfo(_res); }};
 
             ptr->publish(AddrInfoEvent{std::move(data)});
         }
@@ -93,8 +93,8 @@ class GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
     auto getNodeAddrInfoSync(const char *node, const char *service, addrinfo *hints = nullptr) {
         auto req = get();
         auto err = uv_getaddrinfo(parent(), req, nullptr, node, service, hints);
-        auto ptr = std::unique_ptr<addrinfo, void(*)(addrinfo *)>{req->addrinfo, [](addrinfo *res){ uv_freeaddrinfo(res); }};
-        return std::make_pair(!err, std::move(ptr));
+        auto _ptr = std::unique_ptr<addrinfo, void(*)(addrinfo *)>{req->addrinfo, [](addrinfo *_res){ uv_freeaddrinfo(_res); }};
+        return std::make_pair(!err, std::move(_ptr));
     }
 
 public:

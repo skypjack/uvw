@@ -32,8 +32,8 @@ struct SendEvent: Event<SendEvent> {};
  * It will be emitted by UDPHandle according with its functionalities.
  */
 struct UDPDataEvent: Event<UDPDataEvent> {
-    explicit UDPDataEvent(Addr sender, std::unique_ptr<const char[]> data, std::size_t length, bool partial) noexcept
-        : data{std::move(data)}, length{length}, sender{std::move(sender)}, partial{partial}
+    explicit UDPDataEvent(Addr _sender, std::unique_ptr<const char[]> _data, std::size_t _length, bool _partial) noexcept
+        : data{std::move(_data)}, length{_length}, sender{std::move(_sender)}, partial{_partial}
     {}
 
     std::unique_ptr<const char[]> data; /*!< A bunch of data read on the stream. */
@@ -62,10 +62,10 @@ class SendReq final: public Request<SendReq, uv_udp_send_t> {
 public:
     using Deleter = void(*)(uv_buf_t *);
 
-    SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<uv_buf_t[], Deleter> bufs, std::size_t nbufs)
+    SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<uv_buf_t[], Deleter> _bufs, std::size_t _nbufs)
         : Request<SendReq, uv_udp_send_t>{std::move(ca), std::move(loop)},
-          bufs{std::move(bufs)},
-          nbufs{nbufs}
+          bufs{std::move(_bufs)},
+          nbufs{_nbufs}
     {}
 
     void send(uv_udp_t *handle, const struct sockaddr* addr) {
@@ -154,8 +154,8 @@ public:
      *
      * @param sock A valid socket handle (either a file descriptor or a SOCKET).
      */
-    void open(OSSocketHandle sock) {
-        invoke(&uv_udp_open, get(), sock);
+    void open(OSSocketHandle _sock) {
+        invoke(&uv_udp_open, get(), _sock);
     }
 
     /**
@@ -175,10 +175,10 @@ public:
      * @param flags Optional additional flags.
      */
     template<typename I = IPv4>
-    void bind(std::string ip, unsigned int port, Flags<Bind> flags = Flags<Bind>{}) {
+    void bind(std::string ip, unsigned int port, Flags<Bind> _flags = Flags<Bind>{}) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        invoke(&uv_udp_bind, get(), reinterpret_cast<const sockaddr *>(&addr), flags);
+        invoke(&uv_udp_bind, get(), reinterpret_cast<const sockaddr *>(&addr), _flags);
     }
 
     /**
@@ -197,8 +197,8 @@ public:
      * @param flags Optional additional flags.
      */
     template<typename I = IPv4>
-    void bind(Addr addr, Flags<Bind> flags = Flags<Bind>{}) {
-        bind<I>(addr.ip, addr.port, flags);
+    void bind(Addr addr, Flags<Bind> _flags = Flags<Bind>{}) {
+        bind<I>(addr.ip, addr.port, _flags);
     }
 
     /**
@@ -300,7 +300,7 @@ public:
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
-        auto send = loop().resource<details::SendReq>(
+        auto _send = loop().resource<details::SendReq>(
                     std::unique_ptr<uv_buf_t[], details::SendReq::Deleter>{
                         new uv_buf_t[1]{ uv_buf_init(data.release(), len) },
                         [](uv_buf_t *bufs) { delete[] bufs->base; delete[] bufs; }
@@ -310,9 +310,9 @@ public:
             ptr->publish(event);
         };
 
-        send->once<ErrorEvent>(listener);
-        send->once<SendEvent>(listener);
-        send->send(get(), reinterpret_cast<const sockaddr *>(&addr));
+        _send->once<ErrorEvent>(listener);
+        _send->once<SendEvent>(listener);
+        _send->send(get(), reinterpret_cast<const sockaddr *>(&addr));
     }
 
     /**
@@ -338,7 +338,7 @@ public:
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
-        auto send = loop().resource<details::SendReq>(
+        auto _send = loop().resource<details::SendReq>(
                     std::unique_ptr<uv_buf_t[], details::SendReq::Deleter>{
                         new uv_buf_t[1]{ uv_buf_init(data, len) },
                         [](uv_buf_t *bufs) { delete[] bufs; }
@@ -348,9 +348,9 @@ public:
             ptr->publish(event);
         };
 
-        send->once<ErrorEvent>(listener);
-        send->once<SendEvent>(listener);
-        send->send(get(), reinterpret_cast<const sockaddr *>(&addr));
+        _send->once<ErrorEvent>(listener);
+        _send->once<SendEvent>(listener);
+        _send->send(get(), reinterpret_cast<const sockaddr *>(&addr));
     }
 
     /**
