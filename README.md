@@ -258,7 +258,8 @@ Elia Mazzuoli aka [Zikoel](https://github.com/Zikoel)<br/>
 Francesco De Felice aka [fradefe](https://github.com/fradefe)<br/>
 Tushar Maheshwari aka [tusharpm](https://github.com/tusharpm)<br/>
 Paolo Monteverde aka [morbo84](https://github.com/morbo84)<br/>
-Jan Vcelak aka [fcelda](https://github.com/fcelda)
+Jan Vcelak aka [fcelda](https://github.com/fcelda)<br/>
+Raoul Hecky aka raoul [raoulh](https://github.com/raoulh)
 
 If you want to contribute, please send patches as pull requests against the branch master.
 
