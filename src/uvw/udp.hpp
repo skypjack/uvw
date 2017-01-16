@@ -100,7 +100,7 @@ private:
 class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
     template<typename I>
     static void recvCallback(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
-        typename details::IpTraits<I>::Type *aptr = reinterpret_cast<const typename details::IpTraits<I>::Type *>(addr);
+        const typename details::IpTraits<I>::Type *aptr = reinterpret_cast<const typename details::IpTraits<I>::Type *>(addr);
 
         UDPHandle &udp = *(static_cast<UDPHandle*>(handle->data));
         // data will be destroyed no matter of what the value of nread is
