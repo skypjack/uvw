@@ -123,7 +123,9 @@ public:
         po.args = args;
         po.env = env;
 
-        po.cwd = poCwd.data();
+        if (!poCwd.empty()) {
+            po.cwd = poCwd.data();
+        }
         po.flags = poFlags;
         po.stdio_count = poStdio.size();
         po.stdio = poStdio.data();
