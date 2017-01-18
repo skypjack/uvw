@@ -40,13 +40,23 @@ protected:
     template<typename R>
     auto get() noexcept {
         static_assert(not std::is_same<R, U>::value, "!");
-        return reinterpret_cast<R*>(&resource);
+        return reinterpret_cast<R *>(&resource);
+    }
+
+    template<typename R, typename... P>
+    auto get(Resource<P...> &res) noexcept {
+        return reinterpret_cast<R *>(&res.resource);
     }
 
     template<typename R>
     auto get() const noexcept {
         static_assert(not std::is_same<R, U>::value, "!");
-        return reinterpret_cast<const R*>(&resource);
+        return reinterpret_cast<const R *>(&resource);
+    }
+
+    template<typename R, typename... P>
+    auto get(Resource<P...> &res) const noexcept {
+        return reinterpret_cast<const R *>(&res.resource);
     }
 
     void leak() noexcept {
