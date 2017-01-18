@@ -112,7 +112,7 @@ enum class UVDirentTypeT: std::underlying_type_t<uv_dirent_type_t> {
  */
 template<details::UVFsType e>
 struct FsEvent: Event<FsEvent<e>> {
-    FsEvent(const char *_path) noexcept: path{_path} {}
+    FsEvent(const char *pathname) noexcept: path{pathname} {}
 
     const char * path; /*!< The path affecting the request. */
 };
@@ -128,8 +128,8 @@ template<>
 struct FsEvent<details::UVFsType::READ>
         : Event<FsEvent<details::UVFsType::READ>>
 {
-    FsEvent(const char *_path, std::unique_ptr<const char[]> _data, std::size_t sz) noexcept
-        : path{_path}, data{std::move(_data)}, size{sz}
+    FsEvent(const char *pathname, std::unique_ptr<const char[]> buf, std::size_t sz) noexcept
+        : path{pathname}, data{std::move(buf)}, size{sz}
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -148,8 +148,8 @@ template<>
 struct FsEvent<details::UVFsType::WRITE>
         : Event<FsEvent<details::UVFsType::WRITE>>
 {
-    FsEvent(const char *_path, std::size_t sz) noexcept
-        : path{_path}, size{sz}
+    FsEvent(const char *pathname, std::size_t sz) noexcept
+        : path{pathname}, size{sz}
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -167,8 +167,8 @@ template<>
 struct FsEvent<details::UVFsType::SENDFILE>
         : Event<FsEvent<details::UVFsType::SENDFILE>>
 {
-    FsEvent(const char *_path, std::size_t sz) noexcept
-        : path{_path}, size{sz}
+    FsEvent(const char *pathname, std::size_t sz) noexcept
+        : path{pathname}, size{sz}
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -186,8 +186,8 @@ template<>
 struct FsEvent<details::UVFsType::STAT>
         : Event<FsEvent<details::UVFsType::STAT>>
 {
-    FsEvent(const char *_path, Stat _stat) noexcept
-        : path{_path}, stat{std::move(_stat)}
+    FsEvent(const char *pathname, Stat _stat) noexcept
+        : path{pathname}, stat{std::move(_stat)}
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -205,8 +205,8 @@ template<>
 struct FsEvent<details::UVFsType::FSTAT>
         : Event<FsEvent<details::UVFsType::FSTAT>>
 {
-    FsEvent(const char *_path, Stat _stat) noexcept
-        : path{_path}, stat{std::move(_stat)}
+    FsEvent(const char *pathname, Stat _stat) noexcept
+        : path{pathname}, stat{std::move(_stat)}
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -224,8 +224,8 @@ template<>
 struct FsEvent<details::UVFsType::LSTAT>
         : Event<FsEvent<details::UVFsType::LSTAT>>
 {
-    FsEvent(const char *_path, Stat _stat) noexcept
-        : path{_path}, stat{std::move(_stat)}
+    FsEvent(const char *pathname, Stat _stat) noexcept
+        : path{pathname}, stat{std::move(_stat)}
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -243,8 +243,8 @@ template<>
 struct FsEvent<details::UVFsType::SCANDIR>
         : Event<FsEvent<details::UVFsType::SCANDIR>>
 {
-    FsEvent(const char *_path, std::size_t sz) noexcept
-        : path{_path}, size{sz}
+    FsEvent(const char *pathname, std::size_t sz) noexcept
+        : path{pathname}, size{sz}
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -262,8 +262,8 @@ template<>
 struct FsEvent<details::UVFsType::READLINK>
         : Event<FsEvent<details::UVFsType::READLINK>>
 {
-    explicit FsEvent(const char *_path, const char *_data, std::size_t sz) noexcept
-        : path{_path}, data{_data}, size{sz}
+    explicit FsEvent(const char *pathname, const char *buf, std::size_t sz) noexcept
+        : path{pathname}, data{buf}, size{sz}
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -470,12 +470,12 @@ public:
      * Emit a `FsEvent<FileReq::Type::WRITE>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
-     * @param data The data to be written.
+     * @param buf The data to be written.
      * @param len The lenght of the submitted data.
      * @param offset Offset, as described in the official documentation.
      */
-    void write(std::unique_ptr<char[]> _data, std::size_t len, int64_t offset) {
-        this->data = std::move(_data);
+    void write(std::unique_ptr<char[]> buf, std::size_t len, int64_t offset) {
+        this->data = std::move(buf);
         uv_buf_t bufs[] = { uv_buf_init(this->data.get(), len) };
         cleanupAndInvoke(&uv_fs_write, parent(), get(), file, bufs, 1, offset, &fsResultCallback<Type::WRITE>);
     }
@@ -489,19 +489,19 @@ public:
      * Emit a `FsEvent<FileReq::Type::WRITE>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
-     * @param data The data to be written.
+     * @param buf The data to be written.
      * @param len The lenght of the submitted data.
      * @param offset Offset, as described in the official documentation.
      */
-    void write(char *_data, std::size_t len, int64_t offset) {
-        uv_buf_t bufs[] = { uv_buf_init(_data, len) };
+    void write(char *buf, std::size_t len, int64_t offset) {
+        uv_buf_t bufs[] = { uv_buf_init(buf, len) };
         cleanupAndInvoke(&uv_fs_write, parent(), get(), file, bufs, 1, offset, &fsResultCallback<Type::WRITE>);
     }
 
     /**
      * @brief Sync [write](http://linux.die.net/man/2/pwritev).
      *
-     * @param data The data to be written.
+     * @param buf The data to be written.
      * @param len The lenght of the submitted data.
      * @param offset Offset, as described in the official documentation.
      *
@@ -509,8 +509,8 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The amount of data written to the given path.
      */
-    std::pair<bool, std::size_t> writeSync(std::unique_ptr<char[]> _data, std::size_t len, int64_t offset) {
-        this->data = std::move(_data);
+    std::pair<bool, std::size_t> writeSync(std::unique_ptr<char[]> buf, std::size_t len, int64_t offset) {
+        this->data = std::move(buf);
         uv_buf_t bufs[] = { uv_buf_init(this->data.get(), len) };
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_write, parent(), req, file, bufs, 1, offset);
