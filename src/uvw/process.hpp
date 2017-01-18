@@ -209,7 +209,7 @@ public:
         uv_stdio_container_t container;
         Flags<StdIO>::Type fgs = flags;
         container.flags = static_cast<uv_stdio_flags>(fgs);
-        container.data.stream = this->template get<uv_stream_t>(stream);
+        container.data.stream = get<uv_stream_t>(stream);
         poStdio.push_back(std::move(container));
         return *this;
     }
@@ -234,7 +234,6 @@ public:
      * @param fd A valid file descriptor.
      * @return A reference to this process handle.
      */
-    template<typename T>
     ProcessHandle& stdio(Flags<StdIO> flags, FileHandle fd) {
         uv_stdio_container_t container;
         Flags<StdIO>::Type fgs = flags;

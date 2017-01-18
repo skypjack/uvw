@@ -55,7 +55,7 @@ protected:
     }
 
     template<typename R, typename... P>
-    auto get(Resource<P...> &res) const noexcept {
+    auto get(const Resource<P...> &res) const noexcept {
         return reinterpret_cast<const R *>(&res.resource);
     }
 
