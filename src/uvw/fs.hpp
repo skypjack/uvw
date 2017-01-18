@@ -186,8 +186,8 @@ template<>
 struct FsEvent<details::UVFsType::STAT>
         : Event<FsEvent<details::UVFsType::STAT>>
 {
-    FsEvent(const char *pathname, Stat _stat) noexcept
-        : path{pathname}, stat{std::move(_stat)}
+    FsEvent(const char *pathname, Stat curr) noexcept
+        : path{pathname}, stat{std::move(curr)}
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -205,8 +205,8 @@ template<>
 struct FsEvent<details::UVFsType::FSTAT>
         : Event<FsEvent<details::UVFsType::FSTAT>>
 {
-    FsEvent(const char *pathname, Stat _stat) noexcept
-        : path{pathname}, stat{std::move(_stat)}
+    FsEvent(const char *pathname, Stat curr) noexcept
+        : path{pathname}, stat{std::move(curr)}
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -224,8 +224,8 @@ template<>
 struct FsEvent<details::UVFsType::LSTAT>
         : Event<FsEvent<details::UVFsType::LSTAT>>
 {
-    FsEvent(const char *pathname, Stat _stat) noexcept
-        : path{pathname}, stat{std::move(_stat)}
+    FsEvent(const char *pathname, Stat curr) noexcept
+        : path{pathname}, stat{std::move(curr)}
     {}
 
     const char * path; /*!< The path affecting the request. */
