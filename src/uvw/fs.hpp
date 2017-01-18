@@ -128,8 +128,8 @@ template<>
 struct FsEvent<details::UVFsType::READ>
         : Event<FsEvent<details::UVFsType::READ>>
 {
-    FsEvent(const char *_path, std::unique_ptr<const char[]> _data, std::size_t _size) noexcept
-        : path{_path}, data{std::move(_data)}, size{_size}
+    FsEvent(const char *_path, std::unique_ptr<const char[]> _data, std::size_t sz) noexcept
+        : path{_path}, data{std::move(_data)}, size{sz}
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -148,8 +148,8 @@ template<>
 struct FsEvent<details::UVFsType::WRITE>
         : Event<FsEvent<details::UVFsType::WRITE>>
 {
-    FsEvent(const char *_path, std::size_t _size) noexcept
-        : path{_path}, size{_size}
+    FsEvent(const char *_path, std::size_t sz) noexcept
+        : path{_path}, size{sz}
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -167,8 +167,8 @@ template<>
 struct FsEvent<details::UVFsType::SENDFILE>
         : Event<FsEvent<details::UVFsType::SENDFILE>>
 {
-    FsEvent(const char *_path, std::size_t _size) noexcept
-        : path{_path}, size{_size}
+    FsEvent(const char *_path, std::size_t sz) noexcept
+        : path{_path}, size{sz}
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -243,8 +243,8 @@ template<>
 struct FsEvent<details::UVFsType::SCANDIR>
         : Event<FsEvent<details::UVFsType::SCANDIR>>
 {
-    FsEvent(const char *_path, std::size_t _size) noexcept
-        : path{_path}, size{_size}
+    FsEvent(const char *_path, std::size_t sz) noexcept
+        : path{_path}, size{sz}
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -262,8 +262,8 @@ template<>
 struct FsEvent<details::UVFsType::READLINK>
         : Event<FsEvent<details::UVFsType::READLINK>>
 {
-    explicit FsEvent(const char *_path, const char *_data, std::size_t _size) noexcept
-        : path{_path}, data{_data}, size{_size}
+    explicit FsEvent(const char *_path, const char *_data, std::size_t sz) noexcept
+        : path{_path}, data{_data}, size{sz}
     {}
 
     const char * path; /*!< The path affecting the request. */
