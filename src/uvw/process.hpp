@@ -122,8 +122,7 @@ public:
         po.file = file;
         po.args = args;
         po.env = env;
-
-        po.cwd = poCwd.data();
+        po.cwd = poCwd.empty() ? nullptr : poCwd.data();
         po.flags = poFlags;
         po.stdio_count = poStdio.size();
         po.stdio = poStdio.data();
