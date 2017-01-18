@@ -84,7 +84,7 @@ public:
 
     /**
      * @brief Constructs a Flags object from a value of the enum `E`.
-     * @param flag An value of the enum `E`.
+     * @param flag A value of the enum `E`.
      */
     constexpr Flags(E flag) noexcept: flags{toInnerType(flag)} {}
 
