@@ -45,8 +45,14 @@ enum class UVStdIOFlags: std::underlying_type_t<uv_stdio_flags> {
  *
  * It will be emitted by ProcessHandle according with its functionalities.
  */
-struct ExitEvent: Event<ExitEvent> {};
+struct ExitEvent: Event<ExitEvent> {
+    explicit ExitEvent(int64_t code, int sig) noexcept
+        : status{code}, signal{sig}
+    {}
 
+    int64_t status; /*!< The exit status. */
+    int signal; /*!< The signal that caused the process to terminate, if any. */
+};
 
 /**
  * @brief The ProcessHandle handle.
@@ -57,7 +63,7 @@ struct ExitEvent: Event<ExitEvent> {};
 class ProcessHandle final: public Handle<ProcessHandle, uv_process_t> {
     static void exitCallback(uv_process_t *handle, int64_t exitStatus, int termSignal) {
         ProcessHandle &process = *(static_cast<ProcessHandle*>(handle->data));
-        process.publish(ExitEvent{});
+        process.publish(ExitEvent{exitStatus, termSignal});
     }
 
 public:
