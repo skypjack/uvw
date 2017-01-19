@@ -8,6 +8,49 @@
 #endif
 
 
+TEST(FileReq, OpenAndCloseErr) {
+    const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/err.file"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto openReq = loop->resource<uvw::FileReq>();
+    auto closeReq = loop->resource<uvw::FileReq>();
+
+    bool checkFileOpenErrorEvent = false;
+    bool checkFileCloseErrorEvent = false;
+
+    openReq->on<uvw::ErrorEvent>([&checkFileOpenErrorEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkFileOpenErrorEvent);
+        checkFileOpenErrorEvent = true;
+    });
+
+    closeReq->on<uvw::ErrorEvent>([&checkFileCloseErrorEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkFileCloseErrorEvent);
+        checkFileCloseErrorEvent = true;
+    });
+
+    openReq->open(filename, O_RDONLY, 0644);
+    closeReq->close();
+
+    loop->run();
+
+    ASSERT_TRUE(checkFileOpenErrorEvent);
+    ASSERT_TRUE(checkFileCloseErrorEvent);
+}
+
+
+TEST(FileReq, OpenErrSync) {
+    const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/err.file"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto request = loop->resource<uvw::FileReq>();
+
+    ASSERT_FALSE(request->openSync(filename, O_RDONLY, 0644));
+    ASSERT_FALSE(request->closeSync());
+
+    loop->run();
+}
+
+
 TEST(FileReq, OpenAndClose) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
