@@ -72,10 +72,10 @@ public:
      * The passed file descriptor or SOCKET is not checked for its type, but
      * it’s required that it represents a valid stream socket.
      *
-     * @param sock A valid socket handle (either a file descriptor or a SOCKET).
+     * @param socket A valid socket handle (either a file descriptor or a SOCKET).
      */
-    void open(OSSocketHandle _sock) {
-        invoke(&uv_tcp_open, get(), _sock);
+    void open(OSSocketHandle socket) {
+        invoke(&uv_tcp_open, get(), socket);
     }
 
     /**
@@ -133,10 +133,10 @@ public:
      * @param flags Optional additional flags.
      */
     template<typename I = IPv4>
-    void bind(std::string ip, unsigned int port, Flags<Bind> _flags = Flags<Bind>{}) {
+    void bind(std::string ip, unsigned int port, Flags<Bind> opts = Flags<Bind>{}) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        invoke(&uv_tcp_bind, get(), reinterpret_cast<const sockaddr *>(&addr), _flags);
+        invoke(&uv_tcp_bind, get(), reinterpret_cast<const sockaddr *>(&addr), opts);
     }
 
     /**
@@ -156,8 +156,8 @@ public:
      * @param flags Optional additional flags.
      */
     template<typename I = IPv4>
-    void bind(Addr addr, Flags<Bind> _flags = Flags<Bind>{}) {
-        bind<I>(addr.ip, addr.port, _flags);
+    void bind(Addr addr, Flags<Bind> opts = Flags<Bind>{}) {
+        bind<I>(addr.ip, addr.port, opts);
     }
 
     /**
@@ -197,10 +197,10 @@ public:
             ptr->publish(event);
         };
 
-        auto _connect = loop().resource<details::ConnectReq>();
-        _connect->once<ErrorEvent>(listener);
-        _connect->once<ConnectEvent>(listener);
-        _connect->connect(&uv_tcp_connect, get(), reinterpret_cast<const sockaddr *>(&addr));
+        auto req = loop().resource<details::ConnectReq>();
+        req->once<ErrorEvent>(listener);
+        req->once<ConnectEvent>(listener);
+        req->connect(&uv_tcp_connect, get(), reinterpret_cast<const sockaddr *>(&addr));
     }
 
     /**
