@@ -130,7 +130,7 @@ public:
      *
      * @param ip The address to which to bind.
      * @param port The port to which to bind.
-     * @param flags Optional additional flags.
+     * @param opts Optional additional flags.
      */
     template<typename I = IPv4>
     void bind(std::string ip, unsigned int port, Flags<Bind> opts = Flags<Bind>{}) {
@@ -153,7 +153,7 @@ public:
      * IPv6 is used.
      *
      * @param addr A valid instance of Addr.
-     * @param flags Optional additional flags.
+     * @param opts Optional additional flags.
      */
     template<typename I = IPv4>
     void bind(Addr addr, Flags<Bind> opts = Flags<Bind>{}) {
