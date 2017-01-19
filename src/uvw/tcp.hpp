@@ -72,10 +72,10 @@ public:
      * The passed file descriptor or SOCKET is not checked for its type, but
      * it’s required that it represents a valid stream socket.
      *
-     * @param sock A valid socket handle (either a file descriptor or a SOCKET).
+     * @param socket A valid socket handle (either a file descriptor or a SOCKET).
      */
-    void open(OSSocketHandle sock) {
-        invoke(&uv_tcp_open, get(), sock);
+    void open(OSSocketHandle socket) {
+        invoke(&uv_tcp_open, get(), socket);
     }
 
     /**
@@ -130,13 +130,13 @@ public:
      *
      * @param ip The address to which to bind.
      * @param port The port to which to bind.
-     * @param flags Optional additional flags.
+     * @param opts Optional additional flags.
      */
     template<typename I = IPv4>
-    void bind(std::string ip, unsigned int port, Flags<Bind> flags = Flags<Bind>{}) {
+    void bind(std::string ip, unsigned int port, Flags<Bind> opts = Flags<Bind>{}) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        invoke(&uv_tcp_bind, get(), reinterpret_cast<const sockaddr *>(&addr), flags);
+        invoke(&uv_tcp_bind, get(), reinterpret_cast<const sockaddr *>(&addr), opts);
     }
 
     /**
@@ -153,11 +153,11 @@ public:
      * IPv6 is used.
      *
      * @param addr A valid instance of Addr.
-     * @param flags Optional additional flags.
+     * @param opts Optional additional flags.
      */
     template<typename I = IPv4>
-    void bind(Addr addr, Flags<Bind> flags = Flags<Bind>{}) {
-        bind<I>(addr.ip, addr.port, flags);
+    void bind(Addr addr, Flags<Bind> opts = Flags<Bind>{}) {
+        bind<I>(addr.ip, addr.port, opts);
     }
 
     /**
@@ -197,10 +197,10 @@ public:
             ptr->publish(event);
         };
 
-        auto connect = loop().resource<details::ConnectReq>();
-        connect->once<ErrorEvent>(listener);
-        connect->once<ConnectEvent>(listener);
-        connect->connect(&uv_tcp_connect, get(), reinterpret_cast<const sockaddr *>(&addr));
+        auto req = loop().resource<details::ConnectReq>();
+        req->once<ErrorEvent>(listener);
+        req->once<ConnectEvent>(listener);
+        req->connect(&uv_tcp_connect, get(), reinterpret_cast<const sockaddr *>(&addr));
     }
 
     /**

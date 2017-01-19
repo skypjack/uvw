@@ -212,7 +212,7 @@ public:
      */
     void clear() noexcept {
         std::for_each(handlers.begin(), handlers.end(),
-                      [](auto &&handler){ if(handler) { handler->clear(); } });
+                      [](auto &&hdlr){ if(hdlr) { hdlr->clear(); } });
     }
 
     /**
@@ -236,7 +236,7 @@ public:
      */
     bool empty() const noexcept {
         return std::all_of(handlers.cbegin(), handlers.cend(),
-                           [](auto &&handler){ return !handler || handler->empty(); });
+                           [](auto &&hdlr){ return !hdlr || hdlr->empty(); });
     }
 
 private:

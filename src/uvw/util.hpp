@@ -185,7 +185,7 @@ using RUsage = uv_rusage_t;
 
 
 struct Passwd {
-    Passwd(std::shared_ptr<uv_passwd_t> passwd): passwd{passwd} {}
+    Passwd(std::shared_ptr<uv_passwd_t> pwd): passwd{pwd} {}
 
     std::string username() const noexcept { return passwd->username; }
     Uid uid() const noexcept { return passwd->uid; }

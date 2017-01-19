@@ -62,8 +62,8 @@ struct WriteEvent: Event<WriteEvent> {};
  * It will be emitted by StreamHandle according with its functionalities.
  */
 struct DataEvent: Event<DataEvent> {
-    explicit DataEvent(std::unique_ptr<char[]> data, std::size_t length) noexcept
-        : data{std::move(data)}, length{length}
+    explicit DataEvent(std::unique_ptr<char[]> buf, std::size_t len) noexcept
+        : data{std::move(buf)}, length{len}
     {}
 
     std::unique_ptr<char[]> data; /*!< A bunch of data read on the stream. */
@@ -97,10 +97,10 @@ class WriteReq final: public Request<WriteReq, uv_write_t> {
 public:
     using Deleter = void(*)(uv_buf_t *);
 
-    WriteReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<uv_buf_t[], Deleter> bufs, std::size_t nbufs)
+    WriteReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<uv_buf_t[], Deleter> data, std::size_t ndata)
         : Request<WriteReq, uv_write_t>{std::move(ca), std::move(loop)},
-          bufs{std::move(bufs)},
-          nbufs{nbufs}
+          bufs{std::move(data)},
+          nbufs{ndata}
     {}
 
     void write(uv_stream_t *handle) {
@@ -251,7 +251,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     void write(std::unique_ptr<char[]> data, std::size_t len) {
-        auto write = this->loop().template resource<details::WriteReq>(
+        auto req = this->loop().template resource<details::WriteReq>(
                     std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
                         new uv_buf_t[1]{ uv_buf_init(data.release(), len) },
                         [](uv_buf_t *bufs) { delete[] bufs->base; delete[] bufs; }
@@ -261,9 +261,9 @@ public:
             ptr->publish(event);
         };
 
-        write->template once<ErrorEvent>(listener);
-        write->template once<WriteEvent>(listener);
-        write->write(this->template get<uv_stream_t>());
+        req->template once<ErrorEvent>(listener);
+        req->template once<WriteEvent>(listener);
+        req->write(this->template get<uv_stream_t>());
     }
 
     /**
@@ -279,7 +279,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     void write(char *data, std::size_t len) {
-        auto write = this->loop().template resource<details::WriteReq>(
+        auto req = this->loop().template resource<details::WriteReq>(
                     std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
                         new uv_buf_t[1]{ uv_buf_init(data, len) },
                         [](uv_buf_t *bufs) { delete[] bufs; }
@@ -289,9 +289,9 @@ public:
             ptr->publish(event);
         };
 
-        write->template once<ErrorEvent>(listener);
-        write->template once<WriteEvent>(listener);
-        write->write(this->template get<uv_stream_t>());
+        req->template once<ErrorEvent>(listener);
+        req->template once<WriteEvent>(listener);
+        req->write(this->template get<uv_stream_t>());
     }
 
     /**
@@ -315,7 +315,7 @@ public:
      */
     template<typename S>
     void write(S &send, std::unique_ptr<char[]> data, std::size_t len) {
-        auto write = this->loop().template resource<details::WriteReq>(
+        auto req = this->loop().template resource<details::WriteReq>(
                     std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
                         new uv_buf_t[1]{ uv_buf_init(data.release(), len) },
                         [](uv_buf_t *bufs) { delete[] bufs->base; delete[] bufs; }
@@ -325,9 +325,9 @@ public:
             ptr->publish(event);
         };
 
-        write->template once<ErrorEvent>(listener);
-        write->template once<WriteEvent>(listener);
-        write->write(this->template get<uv_stream_t>(), send.template get<uv_stream_t>());
+        req->template once<ErrorEvent>(listener);
+        req->template once<WriteEvent>(listener);
+        req->write(this->template get<uv_stream_t>(), send.template get<uv_stream_t>());
     }
 
     /**
@@ -351,7 +351,7 @@ public:
      */
     template<typename S>
     void write(S &send, char *data, std::size_t len) {
-        auto write = this->loop().template resource<details::WriteReq>(
+        auto req = this->loop().template resource<details::WriteReq>(
                     std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
                         new uv_buf_t[1]{ uv_buf_init(data, len) },
                         [](uv_buf_t *bufs) { delete[] bufs; }
@@ -361,9 +361,9 @@ public:
             ptr->publish(event);
         };
 
-        write->template once<ErrorEvent>(listener);
-        write->template once<WriteEvent>(listener);
-        write->write(this->template get<uv_stream_t>(), send.template get<uv_stream_t>());
+        req->template once<ErrorEvent>(listener);
+        req->template once<WriteEvent>(listener);
+        req->write(this->template get<uv_stream_t>(), send.template get<uv_stream_t>());
     }
 
     /**
