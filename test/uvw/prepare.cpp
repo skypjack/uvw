@@ -14,12 +14,12 @@ TEST(Prepare, StartAndStop) {
         checkErrorEvent = true;
     });
 
-    handle->on<uvw::PrepareEvent>([&checkPrepareEvent](const auto &, auto &handle) {
+    handle->on<uvw::PrepareEvent>([&checkPrepareEvent](const auto &, auto &hndl) {
         ASSERT_FALSE(checkPrepareEvent);
         checkPrepareEvent = true;
-        handle.stop();
-        handle.close();
-        ASSERT_TRUE(handle.closing());
+        hndl.stop();
+        hndl.close();
+        ASSERT_TRUE(hndl.closing());
     });
 
     handle->start();

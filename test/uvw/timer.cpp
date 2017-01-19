@@ -69,19 +69,19 @@ TEST(Timer, Again) {
         checkErrorEvent = true;
     });
 
-    handle->on<uvw::TimerEvent>([&checkTimerEvent](const auto &, auto &handle) {
+    handle->on<uvw::TimerEvent>([&checkTimerEvent](const auto &, auto &hndl) {
         static bool guard = false;
 
         if(guard) {
-            handle.stop();
-            handle.close();
+            hndl.stop();
+            hndl.close();
             checkTimerEvent = true;
-            ASSERT_TRUE(handle.closing());
+            ASSERT_TRUE(hndl.closing());
         } else {
             guard = true;
-            handle.again();
-            ASSERT_EQ(handle.repeat(), uvw::TimerHandle::Time{1});
-            ASSERT_FALSE(handle.closing());
+            hndl.again();
+            ASSERT_EQ(hndl.repeat(), uvw::TimerHandle::Time{1});
+            ASSERT_FALSE(hndl.closing());
         }
     });
 

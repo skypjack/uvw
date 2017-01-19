@@ -14,11 +14,11 @@ TEST(Async, Send) {
         checkErrorEvent = true;
     });
 
-    handle->on<uvw::AsyncEvent>([&checkAsyncEvent](const auto &, auto &handle) {
+    handle->on<uvw::AsyncEvent>([&checkAsyncEvent](const auto &, auto &hndl) {
         ASSERT_FALSE(checkAsyncEvent);
         checkAsyncEvent = true;
-        handle.close();
-        ASSERT_TRUE(handle.closing());
+        hndl.close();
+        ASSERT_TRUE(hndl.closing());
     });
 
     handle->send();

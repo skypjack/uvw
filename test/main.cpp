@@ -12,7 +12,7 @@ void listen(uvw::Loop &loop) {
         std::cout << "error " << std::endl;
     });
 
-    tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &event, uvw::TcpHandle &srv) mutable {
+    tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &srv) mutable {
         std::cout << "listen" << std::endl;
 
         std::shared_ptr<uvw::TcpHandle> client = srv.loop().resource<uvw::TcpHandle>();
@@ -23,9 +23,7 @@ void listen(uvw::Loop &loop) {
 
         client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::TcpHandle &) mutable {
             std::cout << "close" << std::endl;
-
-            uvw::TcpHandle &srv = *ptr;
-            srv.close();
+            ptr->close();
         });
 
         srv.accept(*client);
@@ -41,12 +39,12 @@ void listen(uvw::Loop &loop) {
             std::cout << "data length: " << event.length << std::endl;
         });
 
-        client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &client) {
+        client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &handle) {
             std::cout << "end" << std::endl;
             int count = 0;
-            client.loop().walk([&count](uvw::BaseHandle &handle) { ++count; });
+            handle.loop().walk([&count](uvw::BaseHandle &) { ++count; });
             std::cout << "still alive: " << count << " handles" << std::endl;
-            client.close();
+            handle.close();
         });
 
         client->read();
@@ -68,20 +66,20 @@ void conn(uvw::Loop &loop) {
         std::cout << "error " << std::endl;
     });
 
-    tcp->once<uvw::WriteEvent>([](const uvw::WriteEvent &, uvw::TcpHandle &tcp) mutable {
+    tcp->once<uvw::WriteEvent>([](const uvw::WriteEvent &, uvw::TcpHandle &handle) mutable {
         std::cout << "write" << std::endl;
-        tcp.close();
+        handle.close();
     });
 
-    tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TcpHandle &tcp) mutable {
+    tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TcpHandle &handle) mutable {
         std::cout << "connect" << std::endl;
 
         auto dataTryWrite = std::unique_ptr<char[]>(new char[1]{ 'a' });
-        int bw = tcp.tryWrite(std::move(dataTryWrite), 1);
+        int bw = handle.tryWrite(std::move(dataTryWrite), 1);
         std::cout << "written: " << ((int)bw) << std::endl;
 
         auto dataWrite = std::unique_ptr<char[]>(new char[2]{ 'b', 'c' });
-        tcp.write(std::move(dataWrite), 2);
+        handle.write(std::move(dataWrite), 2);
     });
 
     tcp->once<uvw::CloseEvent>([](const uvw::CloseEvent &, uvw::TcpHandle &) mutable {

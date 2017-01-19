@@ -26,10 +26,10 @@ TEST(FsReq, MkdirAndRmdir) {
         checkFsRmdirEvent = true;
     });
 
-    request->on<uvw::FsEvent<uvw::FsReq::Type::MKDIR>>([&checkFsMkdirEvent, &dirname](const auto &, auto &request) {
+    request->on<uvw::FsEvent<uvw::FsReq::Type::MKDIR>>([&checkFsMkdirEvent, &dirname](const auto &, auto &req) {
         ASSERT_FALSE(checkFsMkdirEvent);
         checkFsMkdirEvent = true;
-        request.rmdir(dirname);
+        req.rmdir(dirname);
     });
 
     request->mkdir(dirname, 0755);
@@ -72,11 +72,11 @@ TEST(FsReq, MkdtempAndRmdir) {
         checkFsRmdirEvent = true;
     });
 
-    request->on<uvw::FsEvent<uvw::FsReq::Type::MKDTEMP>>([&checkFsMkdtempEvent](const auto &event, auto &request) {
+    request->on<uvw::FsEvent<uvw::FsReq::Type::MKDTEMP>>([&checkFsMkdtempEvent](const auto &event, auto &req) {
         ASSERT_FALSE(checkFsMkdtempEvent);
         ASSERT_NE(event.path, nullptr);
         checkFsMkdtempEvent = true;
-        request.rmdir(event.path);
+        req.rmdir(event.path);
     });
 
     request->mkdtemp(dirname);

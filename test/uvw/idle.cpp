@@ -14,12 +14,12 @@ TEST(Idle, StartAndStop) {
         checkErrorEvent = true;
     });
 
-    handle->on<uvw::IdleEvent>([&checkIdleEvent](const auto &, auto &handle) {
+    handle->on<uvw::IdleEvent>([&checkIdleEvent](const auto &, auto &hndl) {
         ASSERT_FALSE(checkIdleEvent);
         checkIdleEvent = true;
-        handle.stop();
-        handle.close();
-        ASSERT_TRUE(handle.closing());
+        hndl.stop();
+        hndl.close();
+        ASSERT_TRUE(hndl.closing());
     });
 
     handle->start();

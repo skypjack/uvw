@@ -21,15 +21,15 @@ TEST(FileReq, OpenAndClose) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&checkFileCloseEvent](const auto &, auto &request) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&checkFileCloseEvent](const auto &, auto &) {
         ASSERT_FALSE(checkFileCloseEvent);
         checkFileCloseEvent = true;
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&checkFileOpenEvent](const auto &, auto &request) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&checkFileOpenEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileOpenEvent);
         checkFileOpenEvent = true;
-        request.close();
+        req.close();
     });
 
     request->open(filename, O_CREAT | O_WRONLY, 0644);
@@ -67,21 +67,21 @@ TEST(FileReq, RWChecked) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::READ>>([&checkFileReadEvent](const auto &event, auto &request) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::READ>>([&checkFileReadEvent](const auto &event, auto &req) {
         ASSERT_FALSE(checkFileReadEvent);
         ASSERT_EQ(event.data[0], 42);
         checkFileReadEvent = true;
-        request.close();
+        req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::WRITE>>([&checkFileWriteEvent](const auto &, auto &request) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::WRITE>>([&checkFileWriteEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileWriteEvent);
         checkFileWriteEvent = true;
-        request.read(0, 1);
+        req.read(0, 1);
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
-        request.write(std::unique_ptr<char[]>{new char[1]{ 42 }}, 1, 0);
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
+        req.write(std::unique_ptr<char[]>{new char[1]{ 42 }}, 1, 0);
     });
 
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
@@ -107,21 +107,21 @@ TEST(FileReq, RWUnchecked) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::READ>>([&checkFileReadEvent](const auto &event, auto &request) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::READ>>([&checkFileReadEvent](const auto &event, auto &req) {
         ASSERT_FALSE(checkFileReadEvent);
         ASSERT_EQ(event.data[0], 42);
         checkFileReadEvent = true;
-        request.close();
+        req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::WRITE>>([&checkFileWriteEvent](const auto &, auto &request) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::WRITE>>([&checkFileWriteEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileWriteEvent);
         checkFileWriteEvent = true;
-        request.read(0, 1);
+        req.read(0, 1);
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&data](const auto &, auto &request) {
-        request.write(data.get(), 1, 0);
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&data](const auto &, auto &req) {
+        req.write(data.get(), 1, 0);
     });
 
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
@@ -170,14 +170,14 @@ TEST(FileReq, Stat) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FSTAT>>([&checkFileStatEvent](const auto &, auto &request) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FSTAT>>([&checkFileStatEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileStatEvent);
         checkFileStatEvent = true;
-        request.close();
+        req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
-        request.stat();
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
+        req.stat();
     });
 
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
@@ -218,14 +218,14 @@ TEST(FileReq, Sync) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FSYNC>>([&checkFileSyncEvent](const auto &, auto &request) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FSYNC>>([&checkFileSyncEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileSyncEvent);
         checkFileSyncEvent = true;
-        request.close();
+        req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
-        request.sync();
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
+        req.sync();
     });
 
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
@@ -262,14 +262,14 @@ TEST(FileReq, Datasync) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FDATASYNC>>([&checkFileDatasyncEvent](const auto &, auto &request) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FDATASYNC>>([&checkFileDatasyncEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileDatasyncEvent);
         checkFileDatasyncEvent = true;
-        request.close();
+        req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
-        request.datasync();
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
+        req.datasync();
     });
 
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
@@ -306,14 +306,14 @@ TEST(FileReq, Truncate) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FTRUNCATE>>([&checkFileTruncateEvent](const auto &, auto &request) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FTRUNCATE>>([&checkFileTruncateEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileTruncateEvent);
         checkFileTruncateEvent = true;
-        request.close();
+        req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
-        request.truncate(0);
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
+        req.truncate(0);
     });
 
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
@@ -362,14 +362,14 @@ TEST(FileReq, Chmod) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FCHMOD>>([&checkFileChmodEvent](const auto &, auto &request) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FCHMOD>>([&checkFileChmodEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileChmodEvent);
         checkFileChmodEvent = true;
-        request.close();
+        req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
-        request.chmod(0644);
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
+        req.chmod(0644);
     });
 
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
@@ -406,17 +406,17 @@ TEST(FileReq, Utime) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FUTIME>>([&checkFileUtimeEvent](const auto &, auto &request) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FUTIME>>([&checkFileUtimeEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileUtimeEvent);
         checkFileUtimeEvent = true;
-        request.close();
+        req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
         auto now = std::chrono::system_clock::now();
         auto epoch = now.time_since_epoch();
         auto value = std::chrono::duration_cast<std::chrono::seconds>(epoch);
-        request.utime(value, value);
+        req.utime(value, value);
     });
 
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
@@ -459,18 +459,18 @@ TEST(FileReq, Chown) {
         FAIL();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FCHOWN>>([&checkFileChownEvent](const auto &, auto &request) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FCHOWN>>([&checkFileChownEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileChownEvent);
         checkFileChownEvent = true;
-        request.close();
+        req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FSTAT>>([](const auto &event, auto &request) {
-        request.chown(event.stat.st_uid, event.stat.st_gid);
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FSTAT>>([](const auto &event, auto &req) {
+        req.chown(event.stat.st_uid, event.stat.st_gid);
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
-        request.stat();
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
+        req.stat();
     });
 
     request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
