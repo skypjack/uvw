@@ -152,7 +152,7 @@ public:
      * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_open)
      * for further details.
      *
-     * @param sck A valid socket handle (either a file descriptor or a SOCKET).
+     * @param socket A valid socket handle (either a file descriptor or a SOCKET).
      */
     void open(OSSocketHandle socket) {
         invoke(&uv_udp_open, get(), socket);
