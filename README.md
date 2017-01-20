@@ -265,7 +265,7 @@ If you want to contribute, please send patches as pull requests against the bran
 
 # License
 
-Code and documentation Copyright (c) 2016 Michele Caini.<br/>
+Code and documentation Copyright (c) 2017 Michele Caini.<br/>
 Code released under [the MIT license](https://github.com/skypjack/uvw/blob/master/LICENSE).<br/>
 Docs released under [Creative Commons](https://github.com/skypjack/uvw/blob/master/docs/LICENSE).
 
