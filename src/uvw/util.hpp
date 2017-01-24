@@ -14,9 +14,9 @@
 
 #ifdef _WIN32
 // MSVC doesn't have C++14 relaxed constexpr support yet. Hence the jugglery.
-#define R_CONSTEXPR
+#define CONSTEXPR_SPECIFIER
 #else
-#define R_CONSTEXPR constexpr
+#define CONSTEXPR_SPECIFIER constexpr
 #endif
 
 
@@ -83,6 +83,17 @@ public:
     using Type = InnerType;
 
     /**
+     * @brief Utility factory method to pack a set of values all at once.
+     * @return A valid instance of Flags instantiated from values `V`.
+     */
+    template<E... V>
+    static constexpr Flags<E> from() {
+        auto flags = Flags<E>{};
+        int _[] = { 0, (flags = flags | V, 0)... };
+        return void(_), flags;
+    }
+
+    /**
      * @brief Constructs a Flags object from a value of the enum `E`.
      * @param flag A value of the enum `E`.
      */
@@ -105,12 +116,12 @@ public:
 
     ~Flags() noexcept { static_assert(std::is_enum<E>::value, "!"); }
 
-    R_CONSTEXPR Flags& operator=(const Flags &f) noexcept {
+    CONSTEXPR_SPECIFIER Flags& operator=(const Flags &f) noexcept {
         flags = f.flags;
         return *this;
     }
 
-    R_CONSTEXPR Flags& operator=(Flags &&f) noexcept {
+    CONSTEXPR_SPECIFIER Flags& operator=(Flags &&f) noexcept {
         flags = std::move(f.flags);
         return *this;
     }
@@ -120,28 +131,28 @@ public:
      * @param f A valid instance of Flags.
      * @return This instance _or-ed_ with `f`.
      */
-    constexpr Flags operator|(const Flags &f) const noexcept { return Flags(flags | f.flags); }
+    constexpr Flags operator|(const Flags &f) const noexcept { return Flags{flags | f.flags}; }
 
     /**
      * @brief Or operator.
      * @param flag A value of the enum `E`.
      * @return This instance _or-ed_ with `flag`.
      */
-    constexpr Flags operator|(E flag) const noexcept { return Flags(flags | toInnerType(flag)); }
+    constexpr Flags operator|(E flag) const noexcept { return Flags{flags | toInnerType(flag)}; }
 
     /**
      * @brief And operator.
      * @param f A valid instance of Flags.
      * @return This instance _and-ed_ with `f`.
      */
-    constexpr Flags operator&(const Flags &f) const noexcept { return Flags(flags & f.flags); }
+    constexpr Flags operator&(const Flags &f) const noexcept { return Flags{flags & f.flags}; }
 
     /**
      * @brief And operator.
      * @param flag A value of the enum `E`.
      * @return This instance _and-ed_ with `flag`.
      */
-    constexpr Flags operator&(E flag) const noexcept { return Flags(flags & toInnerType(flag)); }
+    constexpr Flags operator&(E flag) const noexcept { return Flags{flags & toInnerType(flag)}; }
 
     /**
      * @brief Checks if this instance is initialized.
