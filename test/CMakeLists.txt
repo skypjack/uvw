@@ -34,6 +34,7 @@ target_include_directories(odr PRIVATE ${COMMON_INCLUDE_DIRS})
 set(TARGET_MAIN main)
 set(TARGET_ASYNC async)
 set(TARGET_CHECK check)
+set(TARGET_DNS dns)
 set(TARGET_EMITTER emitter)
 set(TARGET_EVENT event)
 set(TARGET_FS_REQ fs_req)
@@ -70,6 +71,14 @@ add_executable(${TARGET_CHECK} ${TARGET_CHECK_SOURCES})
 target_include_directories(${TARGET_CHECK} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_CHECK} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_CHECK} COMMAND ${TARGET_CHECK})
+
+# Test TARGET_DNS
+
+set(TARGET_DNS_SOURCES $<TARGET_OBJECTS:odr> uvw/dns.cpp)
+add_executable(${TARGET_DNS} ${TARGET_DNS_SOURCES})
+target_include_directories(${TARGET_DNS} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_DNS} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_DNS} COMMAND ${TARGET_DNS})
 
 # Test TARGET_EMITTER
 
