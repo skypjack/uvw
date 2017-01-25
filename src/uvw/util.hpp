@@ -186,6 +186,10 @@ using FileHandle = details::UVTypeWrapper<uv_file>;
 using OSSocketHandle = details::UVTypeWrapper<uv_os_sock_t>;
 using OSFileDescriptor = details::UVTypeWrapper<uv_os_fd_t>;
 
+constexpr FileHandle StdIN{0}; /*!< Placeholder for stdin descriptor. */
+constexpr FileHandle StdOUT{1}; /*!< Placeholder for stdout descriptor. */
+constexpr FileHandle StdERR{2}; /*!< Placeholder for stderr descriptor. */
+
 using TimeSpec = uv_timespec_t;
 using Stat = uv_stat_t;
 using Uid = uv_uid_t;
