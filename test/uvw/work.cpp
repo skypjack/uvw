@@ -5,7 +5,6 @@
 TEST(Work, RunTask) {
     auto loop = uvw::Loop::getDefault();
 
-    bool checkErrorEvent = false;
     bool checkWorkEvent = false;
     bool checkTask = false;
 
@@ -14,20 +13,16 @@ TEST(Work, RunTask) {
         checkTask = true;
     });
 
+    req->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+
     req->on<uvw::WorkEvent>([&checkWorkEvent](const auto &, auto &) {
         ASSERT_FALSE(checkWorkEvent);
         checkWorkEvent = true;
     });
 
-    req->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &) {
-        ASSERT_FALSE(checkErrorEvent);
-        checkErrorEvent = true;
-    });
-
     req->queue();
     loop->run();
 
-    ASSERT_FALSE(checkErrorEvent);
     ASSERT_TRUE(checkWorkEvent);
     ASSERT_TRUE(checkTask);
 }
@@ -44,14 +39,14 @@ TEST(Work, Cancellation) {
         checkTask = true;
     });
 
-    req->on<uvw::WorkEvent>([&checkWorkEvent](const auto &, auto &) {
-        ASSERT_FALSE(checkWorkEvent);
-        checkWorkEvent = true;
-    });
-
     req->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &) {
         ASSERT_FALSE(checkErrorEvent);
         checkErrorEvent = true;
+    });
+
+    req->on<uvw::WorkEvent>([&checkWorkEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkWorkEvent);
+        checkWorkEvent = true;
     });
 
     req->queue();

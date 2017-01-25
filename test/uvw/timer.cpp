@@ -7,19 +7,11 @@ TEST(Timer, StartAndStop) {
     auto handleNoRepeat = loop->resource<uvw::TimerHandle>();
     auto handleRepeat = loop->resource<uvw::TimerHandle>();
 
-    bool checkErrorEvent = false;
     bool checkTimerNoRepeatEvent = false;
     bool checkTimerRepeatEvent = false;
 
-    handleNoRepeat->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &) {
-        ASSERT_FALSE(checkErrorEvent);
-        checkErrorEvent = true;
-    });
-
-    handleRepeat->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &) {
-        ASSERT_FALSE(checkErrorEvent);
-        checkErrorEvent = true;
-    });
+    handleNoRepeat->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    handleRepeat->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     handleNoRepeat->on<uvw::TimerEvent>([&checkTimerNoRepeatEvent](const auto &, auto &handle) {
         ASSERT_FALSE(checkTimerNoRepeatEvent);
@@ -51,7 +43,6 @@ TEST(Timer, StartAndStop) {
 
     loop->run();
 
-    ASSERT_FALSE(checkErrorEvent);
     ASSERT_TRUE(checkTimerNoRepeatEvent);
     ASSERT_TRUE(checkTimerRepeatEvent);
 }
@@ -62,7 +53,7 @@ TEST(Timer, Again) {
     auto handle = loop->resource<uvw::TimerHandle>();
 
     bool checkErrorEvent = false;
-    bool checkTimerEvent = true;
+    bool checkTimerEvent = false;
 
     handle->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &) {
         ASSERT_FALSE(checkErrorEvent);

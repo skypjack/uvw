@@ -60,9 +60,7 @@ TEST(FileReq, OpenAndClose) {
     bool checkFileOpenEvent = false;
     bool checkFileCloseEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&checkFileCloseEvent](const auto &, auto &) {
         ASSERT_FALSE(checkFileCloseEvent);
@@ -106,9 +104,7 @@ TEST(FileReq, RWChecked) {
     bool checkFileWriteEvent = false;
     bool checkFileReadEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::FsEvent<uvw::FileReq::Type::READ>>([&checkFileReadEvent](const auto &event, auto &req) {
         ASSERT_FALSE(checkFileReadEvent);
@@ -146,9 +142,7 @@ TEST(FileReq, RWUnchecked) {
     bool checkFileWriteEvent = false;
     bool checkFileReadEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::FsEvent<uvw::FileReq::Type::READ>>([&checkFileReadEvent](const auto &event, auto &req) {
         ASSERT_FALSE(checkFileReadEvent);
@@ -209,9 +203,7 @@ TEST(FileReq, Stat) {
 
     bool checkFileStatEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::FsEvent<uvw::FileReq::Type::FSTAT>>([&checkFileStatEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileStatEvent);
@@ -257,9 +249,7 @@ TEST(FileReq, Sync) {
 
     bool checkFileSyncEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::FsEvent<uvw::FileReq::Type::FSYNC>>([&checkFileSyncEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileSyncEvent);
@@ -301,9 +291,7 @@ TEST(FileReq, Datasync) {
 
     bool checkFileDatasyncEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::FsEvent<uvw::FileReq::Type::FDATASYNC>>([&checkFileDatasyncEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileDatasyncEvent);
@@ -345,9 +333,7 @@ TEST(FileReq, Truncate) {
 
     bool checkFileTruncateEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::FsEvent<uvw::FileReq::Type::FTRUNCATE>>([&checkFileTruncateEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileTruncateEvent);
@@ -391,16 +377,11 @@ TEST(FileReq, SendFile) {
 
     bool checkFileSendFileEvent = false;
 
-    dstReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    dstReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    srcReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     dstReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&srcReq](const auto &, auto &req) {
         srcReq->sendfile(static_cast<uvw::FileHandle>(req), 0, 0);
-    });
-
-    srcReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
     });
 
     srcReq->on<uvw::FsEvent<uvw::FileReq::Type::SENDFILE>>([&checkFileSendFileEvent, &dstReq](const auto &, auto &req) {
@@ -451,9 +432,7 @@ TEST(FileReq, Chmod) {
 
     bool checkFileChmodEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::FsEvent<uvw::FileReq::Type::FCHMOD>>([&checkFileChmodEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileChmodEvent);
@@ -495,9 +474,7 @@ TEST(FileReq, Utime) {
 
     bool checkFileUtimeEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::FsEvent<uvw::FileReq::Type::FUTIME>>([&checkFileUtimeEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileUtimeEvent);
@@ -548,9 +525,7 @@ TEST(FileReq, Chown) {
 
     bool checkFileChownEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::FsEvent<uvw::FileReq::Type::FCHOWN>>([&checkFileChownEvent](const auto &, auto &req) {
         ASSERT_FALSE(checkFileChownEvent);

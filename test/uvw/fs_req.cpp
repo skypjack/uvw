@@ -17,9 +17,7 @@ TEST(FsReq, MkdirAndRmdir) {
     bool checkFsMkdirEvent = false;
     bool checkFsRmdirEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::FsEvent<uvw::FsReq::Type::RMDIR>>([&checkFsRmdirEvent](const auto &, auto &) {
         ASSERT_FALSE(checkFsRmdirEvent);
@@ -63,9 +61,7 @@ TEST(FsReq, MkdtempAndRmdir) {
     bool checkFsMkdtempEvent = false;
     bool checkFsRmdirEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::FsEvent<uvw::FsReq::Type::RMDIR>>([&checkFsRmdirEvent](const auto &, auto &) {
         ASSERT_FALSE(checkFsRmdirEvent);
@@ -125,17 +121,12 @@ TEST(FsReq, Stat) {
 
     bool checkFsStatEvent = false;
 
-    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::FsEvent<uvw::FsReq::Type::STAT>>([&checkFsStatEvent](const auto &, auto &) {
         ASSERT_FALSE(checkFsStatEvent);
         checkFsStatEvent = true;
-    });
-
-    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
     });
 
     fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename](const auto &, auto &) {
@@ -181,17 +172,12 @@ TEST(FsReq, Lstat) {
 
     bool checkFsLstatEvent = false;
 
-    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::FsEvent<uvw::FsReq::Type::LSTAT>>([&checkFsLstatEvent](const auto &, auto &) {
         ASSERT_FALSE(checkFsLstatEvent);
         checkFsLstatEvent = true;
-    });
-
-    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
     });
 
     fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename](const auto &, auto &) {
@@ -238,17 +224,12 @@ TEST(FsReq, Rename) {
 
     bool checkFsRenameEvent = false;
 
-    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::FsEvent<uvw::FsReq::Type::RENAME>>([&checkFsRenameEvent](const auto &, auto &) {
         ASSERT_FALSE(checkFsRenameEvent);
         checkFsRenameEvent = true;
-    });
-
-    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
     });
 
     fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename, &rename](const auto &, auto &) {
@@ -292,17 +273,12 @@ TEST(FsReq, Access) {
 
     bool checkFsAccessEvent = false;
 
-    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::FsEvent<uvw::FsReq::Type::ACCESS>>([&checkFsAccessEvent](const auto &, auto &) {
         ASSERT_FALSE(checkFsAccessEvent);
         checkFsAccessEvent = true;
-    });
-
-    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
     });
 
     fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename](const auto &, auto &) {
@@ -345,17 +321,12 @@ TEST(FsReq, Chmod) {
 
     bool checkFsChmodEvent = false;
 
-    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::FsEvent<uvw::FsReq::Type::CHMOD>>([&checkFsChmodEvent](const auto &, auto &) {
         ASSERT_FALSE(checkFsChmodEvent);
         checkFsChmodEvent = true;
-    });
-
-    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
     });
 
     fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename](const auto &, auto &) {
@@ -398,17 +369,12 @@ TEST(FsReq, Utime) {
 
     bool checkFsUtimeEvent = false;
 
-    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::FsEvent<uvw::FsReq::Type::UTIME>>([&checkFsUtimeEvent](const auto &, auto &) {
         ASSERT_FALSE(checkFsUtimeEvent);
         checkFsUtimeEvent = true;
-    });
-
-    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
     });
 
     fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename](const auto &, auto &) {
@@ -461,9 +427,8 @@ TEST(FsReq, LinkAndUnlink) {
     bool checkFsLinkEvent = false;
     bool checkFsUnlinkEvent = false;
 
-    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::FsEvent<uvw::FsReq::Type::UNLINK>>([&checkFsUnlinkEvent](const auto &, auto &) {
         ASSERT_FALSE(checkFsUnlinkEvent);
@@ -474,10 +439,6 @@ TEST(FsReq, LinkAndUnlink) {
         ASSERT_FALSE(checkFsLinkEvent);
         checkFsLinkEvent = true;
         request.unlink(linkname);
-    });
-
-    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
     });
 
     fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename, &linkname](const auto &, auto &) {
@@ -525,9 +486,8 @@ TEST(FsReq, SymlinkAndUnlink) {
     bool checkFsLinkEvent = false;
     bool checkFsUnlinkEvent = false;
 
-    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::FsEvent<uvw::FsReq::Type::UNLINK>>([&checkFsUnlinkEvent](const auto &, auto &) {
         ASSERT_FALSE(checkFsUnlinkEvent);
@@ -538,10 +498,6 @@ TEST(FsReq, SymlinkAndUnlink) {
         ASSERT_FALSE(checkFsLinkEvent);
         checkFsLinkEvent = true;
         request.unlink(linkname);
-    });
-
-    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
     });
 
     fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename, &linkname](const auto &, auto &) {
@@ -588,9 +544,8 @@ TEST(FsReq, Readlink) {
 
     bool checkFsReadlinkEvent = false;
 
-    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::FsEvent<uvw::FsReq::Type::READLINK>>([&checkFsReadlinkEvent, &linkname](const auto &, auto &request) {
         ASSERT_FALSE(checkFsReadlinkEvent);
@@ -600,10 +555,6 @@ TEST(FsReq, Readlink) {
 
     fsReq->on<uvw::FsEvent<uvw::FsReq::Type::SYMLINK>>([&linkname](const auto &, auto &request) {
         request.readlink(linkname);
-    });
-
-    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
     });
 
     fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename, &linkname](const auto &, auto &) {
@@ -652,18 +603,13 @@ TEST(FsReq, Realpath) {
 
     bool checkFsRealpathEvent = false;
 
-    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::FsEvent<uvw::FsReq::Type::REALPATH>>([&checkFsRealpathEvent](const auto &event, auto &) {
         ASSERT_FALSE(checkFsRealpathEvent);
         ASSERT_NE(event.path, nullptr);
         checkFsRealpathEvent = true;
-    });
-
-    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
     });
 
     fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename](const auto &, auto &) {
@@ -710,9 +656,8 @@ TEST(FsReq, Chown) {
 
     bool checkFsChownEvent = false;
 
-    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
-    });
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::FsEvent<uvw::FsReq::Type::CHOWN>>([&checkFsChownEvent](const auto &, auto &) {
         ASSERT_FALSE(checkFsChownEvent);
@@ -721,10 +666,6 @@ TEST(FsReq, Chown) {
 
     fsReq->on<uvw::FsEvent<uvw::FsReq::Type::STAT>>([&filename](const auto &event, auto &request) {
         request.chown(filename, event.stat.st_uid, event.stat.st_gid);
-    });
-
-    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) {
-        FAIL();
     });
 
     fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename](const auto &, auto &) {

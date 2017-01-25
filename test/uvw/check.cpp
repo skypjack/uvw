@@ -6,13 +6,9 @@ TEST(Check, StartAndStop) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::CheckHandle>();
 
-    bool checkErrorEvent = false;
     bool checkCheckEvent = false;
 
-    handle->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &) {
-        ASSERT_FALSE(checkErrorEvent);
-        checkErrorEvent = true;
-    });
+    handle->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     handle->on<uvw::CheckEvent>([&checkCheckEvent](const auto &, auto &hndl) {
         ASSERT_FALSE(checkCheckEvent);
@@ -29,7 +25,6 @@ TEST(Check, StartAndStop) {
 
     loop->run<uvw::Loop::Mode::NOWAIT>();
 
-    ASSERT_FALSE(checkErrorEvent);
     ASSERT_TRUE(checkCheckEvent);
 }
 
