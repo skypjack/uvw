@@ -76,7 +76,7 @@ public:
         : Handle{std::move(ca), std::move(ref)}
     {
         auto ignore = static_cast<uv_stdio_flags>(StdIO::IGNORE_STREAM);
-        auto stdin = uv_stdio_container_t{ignore};
+        uv_stdio_container_t stdin{ignore};
         poFdStdio.push_back(std::move(stdin));
     }
 
