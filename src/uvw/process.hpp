@@ -73,11 +73,10 @@ public:
     using StdIO = details::UVStdIOFlags;
 
     ProcessHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref)
-        : Handle{std::move(ca), std::move(ref)}
+        : Handle{std::move(ca), std::move(ref)}, poFdStdio{1}
     {
-        uv_stdio_container_t stdin;
-        stdin.flags = static_cast<uv_stdio_flags>(StdIO::IGNORE_STREAM);
-        poFdStdio.push_back(std::move(stdin));
+        // stdin container default initialization
+        poFdStdio[0].flags = static_cast<uv_stdio_flags>(StdIO::IGNORE_STREAM);
     }
 
     /**
