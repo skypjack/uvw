@@ -4,7 +4,6 @@
 
 [![Build Status](https://travis-ci.org/skypjack/uvw.svg?branch=master)](https://travis-ci.org/skypjack/uvw)
 [![Build status](https://ci.appveyor.com/api/projects/status/m5ndm8gnu8isg2to?svg=true)](https://ci.appveyor.com/project/skypjack/uvw)
-[![Coverage Status](https://coveralls.io/repos/github/skypjack/uvw/badge.svg?branch=master)](https://coveralls.io/github/skypjack/uvw?branch=master)
 
 # Introduction
 
