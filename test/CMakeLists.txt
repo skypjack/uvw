@@ -46,6 +46,7 @@ set(TARGET_PREPARE prepare)
 set(TARGET_RESOURCE resource)
 set(TARGET_SIGNAL signal)
 set(TARGET_TIMER timer)
+set(TARGET_UTIL util)
 set(TARGET_WORK work)
 
 # Test TARGET_MAIN
@@ -172,6 +173,14 @@ add_executable(${TARGET_TIMER} ${TARGET_TIMER_SOURCES})
 target_include_directories(${TARGET_TIMER} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_TIMER} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_TIMER} COMMAND ${TARGET_TIMER})
+
+# Test TARGET_UTIL
+
+set(TARGET_UTIL_SOURCES $<TARGET_OBJECTS:odr> uvw/util.cpp)
+add_executable(${TARGET_UTIL} ${TARGET_UTIL_SOURCES})
+target_include_directories(${TARGET_UTIL} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_UTIL} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_UTIL} COMMAND ${TARGET_UTIL})
 
 # Test TARGET_WORK
 
