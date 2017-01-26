@@ -87,7 +87,7 @@ public:
      * @return A valid instance of Flags instantiated from values `V`.
      */
     template<E... V>
-    static constexpr Flags<E> from() {
+    static CONSTEXPR_SPECIFIER Flags<E> from() {
         auto flags = Flags<E>{};
         int _[] = { 0, (flags = flags | V, 0)... };
         return void(_), flags;
