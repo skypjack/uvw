@@ -75,8 +75,8 @@ public:
     ProcessHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref)
         : Handle{std::move(ca), std::move(ref)}
     {
-        auto ignore = static_cast<uv_stdio_flags>(StdIO::IGNORE_STREAM);
-        uv_stdio_container_t stdin{ignore};
+        uv_stdio_container_t stdin;
+        stdin.flags = static_cast<uv_stdio_flags>(StdIO::IGNORE_STREAM);
         poFdStdio.push_back(std::move(stdin));
     }
 
