@@ -31,7 +31,6 @@ matrix:
     osx_image: xcode8
     compiler: clang
     env: COMPILER=clang++
-
   - os: linux
     compiler: gcc
     addons:
@@ -41,10 +40,10 @@ matrix:
     env:
     - COMPILER=g++-6
     - CXXFLAGS="-O0 --coverage"
-    before_script:
+    before_install:
     - pip install --user cpp-coveralls
     after_success:
-    - coveralls --gcov gcov-6 --gcov-options '\-lp' --root ${TRAVIS_BUILD_DIR} --build-root ${TRAVIS_BUILD_DIR}/build --exclude deps --include src
+    - coveralls --gcov-options '\-lp' --exclude deps --exclude test --include src
 
 notifications:
   email:
