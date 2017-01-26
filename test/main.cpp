@@ -12,7 +12,7 @@ void listen(uvw::Loop &loop) {
         std::cout << "error " << std::endl;
     });
 
-    tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &srv) mutable {
+    tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &srv) {
         std::cout << "listen" << std::endl;
 
         std::shared_ptr<uvw::TcpHandle> client = srv.loop().resource<uvw::TcpHandle>();
@@ -21,7 +21,7 @@ void listen(uvw::Loop &loop) {
             std::cout << "error " << std::endl;
         });
 
-        client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::TcpHandle &) mutable {
+        client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::TcpHandle &) {
             std::cout << "close" << std::endl;
             ptr->close();
         });
@@ -50,7 +50,7 @@ void listen(uvw::Loop &loop) {
         client->read();
     });
 
-    tcp->once<uvw::CloseEvent>([](const uvw::CloseEvent &, uvw::TcpHandle &) mutable {
+    tcp->once<uvw::CloseEvent>([](const uvw::CloseEvent &, uvw::TcpHandle &) {
         std::cout << "close" << std::endl;
     });
 
@@ -66,12 +66,12 @@ void conn(uvw::Loop &loop) {
         std::cout << "error " << std::endl;
     });
 
-    tcp->once<uvw::WriteEvent>([](const uvw::WriteEvent &, uvw::TcpHandle &handle) mutable {
+    tcp->once<uvw::WriteEvent>([](const uvw::WriteEvent &, uvw::TcpHandle &handle) {
         std::cout << "write" << std::endl;
         handle.close();
     });
 
-    tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TcpHandle &handle) mutable {
+    tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TcpHandle &handle) {
         std::cout << "connect" << std::endl;
 
         auto dataTryWrite = std::unique_ptr<char[]>(new char[1]{ 'a' });
@@ -82,7 +82,7 @@ void conn(uvw::Loop &loop) {
         handle.write(std::move(dataWrite), 2);
     });
 
-    tcp->once<uvw::CloseEvent>([](const uvw::CloseEvent &, uvw::TcpHandle &) mutable {
+    tcp->once<uvw::CloseEvent>([](const uvw::CloseEvent &, uvw::TcpHandle &) {
         std::cout << "close" << std::endl;
     });
 

@@ -22,10 +22,10 @@ As an example, a *handle* should be initialized before any other operation and c
 void listen(uvw::Loop &loop) {
     std::shared_ptr<uvw::TcpHandle> tcp = loop.resource<uvw::TcpHandle>();
 
-    tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &srv) mutable {
+    tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &srv) {
         std::shared_ptr<uvw::TcpHandle> client = srv.loop().resource<uvw::TcpHandle>();
 
-        client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::TcpHandle &) mutable { ptr->close(); });
+        client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::TcpHandle &) { ptr->close(); });
         client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &client) { client.close(); });
 
         srv.accept(*client);
@@ -41,7 +41,7 @@ void conn(uvw::Loop &loop) {
 
     tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { /* handle errors */ });
 
-    tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TcpHandle &tcp) mutable {
+    tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TcpHandle &tcp) {
         auto dataWrite = std::unique_ptr<char[]>(new char[2]{ 'b', 'c' });
         tcp.write(std::move(dataWrite), 2);
         tcp.close();
@@ -220,7 +220,7 @@ auto tcp = loop.resource<uvw::TcpHandle>();
 
 tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { /* something went wrong */ });
 
-tcp->on<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &srv) mutable {
+tcp->on<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &srv) {
     std::shared_ptr<uvw::TcpHandle> client = srv.loop().resource<uvw::TcpHandle>();
     client->once<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &client) { client.close(); });
     client->on<uvw::DataEvent>([](const uvw::DataEvent &, uvw::TcpHandle &) { /* data received */ });
