@@ -45,6 +45,7 @@ set(TARGET_LOOP loop)
 set(TARGET_PREPARE prepare)
 set(TARGET_RESOURCE resource)
 set(TARGET_SIGNAL signal)
+set(TARGET_TCP tcp)
 set(TARGET_TIMER timer)
 set(TARGET_UTIL util)
 set(TARGET_WORK work)
@@ -165,6 +166,14 @@ add_executable(${TARGET_SIGNAL} ${TARGET_SIGNAL_SOURCES})
 target_include_directories(${TARGET_SIGNAL} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_SIGNAL} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_SIGNAL} COMMAND ${TARGET_SIGNAL})
+
+# Test TARGET_TCP
+
+set(TARGET_TCP_SOURCES $<TARGET_OBJECTS:odr> uvw/tcp.cpp)
+add_executable(${TARGET_TCP} ${TARGET_TCP_SOURCES})
+target_include_directories(${TARGET_TCP} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_TCP} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_TCP} COMMAND ${TARGET_TCP})
 
 # Test TARGET_TIMER
 

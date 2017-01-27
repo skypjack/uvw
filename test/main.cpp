@@ -86,7 +86,7 @@ void conn(uvw::Loop &loop) {
         std::cout << "close" << std::endl;
     });
 
-    tcp->connect(std::string{"127.0.0.1"}, 4242);
+    tcp->connect("127.0.0.1", 4242);
 }
 
 void g() {
