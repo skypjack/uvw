@@ -13,9 +13,9 @@ set(
 
 set(
     COMMON_LINK_LIBS
-    ${CMAKE_THREAD_LIBS_INIT}
     ${GOOGLETEST_LIBRARIES}
     ${UV_STATIC_LIBRARY}
+    Threads::Threads
 )
 
 if(${LIBRT_FOUND})
