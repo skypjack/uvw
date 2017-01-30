@@ -47,6 +47,7 @@ set(TARGET_RESOURCE resource)
 set(TARGET_SIGNAL signal)
 set(TARGET_TCP tcp)
 set(TARGET_TIMER timer)
+set(TARGET_UDP udp)
 set(TARGET_UTIL util)
 set(TARGET_WORK work)
 
@@ -182,6 +183,14 @@ add_executable(${TARGET_TIMER} ${TARGET_TIMER_SOURCES})
 target_include_directories(${TARGET_TIMER} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_TIMER} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_TIMER} COMMAND ${TARGET_TIMER})
+
+# Test TARGET_UDP
+
+set(TARGET_UDP_SOURCES $<TARGET_OBJECTS:odr> uvw/udp.cpp)
+add_executable(${TARGET_UDP} ${TARGET_UDP_SOURCES})
+target_include_directories(${TARGET_UDP} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_UDP} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_UDP} COMMAND ${TARGET_UDP})
 
 # Test TARGET_UTIL
 

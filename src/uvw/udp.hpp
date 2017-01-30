@@ -322,6 +322,28 @@ public:
      * will be bound to `0.0.0.0` (the _all interfaces_ IPv4 address) and a
      * random port number.
      *
+     * The handle takes the ownership of the data and it is in charge of delete
+     * them.
+     *
+     * A SendEvent event will be emitted when the data have been sent.<br/>
+     * An ErrorEvent event will be emitted in case of errors.
+     *
+     * @param addr A valid instance of Addr.
+     * @param data The data to be sent.
+     * @param len The lenght of the submitted data.
+     */
+    template<typename I = IPv4>
+    void send(Addr addr, std::unique_ptr<char[]> data, std::size_t len) {
+        send<I>(addr.ip, addr.port, std::move(data), len);
+    }
+
+    /**
+     * @brief Sends data over the UDP socket.
+     *
+     * Note that if the socket has not previously been bound with `bind()`, it
+     * will be bound to `0.0.0.0` (the _all interfaces_ IPv4 address) and a
+     * random port number.
+     *
      * The handle doesn't take the ownership of the data. Be sure that their
      * lifetime overcome the one of the request.
      *
@@ -356,6 +378,28 @@ public:
     /**
      * @brief Sends data over the UDP socket.
      *
+     * Note that if the socket has not previously been bound with `bind()`, it
+     * will be bound to `0.0.0.0` (the _all interfaces_ IPv4 address) and a
+     * random port number.
+     *
+     * The handle doesn't take the ownership of the data. Be sure that their
+     * lifetime overcome the one of the request.
+     *
+     * A SendEvent event will be emitted when the data have been sent.<br/>
+     * An ErrorEvent event will be emitted in case of errors.
+     *
+     * @param addr A valid instance of Addr.
+     * @param data The data to be sent.
+     * @param len The lenght of the submitted data.
+     */
+    template<typename I = IPv4>
+    void send(Addr addr, char *data, std::size_t len) {
+        send<I>(addr.ip, addr.port, data, len);
+    }
+
+    /**
+     * @brief Sends data over the UDP socket.
+     *
      * Same as `send()`, but it won’t queue a send request if it can’t be
      * completed immediately.
      *
@@ -379,6 +423,66 @@ public:
         }
 
         return bw;
+    }
+
+    /**
+     * @brief Sends data over the UDP socket.
+     *
+     * Same as `send()`, but it won’t queue a send request if it can’t be
+     * completed immediately.
+     *
+     * @param addr A valid instance of Addr.
+     * @param data The data to be sent.
+     * @param len The lenght of the submitted data.
+     * @return Number of bytes written.
+     */
+    template<typename I = IPv4>
+    int trySend(Addr addr, std::unique_ptr<char[]> data, std::size_t len) {
+        return trySend<I>(addr.ip, addr.port, std::move(data), len);
+    }
+
+    /**
+     * @brief Sends data over the UDP socket.
+     *
+     * Same as `send()`, but it won’t queue a send request if it can’t be
+     * completed immediately.
+     *
+     * @param ip The address to which to send data.
+     * @param port The port to which to send data.
+     * @param data The data to be sent.
+     * @param len The lenght of the submitted data.
+     * @return Number of bytes written.
+     */
+    template<typename I = IPv4>
+    int trySend(std::string ip, unsigned int port, char *data, std::size_t len) {
+        typename details::IpTraits<I>::Type addr;
+        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
+
+        uv_buf_t bufs[] = { uv_buf_init(data, len) };
+        auto bw = uv_udp_try_send(get(), bufs, 1, reinterpret_cast<const sockaddr *>(&addr));
+
+        if(bw < 0) {
+            publish(ErrorEvent{bw});
+            bw = 0;
+        }
+
+        return bw;
+    }
+
+    /**
+     * @brief Sends data over the UDP socket.
+     *
+     * Same as `send()`, but it won’t queue a send request if it can’t be
+     * completed immediately.
+     *
+     * @param addr A valid instance of Addr.
+     * @param data The data to be sent.
+     * @param len The lenght of the submitted data.
+     * @return Number of bytes written.
+     */
+    template<typename I = IPv4>
+    int trySend(Addr addr, char *data, std::size_t len) {
+        return trySend<I>(addr.ip, addr.port, data, len);
     }
 
     /**
