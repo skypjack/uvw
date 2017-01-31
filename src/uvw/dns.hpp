@@ -5,7 +5,6 @@
 #include <memory>
 #include <string>
 #include <uv.h>
-#include "event.hpp"
 #include "request.hpp"
 #include "util.hpp"
 #include "loop.hpp"
@@ -19,7 +18,7 @@ namespace uvw {
  *
  * It will be emitted by GetAddrInfoReq according with its functionalities.
  */
-struct AddrInfoEvent: Event<AddrInfoEvent> {
+struct AddrInfoEvent {
     using Deleter = void(*)(addrinfo *);
 
     AddrInfoEvent(std::unique_ptr<addrinfo, Deleter> addr)
@@ -41,7 +40,7 @@ struct AddrInfoEvent: Event<AddrInfoEvent> {
  *
  * It will be emitted by GetNameInfoReq according with its functionalities.
  */
-struct NameInfoEvent: Event<NameInfoEvent> {
+struct NameInfoEvent {
     NameInfoEvent(const char *host, const char *serv)
         : hostname{host}, service{serv}
     {}

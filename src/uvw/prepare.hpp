@@ -4,7 +4,6 @@
 #include <utility>
 #include <memory>
 #include <uv.h>
-#include "event.hpp"
 #include "handle.hpp"
 #include "loop.hpp"
 
@@ -19,7 +18,7 @@ namespace uvw {
  *
  * To create a `PrepareHandle` through a `Loop`, no arguments are required.
  */
-struct PrepareEvent: Event<PrepareEvent> {};
+struct PrepareEvent {};
 
 
 /**

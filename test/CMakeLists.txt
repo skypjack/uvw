@@ -36,7 +36,6 @@ set(TARGET_ASYNC async)
 set(TARGET_CHECK check)
 set(TARGET_DNS dns)
 set(TARGET_EMITTER emitter)
-set(TARGET_EVENT event)
 set(TARGET_FS_REQ fs_req)
 set(TARGET_FILE_REQ file_req)
 set(TARGET_HANDLE handle)
@@ -90,14 +89,6 @@ add_executable(${TARGET_EMITTER} ${TARGET_EMITTER_SOURCES})
 target_include_directories(${TARGET_EMITTER} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_EMITTER} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_EMITTER} COMMAND ${TARGET_EMITTER})
-
-# Test TARGET_EVENT
-
-set(TARGET_EVENT_SOURCES $<TARGET_OBJECTS:odr> uvw/event.cpp)
-add_executable(${TARGET_EVENT} ${TARGET_EVENT_SOURCES})
-target_include_directories(${TARGET_EVENT} PRIVATE ${COMMON_INCLUDE_DIRS})
-target_link_libraries(${TARGET_EVENT} PRIVATE ${COMMON_LINK_LIBS})
-add_test(NAME ${TARGET_EVENT} COMMAND ${TARGET_EVENT})
 
 # Test TARGET_FS_REQ
 

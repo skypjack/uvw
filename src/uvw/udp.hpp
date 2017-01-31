@@ -9,7 +9,6 @@
 #include <memory>
 #include <string>
 #include <uv.h>
-#include "event.hpp"
 #include "request.hpp"
 #include "handle.hpp"
 #include "util.hpp"
@@ -23,7 +22,7 @@ namespace uvw {
  *
  * It will be emitted by UDPHandle according with its functionalities.
  */
-struct SendEvent: Event<SendEvent> {};
+struct SendEvent {};
 
 
 /**
@@ -31,7 +30,7 @@ struct SendEvent: Event<SendEvent> {};
  *
  * It will be emitted by UDPHandle according with its functionalities.
  */
-struct UDPDataEvent: Event<UDPDataEvent> {
+struct UDPDataEvent {
     explicit UDPDataEvent(Addr sndr, std::unique_ptr<const char[]> buf, std::size_t len, bool part) noexcept
         : data{std::move(buf)}, length{len}, sender{std::move(sndr)}, partial{part}
     {}

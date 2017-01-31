@@ -5,7 +5,6 @@
 #include <utility>
 #include <memory>
 #include <uv.h>
-#include "event.hpp"
 #include "handle.hpp"
 #include "util.hpp"
 
@@ -31,7 +30,7 @@ enum class UVPollEvent: std::underlying_type_t<uv_poll_event> {
  *
  * It will be emitted by PollHandle according with its functionalities.
  */
-struct PollEvent: Event<PollEvent> {
+struct PollEvent {
     explicit PollEvent(Flags<details::UVPollEvent> events) noexcept
         : flags{std::move(events)}
     {}

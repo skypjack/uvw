@@ -5,7 +5,6 @@
 #include <utility>
 #include <memory>
 #include <uv.h>
-#include "event.hpp"
 #include "request.hpp"
 #include "loop.hpp"
 
@@ -18,7 +17,7 @@ namespace uvw {
  *
  * It will be emitted by WorkReq according with its functionalities.
  */
-struct WorkEvent: Event<WorkEvent> {};
+struct WorkEvent {};
 
 
 /**

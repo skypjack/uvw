@@ -5,7 +5,6 @@
 #include <string>
 #include <memory>
 #include <uv.h>
-#include "event.hpp"
 #include "handle.hpp"
 #include "util.hpp"
 #include "loop.hpp"
@@ -38,7 +37,7 @@ enum class UVFsEvent: std::underlying_type_t<uv_fs_event> {
  *
  * It will be emitted by FsEventHandle according with its functionalities.
  */
-struct FsEventEvent: Event<FsEventEvent> {
+struct FsEventEvent {
     FsEventEvent(const char * pathname, Flags<details::UVFsEvent> events)
         : filename{pathname}, flags{std::move(events)}
     {}

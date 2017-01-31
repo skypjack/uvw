@@ -1,7 +1,6 @@
 #include "uvw/async.hpp"
 #include "uvw/check.hpp"
 #include "uvw/dns.hpp"
-#include "uvw/event.hpp"
 #include "uvw/fs.hpp"
 #include "uvw/fs_event.hpp"
 #include "uvw/fs_poll.hpp"

@@ -9,10 +9,48 @@
 #include <vector>
 #include <memory>
 #include <list>
-#include "event.hpp"
+#include <uv.h>
 
 
 namespace uvw {
+
+
+/**
+ * @brief The ErrorEvent event.
+ *
+ * Custom wrapper around libuv's error constants.
+ */
+struct ErrorEvent {
+    template<typename U, typename = std::enable_if_t<std::is_integral<U>::value>>
+    explicit ErrorEvent(U val) noexcept
+        : ec{static_cast<int>(val)}, str{uv_strerror(ec)}
+    {}
+
+    /**
+     * @brief Returns the error message for the given error code.
+     *
+     * Leaks a few bytes of memory when you call it with an unknown error code.
+     *
+     * @return The error message for the given error code.
+     */
+    const char * what() const noexcept { return str; }
+
+    /**
+     * @brief Gets the underlying error code, that is a libuv's error constant.
+     * @return The underlying error code.
+     */
+    int code() const noexcept { return ec; }
+
+    /**
+     * @brief Checks if the event contains a valid error code.
+     * @return True in case of success, false otherwise.
+     */
+    explicit operator bool() const noexcept { return ec < 0; }
+
+private:
+    const int ec;
+    const char *str;
+};
 
 
 /**
@@ -96,11 +134,20 @@ class Emitter {
         ListenerList onL{};
     };
 
+    static std::size_t next_type() noexcept {
+        static std::size_t counter = 0;
+        return counter++;
+    }
+
+    template<typename E>
+    static std::size_t event_type() noexcept {
+        static std::size_t value = next_type();
+        return value;
+    }
+
     template<typename E>
     Handler<E> & handler() noexcept {
-        static_assert(std::is_base_of<Event<E>, E>::value, "!");
-
-        std::size_t type = E::type();
+        std::size_t type = event_type<E>();
 
         if(!(type < handlers.size())) {
             handlers.resize(type+1);
@@ -222,7 +269,7 @@ public:
      */
     template<typename E>
     bool empty() const noexcept {
-        std::size_t type = E::type();
+        std::size_t type = event_type<E>();
 
         return (!(type < handlers.size()) ||
                 !handlers[type] ||

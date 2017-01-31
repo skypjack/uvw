@@ -7,7 +7,6 @@
 #include <utility>
 #include <memory>
 #include <uv.h>
-#include "event.hpp"
 #include "request.hpp"
 #include "handle.hpp"
 #include "loop.hpp"
@@ -21,7 +20,7 @@ namespace uvw {
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct ConnectEvent: Event<ConnectEvent> {};
+struct ConnectEvent {};
 
 
 /**
@@ -29,7 +28,7 @@ struct ConnectEvent: Event<ConnectEvent> {};
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct EndEvent: Event<EndEvent> {};
+struct EndEvent {};
 
 
 /**
@@ -37,7 +36,7 @@ struct EndEvent: Event<EndEvent> {};
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct ListenEvent: Event<ListenEvent> {};
+struct ListenEvent {};
 
 
 /**
@@ -45,7 +44,7 @@ struct ListenEvent: Event<ListenEvent> {};
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct ShutdownEvent: Event<ShutdownEvent> {};
+struct ShutdownEvent {};
 
 
 /**
@@ -53,7 +52,7 @@ struct ShutdownEvent: Event<ShutdownEvent> {};
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct WriteEvent: Event<WriteEvent> {};
+struct WriteEvent {};
 
 
 /**
@@ -61,7 +60,7 @@ struct WriteEvent: Event<WriteEvent> {};
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct DataEvent: Event<DataEvent> {
+struct DataEvent {
     explicit DataEvent(std::unique_ptr<char[]> buf, std::size_t len) noexcept
         : data{std::move(buf)}, length{len}
     {}

@@ -5,7 +5,6 @@
 #include <memory>
 #include <chrono>
 #include <uv.h>
-#include "event.hpp"
 #include "handle.hpp"
 #include "loop.hpp"
 
@@ -18,7 +17,7 @@ namespace uvw {
  *
  * It will be emitted by TimerHandle according with its functionalities.
  */
-struct TimerEvent: Event<TimerEvent> {};
+struct TimerEvent {};
 
 
 /**

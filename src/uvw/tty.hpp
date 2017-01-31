@@ -5,7 +5,6 @@
 #include <cstddef>
 #include <memory>
 #include <uv.h>
-#include "event.hpp"
 #include "stream.hpp"
 #include "util.hpp"
 

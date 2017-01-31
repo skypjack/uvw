@@ -4,7 +4,6 @@
 #include <utility>
 #include <memory>
 #include <uv.h>
-#include "event.hpp"
 #include "handle.hpp"
 #include "loop.hpp"
 
@@ -17,7 +16,7 @@ namespace uvw {
  *
  * It will be emitted by AsyncHandle according with its functionalities.
  */
-struct AsyncEvent: Event<AsyncEvent> {};
+struct AsyncEvent {};
 
 
 /**

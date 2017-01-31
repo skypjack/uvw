@@ -7,7 +7,6 @@
 #include <string>
 #include <chrono>
 #include <uv.h>
-#include "event.hpp"
 #include "request.hpp"
 #include "stream.hpp"
 #include "util.hpp"

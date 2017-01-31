@@ -6,7 +6,6 @@
 #include <string>
 #include <chrono>
 #include <uv.h>
-#include "event.hpp"
 #include "request.hpp"
 #include "util.hpp"
 #include "loop.hpp"
@@ -111,7 +110,7 @@ enum class UVDirentTypeT: std::underlying_type_t<uv_dirent_type_t> {
  * for further details.
  */
 template<details::UVFsType e>
-struct FsEvent: Event<FsEvent<e>> {
+struct FsEvent {
     FsEvent(const char *pathname) noexcept: path{pathname} {}
 
     const char * path; /*!< The path affecting the request. */
@@ -125,9 +124,7 @@ struct FsEvent: Event<FsEvent<e>> {
  * functionalities.
  */
 template<>
-struct FsEvent<details::UVFsType::READ>
-        : Event<FsEvent<details::UVFsType::READ>>
-{
+struct FsEvent<details::UVFsType::READ> {
     FsEvent(const char *pathname, std::unique_ptr<const char[]> buf, std::size_t sz) noexcept
         : path{pathname}, data{std::move(buf)}, size{sz}
     {}
@@ -145,9 +142,7 @@ struct FsEvent<details::UVFsType::READ>
  * functionalities.
  */
 template<>
-struct FsEvent<details::UVFsType::WRITE>
-        : Event<FsEvent<details::UVFsType::WRITE>>
-{
+struct FsEvent<details::UVFsType::WRITE> {
     FsEvent(const char *pathname, std::size_t sz) noexcept
         : path{pathname}, size{sz}
     {}
@@ -164,9 +159,7 @@ struct FsEvent<details::UVFsType::WRITE>
  * functionalities.
  */
 template<>
-struct FsEvent<details::UVFsType::SENDFILE>
-        : Event<FsEvent<details::UVFsType::SENDFILE>>
-{
+struct FsEvent<details::UVFsType::SENDFILE> {
     FsEvent(const char *pathname, std::size_t sz) noexcept
         : path{pathname}, size{sz}
     {}
@@ -183,9 +176,7 @@ struct FsEvent<details::UVFsType::SENDFILE>
  * functionalities.
  */
 template<>
-struct FsEvent<details::UVFsType::STAT>
-        : Event<FsEvent<details::UVFsType::STAT>>
-{
+struct FsEvent<details::UVFsType::STAT> {
     FsEvent(const char *pathname, Stat curr) noexcept
         : path{pathname}, stat{std::move(curr)}
     {}
@@ -202,9 +193,7 @@ struct FsEvent<details::UVFsType::STAT>
  * functionalities.
  */
 template<>
-struct FsEvent<details::UVFsType::FSTAT>
-        : Event<FsEvent<details::UVFsType::FSTAT>>
-{
+struct FsEvent<details::UVFsType::FSTAT> {
     FsEvent(const char *pathname, Stat curr) noexcept
         : path{pathname}, stat{std::move(curr)}
     {}
@@ -221,9 +210,7 @@ struct FsEvent<details::UVFsType::FSTAT>
  * functionalities.
  */
 template<>
-struct FsEvent<details::UVFsType::LSTAT>
-        : Event<FsEvent<details::UVFsType::LSTAT>>
-{
+struct FsEvent<details::UVFsType::LSTAT> {
     FsEvent(const char *pathname, Stat curr) noexcept
         : path{pathname}, stat{std::move(curr)}
     {}
@@ -240,9 +227,7 @@ struct FsEvent<details::UVFsType::LSTAT>
  * functionalities.
  */
 template<>
-struct FsEvent<details::UVFsType::SCANDIR>
-        : Event<FsEvent<details::UVFsType::SCANDIR>>
-{
+struct FsEvent<details::UVFsType::SCANDIR> {
     FsEvent(const char *pathname, std::size_t sz) noexcept
         : path{pathname}, size{sz}
     {}
@@ -259,9 +244,7 @@ struct FsEvent<details::UVFsType::SCANDIR>
  * functionalities.
  */
 template<>
-struct FsEvent<details::UVFsType::READLINK>
-        : Event<FsEvent<details::UVFsType::READLINK>>
-{
+struct FsEvent<details::UVFsType::READLINK> {
     explicit FsEvent(const char *pathname, const char *buf, std::size_t sz) noexcept
         : path{pathname}, data{buf}, size{sz}
     {}

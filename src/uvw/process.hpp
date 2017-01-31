@@ -7,7 +7,6 @@
 #include <string>
 #include <vector>
 #include <uv.h>
-#include "event.hpp"
 #include "handle.hpp"
 #include "stream.hpp"
 #include "util.hpp"
@@ -47,7 +46,7 @@ enum class UVStdIOFlags: std::underlying_type_t<uv_stdio_flags> {
  *
  * It will be emitted by ProcessHandle according with its functionalities.
  */
-struct ExitEvent: Event<ExitEvent> {
+struct ExitEvent {
     explicit ExitEvent(int64_t code, int sig) noexcept
         : status{code}, signal{sig}
     {}
