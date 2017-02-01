@@ -297,7 +297,7 @@ protected:
     }
 
 public:
-    using Time = std::chrono::seconds;
+    using Time = std::chrono::duration<double>;
     using Type = details::UVFsType;
     using EntryType = details::UVDirentTypeT;
     using Entry = std::pair<EntryType, std::string>;
@@ -648,10 +648,10 @@ public:
      * Emit a `FsEvent<FileReq::Type::FUTIME>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
-     * @param atime `std::chrono::seconds`, having the same meaning as described
-     * in the official documentation.
-     * @param mtime `std::chrono::seconds`, having the same meaning as described
-     * in the official documentation.
+     * @param atime `std::chrono::duration<double>`, having the same meaning as
+     * described in the official documentation.
+     * @param mtime `std::chrono::duration<double>`, having the same meaning as
+     * described in the official documentation.
      */
     void utime(Time atime, Time mtime) {
         cleanupAndInvoke(&uv_fs_futime, parent(), get(), file, atime.count(), mtime.count(), &fsGenericCallback<Type::FUTIME>);
@@ -659,10 +659,10 @@ public:
 
     /**
      * @brief Sync [futime](http://linux.die.net/man/2/futime).
-     * @param atime `std::chrono::seconds`, having the same meaning as described
-     * in the official documentation.
-     * @param mtime `std::chrono::seconds`, having the same meaning as described
-     * in the official documentation.
+     * @param atime `std::chrono::duration<double>`, having the same meaning as
+     * described in the official documentation.
+     * @param mtime `std::chrono::duration<double>`, having the same meaning as
+     * described in the official documentation.
      * @return True in case of success, false otherwise.
      */
     bool utimeSync(Time atime, Time mtime) {
@@ -1046,10 +1046,10 @@ public:
      * Emit an ErrorEvent event in case of errors.
      *
      * @param path Path, as described in the official documentation.
-     * @param atime `std::chrono::seconds`, having the same meaning as described
-     * in the official documentation.
-     * @param mtime `std::chrono::seconds`, having the same meaning as described
-     * in the official documentation.
+     * @param atime `std::chrono::duration<double>`, having the same meaning as
+     * described in the official documentation.
+     * @param mtime `std::chrono::duration<double>`, having the same meaning as
+     * described in the official documentation.
      */
     void utime(std::string path, Time atime, Time mtime) {
         cleanupAndInvoke(&uv_fs_utime, parent(), get(), path.data(), atime.count(), mtime.count(), &fsGenericCallback<Type::UTIME>);
@@ -1058,10 +1058,10 @@ public:
     /**
      * @brief Sync [utime](http://linux.die.net/man/2/utime).
      * @param path Path, as described in the official documentation.
-     * @param atime `std::chrono::seconds`, having the same meaning as described
-     * in the official documentation.
-     * @param mtime `std::chrono::seconds`, having the same meaning as described
-     * in the official documentation.
+     * @param atime `std::chrono::duration<double>`, having the same meaning as
+     * described in the official documentation.
+     * @param mtime `std::chrono::duration<double>`, having the same meaning as
+     * described in the official documentation.
      * @return True in case of success, false otherwise.
      */
     bool utimeSync(std::string path, Time atime, Time mtime) {

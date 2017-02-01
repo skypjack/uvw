@@ -44,7 +44,7 @@ enum class UVTcpFlags: std::underlying_type_t<uv_tcp_flags> {
  */
 class TcpHandle final: public StreamHandle<TcpHandle, uv_tcp_t> {
 public:
-    using Time = std::chrono::seconds;
+    using Time = std::chrono::duration<unsigned int>;
     using Bind = details::UVTcpFlags;
     using IPv4 = uvw::IPv4;
     using IPv6 = uvw::IPv6;
@@ -89,7 +89,8 @@ public:
     /**
      * @brief Enables/Disables TCP keep-alive.
      * @param enable True to enable it, false otherwise.
-     * @param time Initial delay in seconds (use `std::chrono::seconds`).
+     * @param time Initial delay in seconds (use
+     * `std::chrono::duration<unsigned int>`).
      * @return True in case of success, false otherwise.
      */
     bool keepAlive(bool enable = false, Time time = Time{0}) {

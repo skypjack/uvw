@@ -128,7 +128,7 @@ class Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop
     {}
 
 public:
-    using Time = std::chrono::milliseconds;
+    using Time = std::chrono::duration<uint64_t, std::milli>;
     using Configure = details::UVLoopOption;
     using Mode = details::UVRunMode;
 
@@ -319,10 +319,13 @@ public:
 
     /**
      * @brief Gets the poll timeout.
-     * @return The return value is in milliseconds, or -1 for no timeout.
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of valid timeout, false otherwise.
+     * * Milliseconds (`std::chrono::duration<uint64_t, std::milli>`).
      */
-    Time timeout() const noexcept {
-        return Time{uv_backend_timeout(loop.get())};
+    std::pair<bool, Time> timeout() const noexcept {
+        auto to = uv_backend_timeout(loop.get());
+        return std::make_pair(to == -1, Time{to});
     }
 
     /**
@@ -334,7 +337,8 @@ public:
      * Don’t make assumptions about the starting point, you will only get
      * disappointed.
      *
-     * @return The current timestamp in milliseconds.
+     * @return The current timestamp in milliseconds (actual type is
+     * `std::chrono::duration<uint64_t, std::milli>`).
      */
     Time now() const noexcept {
         return Time{uv_now(loop.get())};

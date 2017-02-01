@@ -203,8 +203,8 @@ struct Passwd {
     Passwd(std::shared_ptr<uv_passwd_t> pwd): passwd{pwd} {}
 
     std::string username() const noexcept { return passwd->username; }
-    Uid uid() const noexcept { return passwd->uid; }
-    Gid gid() const noexcept { return passwd->gid; }
+    auto uid() const noexcept { return passwd->uid; }
+    auto gid() const noexcept { return passwd->gid; }
     std::string shell() const noexcept { return passwd->shell; }
     std::string homedir() const noexcept { return passwd->homedir; }
 
