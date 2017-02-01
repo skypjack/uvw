@@ -665,7 +665,9 @@ TEST(FsReq, Chown) {
     });
 
     fsReq->on<uvw::FsEvent<uvw::FsReq::Type::STAT>>([&filename](const auto &event, auto &request) {
-        request.chown(filename, event.stat.st_uid, event.stat.st_gid);
+        auto uid = static_cast<uvw::Uid>(event.stat.st_uid);
+        auto gid = static_cast<uvw::Uid>(event.stat.st_gid);
+        request.chown(filename, uid, gid);
     });
 
     fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename](const auto &, auto &) {
@@ -697,7 +699,9 @@ TEST(FsReq, ChownSync) {
     auto statR = fsReq->statSync(filename);
 
     ASSERT_TRUE(statR.first);
-    ASSERT_TRUE(fsReq->chownSync(filename, statR.second.st_uid, statR.second.st_gid));
+    auto uid = static_cast<uvw::Uid>(statR.second.st_uid);
+    auto gid = static_cast<uvw::Uid>(statR.second.st_gid);
+    ASSERT_TRUE(fsReq->chownSync(filename, uid, gid));
 
     loop->run();
 }
