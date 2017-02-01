@@ -38,7 +38,8 @@ class Handle: public BaseHandle, public Resource<T, U>
 
 protected:
     static void allocCallback(uv_handle_t *, std::size_t suggested, uv_buf_t *buf) {
-        *buf = uv_buf_init(new char[suggested], suggested);
+        auto size = static_cast<unsigned int>(suggested);
+        *buf = uv_buf_init(new char[size], size);
     }
 
     template<typename F, typename... Args>
