@@ -22,5 +22,3 @@ build:
   parallel: true
   project: build/uvw.sln
   verbosity: minimal
-
-test_script: "%APPVEYOR_BUILD_FOLDER%\\runtests.bat"
