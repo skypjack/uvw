@@ -61,7 +61,7 @@ class SendReq final: public Request<SendReq, uv_udp_send_t> {
 public:
     using Deleter = void(*)(uv_buf_t *);
 
-    SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<uv_buf_t[], Deleter> data, std::size_t ndata)
+    SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<uv_buf_t[], Deleter> data, unsigned int ndata)
         : Request<SendReq, uv_udp_send_t>{std::move(ca), std::move(loop)},
           bufs{std::move(data)},
           nbufs{ndata}
@@ -73,7 +73,7 @@ public:
 
 private:
     std::unique_ptr<uv_buf_t[], Deleter> bufs;
-    std::size_t nbufs;
+    unsigned int nbufs;
 };
 
 

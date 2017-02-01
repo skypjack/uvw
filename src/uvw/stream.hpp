@@ -96,7 +96,7 @@ class WriteReq final: public Request<WriteReq, uv_write_t> {
 public:
     using Deleter = void(*)(uv_buf_t *);
 
-    WriteReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<uv_buf_t[], Deleter> data, std::size_t ndata)
+    WriteReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<uv_buf_t[], Deleter> data, unsigned int ndata)
         : Request<WriteReq, uv_write_t>{std::move(ca), std::move(loop)},
           bufs{std::move(data)},
           nbufs{ndata}
@@ -112,7 +112,7 @@ public:
 
 private:
     std::unique_ptr<uv_buf_t[], Deleter> bufs;
-    std::size_t nbufs;
+    unsigned int nbufs;
 };
 
 
