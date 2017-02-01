@@ -457,7 +457,7 @@ public:
      * @param len The lenght of the submitted data.
      * @param offset Offset, as described in the official documentation.
      */
-    void write(std::unique_ptr<char[]> buf, std::size_t len, int64_t offset) {
+    void write(std::unique_ptr<char[]> buf, unsigned int len, int64_t offset) {
         this->data = std::move(buf);
         uv_buf_t bufs[] = { uv_buf_init(this->data.get(), len) };
         cleanupAndInvoke(&uv_fs_write, parent(), get(), file, bufs, 1, offset, &fsResultCallback<Type::WRITE>);
@@ -476,7 +476,7 @@ public:
      * @param len The lenght of the submitted data.
      * @param offset Offset, as described in the official documentation.
      */
-    void write(char *buf, std::size_t len, int64_t offset) {
+    void write(char *buf, unsigned int len, int64_t offset) {
         uv_buf_t bufs[] = { uv_buf_init(buf, len) };
         cleanupAndInvoke(&uv_fs_write, parent(), get(), file, bufs, 1, offset, &fsResultCallback<Type::WRITE>);
     }
@@ -492,7 +492,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The amount of data written to the given path.
      */
-    std::pair<bool, std::size_t> writeSync(std::unique_ptr<char[]> buf, std::size_t len, int64_t offset) {
+    std::pair<bool, std::size_t> writeSync(std::unique_ptr<char[]> buf, unsigned int len, int64_t offset) {
         this->data = std::move(buf);
         uv_buf_t bufs[] = { uv_buf_init(this->data.get(), len) };
         auto req = get();

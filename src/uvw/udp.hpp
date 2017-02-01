@@ -295,7 +295,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     template<typename I = IPv4>
-    void send(std::string ip, unsigned int port, std::unique_ptr<char[]> data, std::size_t len) {
+    void send(std::string ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
@@ -332,7 +332,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     template<typename I = IPv4>
-    void send(Addr addr, std::unique_ptr<char[]> data, std::size_t len) {
+    void send(Addr addr, std::unique_ptr<char[]> data, unsigned int len) {
         send<I>(addr.ip, addr.port, std::move(data), len);
     }
 
@@ -355,7 +355,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     template<typename I = IPv4>
-    void send(std::string ip, unsigned int port, char *data, std::size_t len) {
+    void send(std::string ip, unsigned int port, char *data, unsigned int len) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
@@ -392,7 +392,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     template<typename I = IPv4>
-    void send(Addr addr, char *data, std::size_t len) {
+    void send(Addr addr, char *data, unsigned int len) {
         send<I>(addr.ip, addr.port, data, len);
     }
 
@@ -409,7 +409,7 @@ public:
      * @return Number of bytes written.
      */
     template<typename I = IPv4>
-    int trySend(std::string ip, unsigned int port, std::unique_ptr<char[]> data, std::size_t len) {
+    int trySend(std::string ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
@@ -436,7 +436,7 @@ public:
      * @return Number of bytes written.
      */
     template<typename I = IPv4>
-    int trySend(Addr addr, std::unique_ptr<char[]> data, std::size_t len) {
+    int trySend(Addr addr, std::unique_ptr<char[]> data, unsigned int len) {
         return trySend<I>(addr.ip, addr.port, std::move(data), len);
     }
 
@@ -453,7 +453,7 @@ public:
      * @return Number of bytes written.
      */
     template<typename I = IPv4>
-    int trySend(std::string ip, unsigned int port, char *data, std::size_t len) {
+    int trySend(std::string ip, unsigned int port, char *data, unsigned int len) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
@@ -480,7 +480,7 @@ public:
      * @return Number of bytes written.
      */
     template<typename I = IPv4>
-    int trySend(Addr addr, char *data, std::size_t len) {
+    int trySend(Addr addr, char *data, unsigned int len) {
         return trySend<I>(addr.ip, addr.port, data, len);
     }
 

@@ -249,7 +249,7 @@ public:
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
      */
-    void write(std::unique_ptr<char[]> data, std::size_t len) {
+    void write(std::unique_ptr<char[]> data, unsigned int len) {
         auto req = this->loop().template resource<details::WriteReq>(
                     std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
                         new uv_buf_t[1]{ uv_buf_init(data.release(), len) },
@@ -277,7 +277,7 @@ public:
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
      */
-    void write(char *data, std::size_t len) {
+    void write(char *data, unsigned int len) {
         auto req = this->loop().template resource<details::WriteReq>(
                     std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
                         new uv_buf_t[1]{ uv_buf_init(data, len) },
@@ -313,7 +313,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     template<typename S>
-    void write(S &send, std::unique_ptr<char[]> data, std::size_t len) {
+    void write(S &send, std::unique_ptr<char[]> data, unsigned int len) {
         auto req = this->loop().template resource<details::WriteReq>(
                     std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
                         new uv_buf_t[1]{ uv_buf_init(data.release(), len) },
@@ -349,7 +349,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     template<typename S>
-    void write(S &send, char *data, std::size_t len) {
+    void write(S &send, char *data, unsigned int len) {
         auto req = this->loop().template resource<details::WriteReq>(
                     std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
                         new uv_buf_t[1]{ uv_buf_init(data, len) },
@@ -376,7 +376,7 @@ public:
      * @param len The lenght of the submitted data.
      * @return Number of bytes written.
      */
-    int tryWrite(std::unique_ptr<char[]> data, std::size_t len) {
+    int tryWrite(std::unique_ptr<char[]> data, unsigned int len) {
         uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
         auto bw = uv_try_write(this->template get<uv_stream_t>(), bufs, 1);
 
