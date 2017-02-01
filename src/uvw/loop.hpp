@@ -138,7 +138,7 @@ public:
      */
     static std::shared_ptr<Loop> create() {
         auto ptr = std::unique_ptr<uv_loop_t, Deleter>{new uv_loop_t, [](uv_loop_t *l){ delete l; }};
-        auto loop = std::shared_ptr<Loop>(new Loop{std::move(ptr)});
+        auto loop = std::shared_ptr<Loop>{new Loop{std::move(ptr)}};
 
         if(uv_loop_init(loop->loop.get())) {
             loop = nullptr;
@@ -168,7 +168,7 @@ public:
 
             if(def) {
                 auto ptr = std::unique_ptr<uv_loop_t, Deleter>(def, [](uv_loop_t *){});
-                loop = std::shared_ptr<Loop>(new Loop{std::move(ptr)});
+                loop = std::shared_ptr<Loop>{new Loop{std::move(ptr)}};
             }
 
             ref = loop;
