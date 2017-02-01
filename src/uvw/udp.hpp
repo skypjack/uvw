@@ -59,21 +59,21 @@ enum class UVMembership: std::underlying_type_t<uv_membership> {
 
 class SendReq final: public Request<SendReq, uv_udp_send_t> {
 public:
-    using Deleter = void(*)(uv_buf_t *);
+    using Deleter = void(*)(char *);
 
-    SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<uv_buf_t[], Deleter> data, unsigned int ndata)
+    SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len)
         : Request<SendReq, uv_udp_send_t>{std::move(ca), std::move(loop)},
-          bufs{std::move(data)},
-          nbufs{ndata}
+          data{std::move(dt)},
+          buf{uv_buf_init(data.get(), len)}
     {}
 
     void send(uv_udp_t *handle, const struct sockaddr* addr) {
-        invoke(&uv_udp_send, get(), handle, bufs.get(), nbufs, addr, &defaultCallback<SendEvent>);
+        invoke(&uv_udp_send, get(), handle, &buf, 1, addr, &defaultCallback<SendEvent>);
     }
 
 private:
-    std::unique_ptr<uv_buf_t[], Deleter> bufs;
-    unsigned int nbufs;
+    std::unique_ptr<char[], Deleter> data;
+    uv_buf_t buf;
 };
 
 
@@ -300,12 +300,11 @@ public:
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
         auto req = loop().resource<details::SendReq>(
-                    std::unique_ptr<uv_buf_t[], details::SendReq::Deleter>{
-                        new uv_buf_t[1]{ uv_buf_init(data.release(), len) },
-                        [](uv_buf_t *bufs) { delete[] bufs->base; delete[] bufs; }
-                    }, 1);
+                    std::unique_ptr<char[], details::SendReq::Deleter>{
+                        data.release(), [](char *ptr) { delete[] ptr; }
+                    }, len);
 
-        auto listener = [ptr = shared_from_this()](const auto &event, details::SendReq &) {
+        auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
 
@@ -360,12 +359,11 @@ public:
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
 
         auto req = loop().resource<details::SendReq>(
-                    std::unique_ptr<uv_buf_t[], details::SendReq::Deleter>{
-                        new uv_buf_t[1]{ uv_buf_init(data, len) },
-                        [](uv_buf_t *bufs) { delete[] bufs; }
-                    }, 1);
+                    std::unique_ptr<char[], details::SendReq::Deleter>{
+                        data, [](char *) {}
+                    }, len);
 
-        auto listener = [ptr = shared_from_this()](const auto &event, details::SendReq &) {
+        auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
 

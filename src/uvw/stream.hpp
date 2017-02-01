@@ -94,25 +94,25 @@ struct ShutdownReq final: public Request<ShutdownReq, uv_shutdown_t> {
 
 class WriteReq final: public Request<WriteReq, uv_write_t> {
 public:
-    using Deleter = void(*)(uv_buf_t *);
+    using Deleter = void(*)(char *);
 
-    WriteReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<uv_buf_t[], Deleter> data, unsigned int ndata)
+    WriteReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len)
         : Request<WriteReq, uv_write_t>{std::move(ca), std::move(loop)},
-          bufs{std::move(data)},
-          nbufs{ndata}
+          data{std::move(dt)},
+          buf{uv_buf_init(data.get(), len)}
     {}
 
     void write(uv_stream_t *handle) {
-        invoke(&uv_write, get(), handle, bufs.get(), nbufs, &defaultCallback<WriteEvent>);
+        invoke(&uv_write, get(), handle, &buf, 1, &defaultCallback<WriteEvent>);
     }
 
     void write(uv_stream_t *handle, uv_stream_t *send) {
-        invoke(&uv_write2, get(), handle, bufs.get(), nbufs, send, &defaultCallback<WriteEvent>);
+        invoke(&uv_write2, get(), handle, &buf, 1, send, &defaultCallback<WriteEvent>);
     }
 
 private:
-    std::unique_ptr<uv_buf_t[], Deleter> bufs;
-    unsigned int nbufs;
+    std::unique_ptr<char[], Deleter> data;
+    uv_buf_t buf;
 };
 
 
@@ -170,7 +170,7 @@ public:
      * A ShutdownEvent event will be emitted after shutdown is complete.
      */
     void shutdown() {
-        auto listener = [ptr = this->shared_from_this()](const auto &event, details::ShutdownReq &) {
+        auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
 
@@ -251,12 +251,11 @@ public:
      */
     void write(std::unique_ptr<char[]> data, unsigned int len) {
         auto req = this->loop().template resource<details::WriteReq>(
-                    std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
-                        new uv_buf_t[1]{ uv_buf_init(data.release(), len) },
-                        [](uv_buf_t *bufs) { delete[] bufs->base; delete[] bufs; }
-                    }, 1);
+                    std::unique_ptr<char[], details::WriteReq::Deleter>{
+                        data.release(), [](char *ptr) { delete[] ptr; }
+                    }, len);
 
-        auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
+        auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
 
@@ -279,12 +278,11 @@ public:
      */
     void write(char *data, unsigned int len) {
         auto req = this->loop().template resource<details::WriteReq>(
-                    std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
-                        new uv_buf_t[1]{ uv_buf_init(data, len) },
-                        [](uv_buf_t *bufs) { delete[] bufs; }
-                    }, 1);
+                    std::unique_ptr<char[], details::WriteReq::Deleter>{
+                        data, [](char *) {}
+                    }, len);
 
-        auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
+        auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
 
@@ -315,12 +313,11 @@ public:
     template<typename S>
     void write(S &send, std::unique_ptr<char[]> data, unsigned int len) {
         auto req = this->loop().template resource<details::WriteReq>(
-                    std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
-                        new uv_buf_t[1]{ uv_buf_init(data.release(), len) },
-                        [](uv_buf_t *bufs) { delete[] bufs->base; delete[] bufs; }
-                    }, 1);
+                    std::unique_ptr<char[], details::WriteReq::Deleter>{
+                        data.release(), [](char *ptr) { delete[] ptr; }
+                    }, len);
 
-        auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
+        auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
 
@@ -351,12 +348,11 @@ public:
     template<typename S>
     void write(S &send, char *data, unsigned int len) {
         auto req = this->loop().template resource<details::WriteReq>(
-                    std::unique_ptr<uv_buf_t[], details::WriteReq::Deleter>{
-                        new uv_buf_t[1]{ uv_buf_init(data, len) },
-                        [](uv_buf_t *bufs) { delete[] bufs; }
-                    }, 1);
+                    std::unique_ptr<char[], details::WriteReq::Deleter>{
+                        data, [](char *) {}
+                    }, len);
 
-        auto listener = [ptr = this->shared_from_this()](const auto &event, details::WriteReq &) {
+        auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
 
