@@ -5,7 +5,7 @@
 #include <ciso646>
 #endif
 
-#include <new>
+#include <functional>
 #include <memory>
 #include <utility>
 #include <type_traits>

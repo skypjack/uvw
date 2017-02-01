@@ -2,7 +2,6 @@
 
 
 #include <utility>
-#include <cstddef>
 #include <memory>
 #include <uv.h>
 #include "stream.hpp"
