@@ -97,7 +97,7 @@ class Emitter {
         }
 
         Connection on(Listener f) {
-            return onL.emplace(onL.cbegin(), false, std::move(f));
+            return onL.emplace(onL.cend(), false, std::move(f));
         }
 
         void erase(Connection conn) noexcept {
@@ -139,7 +139,7 @@ class Emitter {
         return counter++;
     }
 
-    template<typename E>
+    template<typename>
     static std::size_t event_type() noexcept {
         static std::size_t value = next_type();
         return value;
