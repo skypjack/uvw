@@ -146,11 +146,11 @@ public:
          * > The convention is that stdio[0] points to stdin, fd 1 is used
          * > for stdout, and fd 2 is stderr.
          */
-        po.stdio_count = poStreamStdio.size() + poFdStdio.size();
-        uv_stdio_container_t stdio[po.stdio_count];
-        std::copy(poFdStdio.cbegin(), poFdStdio.cend(), stdio);
-        std::copy(poStreamStdio.cbegin(), poStreamStdio.cend(), stdio + poFdStdio.size());
-        po.stdio = stdio;
+        std::vector<uv_stdio_container_t> poStdio{poFdStdio.size() + poStreamStdio.size()};
+        poStdio.insert(poStdio.begin(), poStreamStdio.cbegin(), poStreamStdio.cend());
+        poStdio.insert(poStdio.begin(), poFdStdio.cbegin(), poFdStdio.cend());
+        po.stdio_count = poStdio.size();
+        po.stdio = poStdio.data();
 
         invoke(&uv_spawn, parent(), get(), &po);
     }
