@@ -149,7 +149,7 @@ public:
         std::vector<uv_stdio_container_t> poStdio{poFdStdio.size() + poStreamStdio.size()};
         poStdio.insert(poStdio.begin(), poStreamStdio.cbegin(), poStreamStdio.cend());
         poStdio.insert(poStdio.begin(), poFdStdio.cbegin(), poFdStdio.cend());
-        po.stdio_count = poStdio.size();
+        po.stdio_count = static_cast<decltype(po.stdio_count)>(poStdio.size());
         po.stdio = poStdio.data();
 
         invoke(&uv_spawn, parent(), get(), &po);
