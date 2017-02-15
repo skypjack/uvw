@@ -16,8 +16,7 @@ TEST(Loop, DefaultLoop) {
 }
 
 
-TEST(Loop, PartiallyDone) {
-
+TEST(Loop, Functionalities) {
     auto loop = uvw::Loop::create();
     auto handle = loop->resource<uvw::PrepareHandle>();
     auto req = loop->resource<uvw::WorkReq>([]{});

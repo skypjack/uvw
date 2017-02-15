@@ -9,7 +9,7 @@ struct TestEmitter: uvw::Emitter<TestEmitter> {
 };
 
 
-TEST(Emitter, ClearAndClear) {
+TEST(Emitter, EmptyAndClear) {
     TestEmitter emitter{};
 
     ASSERT_TRUE(emitter.empty());

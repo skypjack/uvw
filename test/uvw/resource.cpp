@@ -7,7 +7,7 @@
 struct Res: uvw::Resource<Res, int> { };
 
 
-TEST(Resource, Basics) {
+TEST(Resource, Functionalities) {
     ASSERT_FALSE(std::is_copy_constructible<uvw::AsyncHandle>::value);
     ASSERT_FALSE(std::is_copy_assignable<uvw::AsyncHandle>::value);
 
