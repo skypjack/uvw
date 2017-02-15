@@ -76,7 +76,7 @@ TEST(Util, Utilities) {
     ASSERT_FALSE(passwd.homedir().empty());
 
     ASSERT_EQ(uvw::Utilities::guessHandle(uvw::FileHandle{-1}), uvw::HandleType::UNKNOWN);
-    ASSERT_EQ(uvw::Utilities::guessHandle(uvw::StdIN), uvw::HandleType::TTY);
+    ASSERT_NE(uvw::Utilities::guessHandle(uvw::StdIN), uvw::HandleType::UNKNOWN);
 
     auto cpuInfo = uvw::Utilities::cpuInfo();
 
