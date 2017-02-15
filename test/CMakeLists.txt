@@ -42,6 +42,7 @@ set(TARGET_HANDLE handle)
 set(TARGET_IDLE idle)
 set(TARGET_LOOP loop)
 set(TARGET_PREPARE prepare)
+set(TARGET_REQUEST request)
 set(TARGET_RESOURCE resource)
 set(TARGET_SIGNAL signal)
 set(TARGET_TCP tcp)
@@ -144,6 +145,14 @@ add_executable(${TARGET_PREPARE} ${TARGET_PREPARE_SOURCES})
 target_include_directories(${TARGET_PREPARE} PRIVATE ${COMMON_INCLUDE_DIRS})
 target_link_libraries(${TARGET_PREPARE} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_PREPARE} COMMAND ${TARGET_PREPARE})
+
+# Test TARGET_REQUEST
+
+set(TARGET_REQUEST_SOURCES $<TARGET_OBJECTS:odr> uvw/request.cpp)
+add_executable(${TARGET_REQUEST} ${TARGET_REQUEST_SOURCES})
+target_include_directories(${TARGET_REQUEST} PRIVATE ${COMMON_INCLUDE_DIRS})
+target_link_libraries(${TARGET_REQUEST} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_REQUEST} COMMAND ${TARGET_REQUEST})
 
 # Test TARGET_RESOURCE
 set(TARGET_RESOURCE_SOURCES $<TARGET_OBJECTS:odr> uvw/resource.cpp)
