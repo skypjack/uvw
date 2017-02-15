@@ -67,5 +67,36 @@ TEST(Util, ScopedFlags) {
 
 
 TEST(Util, Utilities) {
-    // TODO
+    ASSERT_FALSE(uvw::Utilities::OS::homedir().empty());
+    ASSERT_FALSE(uvw::Utilities::OS::tmpdir().empty());
+
+    auto passwd = uvw::Utilities::OS::passwd();
+
+    ASSERT_FALSE(passwd.username().empty());
+    ASSERT_FALSE(passwd.homedir().empty());
+
+    ASSERT_EQ(uvw::Utilities::guessHandle(uvw::FileHandle{-1}), uvw::HandleType::UNKNOWN);
+    ASSERT_EQ(uvw::Utilities::guessHandle(uvw::StdIN), uvw::HandleType::TTY);
+
+    auto cpuInfo = uvw::Utilities::cpuInfo();
+
+    ASSERT_NE(cpuInfo.size(), decltype(cpuInfo.size()){0});
+    ASSERT_FALSE(cpuInfo[0].model.empty());
+    ASSERT_NE(cpuInfo[0].speed, decltype(cpuInfo[0].speed){0});
+
+    auto interfaceAddresses = uvw::Utilities::interfaceAddresses();
+
+    ASSERT_NE(interfaceAddresses.size(), decltype(interfaceAddresses.size()){0});
+    ASSERT_FALSE(interfaceAddresses[0].name.empty());
+    ASSERT_FALSE(interfaceAddresses[0].address.ip.empty());
+    ASSERT_FALSE(interfaceAddresses[0].netmask.ip.empty());
+
+    ASSERT_NO_THROW(uvw::Utilities::loadAverage());
+    ASSERT_NE(uvw::Utilities::totalMemory(), decltype(uvw::Utilities::totalMemory()){0});
+    ASSERT_NE(uvw::Utilities::uptime(), decltype(uvw::Utilities::uptime()){0});
+    ASSERT_NO_THROW(uvw::Utilities::rusage());
+    ASSERT_NE(uvw::Utilities::hrtime(), decltype(uvw::Utilities::hrtime()){0});
+    ASSERT_FALSE(uvw::Utilities::exepath().empty());
+    ASSERT_FALSE(uvw::Utilities::cwd().empty());
+    ASSERT_TRUE(uvw::Utilities::chdir(uvw::Utilities::cwd()));
 }
