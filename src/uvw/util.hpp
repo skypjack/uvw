@@ -262,7 +262,7 @@ struct CPUInfo {
  */
 struct InterfaceAddress {
     std::string name; /*!< The name of the interface (as an example _eth0_). */
-    std::string physical; /*!< The physical address. */
+    char physical[6]; /*!< The physical address. */
     bool internal; /*!< True if it is an internal interface (as an example _loopback_), false otherwise. */
     Addr address; /*!< The address of the given interface. */
     Addr netmask; /*!< The netmask of the given interface. */
@@ -519,28 +519,26 @@ struct Utilities {
     static std::vector<InterfaceAddress> interfaceAddresses() noexcept {
         std::vector<InterfaceAddress> interfaces;
 
-        uv_interface_address_t *ifaces;
-        int count;
+        uv_interface_address_t *ifaces{nullptr};
+        int count{0};
 
         if(0 == uv_interface_addresses(&ifaces, &count)) {
             std::for_each(ifaces, ifaces+count, [&interfaces](const auto &iface) {
+                InterfaceAddress interfaceAddress;
+
+                interfaceAddress.name = iface.name;
+                std::copy(iface.phys_addr, (iface.phys_addr+6), interfaceAddress.physical);
+                interfaceAddress.internal = iface.is_internal == 0 ? false : true;
+
                 if(iface.address.address4.sin_family == AF_INET) {
-                    interfaces.push_back({
-                        iface.name,
-                        iface.phys_addr,
-                        iface.is_internal == 0 ? false : true,
-                        details::address<IPv4>(&iface.address.address4),
-                        details::address<IPv4>(&iface.netmask.netmask4)
-                    });
+                    interfaceAddress.address = details::address<IPv4>(&iface.address.address4);
+                    interfaceAddress.netmask = details::address<IPv4>(&iface.netmask.netmask4);
                 } else if(iface.address.address4.sin_family == AF_INET6) {
-                    interfaces.push_back({
-                        iface.name,
-                        iface.phys_addr,
-                        iface.is_internal == 0 ? false : true,
-                        details::address<IPv6>(&iface.address.address6),
-                        details::address<IPv6>(&iface.netmask.netmask6)
-                    });
+                    interfaceAddress.address = details::address<IPv6>(&iface.address.address6);
+                    interfaceAddress.netmask = details::address<IPv6>(&iface.netmask.netmask6);
                 }
+
+                interfaces.push_back(std::move(interfaceAddress));
             });
 
             uv_free_interface_addresses(ifaces, count);
