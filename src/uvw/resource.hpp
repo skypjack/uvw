@@ -60,15 +60,15 @@ protected:
     }
 
     void leak() noexcept {
-        ptr = this->shared_from_this();
+        sPtr = this->shared_from_this();
     }
 
     void reset() noexcept {
-        ptr.reset();
+        sPtr.reset();
     }
 
     bool self() const noexcept {
-        return static_cast<bool>(ptr);
+        return static_cast<bool>(sPtr);
     }
 
 public:
@@ -126,7 +126,7 @@ public:
 
 private:
     std::shared_ptr<void> userData{nullptr};
-    std::shared_ptr<void> ptr{nullptr};
+    std::shared_ptr<void> sPtr{nullptr};
     std::shared_ptr<Loop> pLoop;
     U resource;
 };
