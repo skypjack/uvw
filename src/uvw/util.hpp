@@ -585,6 +585,31 @@ struct Utilities {
     }
 
     /**
+     * @brief Gets the title of the current process.
+     * @return The process title.
+     */
+    static std::string processTitle() {
+        std::size_t size = details::DEFAULT_SIZE;
+        char buf[details::DEFAULT_SIZE];
+        std::string str{};
+
+        if(0 == uv_get_process_title(buf, size)) {
+            str.assign(buf, size);
+        }
+
+        return str;
+    }
+
+    /**
+     * @brief Sets the current process title.
+     * @param title The process title to be set.
+     * @return True in case of success, false otherwise.
+     */
+    static bool processTitle(std::string title) {
+        return (0 == uv_set_process_title(title.c_str()));
+    }
+
+    /**
      * @brief Gets memory information (in bytes).
      * @return Memory information.
      */

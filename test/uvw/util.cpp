@@ -99,4 +99,7 @@ TEST(Util, Utilities) {
     ASSERT_FALSE(uvw::Utilities::exepath().empty());
     ASSERT_FALSE(uvw::Utilities::cwd().empty());
     ASSERT_TRUE(uvw::Utilities::chdir(uvw::Utilities::cwd()));
+
+    ASSERT_NE(uvw::Utilities::processTitle(), std::string{});
+    ASSERT_TRUE(uvw::Utilities::processTitle(uvw::Utilities::processTitle()));
 }
