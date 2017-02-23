@@ -301,7 +301,7 @@ public:
 
         auto req = loop().resource<details::SendReq>(
                     std::unique_ptr<char[], details::SendReq::Deleter>{
-                        data.release(), [](char *ptr) { delete[] ptr; }
+                        data.release(), [](char *aptr) { delete[] aptr; }
                     }, len);
 
         auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
