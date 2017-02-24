@@ -121,13 +121,13 @@ The following sections will explain in short what it means to initialize and ter
 
 Initialization is usually performed under the hood and can be even passed over, as far as handles are created using the `Loop::resource` member function.<br/>
 On the other side, handles keep themselves alive until one explicitly closes them. Because of that, memory usage will grow up if users simply forget about a handle.<br/>
-Therefore the rule quickly becomes *always close your handles*. It's simple as calling the `close` member function on them.
+Therefore the rule quickly becomes *always close your handles*. It's as simple as calling the `close` member function on them.
 
 #### Requests
 
 Usually initializing a request object is not required. Anyway, the recommended way to create a request is still through the `Loop::resource` member function.<br/>
 Requests will keep themselves alive as long as they are bound to unfinished underlying activities. This means that users have not to discard explicitly a request.<br/>
-Therefore the rule quickly becomes *feel free to make a request and forget about it*. It's simple as calling a member function on them.
+Therefore the rule quickly becomes *feel free to make a request and forget about it*. It's as simple as calling a member function on them.
 
 #### The Loop and the Resource
 
@@ -250,17 +250,8 @@ Then, to build the tests:
 
 # Contributors
 
-Michele Caini aka [skypjack](https://github.com/skypjack)<br/>
-Federico Bertolucci aka [lessness](https://github.com/lessness)<br/>
-Luca Martini aka [lordlukas](https://github.com/lucamartini)<br/>
-Elia Mazzuoli aka [Zikoel](https://github.com/Zikoel)<br/>
-Francesco De Felice aka [fradefe](https://github.com/fradefe)<br/>
-Tushar Maheshwari aka [tusharpm](https://github.com/tusharpm)<br/>
-Paolo Monteverde aka [morbo84](https://github.com/morbo84)<br/>
-Jan Vcelak aka [fcelda](https://github.com/fcelda)<br/>
-Raoul Hecky aka raoul [raoulh](https://github.com/raoulh)
-
-If you want to contribute, please send patches as pull requests against the branch master.
+If you want to contribute, please send patches as pull requests against the branch master.<br/>
+Check the [contributors list](https://github.com/skypjack/uvw/blob/master/AUTHORS) to see who has partecipated so far.
 
 # License
 
