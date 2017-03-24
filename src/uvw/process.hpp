@@ -110,7 +110,10 @@ public:
      * @brief Initializes the handle.
      * @return True in case of success, false otherwise.
      */
-    bool init() const noexcept { return true; }
+    bool init() {
+        // fake initialization so as to have leak invoked
+        return initialize([](auto...){ return 0; });
+    }
 
     /**
      * @brief spawn Starts the process.
