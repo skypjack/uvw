@@ -253,6 +253,15 @@ Then, to build the tests:
 If you want to contribute, please send patches as pull requests against the branch master.<br/>
 Check the [contributors list](https://github.com/skypjack/uvw/blob/master/AUTHORS) to see who has partecipated so far.
 
+# Projects that use `uvw`
+
+Below an incomplete list of projects that use `uvw`:
+
+* Internal tools (not publicly available) at [Cynny SpA](https://www.morphcast.com/) and [Cynny Space](http://www.cynnyspace.com/).
+* [Calaos.fr](https://www.calaos.fr/en/) (Open source home automation) on [GitHub](https://github.com/calaos).
+
+If you know of other projects that use `libuv` through `uvw`, feel free to open a PR and I'll be glad to add them to the list.
+
 # License
 
 Code and documentation Copyright (c) 2017 Michele Caini.<br/>
