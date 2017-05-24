@@ -11,7 +11,7 @@ if(WIN32)
         SOURCE_DIR ${CMAKE_BINARY_DIR}/libuv-src
         BUILD_IN_SOURCE 1
         CONFIGURE_COMMAND <SOURCE_DIR>/vcbuild.bat release x86 shared
-        BUILD_COMMAND make -j4
+        BUILD_COMMAND ""
         INSTALL_COMMAND ""
         TEST_COMMAND ""
     )
