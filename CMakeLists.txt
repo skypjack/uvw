@@ -66,7 +66,6 @@ add_definitions(
 set(PROJECT_CMAKE_MODULES cmake/modules)
 set(PROJECT_CMAKE_IN cmake/in)
 set(PROJECT_BUILD_DIR build)
-set(PROJECT_DEPS_DIR deps)
 set(PROJECT_DOCS_DIR docs)
 set(PROJECT_SRC_DIR src)
 set(PROJECT_TEST_DIR test)
