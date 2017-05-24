@@ -45,7 +45,6 @@ install:
 - echo ${CXX}
 - ${CXX} --version
 - ${CXX} -v
-- ./deps.sh
 
 script:
 - mkdir -p build && cd build

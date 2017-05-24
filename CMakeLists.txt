@@ -64,6 +64,7 @@ add_definitions(
 #
 
 set(PROJECT_CMAKE_MODULES cmake/modules)
+set(PROJECT_CMAKE_IN cmake/in)
 set(PROJECT_BUILD_DIR build)
 set(PROJECT_DEPS_DIR deps)
 set(PROJECT_DOCS_DIR docs)
@@ -92,11 +93,28 @@ include(CTest)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
-find_package(UV REQUIRED)
 find_package(Threads REQUIRED)
-find_package(GoogleTest)
 find_package(Doxygen 1.8)
 find_package(LibRt)
+
+#
+# Download and unpack dependencies
+#
+
+# gtest, gtest_main, gmock and gmock_main targets are available from now on
+configure_file(${PROJECT_CMAKE_IN}/googletest.in googletest-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download)
+execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+include_directories(${gtest_SOURCE_DIR}/include ${gmock_SOURCE_DIR}/include)
+add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src ${CMAKE_BINARY_DIR}/googletest-build)
+
+configure_file(${PROJECT_CMAKE_IN}/libuv.in libuv-download/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/libuv-download)
+execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/libuv-download)
+include_directories(${CMAKE_BINARY_DIR}/libuv-src/include)
+find_library(libuv_static NAMES libuv.a libuv PATHS ${CMAKE_BINARY_DIR}/libuv-src PATH_SUFFIXES .libs Release NO_DEFAULT_PATH)
+find_library(libuv_shared NAMES uv libuv PATHS ${CMAKE_BINARY_DIR}/libuv-src PATH_SUFFIXES .libs Release NO_DEFAULT_PATH)
 
 #
 # Referenced directories and targets
@@ -106,9 +124,7 @@ if(${DOXYGEN_FOUND})
     add_subdirectory(${PROJECT_DOCS_DIR})
 endif(${DOXYGEN_FOUND})
 
-if(${GOOGLETEST_FOUND})
-    add_subdirectory(${PROJECT_TEST_DIR})
-endif(${GOOGLETEST_FOUND})
+add_subdirectory(${PROJECT_TEST_DIR})
 
 #
 # Keep your stuff and go further away, foolish.

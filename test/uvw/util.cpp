@@ -1,3 +1,4 @@
+#include <memory>
 #include <gtest/gtest.h>
 #include <uvw.hpp>
 
@@ -100,6 +101,11 @@ TEST(Util, Utilities) {
     ASSERT_FALSE(uvw::Utilities::cwd().empty());
     ASSERT_TRUE(uvw::Utilities::chdir(uvw::Utilities::cwd()));
 
+    std::unique_ptr<char[], void(*)(void *)> fake{new char[1], [](void *ptr) { delete[] static_cast<char *>(ptr); }};
+    char *argv = fake.get();
+    argv[0] = '\0';
+
+    ASSERT_NE(uvw::Utilities::setupArgs(1, &argv), nullptr);
     ASSERT_NE(uvw::Utilities::processTitle(), std::string{});
     ASSERT_TRUE(uvw::Utilities::processTitle(uvw::Utilities::processTitle()));
 }

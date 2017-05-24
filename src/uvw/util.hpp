@@ -585,6 +585,17 @@ struct Utilities {
     }
 
     /**
+     * @brief Store the program arguments.
+     *
+     * Required for getting / setting the process title.
+     *
+     * @return Arguments that haven't been consumed internally.
+     */
+    static char ** setupArgs(int argc, char** argv) {
+        return uv_setup_args(argc, argv);
+    }
+
+    /**
      * @brief Gets the title of the current process.
      * @return The process title.
      */
