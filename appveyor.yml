@@ -15,7 +15,7 @@ configuration:
 
 before_build:
   - cd %BUILD_DIR%
-  - cmake .. -G"%CMAKE_GENERATOR_NAME%"
+  - cmake .. -G"Visual Studio 14 2015"
 
 build:
   parallel: true
