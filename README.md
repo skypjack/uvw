@@ -75,7 +75,7 @@ The requirements below are mandatory to compile the tests and to extract the doc
 * CMake version 3.4 or later
 * Doxygen version 1.8 or later
 
-Note that `libuv` is part of the dependencies of the project and it will be cloned by executing the script `deps.sh` (see below for further details).<br/>
+Note that `libuv` is part of the dependencies of the project and it will be cloned by `cmake` (see below for further details).<br/>
 Because of that, users have not to install it to compile and execute the tests.
 
 ## Library
@@ -239,9 +239,9 @@ The API reference is the recommended documentation for further details about res
 ## Tests
 
 To compile and run the tests, `uvw` requires *libuv* and *googletest*.<br/>
-Run the script `deps.sh` to download them. It is good practice to do it every time one pull the project.
+`cmake` will download and compile both the libraries before to compile anything else.
 
-Then, to build the tests:
+To build the tests:
 
 * `$ cd build`
 * `$ cmake ..`
