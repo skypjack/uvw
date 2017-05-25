@@ -8,7 +8,7 @@ if(WIN32)
         libuv
         GIT_REPOSITORY https://github.com/libuv/libuv.git
         GIT_TAG v1.x
-        SOURCE_DIR ${CMAKE_BINARY_DIR}/libuv-src
+        SOURCE_DIR src
         BUILD_IN_SOURCE 1
         CONFIGURE_COMMAND <SOURCE_DIR>/vcbuild.bat release x86 shared
         BUILD_COMMAND ""
@@ -20,7 +20,7 @@ else(WIN32)
         libuv
         GIT_REPOSITORY https://github.com/libuv/libuv.git
         GIT_TAG v1.x
-        SOURCE_DIR ${CMAKE_BINARY_DIR}/libuv-src
+        SOURCE_DIR src
         BUILD_IN_SOURCE 1
         CONFIGURE_COMMAND sh <SOURCE_DIR>/autogen.sh && ./configure
         BUILD_COMMAND make -j4

@@ -101,19 +101,18 @@ find_package(LibRt)
 #
 
 # gtest, gtest_main, gmock and gmock_main targets are available from now on
-configure_file(${PROJECT_CMAKE_IN}/googletest.in googletest-download/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download)
-execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/googletest-download)
+configure_file(${PROJECT_CMAKE_IN}/googletest.in googletest/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY googletest)
+execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY googletest)
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-include_directories(${gtest_SOURCE_DIR}/include ${gmock_SOURCE_DIR}/include)
-add_subdirectory(${CMAKE_BINARY_DIR}/googletest-src ${CMAKE_BINARY_DIR}/googletest-build)
+add_subdirectory(${CMAKE_BINARY_DIR}/googletest/src ${CMAKE_BINARY_DIR}/googletest/build)
 
-configure_file(${PROJECT_CMAKE_IN}/libuv.in libuv-download/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/libuv-download)
-execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/libuv-download)
-include_directories(${CMAKE_BINARY_DIR}/libuv-src/include)
-find_library(libuv_static NAMES libuv.a libuv PATHS ${CMAKE_BINARY_DIR}/libuv-src PATH_SUFFIXES .libs Release NO_DEFAULT_PATH)
-find_library(libuv_shared NAMES uv libuv PATHS ${CMAKE_BINARY_DIR}/libuv-src PATH_SUFFIXES .libs Release NO_DEFAULT_PATH)
+configure_file(${PROJECT_CMAKE_IN}/libuv.in libuv/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY libuv)
+execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY libuv)
+include_directories(${CMAKE_BINARY_DIR}/libuv/src/include)
+find_library(libuv_static NAMES libuv.a libuv PATHS ${CMAKE_BINARY_DIR}/libuv/src PATH_SUFFIXES .libs Release NO_DEFAULT_PATH)
+find_library(libuv_shared NAMES uv libuv PATHS ${CMAKE_BINARY_DIR}/libuv/src PATH_SUFFIXES .libs Release NO_DEFAULT_PATH)
 
 #
 # Referenced directories and targets
