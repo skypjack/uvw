@@ -66,6 +66,7 @@ add_definitions(
 set(PROJECT_CMAKE_MODULES cmake/modules)
 set(PROJECT_CMAKE_IN cmake/in)
 set(PROJECT_BUILD_DIR build)
+set(PROJECT_DEPS_DIR deps)
 set(PROJECT_DOCS_DIR docs)
 set(PROJECT_SRC_DIR src)
 set(PROJECT_TEST_DIR test)
@@ -100,19 +101,22 @@ find_package(LibRt)
 # Download and unpack dependencies
 #
 
-# gtest, gtest_main, gmock and gmock_main targets are available from now on
-configure_file(${PROJECT_CMAKE_IN}/googletest.in googletest/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY googletest)
-execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY googletest)
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-add_subdirectory(${CMAKE_BINARY_DIR}/googletest/src ${CMAKE_BINARY_DIR}/googletest/build)
+set(GOOGLETEST_DEPS_DIR ${CMAKE_SOURCE_DIR}/${PROJECT_DEPS_DIR}/googletest)
+set(LIBUV_DEPS_DIR ${CMAKE_SOURCE_DIR}/${PROJECT_DEPS_DIR}/libuv)
 
-configure_file(${PROJECT_CMAKE_IN}/libuv.in libuv/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY libuv)
-execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY libuv)
-include_directories(${CMAKE_BINARY_DIR}/libuv/src/include)
-find_library(libuv_static NAMES libuv.a libuv PATHS ${CMAKE_BINARY_DIR}/libuv/src PATH_SUFFIXES .libs Release NO_DEFAULT_PATH)
-find_library(libuv_shared NAMES uv libuv PATHS ${CMAKE_BINARY_DIR}/libuv/src PATH_SUFFIXES .libs Release NO_DEFAULT_PATH)
+# gtest, gtest_main, gmock and gmock_main targets are available from now on
+configure_file(${PROJECT_CMAKE_IN}/googletest.in ${GOOGLETEST_DEPS_DIR}/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${GOOGLETEST_DEPS_DIR})
+execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${GOOGLETEST_DEPS_DIR})
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+add_subdirectory(${GOOGLETEST_DEPS_DIR}/src ${GOOGLETEST_DEPS_DIR}/build)
+
+configure_file(${PROJECT_CMAKE_IN}/libuv.in ${LIBUV_DEPS_DIR}/CMakeLists.txt)
+execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${LIBUV_DEPS_DIR})
+execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${LIBUV_DEPS_DIR})
+include_directories(${LIBUV_DEPS_DIR}/src/include)
+find_library(libuv_static NAMES libuv.a libuv PATHS ${LIBUV_DEPS_DIR}/src PATH_SUFFIXES .libs Release NO_DEFAULT_PATH)
+find_library(libuv_shared NAMES uv libuv PATHS ${LIBUV_DEPS_DIR}/src PATH_SUFFIXES .libs Release NO_DEFAULT_PATH)
 
 #
 # Referenced directories and targets
