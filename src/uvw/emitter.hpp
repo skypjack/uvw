@@ -18,13 +18,29 @@ namespace uvw {
 /**
  * @brief The ErrorEvent event.
  *
- * Custom wrapper around libuv's error constants.
+ * Custom wrapper around error constants of `libuv`.
  */
 struct ErrorEvent {
     template<typename U, typename = std::enable_if_t<std::is_integral<U>::value>>
     explicit ErrorEvent(U val) noexcept
-        : ec{static_cast<int>(val)}, str{uv_strerror(ec)}
+        : ec{static_cast<int>(val)}
     {}
+
+    /**
+     * @brief Returns the `libuv` error code equivalent to the given platform dependent error code.
+     *
+     * It returns:
+     * * POSIX error codes on Unix (the ones stored in errno).
+     * * Win32 error codes on Windows (those returned by GetLastError() or WSAGetLastError()).
+     *
+     * If `sys` is already a `libuv` error code, it is simply returned.
+     *
+     * @param sys A platform dependent error code.
+     * @return The `libuv` error code equivalent to the given platform dependent error code.
+     */
+    static int translate(int sys) noexcept {
+        return uv_translate_sys_error(sys);
+    }
 
     /**
      * @brief Returns the error message for the given error code.
@@ -33,10 +49,19 @@ struct ErrorEvent {
      *
      * @return The error message for the given error code.
      */
-    const char * what() const noexcept { return str; }
+    const char * what() const noexcept { return uv_strerror(ec); }
 
     /**
-     * @brief Gets the underlying error code, that is a libuv's error constant.
+     * @brief Returns the error name for the given error code.
+     *
+     * Leaks a few bytes of memory when you call it with an unknown error code.
+     *
+     * @return The error name for the given error code.
+     */
+    const char * name() const noexcept { return uv_err_name(ec); }
+
+    /**
+     * @brief Gets the underlying error code, that is an error constant of `libuv`.
      * @return The underlying error code.
      */
     int code() const noexcept { return ec; }
@@ -49,7 +74,6 @@ struct ErrorEvent {
 
 private:
     const int ec;
-    const char *str;
 };
 
 

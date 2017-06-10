@@ -113,7 +113,7 @@ public:
  * @brief The Loop class.
  *
  * The event loop is the central part of `uvw`'s functionalities, as well as
- * libuv's ones.<br/>
+ * `libuv`'s ones.<br/>
  * It takes care of polling for I/O and scheduling callbacks to be run based on
  * different sources of events.
  */
@@ -372,6 +372,41 @@ public:
                     *static_cast<std::function<void(BaseHandle &)>*>(func);
             f(ref);
         }, &callback);
+    }
+
+    /**
+     * @brief Reinitialize any kernel state necessary in the child process after
+     * a fork(2) system call.
+     *
+     * Previously started watchers will continue to be started in the child
+     * process.
+     *
+     * It is necessary to explicitly call this function on every event loop
+     * created in the parent process that you plan to continue to use in the
+     * child, including the default loop (even if you don’t continue to use it
+     * in the parent). This function must be called before calling any API
+     * function using the loop in the child. Failure to do so will result in
+     * undefined behaviour, possibly including duplicate events delivered to
+     * both parent and child or aborting the child process.
+     *
+     * When possible, it is preferred to create a new loop in the child process
+     * instead of reusing a loop created in the parent. New loops created in the
+     * child process after the fork should not use this function.
+     *
+     * Note that this function is not implemented on Windows.<br/>
+     * Note also that this function is experimental in `libuv`. It may contain
+     * bugs, and is subject to change or removal. API and ABI stability is not
+     * guaranteed.
+     *
+     * An ErrorEvent will be emitted in case of errors.
+     *
+     * See the official
+     * [documentation](http://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_fork)
+     * for further details.
+     */
+    void fork() noexcept {
+        auto err = uv_loop_fork(loop.get());
+        if(err) { publish(ErrorEvent{err}); }
     }
 
 private:

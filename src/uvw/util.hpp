@@ -335,7 +335,7 @@ Addr address(F &&f, const H *handle) noexcept {
 
 
 template<typename F, typename... Args>
-std::string path(F &&f, Args&&... args) noexcept {
+std::string tryRead(F &&f, Args&&... args) noexcept {
     std::size_t size = DEFAULT_SIZE;
     char buf[DEFAULT_SIZE];
     std::string str{};
@@ -348,7 +348,7 @@ std::string path(F &&f, Args&&... args) noexcept {
         if(0 == err) {
             str = data.get();
         }
-    } else {
+    } else if(0 == err) {
         str.assign(buf, size);
     }
 
@@ -370,6 +370,9 @@ struct Utilities {
     using CallocFuncType = void*(*)(size_t, size_t);
     using FreeFuncType = void(*)(void*);
 
+    /**
+     * @brief OS dedicated utilities.
+     */
     struct OS {
         /**
          * @brief Gets the current user's home directory.
@@ -378,10 +381,11 @@ struct Utilities {
          * [documentation](http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_homedir)
          * for further details.
          *
-         * @return The current user's home directory.
+         * @return The current user's home directory, an empty string in case of
+         * errors.
          */
         static std::string homedir() noexcept {
-            return details::path(&uv_os_homedir);
+            return details::tryRead(&uv_os_homedir);
         }
 
         /**
@@ -391,10 +395,39 @@ struct Utilities {
          * [documentation](http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_tmpdir)
          * for further details.
          *
-         * @return The temp directory.
+         * @return The temp directory, an empty string in case of errors.
          */
         static std::string tmpdir() noexcept {
-            return details::path(&uv_os_tmpdir);
+            return details::tryRead(&uv_os_tmpdir);
+        }
+
+        /**
+         * @brief Retrieves an environment variable.
+         * @param name The name of the variable to be retrieved.
+         * @return The value of the environment variable, an empty string in
+         * case of errors.
+         */
+        static std::string env(const std::string &name) noexcept {
+            return details::tryRead(&uv_os_getenv, name.c_str());
+        }
+
+        /**
+         * @brief Creates, updates or deletes an environment variable.
+         * @param name The name of the variable to be updated.
+         * @param value The value to be used for the variable (an empty string
+         * to unset it).
+         * @return True in case of success, false otherwise.
+         */
+        static bool env(const std::string &name, const std::string &value) noexcept {
+            return (0 == (value.empty() ? uv_os_unsetenv(name.c_str()) : uv_os_setenv(name.c_str(), value.c_str())));
+        }
+
+        /**
+         * @brief Returns the hostname.
+         * @return The hostname, an empty string in case of errors.
+         */
+        static std::string hostname() noexcept {
+            return details::tryRead(&uv_os_gethostname);
         }
 
         /**
@@ -670,8 +703,8 @@ struct Utilities {
      * @brief Gets the executable path.
      * @return The executable path, an empty string in case of errors.
      */
-    static std::string exepath() noexcept {
-        return details::path(&uv_exepath);
+    static std::string path() noexcept {
+        return details::tryRead(&uv_exepath);
     }
 
     /**
@@ -679,7 +712,7 @@ struct Utilities {
      * @return The current working directory, an empty string in case of errors.
      */
     static std::string cwd() noexcept {
-        return details::path(&uv_cwd);
+        return details::tryRead(&uv_cwd);
     }
 
     /**

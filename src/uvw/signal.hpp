@@ -65,6 +65,18 @@ public:
     }
 
     /**
+     * @brief Starts the handle.
+     *
+     * Same functionality as SignalHandle::start but the signal handler is reset
+     * the moment the signal is received.
+     *
+     * @param signum
+     */
+    void oneShot(int signum) {
+        invoke(&uv_signal_start_oneshot, get(), &startCallback, signum);
+    }
+
+    /**
      * @brief Stops the handle.
      */
     void stop() {

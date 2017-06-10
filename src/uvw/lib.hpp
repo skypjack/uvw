@@ -16,7 +16,7 @@ namespace uvw {
  * @brief The SharedLib class.
  *
  * `uvw` provides cross platform utilities for loading shared libraries and
- * retrieving symbols from them, by means of the API offered by libuv.
+ * retrieving symbols from them, by means of the API offered by `libuv`.
  */
 class SharedLib final {
     explicit SharedLib(std::shared_ptr<Loop> ref, std::string filename) noexcept

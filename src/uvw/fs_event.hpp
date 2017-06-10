@@ -147,10 +147,10 @@ public:
 
     /**
      * @brief Gets the path being monitored.
-     * @return The path being monitored.
+     * @return The path being monitored, an empty string in case of errors.
      */
     std::string path() noexcept {
-        return details::path(&uv_fs_event_getpath, get());
+        return details::tryRead(&uv_fs_event_getpath, get());
     }
 };
 

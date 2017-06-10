@@ -76,10 +76,11 @@ public:
 
     /**
      * @brief Gets the path being monitored by the handle.
-     * @return The path being monitored by the handle.
+     * @return The path being monitored by the handle, an empty string in case
+     * of errors.
      */
     std::string path() noexcept {
-        return details::path(&uv_fs_poll_getpath, get());
+        return details::tryRead(&uv_fs_poll_getpath, get());
     }
 };
 

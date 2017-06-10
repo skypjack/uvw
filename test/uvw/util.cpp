@@ -97,7 +97,7 @@ TEST(Util, Utilities) {
     ASSERT_NE(uvw::Utilities::uptime(), decltype(uvw::Utilities::uptime()){0});
     ASSERT_NO_THROW(uvw::Utilities::rusage());
     ASSERT_NE(uvw::Utilities::hrtime(), decltype(uvw::Utilities::hrtime()){0});
-    ASSERT_FALSE(uvw::Utilities::exepath().empty());
+    ASSERT_FALSE(uvw::Utilities::path().empty());
     ASSERT_FALSE(uvw::Utilities::cwd().empty());
     ASSERT_TRUE(uvw::Utilities::chdir(uvw::Utilities::cwd()));
 

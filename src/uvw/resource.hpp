@@ -15,7 +15,7 @@ namespace uvw {
  * @brief Common class for almost all the resources available in `uvw`.
  *
  * This is the base class for handles and requests.<br/>
- * It mainly acts as a wrapper around a libuv's data structure.
+ * It mainly acts as a wrapper around a data structure of `libuv`.
  */
 template<typename T, typename U>
 class Resource: public Emitter<T>, public std::enable_shared_from_this<T> {

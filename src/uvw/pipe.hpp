@@ -83,20 +83,21 @@ public:
 
     /**
      * @brief Gets the name of the Unix domain socket or the named pipe.
-     * @return The name of the Unix domain socket or the named pipe.
+     * @return The name of the Unix domain socket or the named pipe, an empty
+     * string in case of errors.
      */
     std::string sock() const noexcept {
-        return details::path(&uv_pipe_getsockname, get());
+        return details::tryRead(&uv_pipe_getsockname, get());
     }
 
     /**
      * @brief Gets the name of the Unix domain socket or the named pipe to which
      * the handle is connected.
      * @return The name of the Unix domain socket or the named pipe to which
-     * the handle is connected.
+     * the handle is connected, an empty string in case of errors.
      */
     std::string peer() const noexcept {
-        return details::path(&uv_pipe_getpeername, get());
+        return details::tryRead(&uv_pipe_getpeername, get());
     }
 
     /**
