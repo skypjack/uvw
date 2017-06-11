@@ -199,14 +199,64 @@ using TimeVal = uv_timeval_t;
 using RUsage = uv_rusage_t;
 
 
+/**
+ * @brief Utility class.
+ *
+ * This class can be used to query the subset of the password file entry for the
+ * current effective uid (not the real uid).
+ *
+ * \sa Utilities::passwd
+ */
 struct Passwd {
     Passwd(std::shared_ptr<uv_passwd_t> pwd): passwd{pwd} {}
 
-    std::string username() const noexcept { return passwd->username; }
-    auto uid() const noexcept { return passwd->uid; }
-    auto gid() const noexcept { return passwd->gid; }
-    std::string shell() const noexcept { return passwd->shell; }
-    std::string homedir() const noexcept { return passwd->homedir; }
+    /**
+     * @brief Gets the username.
+     * @return The username of the current effective uid (not the real uid).
+     */
+    std::string username() const noexcept {
+        return ((passwd && passwd->username) ? passwd->username : "");
+    }
+
+    /**
+     * @brief Gets the uid.
+     * @return The current effective uid (not the real uid).
+     */
+    auto uid() const noexcept {
+        return (passwd ? passwd->uid : decltype(uv_passwd_t::uid){});
+    }
+
+    /**
+     * @brief Gets the gid.
+     * @return The gid of the current effective uid (not the real uid).
+     */
+    auto gid() const noexcept {
+        return (passwd ?  passwd->gid : decltype(uv_passwd_t::gid){});
+    }
+
+    /**
+     * @brief Gets the shell.
+     * @return The shell of the current effective uid (not the real uid).
+     */
+    std::string shell() const noexcept {
+        return ((passwd && passwd->shell) ? passwd->shell : "");
+    }
+
+    /**
+     * @brief Gets the homedir.
+     * @return The homedir of the current effective uid (not the real uid).
+     */
+    std::string homedir() const noexcept {
+        return ((passwd && passwd->homedir) ? passwd->homedir: "");
+    }
+
+    /**
+     * @brief Checks if the instance contains valid data.
+     * @return True if data are all valid, false otherwise.
+     */
+    operator bool() const noexcept {
+        return static_cast<bool>(passwd);
+    }
 
 private:
     std::shared_ptr<uv_passwd_t> passwd;
