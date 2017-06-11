@@ -105,7 +105,7 @@ In particular, the following applies:
 
 In other terms, tags will look like this from now on:
 
-    v1.0.0-libuv-v1.12
+    v1.0.0_libuv-v1.12
 
 Branch `master` of `uvw` will be a work in progress branch that follows branch _v1.x_ of `libuv` (at least as long as it remains their _master_ branch).<br/>
 
