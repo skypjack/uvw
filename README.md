@@ -92,13 +92,22 @@ Note that users are demanded to correctly setup include directories and librarie
 
 ## Versioning
 
-Starting with tag _v1.12.0_ of `libuv`, `uvw` follows a more strict versioning scheme.<br/>
-The problem is that any version of `uvw` requires to track explicitly the version of `libuv` to which it is bound.<br/>
-Because of that, `master` branch of `uvw` will be a work in progress branch that follows branch _v1.x_ of `libuv` (at least as long as it remains their _master_ branch).<br/>
-On the other side, tags will have the form _vU.V.W-X.Y_. In particular:
+Starting with tag _v1.12.0_ of `libuv`, `uvw` follows the [semantic versioning](http://semver.org/) scheme.<br/>
+The problem is that any version of `uvw` also requires to track explicitly the version of `libuv` to which it is bound.<br/>
+Because of that, the latter wil be appended to the version of `uvw`. As an example:
 
-* _U.V.W_ will be major, minor and patch versions of `uvw`.
-* _X.Y_ will be the version of `libuv` to which to refer (where any patch version is valid).
+    vU.V.W_libuv-vX.Y
+
+In particular, the following applies:
+
+* _U.V.W_ are major, minor and patch versions of `uvw`.
+* _X.Y_ is the version of `libuv` to which to refer (where any patch version is valid).
+
+In other terms, tags will look like this from now on:
+
+    v1.0.0-libuv-v1.12
+
+Branch `master` of `uvw` will be a work in progress branch that follows branch _v1.x_ of `libuv` (at least as long as it remains their _master_ branch).<br/>
 
 ## Documentation
 
