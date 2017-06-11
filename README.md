@@ -68,13 +68,13 @@ The main reason for which `uvw` has been written is the fact that it does not ex
 
 To be able to use `uvw`, users must provide the following system-wide tools:
 
-* A full-featured compiler that supports at least C++14
-* `libuv` version 1.9.0 or later
+* A full-featured compiler that supports at least C++14.
+* `libuv` (which version depends on the tag of `uvw` in use).
 
 The requirements below are mandatory to compile the tests and to extract the documentation:
 
-* CMake version 3.4 or later
-* Doxygen version 1.8 or later
+* CMake version 3.4 or later.
+* Doxygen version 1.8 or later.
 
 Note that `libuv` is part of the dependencies of the project and it will be cloned by `cmake` (see below for further details).<br/>
 Because of that, users have not to install it to compile and execute the tests.
@@ -207,8 +207,8 @@ For `uvw` offers an event-based approach, resources are small event emitters to 
 Attaching a listener to a resource is the recommended way to be notified about changes.<br/>
 Listeners must be callable objects of type `void(EventType &, ResourceType &)`, where:
 
-* `EventType` is the type of the event for which they have been designed
-* `ResourceType` is the type of the resource that has originated the event
+* `EventType` is the type of the event for which they have been designed.
+* `ResourceType` is the type of the resource that has originated the event.
 
 It means that the following function types are all valid:
 
@@ -221,8 +221,8 @@ Once more, please note that there is no need to keep around references to the re
 
 There exist two methods to attach an event to a resource:
 
-* `resource.once<EventType>(listener)`: the listener will be automatically removed after the first event of the given type
-* `resource.on<EventType>(listener)`: to be used for long-running listeners
+* `resource.once<EventType>(listener)`: the listener will be automatically removed after the first event of the given type.
+* `resource.on<EventType>(listener)`: to be used for long-running listeners.
 
 Both of them return an object of type `ResourceType::Connection` (as an example, `TcpHandle::Connection`).<br/>
 A connection object can be used later as an argument to the `erase` member function of the resource to remove the listener.<br/>
