@@ -180,23 +180,23 @@ struct WinSize {
 };
 
 
-using HandleType = details::UVHandleType;
+using HandleType = details::UVHandleType; /*!< The type of a handle. */
 
-using FileHandle = details::UVTypeWrapper<uv_file>;
-using OSSocketHandle = details::UVTypeWrapper<uv_os_sock_t>;
-using OSFileDescriptor = details::UVTypeWrapper<uv_os_fd_t>;
+using FileHandle = details::UVTypeWrapper<uv_file>; /*!< Utility class that wraps an internal file handle. */
+using OSSocketHandle = details::UVTypeWrapper<uv_os_sock_t>; /*!< Utility class that wraps an os socket handle. */
+using OSFileDescriptor = details::UVTypeWrapper<uv_os_fd_t>; /*!< Utility class that wraps an os file descriptor. */
 
 constexpr FileHandle StdIN{0}; /*!< Placeholder for stdin descriptor. */
 constexpr FileHandle StdOUT{1}; /*!< Placeholder for stdout descriptor. */
 constexpr FileHandle StdERR{2}; /*!< Placeholder for stderr descriptor. */
 
-using TimeSpec = uv_timespec_t;
-using Stat = uv_stat_t;
-using Uid = uv_uid_t;
-using Gid = uv_gid_t;
+using TimeSpec = uv_timespec_t; /*!< Library equivalent for uv_timespec_t. */
+using Stat = uv_stat_t; /*!< Library equivalent for uv_stat_t. */
+using Uid = uv_uid_t; /*!< Library equivalent for uv_uid_t. */
+using Gid = uv_gid_t; /*!< Library equivalent for uv_gid_t. */
 
-using TimeVal = uv_timeval_t;
-using RUsage = uv_rusage_t;
+using TimeVal = uv_timeval_t; /*!< Library equivalent for uv_timeval_t. */
+using RUsage = uv_rusage_t; /*!< Library equivalent for uv_rusage_t. */
 
 
 /**
