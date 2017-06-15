@@ -41,6 +41,7 @@ TEST(Work, Cancellation) {
     auto handle = loop->resource<uvw::CheckHandle>();
 
     bool checkErrorEvent = false;
+    bool checkWorkEvent = false;
     bool checkTask = false;
 
     handle->on<uvw::CheckEvent>([](const auto &, auto &hndl) {
@@ -58,8 +59,9 @@ TEST(Work, Cancellation) {
         checkErrorEvent = true;
     });
 
-    req->on<uvw::WorkEvent>([](const auto &, auto &) {
-        while(true); /* it won't finish before the cancellation: guaranteed. */
+    req->on<uvw::WorkEvent>([&checkWorkEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkWorkEvent);
+        checkWorkEvent = true;
     });
 
     handle->start();
@@ -68,5 +70,6 @@ TEST(Work, Cancellation) {
     loop->run();
 
     ASSERT_TRUE(checkErrorEvent);
+    ASSERT_FALSE(checkWorkEvent);
     ASSERT_FALSE(checkTask);
 }
