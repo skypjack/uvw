@@ -39,7 +39,7 @@ matrix:
         packages: ['g++-6']
     env:
       - COMPILER=g++-6
-      - CXXFLAGS="-O0 --coverage"
+      - CXXFLAGS="-O0 --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
     before_script:
       - pip install --user cpp-coveralls
     after_success:

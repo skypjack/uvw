@@ -30,16 +30,24 @@ set(TARGET_ASYNC async)
 set(TARGET_CHECK check)
 set(TARGET_DNS dns)
 set(TARGET_EMITTER emitter)
-set(TARGET_FS_REQ fs_req)
 set(TARGET_FILE_REQ file_req)
+set(TARGET_FS_EVENT fs_event)
+set(TARGET_FS_POLL fs_poll)
+set(TARGET_FS_REQ fs_req)
 set(TARGET_HANDLE handle)
 set(TARGET_IDLE idle)
+set(TARGET_LIB lib)
 set(TARGET_LOOP loop)
+set(TARGET_PIPE pipe)
+set(TARGET_POLL poll)
 set(TARGET_PREPARE prepare)
+set(TARGET_PROCESS process)
 set(TARGET_REQUEST request)
 set(TARGET_RESOURCE resource)
 set(TARGET_SIGNAL signal)
+set(TARGET_STREAM stream)
 set(TARGET_TCP tcp)
+set(TARGET_THREAD thread)
 set(TARGET_TIMER timer)
 set(TARGET_TTY tty)
 set(TARGET_UDP udp)
@@ -86,17 +94,6 @@ target_include_directories(${TARGET_EMITTER} PRIVATE ${UVW_SRC_DIR})
 target_link_libraries(${TARGET_EMITTER} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_EMITTER} COMMAND ${TARGET_EMITTER})
 
-# Test TARGET_FS_REQ
-
-set(TARGET_FS_REQ_SOURCES $<TARGET_OBJECTS:odr> uvw/fs_req.cpp)
-set(TARGET_FS_REQ_DIR ${CMAKE_CURRENT_BINARY_DIR}/fs_req)
-file(MAKE_DIRECTORY ${TARGET_FS_REQ_DIR})
-add_executable(${TARGET_FS_REQ} ${TARGET_FS_REQ_SOURCES})
-target_include_directories(${TARGET_FS_REQ} PRIVATE ${UVW_SRC_DIR})
-target_link_libraries(${TARGET_FS_REQ} PRIVATE ${COMMON_LINK_LIBS})
-target_compile_definitions(${TARGET_FS_REQ} PRIVATE TARGET_FS_REQ_DIR="${TARGET_FS_REQ_DIR}")
-add_test(NAME ${TARGET_FS_REQ} COMMAND ${TARGET_FS_REQ})
-
 # Test TARGET_FILE_REQ
 
 set(TARGET_FILE_REQ_SOURCES $<TARGET_OBJECTS:odr> uvw/file_req.cpp)
@@ -107,6 +104,33 @@ target_include_directories(${TARGET_FILE_REQ} PRIVATE ${UVW_SRC_DIR})
 target_link_libraries(${TARGET_FILE_REQ} PRIVATE ${COMMON_LINK_LIBS})
 target_compile_definitions(${TARGET_FILE_REQ} PRIVATE TARGET_FILE_REQ_DIR="${TARGET_FILE_REQ_DIR}")
 add_test(NAME ${TARGET_FILE_REQ} COMMAND ${TARGET_FILE_REQ})
+
+# Test TARGET_FS_EVENT
+
+set(TARGET_FS_EVENT_SOURCES $<TARGET_OBJECTS:odr> uvw/fs_event.cpp)
+add_executable(${TARGET_FS_EVENT} ${TARGET_FS_EVENT_SOURCES})
+target_include_directories(${TARGET_FS_EVENT} PRIVATE ${UVW_SRC_DIR})
+target_link_libraries(${TARGET_FS_EVENT} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_FS_EVENT} COMMAND ${TARGET_FS_EVENT})
+
+# Test TARGET_FS_POLL
+
+set(TARGET_FS_POLL_SOURCES $<TARGET_OBJECTS:odr> uvw/fs_poll.cpp)
+add_executable(${TARGET_FS_POLL} ${TARGET_FS_POLL_SOURCES})
+target_include_directories(${TARGET_FS_POLL} PRIVATE ${UVW_SRC_DIR})
+target_link_libraries(${TARGET_FS_POLL} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_FS_POLL} COMMAND ${TARGET_FS_POLL})
+
+# Test TARGET_FS_REQ
+
+set(TARGET_FS_REQ_SOURCES $<TARGET_OBJECTS:odr> uvw/fs_req.cpp)
+set(TARGET_FS_REQ_DIR ${CMAKE_CURRENT_BINARY_DIR}/fs_req)
+file(MAKE_DIRECTORY ${TARGET_FS_REQ_DIR})
+add_executable(${TARGET_FS_REQ} ${TARGET_FS_REQ_SOURCES})
+target_include_directories(${TARGET_FS_REQ} PRIVATE ${UVW_SRC_DIR})
+target_link_libraries(${TARGET_FS_REQ} PRIVATE ${COMMON_LINK_LIBS})
+target_compile_definitions(${TARGET_FS_REQ} PRIVATE TARGET_FS_REQ_DIR="${TARGET_FS_REQ_DIR}")
+add_test(NAME ${TARGET_FS_REQ} COMMAND ${TARGET_FS_REQ})
 
 # Test TARGET_HANDLE
 
@@ -124,6 +148,14 @@ target_include_directories(${TARGET_IDLE} PRIVATE ${UVW_SRC_DIR})
 target_link_libraries(${TARGET_IDLE} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_IDLE} COMMAND ${TARGET_IDLE})
 
+# Test TARGET_LIB
+
+set(TARGET_LIB_SOURCES $<TARGET_OBJECTS:odr> uvw/lib.cpp)
+add_executable(${TARGET_LIB} ${TARGET_LIB_SOURCES})
+target_include_directories(${TARGET_LIB} PRIVATE ${UVW_SRC_DIR})
+target_link_libraries(${TARGET_LIB} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_LIB} COMMAND ${TARGET_LIB})
+
 # Test TARGET_LOOP
 
 set(TARGET_LOOP_SOURCES $<TARGET_OBJECTS:odr> uvw/loop.cpp)
@@ -132,6 +164,22 @@ target_include_directories(${TARGET_LOOP} PRIVATE ${UVW_SRC_DIR})
 target_link_libraries(${TARGET_LOOP} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_LOOP} COMMAND ${TARGET_LOOP})
 
+# Test TARGET_PIPE
+
+set(TARGET_PIPE_SOURCES $<TARGET_OBJECTS:odr> uvw/pipe.cpp)
+add_executable(${TARGET_PIPE} ${TARGET_PIPE_SOURCES})
+target_include_directories(${TARGET_PIPE} PRIVATE ${UVW_SRC_DIR})
+target_link_libraries(${TARGET_PIPE} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_PIPE} COMMAND ${TARGET_PIPE})
+
+# Test TARGET_POLL
+
+set(TARGET_POLL_SOURCES $<TARGET_OBJECTS:odr> uvw/poll.cpp)
+add_executable(${TARGET_POLL} ${TARGET_POLL_SOURCES})
+target_include_directories(${TARGET_POLL} PRIVATE ${UVW_SRC_DIR})
+target_link_libraries(${TARGET_POLL} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_POLL} COMMAND ${TARGET_POLL})
+
 # Test TARGET_PREPARE
 
 set(TARGET_PREPARE_SOURCES $<TARGET_OBJECTS:odr> uvw/prepare.cpp)
@@ -139,6 +187,14 @@ add_executable(${TARGET_PREPARE} ${TARGET_PREPARE_SOURCES})
 target_include_directories(${TARGET_PREPARE} PRIVATE ${UVW_SRC_DIR})
 target_link_libraries(${TARGET_PREPARE} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_PREPARE} COMMAND ${TARGET_PREPARE})
+
+# Test TARGET_PROCESS
+
+set(TARGET_PROCESS_SOURCES $<TARGET_OBJECTS:odr> uvw/process.cpp)
+add_executable(${TARGET_PROCESS} ${TARGET_PROCESS_SOURCES})
+target_include_directories(${TARGET_PROCESS} PRIVATE ${UVW_SRC_DIR})
+target_link_libraries(${TARGET_PROCESS} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_PROCESS} COMMAND ${TARGET_PROCESS})
 
 # Test TARGET_REQUEST
 
@@ -163,6 +219,14 @@ target_include_directories(${TARGET_SIGNAL} PRIVATE ${UVW_SRC_DIR})
 target_link_libraries(${TARGET_SIGNAL} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_SIGNAL} COMMAND ${TARGET_SIGNAL})
 
+# Test TARGET_STREAM
+
+set(TARGET_STREAM_SOURCES $<TARGET_OBJECTS:odr> uvw/stream.cpp)
+add_executable(${TARGET_STREAM} ${TARGET_STREAM_SOURCES})
+target_include_directories(${TARGET_STREAM} PRIVATE ${UVW_SRC_DIR})
+target_link_libraries(${TARGET_STREAM} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_STREAM} COMMAND ${TARGET_STREAM})
+
 # Test TARGET_TCP
 
 set(TARGET_TCP_SOURCES $<TARGET_OBJECTS:odr> uvw/tcp.cpp)
@@ -170,6 +234,14 @@ add_executable(${TARGET_TCP} ${TARGET_TCP_SOURCES})
 target_include_directories(${TARGET_TCP} PRIVATE ${UVW_SRC_DIR})
 target_link_libraries(${TARGET_TCP} PRIVATE ${COMMON_LINK_LIBS})
 add_test(NAME ${TARGET_TCP} COMMAND ${TARGET_TCP})
+
+# Test TARGET_THREAD
+
+set(TARGET_THREAD_SOURCES $<TARGET_OBJECTS:odr> uvw/thread.cpp)
+add_executable(${TARGET_THREAD} ${TARGET_THREAD_SOURCES})
+target_include_directories(${TARGET_THREAD} PRIVATE ${UVW_SRC_DIR})
+target_link_libraries(${TARGET_THREAD} PRIVATE ${COMMON_LINK_LIBS})
+add_test(NAME ${TARGET_THREAD} COMMAND ${TARGET_THREAD})
 
 # Test TARGET_TIMER
 
