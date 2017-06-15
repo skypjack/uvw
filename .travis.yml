@@ -31,6 +31,20 @@ matrix:
     osx_image: xcode8
     compiler: clang
     env: COMPILER=clang++
+  - os: linux
+    compiler: gcc
+    addons:
+      apt:
+        sources: ['ubuntu-toolchain-r-test']
+        packages: ['g++-6']
+    env:
+      - COMPILER=g++-6
+      - CXXFLAGS="-O0 --coverage"
+    before_script:
+      - pip install --user cpp-coveralls
+    after_success:
+      - coveralls --gcov gcov-6 --gcov-options '\-lp' --root ${TRAVIS_BUILD_DIR} --build-root ${TRAVIS_BUILD_DIR}/build --extension cpp --extension hpp --exclude deps --include src
+
 
 notifications:
   email:
@@ -38,15 +52,15 @@ notifications:
     on_failure: always
 
 install:
-- echo ${PATH}
-- ./travis.sh
-- cmake --version
-- export CXX=${COMPILER}
-- echo ${CXX}
-- ${CXX} --version
-- ${CXX} -v
+  - echo ${PATH}
+  - ./travis.sh
+  - cmake --version
+  - export CXX=${COMPILER}
+  - echo ${CXX}
+  - ${CXX} --version
+  - ${CXX} -v
 
 script:
-- mkdir -p build && cd build
-- cmake .. && make -j4
-- CTEST_OUTPUT_ON_FAILURE=1 make test
+  - mkdir -p build && cd build
+  - cmake .. && make -j4
+  - CTEST_OUTPUT_ON_FAILURE=1 make test
