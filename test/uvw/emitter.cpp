@@ -9,6 +9,19 @@ struct TestEmitter: uvw::Emitter<TestEmitter> {
 };
 
 
+TEST(ErrorEvent, Functionalities) {
+    uvw::ErrorEvent event{0};
+
+    ASSERT_EQ(0, uvw::ErrorEvent::translate(0));
+    ASSERT_NE(event.what(), nullptr);
+    ASSERT_NE(event.name(), nullptr);
+    ASSERT_EQ(event.code(), 0);
+
+    ASSERT_FALSE(static_cast<bool>(uvw::ErrorEvent{0}));
+    ASSERT_TRUE(static_cast<bool>(uvw::ErrorEvent{-1}));
+}
+
+
 TEST(Emitter, EmptyAndClear) {
     TestEmitter emitter{};
 
