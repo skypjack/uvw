@@ -50,7 +50,7 @@ public:
      * @brief Checks if the library has been correctly opened.
      * @return True if the library is opened, false otherwise.
      */
-    explicit operator bool() const noexcept { return !opened; }
+    explicit operator bool() const noexcept { return opened; }
 
     /**
      * @brief Retrieves a data pointer from a dynamic library.

@@ -153,7 +153,8 @@ add_test(NAME ${TARGET_IDLE} COMMAND ${TARGET_IDLE})
 set(TARGET_LIB_SOURCES $<TARGET_OBJECTS:odr> uvw/lib.cpp)
 add_executable(${TARGET_LIB} ${TARGET_LIB_SOURCES})
 target_include_directories(${TARGET_LIB} PRIVATE ${UVW_SRC_DIR})
-target_link_libraries(${TARGET_LIB} PRIVATE ${COMMON_LINK_LIBS})
+target_link_libraries(${TARGET_LIB} PRIVATE ${COMMON_LINK_LIBS} ${CMAKE_DL_LIBS})
+target_compile_definitions(${TARGET_LIB} PRIVATE TARGET_LIB_SO="${libuv_shared}")
 add_test(NAME ${TARGET_LIB} COMMAND ${TARGET_LIB})
 
 # Test TARGET_LOOP
