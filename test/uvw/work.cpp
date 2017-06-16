@@ -64,9 +64,18 @@ TEST(Work, Cancellation) {
         checkWorkEvent = true;
     });
 
+    auto launcher = [](auto &request) {
+        struct Cancel {
+            Cancel(uvw::WorkReq &req): req{req} {}
+            ~Cancel() { req.cancel(); }
+            uvw::WorkReq &req;
+        } cancel{request};
+
+        return request.queue(), (void)cancel;
+    };
+
     handle->start();
-    req->queue();
-    req->cancel();
+    launcher(*req);
     loop->run();
 
     ASSERT_TRUE(checkErrorEvent);
