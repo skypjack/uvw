@@ -17,11 +17,10 @@ TEST(Resource, Functionalities) {
     auto loop = uvw::Loop::getDefault();
     auto resource = loop->resource<uvw::AsyncHandle>();
 
-    ASSERT_NO_THROW(resource->loop());
+    ASSERT_EQ(&resource->loop(), loop.get());
 
-    auto data = std::make_shared<int>(42);
+    resource->data(std::make_shared<int>(42));
 
-    ASSERT_NO_THROW(resource->data(data));
     ASSERT_EQ(*std::static_pointer_cast<int>(resource->data()), 42);
     ASSERT_EQ(*resource->data<int>(), 42);
 
