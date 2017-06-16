@@ -53,3 +53,10 @@ TEST(Loop, Functionalities) {
 
     ASSERT_FALSE(loop->alive());
 }
+
+
+TEST(Loop, Configure) {
+    auto loop = uvw::Loop::create();
+    ASSERT_NO_THROW(loop->configure(uvw::Loop::Configure::BLOCK_SIGNAL, 9));
+    ASSERT_NO_THROW(loop->run());
+}

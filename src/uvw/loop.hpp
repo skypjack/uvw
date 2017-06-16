@@ -208,7 +208,8 @@ public:
      */
     template<typename... Args>
     void configure(Configure flag, Args&&... args) {
-        auto err = uv_loop_configure(loop.get(), static_cast<std::underlying_type_t<Configure>>(flag), std::forward<Args>(args)...);
+        auto option = static_cast<std::underlying_type_t<Configure>>(flag);
+        auto err = uv_loop_configure(loop.get(), static_cast<uv_loop_option>(option), std::forward<Args>(args)...);
         if(err) { publish(ErrorEvent{err}); }
     }
 
