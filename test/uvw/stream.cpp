@@ -15,7 +15,10 @@ struct FakeStreamHandle: uvw::StreamHandle<FakeStreamHandle, fake_stream_t> {
 
 TEST(Stream, TODO) {
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<FakeStreamHandle>();
+    auto handle = FakeStreamHandle::create(loop);
+
+    handle = nullptr;
 
     // TODO
+
 }

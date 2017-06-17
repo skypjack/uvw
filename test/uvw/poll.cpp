@@ -2,9 +2,11 @@
 #include <uvw.hpp>
 
 
-TEST(Poll, TODO) {
+TEST(Poll, StartAndStopReadableWritable) {
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::PollHandle>(0);
+    auto handle = uvw::PollHandle::create(loop, 0);
+
+    handle = nullptr;
 
     // TODO
 }

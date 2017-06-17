@@ -4,7 +4,9 @@
 
 TEST(Process, TODO) {
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::ProcessHandle>();
+    auto handle = uvw::ProcessHandle::create(loop);
+
+    handle = nullptr;
 
     // TODO
 }

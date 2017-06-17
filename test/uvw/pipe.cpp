@@ -4,7 +4,9 @@
 
 TEST(Pipe, TODO) {
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::PipeHandle>();
+    auto handle = uvw::PipeHandle::create(loop);
+
+    handle = nullptr;
 
     // TODO
 }

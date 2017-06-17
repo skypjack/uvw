@@ -4,7 +4,9 @@
 
 TEST(FsEvent, TODO) {
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::FsEventHandle>();
+    auto handle = uvw::FsEventHandle::create(loop);
+
+    handle = nullptr;
 
     // TODO
 }
