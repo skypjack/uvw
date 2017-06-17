@@ -1,3 +1,4 @@
+#include <type_traits>
 #include <gtest/gtest.h>
 #include <uvw/emitter.hpp>
 
@@ -10,15 +11,17 @@ struct TestEmitter: uvw::Emitter<TestEmitter> {
 
 
 TEST(ErrorEvent, Functionalities) {
-    uvw::ErrorEvent event{0};
+    auto ecode = static_cast<std::underlying_type_t<uv_errno_t>>(UV_EADDRINUSE);
 
-    ASSERT_EQ(0, uvw::ErrorEvent::translate(0));
+    uvw::ErrorEvent event{ecode};
+
+    ASSERT_EQ(ecode, uvw::ErrorEvent::translate(ecode));
     ASSERT_NE(event.what(), nullptr);
     ASSERT_NE(event.name(), nullptr);
-    ASSERT_EQ(event.code(), 0);
+    ASSERT_EQ(event.code(), ecode);
 
     ASSERT_FALSE(static_cast<bool>(uvw::ErrorEvent{0}));
-    ASSERT_TRUE(static_cast<bool>(uvw::ErrorEvent{-1}));
+    ASSERT_TRUE(static_cast<bool>(uvw::ErrorEvent{ecode}));
 }
 
 
@@ -117,4 +120,35 @@ TEST(Emitter, OnAndErase) {
 
     ASSERT_TRUE(emitter.empty());
     ASSERT_TRUE(emitter.empty<FakeEvent>());
+}
+
+
+TEST(Emitter, CallbackClear) {
+    TestEmitter emitter{};
+
+    emitter.on<FakeEvent>([](const auto &, auto &ref) {
+        ref.template on<FakeEvent>([](const auto &, auto &){});
+        ref.clear();
+    });
+
+    ASSERT_FALSE(emitter.empty());
+    ASSERT_FALSE(emitter.empty<FakeEvent>());
+
+    emitter.emit();
+
+    ASSERT_TRUE(emitter.empty());
+    ASSERT_TRUE(emitter.empty<FakeEvent>());
+
+    emitter.on<FakeEvent>([](const auto &, auto &ref) {
+        ref.clear();
+        ref.template on<FakeEvent>([](const auto &, auto &){});
+    });
+
+    ASSERT_FALSE(emitter.empty());
+    ASSERT_FALSE(emitter.empty<FakeEvent>());
+
+    emitter.emit();
+
+    ASSERT_FALSE(emitter.empty());
+    ASSERT_FALSE(emitter.empty<FakeEvent>());
 }

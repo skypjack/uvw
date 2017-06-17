@@ -84,9 +84,9 @@ TEST(Tcp, SockPeer) {
         handle.close();
     });
 
-    server->bind("127.0.0.1", 4242);
+    server->bind(uvw::Addr{ "127.0.0.1", 4242 });
     server->listen();
-    client->connect("127.0.0.1", 4242);
+    client->connect(uvw::Addr{ "127.0.0.1", 4242 });
 
     loop->run();
 }

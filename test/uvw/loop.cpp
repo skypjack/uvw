@@ -30,7 +30,13 @@ TEST(Loop, Functionalities) {
     ASSERT_TRUE(static_cast<bool>(handle));
     ASSERT_TRUE(static_cast<bool>(req));
 
+    ASSERT_TRUE(loop->descriptor());
+    ASSERT_NO_THROW(loop->now());
+    ASSERT_NO_THROW(loop->update());
+    ASSERT_NO_THROW(loop->fork());
+
     ASSERT_FALSE(loop->alive());
+    ASSERT_FALSE(loop->timeout().first);
 
     handle->start();
     handle->on<uvw::PrepareEvent>([](const auto &, auto &hndl) {
@@ -44,6 +50,7 @@ TEST(Loop, Functionalities) {
     });
 
     ASSERT_TRUE(loop->alive());
+    ASSERT_TRUE(loop->timeout().first);
     ASSERT_NO_THROW(loop->run());
 
     loop->walk([](uvw::BaseHandle &) { FAIL(); });
