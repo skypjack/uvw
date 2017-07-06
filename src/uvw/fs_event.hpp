@@ -79,7 +79,7 @@ class FsEventHandle final: public Handle<FsEventHandle, uv_fs_event_t> {
     static void startCallback(uv_fs_event_t *handle, const char *filename, int events, int status) {
         FsEventHandle &fsEvent = *(static_cast<FsEventHandle*>(handle->data));
         if(status) { fsEvent.publish(ErrorEvent{status}); }
-        else { fsEvent.publish(FsEventEvent{filename, static_cast<std::underlying_type_t<Watch>>(events)}); }
+        else { fsEvent.publish(FsEventEvent{filename, static_cast<std::underlying_type_t<details::UVFsEvent>>(events)}); }
     }
 
 public:
