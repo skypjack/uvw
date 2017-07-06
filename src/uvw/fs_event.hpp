@@ -79,7 +79,7 @@ class FsEventHandle final: public Handle<FsEventHandle, uv_fs_event_t> {
     static void startCallback(uv_fs_event_t *handle, const char *filename, int events, int status) {
         FsEventHandle &fsEvent = *(static_cast<FsEventHandle*>(handle->data));
         if(status) { fsEvent.publish(ErrorEvent{status}); }
-        else { fsEvent.publish(FsEventEvent{filename, static_cast<std::underlying_type_t<Event>>(events)}); }
+        else { fsEvent.publish(FsEventEvent{filename, static_cast<std::underlying_type_t<details::UVFsEvent>>(events)}); }
     }
 
 public:
@@ -113,7 +113,7 @@ public:
      * @param path The file or directory to be monitored.
      * @param flags Additional flags to control the behavior.
      */
-    void start(std::string path, Flags<Watch> flags = Flags<Watch>{}) {
+    void start(std::string path, Flags<Event> flags = Flags<Event>{}) {
         invoke(&uv_fs_event_start, get(), &startCallback, path.data(), flags);
     }
 
@@ -132,10 +132,10 @@ public:
      * * `FsEventHandle::Event::RECURSIVE`
      *
      * @param path The file or directory to be monitored.
-     * @param watch Additional flag to control the behavior.
+     * @param flag Additional flag to control the behavior.
      */
-    void start(std::string path, Watch watch) {
-        start(std::move(path), Flags<Watch>{watch});
+    void start(std::string path, Event flag) {
+        start(std::move(path), Flags<Event>{flag});
     }
 
     /**
