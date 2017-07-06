@@ -132,10 +132,10 @@ public:
      * * `FsEventHandle::Event::RECURSIVE`
      *
      * @param path The file or directory to be monitored.
-     * @param watch Additional flag to control the behavior.
+     * @param flag Additional flag to control the behavior.
      */
-    void start(std::string path, Event watch) {
-        start(std::move(path), Flags<Event>{watch});
+    void start(std::string path, Event flag) {
+        start(std::move(path), Flags<Event>{flag});
     }
 
     /**
