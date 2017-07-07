@@ -58,10 +58,9 @@ protected:
     }
 
     template<typename F, typename... Args>
-    auto invoke(F &&f, Args&&... args) {
+    void invoke(F &&f, Args&&... args) {
         auto err = std::forward<F>(f)(std::forward<Args>(args)...);
         if(err) { Emitter<T>::publish(ErrorEvent{err}); }
-        return err;
     }
 
 public:

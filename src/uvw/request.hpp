@@ -29,11 +29,10 @@ protected:
 
     template<typename F, typename... Args>
     auto invoke(F &&f, Args&&... args)
-    -> std::enable_if_t<not std::is_void<std::result_of_t<F(Args...)>>::value, int> {
+    -> std::enable_if_t<not std::is_void<std::result_of_t<F(Args...)>>::value> {
         auto err = std::forward<F>(f)(std::forward<Args>(args)...);
         if(err) { Emitter<T>::publish(ErrorEvent{err}); }
         else { this->leak(); }
-        return err;
     }
 
     template<typename F, typename... Args>
