@@ -245,7 +245,12 @@ public:
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
         auto req = get();
         auto saddr = reinterpret_cast<const sockaddr *>(&addr);
-        auto err = uv_getnameinfo(parent(), req, nullptr, saddr, flags);
+
+        // forces an error in case of an invalid ip by using invalid flags
+        // see https://github.com/libuv/libuv/issues/1406 for more details
+        auto af = (ip.empty() ? -1 : flags);
+
+        auto err = uv_getnameinfo(parent(), req, nullptr, saddr, af);
         return std::make_pair(!err, std::make_pair(req->host, req->service));
     }
 
