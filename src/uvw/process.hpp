@@ -182,7 +182,7 @@ public:
      * @param path The working directory to be used when `spawn()` is invoked.
      * @return A reference to this process handle.
      */
-    ProcessHandle& cwd(std::string &path) noexcept {
+    ProcessHandle & cwd(std::string &path) noexcept {
         poCwd = path;
         return *this;
     }
@@ -205,7 +205,7 @@ public:
      * @param flags A valid set of flags.
      * @return A reference to this process handle.
      */
-    ProcessHandle& flags(Flags<Process> flags) noexcept {
+    ProcessHandle & flags(Flags<Process> flags) noexcept {
         poFlags = flags;
         return *this;
     }
@@ -231,7 +231,7 @@ public:
      * @return A reference to this process handle.
      */
     template<typename T, typename U>
-    ProcessHandle& stdio(StreamHandle<T, U> &stream, Flags<StdIO> flags) {
+    ProcessHandle & stdio(StreamHandle<T, U> &stream, Flags<StdIO> flags) {
         uv_stdio_container_t container;
         Flags<StdIO>::Type fgs = flags;
         container.flags = static_cast<uv_stdio_flags>(fgs);
@@ -265,7 +265,7 @@ public:
      * @param flags A valid set of flags.
      * @return A reference to this process handle.
      */
-    ProcessHandle& stdio(FileHandle fd, Flags<StdIO> flags) {
+    ProcessHandle & stdio(FileHandle fd, Flags<StdIO> flags) {
         auto fgs = static_cast<uv_stdio_flags>(Flags<StdIO>::Type{flags});
 
         auto actual = FileHandle::Type{fd};
@@ -296,7 +296,7 @@ public:
      * @param id A valid user id to be used.
      * @return A reference to this process handle.
      */
-    ProcessHandle& uid(Uid id) {
+    ProcessHandle & uid(Uid id) {
         poUid = id;
         return *this;
     }
@@ -306,7 +306,7 @@ public:
      * @param id A valid group id to be used.
      * @return A reference to this process handle.
      */
-    ProcessHandle& gid(Gid id) {
+    ProcessHandle & gid(Gid id) {
         poGid = id;
         return *this;
     }

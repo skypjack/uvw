@@ -88,8 +88,8 @@ public:
         static_assert(std::is_base_of<Resource<T, U>, T>::value, "!");
     }
 
-    Resource& operator=(const Resource &) = delete;
-    Resource& operator=(Resource &&) = delete;
+    Resource & operator=(const Resource &) = delete;
+    Resource & operator=(Resource &&) = delete;
 
     /**
      * @brief Creates a new resource of the given type.
@@ -105,7 +105,7 @@ public:
      * @brief Gets the loop from which the resource was originated.
      * @return A reference to a loop instance.
      */
-    Loop& loop() const noexcept { return *pLoop; }
+    Loop & loop() const noexcept { return *pLoop; }
 
     /**
      * @brief Gets user-defined data. `uvw` won't use this field in any case.

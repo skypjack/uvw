@@ -181,8 +181,8 @@ public:
 
     Loop(const Loop &) = delete;
     Loop(Loop &&other) = delete;
-    Loop& operator=(const Loop &) = delete;
-    Loop& operator=(Loop &&other) = delete;
+    Loop & operator=(const Loop &) = delete;
+    Loop & operator=(Loop &&other) = delete;
 
     ~Loop() noexcept {
         if(loop) {

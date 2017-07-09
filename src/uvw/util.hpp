@@ -116,12 +116,12 @@ public:
 
     ~Flags() noexcept { static_assert(std::is_enum<E>::value, "!"); }
 
-    CONSTEXPR_SPECIFIER Flags& operator=(const Flags &f) noexcept {
+    CONSTEXPR_SPECIFIER Flags & operator=(const Flags &f) noexcept {
         flags = f.flags;
         return *this;
     }
 
-    CONSTEXPR_SPECIFIER Flags& operator=(Flags &&f) noexcept {
+    CONSTEXPR_SPECIFIER Flags & operator=(Flags &&f) noexcept {
         flags = std::move(f.flags);
         return *this;
     }

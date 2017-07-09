@@ -63,7 +63,7 @@ public:
         return (0 == uv_thread_join(&thread));
     }
 
-    Loop& loop() const noexcept { return *pLoop; }
+    Loop & loop() const noexcept { return *pLoop; }
 
 private:
     std::shared_ptr<Loop> pLoop;
@@ -99,7 +99,7 @@ public:
         return uv_key_set(&key, value);
     }
 
-    Loop& loop() const noexcept { return *pLoop; }
+    Loop & loop() const noexcept { return *pLoop; }
 
 private:
     std::shared_ptr<Loop> pLoop;
@@ -130,7 +130,7 @@ public:
         uv_once(guard(), cb);
     }
 
-    Loop& loop() const noexcept { return *pLoop; }
+    Loop & loop() const noexcept { return *pLoop; }
 
 private:
     std::shared_ptr<Loop> pLoop;
@@ -167,7 +167,7 @@ public:
         uv_mutex_unlock(&mutex);
     }
 
-    Loop& loop() const noexcept { return *pLoop; }
+    Loop & loop() const noexcept { return *pLoop; }
 
 private:
     std::shared_ptr<Loop> pLoop;
@@ -215,7 +215,7 @@ public:
         uv_rwlock_wrunlock(&rwlock);
     }
 
-    Loop& loop() const noexcept { return *pLoop; }
+    Loop & loop() const noexcept { return *pLoop; }
 
 private:
     std::shared_ptr<Loop> pLoop;
@@ -251,7 +251,7 @@ public:
         return (0 == uv_sem_trywait(&sem));
     }
 
-    Loop& loop() const noexcept { return *pLoop; }
+    Loop & loop() const noexcept { return *pLoop; }
 
 private:
     std::shared_ptr<Loop> pLoop;
@@ -291,7 +291,7 @@ public:
         return (0 == uv_cond_timedwait(&cond, &mutex.mutex, timeout));
     }
 
-    Loop& loop() const noexcept { return *pLoop; }
+    Loop & loop() const noexcept { return *pLoop; }
 
 private:
     std::shared_ptr<Loop> pLoop;
@@ -319,7 +319,7 @@ public:
         return (0 == uv_barrier_wait(&barrier));
     }
 
-    Loop& loop() const noexcept { return *pLoop; }
+    Loop & loop() const noexcept { return *pLoop; }
 
 private:
     std::shared_ptr<Loop> pLoop;

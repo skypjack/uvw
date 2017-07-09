@@ -43,8 +43,8 @@ public:
         uv_dlclose(&lib);
     }
 
-    SharedLib& operator=(const SharedLib &) = delete;
-    SharedLib& operator=(SharedLib &&) = delete;
+    SharedLib & operator=(const SharedLib &) = delete;
+    SharedLib & operator=(SharedLib &&) = delete;
 
     /**
      * @brief Checks if the library has been correctly opened.
@@ -82,7 +82,7 @@ public:
      * @brief Gets the loop from which the object was originated.
      * @return A reference to a loop instance.
      */
-    Loop& loop() const noexcept { return *pLoop; }
+    Loop & loop() const noexcept { return *pLoop; }
 
 private:
     std::shared_ptr<Loop> pLoop;
