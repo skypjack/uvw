@@ -9,14 +9,14 @@ TEST(FsEvent, Functionalities) {
 
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::FsEventHandle>();
-    auto timer = loop->resource<uvw::TimerHandle>();
     auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
 
     bool checkFsEventEvent = false;
 
     handle->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    timer->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
     fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     handle->on<uvw::FsEventEvent>([&checkFsEventEvent, &relative](const auto &event, auto &hndl) {
         ASSERT_FALSE(checkFsEventEvent);
@@ -27,15 +27,10 @@ TEST(FsEvent, Functionalities) {
         ASSERT_TRUE(hndl.closing());
     });
 
-    timer->on<uvw::TimerEvent>([&absolute, &rename](const auto &, auto &hndl) {
-        auto fsReq = hndl.loop().template resource<uvw::FsReq>();
-        fsReq->renameSync(absolute, rename);
-        hndl.close();
-    });
-
     fileReq->openSync(absolute, O_CREAT | O_RDWR | O_TRUNC, 0644);
-    timer->start(uvw::TimerHandle::Time{500}, uvw::TimerHandle::Time{0});
+    fileReq->closeSync();
     handle->start(absolute);
+    fsReq->rename(absolute, rename);
 
     ASSERT_EQ(handle->path(), absolute);
     ASSERT_TRUE(handle->active());
