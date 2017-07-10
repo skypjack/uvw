@@ -29,7 +29,7 @@ TEST(FsEvent, Functionalities) {
 
     fileReq->openSync(absolute, O_CREAT | O_RDWR | O_TRUNC, 0644);
     fileReq->closeSync();
-    handle->start(absolute);
+    handle->start(absolute, uvw::FsEventHandle::Event::RECURSIVE);
     fsReq->rename(absolute, rename);
 
     ASSERT_EQ(handle->path(), absolute);
