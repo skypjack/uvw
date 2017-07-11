@@ -11,8 +11,8 @@ TEST(FsPoll, Functionalities) {
 
     bool checkFsPollEvent = false;
 
-    handle->on<uvw::ErrorEvent>([](const auto &event, auto &) { FAIL() << event.what(); });
-    request->on<uvw::ErrorEvent>([](const auto &event, auto &) { FAIL() << event.what(); });
+    handle->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
     handle->on<uvw::FsPollEvent>([&checkFsPollEvent](const auto &, auto &hndl) {
         ASSERT_FALSE(checkFsPollEvent);
