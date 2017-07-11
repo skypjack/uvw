@@ -11,10 +11,10 @@ TEST(FsPoll, Functionalities) {
 
     bool checkFsPollEvent = false;
 
-    handle->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    handle->on<uvw::ErrorEvent>([](const auto &event, auto &) { FAIL() << event.what(); });
+    request->on<uvw::ErrorEvent>([](const auto &event, auto &) { FAIL() << event.what(); });
 
-    handle->on<uvw::FsPollEvent>([&checkFsPollEvent](const auto &event, auto &hndl) {
+    handle->on<uvw::FsPollEvent>([&checkFsPollEvent](const auto &, auto &hndl) {
         ASSERT_FALSE(checkFsPollEvent);
         checkFsPollEvent = true;
         hndl.stop();
@@ -31,7 +31,7 @@ TEST(FsPoll, Functionalities) {
     });
 
     handle->start(filename, uvw::FsPollHandle::Time{5});
-    request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+    request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0755);
 
     ASSERT_EQ(handle->path(), filename);
     ASSERT_TRUE(handle->active());
