@@ -26,12 +26,9 @@ TEST(FsPoll, Functionalities) {
         req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
-        req.write(std::unique_ptr<char[]>{new char[1]{ 42 }}, 1, 0);
-    });
-
+    request->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0755);
     handle->start(filename, uvw::FsPollHandle::Time{5});
-    request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0755);
+    request->write(std::unique_ptr<char[]>{new char[1]{ 42 }}, 1, 0);
 
     ASSERT_EQ(handle->path(), filename);
     ASSERT_TRUE(handle->active());
