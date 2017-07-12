@@ -37,9 +37,6 @@ TEST(Work, RunTask) {
 }
 
 TEST(Work, Cancellation) {
-    static constexpr int tps = 2;
-    uvw::Utilities::OS::env("UV_THREADPOOL_SIZE", "" + tps);
-
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::TimerHandle>();
 
@@ -50,10 +47,10 @@ TEST(Work, Cancellation) {
         hndl.close();
     });
 
-    for(auto i = 0; i < (2 * tps + 1); ++i) {
-        auto req = loop->resource<uvw::WorkReq>([]() { FAIL(); });
+    for(auto i = 0; i < 5 /* default uv thread pool size + 1 */; ++i) {
+        auto req = loop->resource<uvw::WorkReq>([]() {});
 
-        req->on<uvw::WorkEvent>([](const auto &, auto &) { FAIL(); });
+        req->on<uvw::WorkEvent>([](const auto &, auto &) {});
         req->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &) { checkErrorEvent = true; });
 
         req->queue();
