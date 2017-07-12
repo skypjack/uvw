@@ -64,7 +64,7 @@ TEST(Work, Cancellation) {
         checkWorkEvent = true;
     });
 
-    handle->start(uvw::TimerHandle::Time{10}, uvw::TimerHandle::Time{10});
+    handle->start(uvw::TimerHandle::Time{500}, uvw::TimerHandle::Time{500});
     req->queue();
     req->cancel();
     loop->run();
