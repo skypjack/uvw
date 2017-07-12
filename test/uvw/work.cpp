@@ -38,13 +38,13 @@ TEST(Work, RunTask) {
 
 TEST(Work, Cancellation) {
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::CheckHandle>();
+    auto handle = loop->resource<uvw::TimerHandle>();
 
     bool checkErrorEvent = false;
     bool checkWorkEvent = false;
     bool checkTask = false;
 
-    handle->on<uvw::CheckEvent>([](const auto &, auto &hndl) {
+    handle->on<uvw::TimerEvent>([](const auto &, auto &hndl) {
         hndl.stop();
         hndl.close();
     });
@@ -64,7 +64,7 @@ TEST(Work, Cancellation) {
         checkWorkEvent = true;
     });
 
-    handle->start();
+    handle->start(uvw::TimerHandle::Time{10}, uvw::TimerHandle::Time{10});
     req->queue();
     req->cancel();
     loop->run();
