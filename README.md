@@ -293,7 +293,8 @@ Docs released under [Creative Commons](https://github.com/skypjack/uvw/blob/mast
 
 # Note
 
-The documentation is mostly inspired by the official [libuv API documentation](http://docs.libuv.org/en/v1.x/) for obvious reasons.
+The documentation is mostly inspired by the official [libuv API documentation](http://docs.libuv.org/en/v1.x/) for obvious reasons.<br/>
+If you are mainly interested in the way `uvw` imports `libuv` in a `cmake` based project, I suggest you to take a look at [this](https://github.com/skypjack/libuv_cmake) repository instead.
 
 # Donation
 
