@@ -281,6 +281,7 @@ Below an incomplete list of projects that use `uvw`:
 * Internal tools (not publicly available) at [**Cynny SpA**](https://www.morphcast.com/) and [**Cynny Space**](http://www.cynnyspace.com/).
 * [**Calaos.fr**](https://www.calaos.fr/en/) (Open source home automation) on [GitHub](https://github.com/calaos).
 * **Ecwid Console Downloader** on [GitHub](https://github.com/dvetutnev/Ecwid-Console-downloader).
+* **Simple network ping pong for lazy students** on [GitHub](https://github.com/dvetutnev/ping_pong).
 
 If you know of other projects that use `libuv` through `uvw`, feel free to open a PR and I'll be glad to add them to the list.
 
