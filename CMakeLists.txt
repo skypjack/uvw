@@ -92,11 +92,11 @@ find_library(libuv_shared NAMES uv libuv PATHS ${LIBUV_DEPS_DIR}/src PATH_SUFFIX
 
 if(DOXYGEN_FOUND)
     add_subdirectory(docs)
-endif(DOXYGEN_FOUND)
+endif()
 
 if(BUILD_TESTING)
     add_subdirectory(test)
-endif(BUILD_TESTING)
+endif()
 
 #
 # Keep your stuff and go further away, foolish.
