@@ -2,23 +2,22 @@
 # Tests configuration
 #
 
-set(UVW_SRC_DIR ${CMAKE_SOURCE_DIR}/${PROJECT_SRC_DIR})
+set(UVW_SRC_DIR ${PROJECT_SRC_DIR})
+
+if(WIN32)
+    set(WINSOCK2 ws2_32)
+elseif(NOT APPLE)
+    find_library(LIBRT rt)
+endif()
 
 set(
     COMMON_LINK_LIBS
-    gtest
     gtest_main
+    ${LIBRT}
     ${libuv_static}
     Threads::Threads
+    ${WINSOCK2}
 )
-
-if(${LIBRT_FOUND})
-    list(APPEND COMMON_LINK_LIBS ${LIBRT_LIBRARIES})
-endif(${LIBRT_FOUND})
-
-if(WIN32)
-    list(APPEND COMMON_LINK_LIBS ws2_32)
-endif(WIN32)
 
 add_library(odr OBJECT odr.cpp)
 target_include_directories(odr PRIVATE ${UVW_SRC_DIR})
