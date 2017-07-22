@@ -29,6 +29,15 @@ macro(ADD_UVW_TEST TEST_NAME TEST_SOURCE)
     add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
 endmacro()
 
+macro(ADD_UVW_DIR_TEST TEST_NAME TEST_SOURCE)
+    ADD_UVW_TEST(${TEST_NAME} ${TEST_SOURCE})
+    string(TOUPPER "${TEST_NAME}" TEST_NAME_UPPER)
+    set(TEST_DIR_VAR "TARGET_${TEST_NAME_UPPER}_DIR")
+    set(TEST_DIR ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME})
+    file(MAKE_DIRECTORY ${TEST_DIR})
+    target_compile_definitions(${TEST_NAME} PRIVATE ${TEST_DIR_VAR}="${TEST_DIR}")
+endmacro()
+
 # List of available targets
 
 ADD_UVW_TEST(main main.cpp)
@@ -36,10 +45,10 @@ ADD_UVW_TEST(async uvw/async.cpp)
 ADD_UVW_TEST(check uvw/check.cpp)
 ADD_UVW_TEST(dns uvw/dns.cpp)
 ADD_UVW_TEST(emitter uvw/emitter.cpp)
-ADD_UVW_TEST(file_req uvw/file_req.cpp)
-ADD_UVW_TEST(fs_event uvw/fs_event.cpp)
-ADD_UVW_TEST(fs_poll uvw/fs_poll.cpp)
-ADD_UVW_TEST(fs_req uvw/fs_req.cpp)
+ADD_UVW_DIR_TEST(file_req uvw/file_req.cpp)
+ADD_UVW_DIR_TEST(fs_event uvw/fs_event.cpp)
+ADD_UVW_DIR_TEST(fs_poll uvw/fs_poll.cpp)
+ADD_UVW_DIR_TEST(fs_req uvw/fs_req.cpp)
 ADD_UVW_TEST(handle uvw/handle.cpp)
 ADD_UVW_TEST(idle uvw/idle.cpp)
 ADD_UVW_TEST(lib uvw/lib.cpp)
@@ -59,30 +68,6 @@ ADD_UVW_TEST(tty uvw/tty.cpp)
 ADD_UVW_TEST(udp uvw/udp.cpp)
 ADD_UVW_TEST(util uvw/util.cpp)
 ADD_UVW_TEST(work uvw/work.cpp)
-
-# Test file_req
-
-set(TARGET_FILE_REQ_DIR ${CMAKE_CURRENT_BINARY_DIR}/file_req)
-file(MAKE_DIRECTORY ${TARGET_FILE_REQ_DIR})
-target_compile_definitions(file_req PRIVATE TARGET_FILE_REQ_DIR="${TARGET_FILE_REQ_DIR}")
-
-# Test fs_event
-
-set(TARGET_FS_EVENT_DIR ${CMAKE_CURRENT_BINARY_DIR}/fs_event)
-file(MAKE_DIRECTORY ${TARGET_FS_EVENT_DIR})
-target_compile_definitions(fs_event PRIVATE TARGET_FS_EVENT_DIR="${TARGET_FS_EVENT_DIR}")
-
-# Test fs_poll
-
-set(TARGET_FS_POLL_DIR ${CMAKE_CURRENT_BINARY_DIR}/fs_poll)
-file(MAKE_DIRECTORY ${TARGET_FS_POLL_DIR})
-target_compile_definitions(fs_poll PRIVATE TARGET_FS_POLL_DIR="${TARGET_FS_POLL_DIR}")
-
-# Test TARGET_FS_REQ
-
-set(TARGET_FS_REQ_DIR ${CMAKE_CURRENT_BINARY_DIR}/fs_req)
-file(MAKE_DIRECTORY ${TARGET_FS_REQ_DIR})
-target_compile_definitions(fs_req PRIVATE TARGET_FS_REQ_DIR="${TARGET_FS_REQ_DIR}")
 
 # Test lib
 
