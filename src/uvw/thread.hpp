@@ -1,12 +1,13 @@
 #pragma once
 
 
-#include <type_traits>
-#include <utility>
 #include <memory>
 #include <string>
+#include <type_traits>
+#include <utility>
 #include <uv.h>
 #include "loop.hpp"
+#include "resource_base.hpp"
 
 
 namespace uvw {
@@ -22,7 +23,7 @@ class Condition;
 class Barrier;
 
 
-class Thread final {
+class Thread final: public ResourceBase<Thread, uv_thread_t> {
     using InternalTask = std::function<void(std::shared_ptr<void>)>;
 
     static void createCallback(void *arg) {
@@ -30,97 +31,74 @@ class Thread final {
         thread.task(thread.data);
     }
 
-    explicit Thread(std::shared_ptr<Loop> ref, InternalTask t, std::shared_ptr<void> d = nullptr) noexcept
-        : pLoop{std::move(ref)}, data{std::move(d)}, thread{}, task{std::move(t)}
-    {}
-
 public:
     using Task = InternalTask;
     using Type = uv_thread_t;
 
-    template<typename... Args>
-    static std::shared_ptr<Thread> create(Args&&... args) {
-        return std::shared_ptr<Thread>{new Thread{std::forward<Args>(args)...}};
-    }
+    explicit Thread(ConstructorAccess ca, std::shared_ptr<Loop> ref,
+                    InternalTask t, std::shared_ptr<void> d = nullptr) noexcept
+        : ResourceBase{std::move(ca), std::move(ref)}, data{std::move(d)}, task{std::move(t)}
+    {}
 
     static Type self() noexcept {
         return uv_thread_self();
     }
 
     static bool equal(const Thread &tl, const Thread &tr) noexcept {
-        return !(0 == uv_thread_equal(&tl.thread, &tr.thread));
+        return !(0 == uv_thread_equal(tl.get(), tr.get()));
     }
 
     ~Thread() noexcept {
-        uv_thread_join(&thread);
+        join();
     }
 
     bool run() noexcept {
-        return (0 == uv_thread_create(&thread, &createCallback, this));
+        return (0 == uv_thread_create(get(), &createCallback, this));
     }
 
     bool join() noexcept {
-        return (0 == uv_thread_join(&thread));
+        return (0 == uv_thread_join(get()));
     }
 
-    Loop & loop() const noexcept { return *pLoop; }
-
 private:
-    std::shared_ptr<Loop> pLoop;
     std::shared_ptr<void> data;
-    uv_thread_t thread;
     Task task;
 };
 
 
-class ThreadLocalStorage final {
-    explicit ThreadLocalStorage(std::shared_ptr<Loop> ref) noexcept
-        : pLoop{std::move(ref)}
-    {
-        uv_key_create(&key);
-    }
-
+class ThreadLocalStorage final: public ResourceBase<ThreadLocalStorage, uv_key_t> {
 public:
-    static std::shared_ptr<ThreadLocalStorage> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<ThreadLocalStorage>{new ThreadLocalStorage{std::move(loop)}};
+    explicit ThreadLocalStorage(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept
+        : ResourceBase{std::move(ca), std::move(ref)}
+    {
+        uv_key_create(ResourceBase::get());
     }
 
     ~ThreadLocalStorage() noexcept {
-        uv_key_delete(&key);
+        uv_key_delete(ResourceBase::get());
     }
 
     template<typename T>
     T* get() noexcept {
-        return static_cast<T*>(uv_key_get(&key));
+        return static_cast<T*>(uv_key_get(ResourceBase::get()));
     }
 
     template<typename T>
     void set(T *value) noexcept {
-        return uv_key_set(&key, value);
+        return uv_key_set(ResourceBase::get(), value);
     }
-
-    Loop & loop() const noexcept { return *pLoop; }
-
-private:
-    std::shared_ptr<Loop> pLoop;
-    uv_key_t key;
 };
 
 
-class Once final {
-    explicit Once(std::shared_ptr<Loop> ref) noexcept
-        : pLoop{std::move(ref)}
-    {}
-
+// `Once` is an odd one as it doesn't use a `libuv` structure per object.
+class Once final: public ResourceBase<Once, uv_once_t> {
     static uv_once_t* guard() noexcept {
         static uv_once_t once = UV_ONCE_INIT;
         return &once;
     }
 
 public:
-    static std::shared_ptr<Once> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<Once>{new Once{std::move(loop)}};
-    }
+    using ResourceBase::ResourceBase;
 
     template<typename F>
     static void once(F &&f) noexcept {
@@ -129,201 +107,146 @@ public:
         CallbackType cb = f;
         uv_once(guard(), cb);
     }
-
-    Loop & loop() const noexcept { return *pLoop; }
-
-private:
-    std::shared_ptr<Loop> pLoop;
 };
 
 
-class Mutex final {
+class Mutex final: public ResourceBase<Mutex, uv_mutex_t> {
     friend class Condition;
 
-    explicit Mutex(std::shared_ptr<Loop> ref) noexcept
-        : pLoop{std::move(ref)}
-    {
-        uv_mutex_init(&mutex);
-    }
-
 public:
-    static std::shared_ptr<Mutex> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<Mutex>{new Mutex{std::move(loop)}};
+    explicit Mutex(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept
+        : ResourceBase{std::move(ca), std::move(ref)}
+    {
+        uv_mutex_init(get());
     }
 
     ~Mutex() noexcept {
-        uv_mutex_destroy(&mutex);
+        uv_mutex_destroy(get());
     }
 
     void lock() noexcept {
-        uv_mutex_lock(&mutex);
+        uv_mutex_lock(get());
     }
 
     bool tryLock() noexcept {
-        return (0 == uv_mutex_trylock(&mutex));
+        return (0 == uv_mutex_trylock(get()));
     }
 
     void unlock() noexcept {
-        uv_mutex_unlock(&mutex);
+        uv_mutex_unlock(get());
     }
-
-    Loop & loop() const noexcept { return *pLoop; }
-
-private:
-    std::shared_ptr<Loop> pLoop;
-    uv_mutex_t mutex;
 };
 
 
-class RWLock final {
-    explicit RWLock(std::shared_ptr<Loop> ref) noexcept
-        : pLoop{std::move(ref)}
-    {
-        uv_rwlock_init(&rwlock);
-    }
-
+class RWLock final: public ResourceBase<RWLock, uv_rwlock_t> {
 public:
-    static std::shared_ptr<RWLock> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<RWLock>{new RWLock{std::move(loop)}};
+    explicit RWLock(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept
+        : ResourceBase{std::move(ca), std::move(ref)}
+    {
+        uv_rwlock_init(get());
     }
 
     ~RWLock() noexcept {
-        uv_rwlock_destroy(&rwlock);
+        uv_rwlock_destroy(get());
     }
 
     void rdLock() noexcept {
-        uv_rwlock_rdlock(&rwlock);
+        uv_rwlock_rdlock(get());
     }
 
     bool tryRdLock() noexcept {
-        return (0 == uv_rwlock_tryrdlock(&rwlock));
+        return (0 == uv_rwlock_tryrdlock(get()));
     }
 
     void rdUnlock() noexcept {
-        uv_rwlock_rdunlock(&rwlock);
+        uv_rwlock_rdunlock(get());
     }
 
     void wrLock() noexcept {
-        uv_rwlock_wrlock(&rwlock);
+        uv_rwlock_wrlock(get());
     }
 
     bool tryWrLock() noexcept {
-        return (0 == uv_rwlock_trywrlock(&rwlock));
+        return (0 == uv_rwlock_trywrlock(get()));
     }
 
     void wrUnlock() noexcept {
-        uv_rwlock_wrunlock(&rwlock);
+        uv_rwlock_wrunlock(get());
     }
-
-    Loop & loop() const noexcept { return *pLoop; }
-
-private:
-    std::shared_ptr<Loop> pLoop;
-    uv_rwlock_t rwlock;
 };
 
 
-class Semaphore final {
-    explicit Semaphore(std::shared_ptr<Loop> ref, unsigned int value) noexcept
-        : pLoop{std::move(ref)}
-    {
-        uv_sem_init(&sem, value);
-    }
-
+class Semaphore final: public ResourceBase<Semaphore, uv_sem_t> {
 public:
-    static std::shared_ptr<Semaphore> create(std::shared_ptr<Loop> loop, unsigned int value) {
-        return std::shared_ptr<Semaphore>{new Semaphore{std::move(loop), value}};
+    explicit Semaphore(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int value) noexcept
+        : ResourceBase{std::move(ca), std::move(ref)}
+    {
+        uv_sem_init(get(), value);
     }
 
     ~Semaphore() noexcept {
-        uv_sem_destroy(&sem);
+        uv_sem_destroy(get());
     }
 
     void post() noexcept {
-        uv_sem_post(&sem);
+        uv_sem_post(get());
     }
 
     void wait() noexcept {
-        uv_sem_wait(&sem);
+        uv_sem_wait(get());
     }
 
     bool tryWait() noexcept {
-        return (0 == uv_sem_trywait(&sem));
+        return (0 == uv_sem_trywait(get()));
     }
-
-    Loop & loop() const noexcept { return *pLoop; }
-
-private:
-    std::shared_ptr<Loop> pLoop;
-    uv_sem_t sem;
 };
 
 
-class Condition final {
-    explicit Condition(std::shared_ptr<Loop> ref) noexcept
-        : pLoop{std::move(ref)}
-    {
-        uv_cond_init(&cond);
-    }
-
+class Condition final: public ResourceBase<Condition, uv_cond_t> {
 public:
-    static std::shared_ptr<Condition> create(std::shared_ptr<Loop> loop) {
-        return std::shared_ptr<Condition>{new Condition{std::move(loop)}};
+    explicit Condition(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept
+        : ResourceBase{std::move(ca), std::move(ref)}
+    {
+        uv_cond_init(get());
     }
 
     ~Condition() noexcept {
-        uv_cond_destroy(&cond);
+        uv_cond_destroy(get());
     }
 
     void signal() noexcept {
-        uv_cond_signal(&cond);
+        uv_cond_signal(get());
     }
 
     void broadcast() noexcept {
-        uv_cond_broadcast(&cond);
+        uv_cond_broadcast(get());
     }
 
     void wait(Mutex &mutex) noexcept {
-        uv_cond_wait(&cond, &mutex.mutex);
+        uv_cond_wait(get(), mutex.get());
     }
 
     bool timedWait(Mutex &mutex, uint64_t timeout) noexcept {
-        return (0 == uv_cond_timedwait(&cond, &mutex.mutex, timeout));
+        return (0 == uv_cond_timedwait(get(), mutex.get(), timeout));
     }
-
-    Loop & loop() const noexcept { return *pLoop; }
-
-private:
-    std::shared_ptr<Loop> pLoop;
-    uv_cond_t cond;
 };
 
 
-class Barrier final {
-    explicit Barrier(std::shared_ptr<Loop> ref, unsigned int count) noexcept
-        : pLoop{std::move(ref)}
-    {
-        uv_barrier_init(&barrier, count);
-    }
-
+class Barrier final: public ResourceBase<Barrier, uv_barrier_t> {
 public:
-    static std::shared_ptr<Barrier> create(std::shared_ptr<Loop> loop, unsigned int count) {
-        return std::shared_ptr<Barrier>{new Barrier{std::move(loop), count}};
+    explicit Barrier(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int count) noexcept
+        : ResourceBase{std::move(ca), std::move(ref)}
+    {
+        uv_barrier_init(get(), count);
     }
 
     ~Barrier() noexcept {
-        uv_barrier_destroy(&barrier);
+        uv_barrier_destroy(get());
     }
 
     bool wait() noexcept {
-        return (0 == uv_barrier_wait(&barrier));
+        return (0 == uv_barrier_wait(get()));
     }
-
-    Loop & loop() const noexcept { return *pLoop; }
-
-private:
-    std::shared_ptr<Loop> pLoop;
-    uv_barrier_t barrier;
 };
 
 
