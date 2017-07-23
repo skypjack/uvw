@@ -51,10 +51,10 @@ set(PROJECT_SRC_DIR ${uvw_SOURCE_DIR}/src)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 
 #
-# Enable test support using ctest
+# Enable test support using ctest-like interface
 #
 
-include(CTest)
+option(BUILD_TESTING "Enable testing with ctest." ON)
 
 #
 # Referenced packages
@@ -95,6 +95,7 @@ if(DOXYGEN_FOUND)
 endif()
 
 if(BUILD_TESTING)
+    enable_testing()
     add_subdirectory(test)
 endif()
 

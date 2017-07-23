@@ -38,6 +38,12 @@ macro(ADD_UVW_DIR_TEST TEST_NAME TEST_SOURCE)
     target_compile_definitions(${TEST_NAME} PRIVATE ${TEST_DIR_VAR}="${TEST_DIR}")
 endmacro()
 
+macro(ADD_UVW_LIB_TEST TEST_NAME TEST_SOURCE)
+    ADD_UVW_TEST(${TEST_NAME} ${TEST_SOURCE})
+    target_link_libraries(${TEST_NAME} PRIVATE ${CMAKE_DL_LIBS})
+    target_compile_definitions(${TEST_NAME} PRIVATE TARGET_LIB_SO="${libuv_shared}")
+endmacro()
+
 # List of available targets
 
 ADD_UVW_TEST(main main.cpp)
@@ -51,7 +57,7 @@ ADD_UVW_DIR_TEST(fs_poll uvw/fs_poll.cpp)
 ADD_UVW_DIR_TEST(fs_req uvw/fs_req.cpp)
 ADD_UVW_TEST(handle uvw/handle.cpp)
 ADD_UVW_TEST(idle uvw/idle.cpp)
-ADD_UVW_TEST(lib uvw/lib.cpp)
+ADD_UVW_LIB_TEST(lib uvw/lib.cpp)
 ADD_UVW_TEST(loop uvw/loop.cpp)
 ADD_UVW_TEST(pipe uvw/pipe.cpp)
 ADD_UVW_TEST(poll uvw/poll.cpp)
@@ -68,8 +74,3 @@ ADD_UVW_TEST(tty uvw/tty.cpp)
 ADD_UVW_TEST(udp uvw/udp.cpp)
 ADD_UVW_TEST(util uvw/util.cpp)
 ADD_UVW_TEST(work uvw/work.cpp)
-
-# Test lib
-
-target_link_libraries(lib PRIVATE ${CMAKE_DL_LIBS})
-target_compile_definitions(lib PRIVATE TARGET_LIB_SO="${libuv_shared}")
