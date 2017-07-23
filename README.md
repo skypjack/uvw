@@ -16,7 +16,7 @@ As an example, a *handle* should be initialized before any other operation and c
 
 ## Code Example
 
-```
+```cpp
 #include <uvw.hpp>
 #include <memory>
 
@@ -86,7 +86,9 @@ Because of that, users have not to install it to compile and execute the tests.
 This means that including the `uvw.hpp` header or one of the other `uvw/*.hpp` headers is enough to use it.<br/>
 It's a matter of adding the following line at the top of a file:
 
-    #include <uvw.hpp>
+```cpp
+#include <uvw.hpp>
+```
 
 Then pass the proper `-I` argument to the compiler to add the `src` directory to the include paths.<br/>
 Note that users are demanded to correctly setup include directories and libraries search paths for *libuv*.
@@ -154,49 +156,65 @@ Therefore the rule quickly becomes *feel free to make a request and forget about
 
 The first thing to do to use `uvw` is to create a loop. In case the default one is enough, it's easy as doing this:
 
-    auto loop = uvw::Loop::getDefault();
+```cpp
+auto loop = uvw::Loop::getDefault();
+```
 
 Note that loop objects don't require to be closed explicitly, even if they offer the `close` member function in case an user wants to do that.<br/>
 Loops can be started using the `run` member function. The two calls below are equivalent:
 
-    loop->run();
-    loop->run<uvw::Loop::Mode::DEFAULT>
+```cpp
+loop->run();
+loop->run<uvw::Loop::Mode::DEFAULT>
+```
 
 Available modes are: `DEFAULT`, `ONCE`, `NOWAIT`. Please refer to the documentation of *libuv* for further details.
 
 In order to create a resource and to bind it to the given loop, just do the following:
 
-    auto tcp = loop.resource<uvw::TcpHandle>();
+```cpp
+auto tcp = loop.resource<uvw::TcpHandle>();
+```
 
 The line above will create and initialize a tcp handle, then a shared pointer to that resource will be returned.<br/>
 Users should check if pointers have been correctly initialized: in case of errors, they won't be.<br/>
 Another way to create a resource is:
 
-    auto tcp = TcpHandle::create(loop);
-    tcp->init();
+```cpp
+auto tcp = TcpHandle::create(loop);
+tcp->init();
+```
 
 Pretty annoying indeed. Using a loop is the recommended approach.
 
 The resources also accept arbitrary user-data that won't be touched in any case.<br/>
 Users can set and get them through the `data` member function as it follows:
 
-    resource->data(std::make_shared<int>(42));
-    std::shared_ptr<void> data = resource->data();
+```cpp
+resource->data(std::make_shared<int>(42));
+std::shared_ptr<void> data = resource->data();
+```
 
 Resources expect a `std::shared_pointer<void>` and return it, therefore any kind of data is welcome.<br/>
 Users can explicitly specify a type other than `void` when calling the `data` member function:
 
-    std::shared_ptr<int> data = resource->data<int>();
+```cpp
+std::shared_ptr<int> data = resource->data<int>();
+```
 
 Remember from the previous section that a handle will keep itself alive until one invokes the `close` member function on it.<br/>
 To know what are the handles that are still alive and bound to a given loop, just do the following:
 
-    loop.walk([](uvw::BaseHandle &){ /* application code here */ });
+```cpp
+loop.walk([](uvw::BaseHandle &){ /* application code here */ });
+```
 
 `BaseHandle` exposes a few methods and cannot be used to know the original type of the handle.<br/>
 Anyway, it can be used to close the handle that originated from it. As an example, all the pending handles can be closed easily as it follows:
 
-    loop.walk([](uvw::BaseHandle &h){ h.close(); });
+```cpp
+loop.walk([](uvw::BaseHandle &h){ h.close(); });
+```
 
 No need to keep track of them.
 
@@ -234,7 +252,7 @@ All the other events are specific for the given resource and documented in the A
 
 The code below shows how to create a simple tcp server using `uvw`:
 
-```
+```cpp
 auto loop = uvw::Loop::getDefault();
 auto tcp = loop.resource<uvw::TcpHandle>();
 
