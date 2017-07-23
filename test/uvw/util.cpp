@@ -70,11 +70,21 @@ TEST(Util, ScopedFlags) {
 TEST(Util, Utilities) {
     ASSERT_FALSE(uvw::Utilities::OS::homedir().empty());
     ASSERT_FALSE(uvw::Utilities::OS::tmpdir().empty());
+    ASSERT_NE(uvw::Utilities::OS::hostname(), "");
+
+    ASSERT_TRUE(uvw::Utilities::OS::env("UVW_TEST_UTIL_UTILITIES", "TRUE"));
+    ASSERT_TRUE(uvw::Utilities::OS::env("UVW_TEST_UTIL_UTILITIES") == "TRUE");
+    ASSERT_TRUE(uvw::Utilities::OS::env("UVW_TEST_UTIL_UTILITIES", ""));
+    ASSERT_FALSE(uvw::Utilities::OS::env("UVW_TEST_UTIL_UTILITIES") == "TRUE");
 
     auto passwd = uvw::Utilities::OS::passwd();
 
+    ASSERT_TRUE(static_cast<bool>(passwd));
     ASSERT_FALSE(passwd.username().empty());
     ASSERT_FALSE(passwd.homedir().empty());
+    ASSERT_NO_THROW(passwd.uid());
+    ASSERT_NO_THROW(passwd.gid());
+    ASSERT_FALSE(passwd.shell().empty());
 
     ASSERT_EQ(uvw::Utilities::guessHandle(uvw::FileHandle{-1}), uvw::HandleType::UNKNOWN);
     ASSERT_NE(uvw::Utilities::guessHandle(uvw::StdIN), uvw::HandleType::UNKNOWN);
