@@ -18,9 +18,6 @@ namespace uvw {
  */
 template<typename T, typename U>
 class ResourceBase {
-    template<typename, typename>
-    friend class ResourceBase;
-
 protected:
     struct ConstructorAccess { explicit ConstructorAccess(int) {} };
 
@@ -42,16 +39,6 @@ protected:
     auto get() const noexcept {
         static_assert(not std::is_same<R, U>::value, "!");
         return reinterpret_cast<const R *>(&resource);
-    }
-
-    template<typename R, typename... P>
-    static auto get(ResourceBase<P...> &res) noexcept {
-        return reinterpret_cast<R *>(&res.resource);
-    }
-
-    template<typename R, typename... P>
-    static auto get(const ResourceBase<P...> &res) noexcept {
-        return reinterpret_cast<const R *>(&res.resource);
     }
 
 public:
