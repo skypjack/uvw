@@ -2,6 +2,7 @@
 
 
 #include <memory>
+#include <type_traits>
 #include <utility>
 #include "loop.hpp"
 
