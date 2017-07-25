@@ -79,7 +79,7 @@ TEST(Udp, ReadSend) {
     server->recv();
 
     auto dataSend = std::unique_ptr<char[]>(new char[2]{ 'b', 'c' });
-    client->send(uvw::Addr{ "127.0.0.1", 4242 }, std::move(dataSend), 1);
+    client->send(uvw::Addr{ "127.0.0.1", 4242 }, std::move(dataSend), 2);
 
     loop->run();
 }
