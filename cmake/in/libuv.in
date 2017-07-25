@@ -28,7 +28,8 @@ else(WIN32)
         STAMP_DIR ${LIBUV_DEPS_DIR}/stamp
         SOURCE_DIR ${LIBUV_DEPS_DIR}/src
         BUILD_IN_SOURCE 1
-        CONFIGURE_COMMAND sh <SOURCE_DIR>/autogen.sh && ./configure
+        CONFIGURE_COMMAND sh <SOURCE_DIR>/autogen.sh
+        COMMAND sh <SOURCE_DIR>/configure
         BUILD_COMMAND make -j4
         INSTALL_COMMAND ""
         TEST_COMMAND ""
