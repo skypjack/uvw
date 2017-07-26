@@ -11,13 +11,13 @@ namespace uvw {
 
 
 /**
- * @brief Internal `class uvw::ResourceBase`
+ * @brief Internal `class uvw::UnderlyingType`
  *
  * A base resource class to define the `create` method in one place.<br/>
  * It mainly acts as a wrapper around a data structure of `libuv`.
  */
 template<typename T, typename U>
-class ResourceBase {
+class UnderlyingType {
 protected:
     struct ConstructorAccess { explicit ConstructorAccess(int) {} };
 
@@ -42,19 +42,19 @@ protected:
     }
 
 public:
-    explicit ResourceBase(ConstructorAccess, std::shared_ptr<Loop> ref) noexcept
+    explicit UnderlyingType(ConstructorAccess, std::shared_ptr<Loop> ref) noexcept
         : pLoop{std::move(ref)}, resource{}
     {}
 
-    ResourceBase(const ResourceBase &) = delete;
-    ResourceBase(ResourceBase &&) = delete;
+    UnderlyingType(const UnderlyingType &) = delete;
+    UnderlyingType(UnderlyingType &&) = delete;
 
-    virtual ~ResourceBase() {
-        static_assert(std::is_base_of<ResourceBase<T, U>, T>::value, "!");
+    virtual ~UnderlyingType() {
+        static_assert(std::is_base_of<UnderlyingType<T, U>, T>::value, "!");
     }
 
-    ResourceBase & operator=(const ResourceBase &) = delete;
-    ResourceBase & operator=(ResourceBase &&) = delete;
+    UnderlyingType & operator=(const UnderlyingType &) = delete;
+    UnderlyingType & operator=(UnderlyingType &&) = delete;
 
     /**
      * @brief Creates a new resource of the given type.

@@ -7,7 +7,7 @@
 #include <utility>
 #include <uv.h>
 #include "loop.hpp"
-#include "resource_base.hpp"
+#include "underlying_type.hpp"
 
 
 namespace uvw {
@@ -23,7 +23,7 @@ class Condition;
 class Barrier;
 
 
-class Thread final: public ResourceBase<Thread, uv_thread_t> {
+class Thread final: public UnderlyingType<Thread, uv_thread_t> {
     using InternalTask = std::function<void(std::shared_ptr<void>)>;
 
     static void createCallback(void *arg) {
@@ -37,7 +37,7 @@ public:
 
     explicit Thread(ConstructorAccess ca, std::shared_ptr<Loop> ref,
                     InternalTask t, std::shared_ptr<void> d = nullptr) noexcept
-        : ResourceBase{std::move(ca), std::move(ref)}, data{std::move(d)}, task{std::move(t)}
+        : UnderlyingType{std::move(ca), std::move(ref)}, data{std::move(d)}, task{std::move(t)}
     {}
 
     static Type self() noexcept {
@@ -66,39 +66,39 @@ private:
 };
 
 
-class ThreadLocalStorage final: public ResourceBase<ThreadLocalStorage, uv_key_t> {
+class ThreadLocalStorage final: public UnderlyingType<ThreadLocalStorage, uv_key_t> {
 public:
     explicit ThreadLocalStorage(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept
-        : ResourceBase{std::move(ca), std::move(ref)}
+        : UnderlyingType{std::move(ca), std::move(ref)}
     {
-        uv_key_create(ResourceBase::get());
+        uv_key_create(UnderlyingType::get());
     }
 
     ~ThreadLocalStorage() noexcept {
-        uv_key_delete(ResourceBase::get());
+        uv_key_delete(UnderlyingType::get());
     }
 
     template<typename T>
     T* get() noexcept {
-        return static_cast<T*>(uv_key_get(ResourceBase::get()));
+        return static_cast<T*>(uv_key_get(UnderlyingType::get()));
     }
 
     template<typename T>
     void set(T *value) noexcept {
-        return uv_key_set(ResourceBase::get(), value);
+        return uv_key_set(UnderlyingType::get(), value);
     }
 };
 
 
 // `Once` is an odd one as it doesn't use a `libuv` structure per object.
-class Once final: public ResourceBase<Once, uv_once_t> {
+class Once final: public UnderlyingType<Once, uv_once_t> {
     static uv_once_t* guard() noexcept {
         static uv_once_t once = UV_ONCE_INIT;
         return &once;
     }
 
 public:
-    using ResourceBase::ResourceBase;
+    using UnderlyingType::UnderlyingType;
 
     template<typename F>
     static void once(F &&f) noexcept {
@@ -110,12 +110,12 @@ public:
 };
 
 
-class Mutex final: public ResourceBase<Mutex, uv_mutex_t> {
+class Mutex final: public UnderlyingType<Mutex, uv_mutex_t> {
     friend class Condition;
 
 public:
     explicit Mutex(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept
-        : ResourceBase{std::move(ca), std::move(ref)}
+        : UnderlyingType{std::move(ca), std::move(ref)}
     {
         uv_mutex_init(get());
     }
@@ -138,10 +138,10 @@ public:
 };
 
 
-class RWLock final: public ResourceBase<RWLock, uv_rwlock_t> {
+class RWLock final: public UnderlyingType<RWLock, uv_rwlock_t> {
 public:
     explicit RWLock(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept
-        : ResourceBase{std::move(ca), std::move(ref)}
+        : UnderlyingType{std::move(ca), std::move(ref)}
     {
         uv_rwlock_init(get());
     }
@@ -176,10 +176,10 @@ public:
 };
 
 
-class Semaphore final: public ResourceBase<Semaphore, uv_sem_t> {
+class Semaphore final: public UnderlyingType<Semaphore, uv_sem_t> {
 public:
     explicit Semaphore(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int value) noexcept
-        : ResourceBase{std::move(ca), std::move(ref)}
+        : UnderlyingType{std::move(ca), std::move(ref)}
     {
         uv_sem_init(get(), value);
     }
@@ -202,10 +202,10 @@ public:
 };
 
 
-class Condition final: public ResourceBase<Condition, uv_cond_t> {
+class Condition final: public UnderlyingType<Condition, uv_cond_t> {
 public:
     explicit Condition(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept
-        : ResourceBase{std::move(ca), std::move(ref)}
+        : UnderlyingType{std::move(ca), std::move(ref)}
     {
         uv_cond_init(get());
     }
@@ -232,10 +232,10 @@ public:
 };
 
 
-class Barrier final: public ResourceBase<Barrier, uv_barrier_t> {
+class Barrier final: public UnderlyingType<Barrier, uv_barrier_t> {
 public:
     explicit Barrier(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int count) noexcept
-        : ResourceBase{std::move(ca), std::move(ref)}
+        : UnderlyingType{std::move(ca), std::move(ref)}
     {
         uv_barrier_init(get(), count);
     }

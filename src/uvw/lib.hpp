@@ -7,7 +7,7 @@
 #include <utility>
 #include <uv.h>
 #include "loop.hpp"
-#include "resource_base.hpp"
+#include "underlying_type.hpp"
 
 
 namespace uvw {
@@ -19,7 +19,7 @@ namespace uvw {
  * `uvw` provides cross platform utilities for loading shared libraries and
  * retrieving symbols from them, by means of the API offered by `libuv`.
  */
-class SharedLib final: public ResourceBase<SharedLib, uv_lib_t> {
+class SharedLib final: public UnderlyingType<SharedLib, uv_lib_t> {
 public:
     /**
      * @brief Creates a new shared library object.
@@ -28,7 +28,7 @@ public:
      * @return A pointer to the newly created handle.
      */
     explicit SharedLib(ConstructorAccess ca, std::shared_ptr<Loop> ref, std::string filename) noexcept
-        : ResourceBase{std::move(ca), std::move(ref)}
+        : UnderlyingType{std::move(ca), std::move(ref)}
     {
         opened = (0 == uv_dlopen(filename.data(), get()));
     }

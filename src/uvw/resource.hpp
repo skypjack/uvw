@@ -4,7 +4,7 @@
 #include <memory>
 #include <utility>
 #include "emitter.hpp"
-#include "resource_base.hpp"
+#include "underlying_type.hpp"
 
 
 namespace uvw {
@@ -14,10 +14,10 @@ namespace uvw {
  * @brief Common class for almost all the resources available in `uvw`.
  *
  * This is the base class for handles and requests.<br/>
- * Beyond `ResourceBase`, it stores a UserData and a self-referencing shared_ptr.
+ * Beyond `UnderlyingType`, it stores a UserData and a self-referencing shared_ptr.
  */
 template<typename T, typename U>
-class Resource: public ResourceBase<T, U>, public Emitter<T>,
+class Resource: public UnderlyingType<T, U>, public Emitter<T>,
                 public std::enable_shared_from_this<T> {
 
 protected:
@@ -38,9 +38,9 @@ protected:
     }
 
 public:
-    explicit Resource(typename ResourceBase<T, U>::ConstructorAccess ca,
+    explicit Resource(typename UnderlyingType<T, U>::ConstructorAccess ca,
                       std::shared_ptr<Loop> ref)
-        : ResourceBase<T, U>{std::move(ca), std::move(ref)},
+        : UnderlyingType<T, U>{std::move(ca), std::move(ref)},
           Emitter<T>{},
           std::enable_shared_from_this<T>{}
     {
