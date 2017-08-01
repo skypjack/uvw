@@ -11,10 +11,9 @@ namespace uvw {
 
 
 /**
- * @brief Internal `class uvw::UnderlyingType`
+ * @brief Wrapper class for underlying types.
  *
- * A base resource class to define the `create` method in one place.<br/>
- * It mainly acts as a wrapper around a data structure of `libuv`.
+ * It acts mainly as a wrapper around data structures of the underlying library.
  */
 template<typename T, typename U>
 class UnderlyingType {

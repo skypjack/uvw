@@ -13,14 +13,13 @@ namespace uvw {
 /**
  * @brief Common class for almost all the resources available in `uvw`.
  *
- * This is the base class for handles and requests.<br/>
- * Beyond `UnderlyingType`, it stores a UserData and a self-referencing shared_ptr.
+ * This is the base class for handles and requests.
  */
 template<typename T, typename U>
-class Resource: public UnderlyingType<T, U>, public Emitter<T>,
-                public std::enable_shared_from_this<T> {
-
+class Resource: public UnderlyingType<T, U>, public Emitter<T>, public std::enable_shared_from_this<T> {
 protected:
+    using ConstructorAccess = typename UnderlyingType<T, U>::ConstructorAccess;
+
     auto parent() const noexcept {
         return this->loop().loop.get();
     }
@@ -38,8 +37,7 @@ protected:
     }
 
 public:
-    explicit Resource(typename UnderlyingType<T, U>::ConstructorAccess ca,
-                      std::shared_ptr<Loop> ref)
+    explicit Resource(ConstructorAccess ca, std::shared_ptr<Loop> ref)
         : UnderlyingType<T, U>{std::move(ca), std::move(ref)},
           Emitter<T>{},
           std::enable_shared_from_this<T>{}

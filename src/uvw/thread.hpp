@@ -35,8 +35,7 @@ public:
     using Task = InternalTask;
     using Type = uv_thread_t;
 
-    explicit Thread(ConstructorAccess ca, std::shared_ptr<Loop> ref,
-                    InternalTask t, std::shared_ptr<void> d = nullptr) noexcept
+    explicit Thread(ConstructorAccess ca, std::shared_ptr<Loop> ref, InternalTask t, std::shared_ptr<void> d = nullptr) noexcept
         : UnderlyingType{std::move(ca), std::move(ref)}, data{std::move(d)}, task{std::move(t)}
     {}
 
