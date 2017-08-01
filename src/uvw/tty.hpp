@@ -61,7 +61,7 @@ public:
     using Mode = details::UVTTYModeT;
 
     explicit TTYHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, FileHandle desc, bool readable)
-        : StreamHandle{std::move(ca), std::move(ref)},
+        : StreamHandle{ca, std::move(ref)},
           memo{resetModeMemo()},
           fd{desc},
           rw{readable}

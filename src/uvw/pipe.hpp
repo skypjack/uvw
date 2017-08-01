@@ -29,7 +29,7 @@ namespace uvw {
 class PipeHandle final: public StreamHandle<PipeHandle, uv_pipe_t> {
 public:
     explicit PipeHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, bool pass = false)
-        : StreamHandle{std::move(ca), std::move(ref)}, ipc{pass}
+        : StreamHandle{ca, std::move(ref)}, ipc{pass}
     {}
 
     /**

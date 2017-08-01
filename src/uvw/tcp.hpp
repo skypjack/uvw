@@ -52,7 +52,7 @@ public:
     using StreamHandle::StreamHandle;
 
     explicit TcpHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
-        : StreamHandle{std::move(ca), std::move(ref)}, tag{FLAGS}, flags{f}
+        : StreamHandle{ca, std::move(ref)}, tag{FLAGS}, flags{f}
     {}
 
     /**

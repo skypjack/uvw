@@ -28,7 +28,7 @@ public:
      * @return A pointer to the newly created handle.
      */
     explicit SharedLib(ConstructorAccess ca, std::shared_ptr<Loop> ref, std::string filename) noexcept
-        : UnderlyingType{std::move(ca), std::move(ref)}
+        : UnderlyingType{ca, std::move(ref)}
     {
         opened = (0 == uv_dlopen(filename.data(), get()));
     }

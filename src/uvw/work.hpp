@@ -45,7 +45,7 @@ public:
     using Task = InternalTask;
 
     explicit WorkReq(ConstructorAccess ca, std::shared_ptr<Loop> ref, InternalTask t)
-        : Request{std::move(ca), std::move(ref)}, task{t}
+        : Request{ca, std::move(ref)}, task{t}
     {}
 
     /**

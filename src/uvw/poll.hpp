@@ -75,11 +75,11 @@ public:
     using Event = details::UVPollEvent;
 
     explicit PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, int desc)
-        : Handle{std::move(ca), std::move(ref)}, tag{FD}, fd{desc}
+        : Handle{ca, std::move(ref)}, tag{FD}, fd{desc}
     {}
 
     explicit PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, OSSocketHandle sock)
-        : Handle{std::move(ca), std::move(ref)}, tag{SOCKET}, socket{sock}
+        : Handle{ca, std::move(ref)}, tag{SOCKET}, socket{sock}
     {}
 
     /**
