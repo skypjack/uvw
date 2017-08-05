@@ -23,14 +23,14 @@ TEST(Tcp, ReadWrite) {
     server->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
     client->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
-    server->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &srv) {
-        std::shared_ptr<uvw::TcpHandle> socket = srv.loop().resource<uvw::TcpHandle>();
+    server->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &handle) {
+        std::shared_ptr<uvw::TcpHandle> socket = handle.loop().resource<uvw::TcpHandle>();
 
         socket->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
-        socket->on<uvw::CloseEvent>([&srv](const uvw::CloseEvent &, uvw::TcpHandle &) { srv.close(); });
+        socket->on<uvw::CloseEvent>([&handle](const uvw::CloseEvent &, uvw::TcpHandle &) { handle.close(); });
         socket->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &sock) { sock.close(); });
 
-        srv.accept(*socket);
+        handle.accept(*socket);
         socket->read();
     });
 
@@ -61,26 +61,28 @@ TEST(Tcp, SockPeer) {
     server->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
     client->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
-    server->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &srv) {
-        std::shared_ptr<uvw::TcpHandle> socket = srv.loop().resource<uvw::TcpHandle>();
+    server->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &handle) {
+        std::shared_ptr<uvw::TcpHandle> socket = handle.loop().resource<uvw::TcpHandle>();
 
         socket->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
-        socket->on<uvw::CloseEvent>([&srv](const uvw::CloseEvent &, uvw::TcpHandle &) { srv.close(); });
+        socket->on<uvw::CloseEvent>([&handle](const uvw::CloseEvent &, uvw::TcpHandle &) { handle.close(); });
         socket->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &sock) { sock.close(); });
 
-        srv.accept(*socket);
+        handle.accept(*socket);
         socket->read();
 
-        uvw::Addr local = srv.sock();
-        uvw::Addr remote = socket->peer();
+        uvw::Addr addr = handle.sock();
 
-        ASSERT_EQ(local.ip, "127.0.0.1");
-        ASSERT_EQ(remote.ip, "127.0.0.1");
-        ASSERT_EQ(local.port, decltype(local.port){4242});
-        ASSERT_NE(remote.port, decltype(remote.port){0});
+        ASSERT_EQ(addr.ip, "127.0.0.1");
+        ASSERT_EQ(addr.port, decltype(addr.port){4242});
     });
 
     client->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TcpHandle &handle) {
+        uvw::Addr addr = handle.peer();
+
+        ASSERT_EQ(addr.ip, "127.0.0.1");
+        ASSERT_NE(addr.port, decltype(addr.port){0});
+
         handle.close();
     });
 
