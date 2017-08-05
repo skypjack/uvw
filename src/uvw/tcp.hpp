@@ -120,7 +120,7 @@ public:
      *
      * A successful call to this function does not guarantee that the call to
      * `listen()` or `connect()` will work properly.<br/>
-     * `ErrorEvent` events can be emitted because of either this function or the
+     * ErrorEvent events can be emitted because of either this function or the
      * ones mentioned above.
      *
      * Available flags are:
@@ -144,7 +144,7 @@ public:
      *
      * A successful call to this function does not guarantee that the call to
      * `listen()` or `connect()` will work properly.<br/>
-     * `ErrorEvent` events can be emitted because of either this function or the
+     * ErrorEvent events can be emitted because of either this function or the
      * ones mentioned above.
      *
      * Available flags are:
