@@ -16,6 +16,9 @@ TEST(Tcp, Functionalities) {
 
 
 TEST(Tcp, ReadWrite) {
+    const std::string address = std::string{"127.0.0.1"};
+    const unsigned int port = 4242;
+
     auto loop = uvw::Loop::getDefault();
     auto server = loop->resource<uvw::TcpHandle>();
     auto client = loop->resource<uvw::TcpHandle>();
@@ -39,21 +42,72 @@ TEST(Tcp, ReadWrite) {
     });
 
     client->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TcpHandle &handle) {
+        ASSERT_TRUE(handle.writable());
+        ASSERT_TRUE(handle.readable());
+
         auto dataTryWrite = std::unique_ptr<char[]>(new char[1]{ 'a' });
         handle.tryWrite(std::move(dataTryWrite), 1);
         auto dataWrite = std::unique_ptr<char[]>(new char[2]{ 'b', 'c' });
         handle.write(std::move(dataWrite), 2);
     });
 
-    server->bind("127.0.0.1", 4242);
+    server->bind(address, port);
     server->listen();
-    client->connect("127.0.0.1", 4242);
+    client->connect(address, port);
 
     loop->run();
 }
 
 
 TEST(Tcp, SockPeer) {
+    const std::string address = std::string{"127.0.0.1"};
+    const unsigned int port = 4242;
+
+    auto loop = uvw::Loop::getDefault();
+    auto server = loop->resource<uvw::TcpHandle>();
+    auto client = loop->resource<uvw::TcpHandle>();
+
+    server->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    client->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+
+    server->once<uvw::ListenEvent>([&address, port](const uvw::ListenEvent &, uvw::TcpHandle &handle) {
+        std::shared_ptr<uvw::TcpHandle> socket = handle.loop().resource<uvw::TcpHandle>();
+
+        socket->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
+        socket->on<uvw::CloseEvent>([&handle](const uvw::CloseEvent &, uvw::TcpHandle &) { handle.close(); });
+        socket->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &sock) { sock.close(); });
+
+        handle.accept(*socket);
+        socket->read();
+
+        uvw::Addr addr = handle.sock();
+
+        ASSERT_EQ(addr.ip, address);
+        ASSERT_EQ(addr.port, decltype(addr.port){port});
+    });
+
+    client->once<uvw::ConnectEvent>([&address](const uvw::ConnectEvent &, uvw::TcpHandle &handle) {
+        uvw::Addr addr = handle.peer();
+
+        ASSERT_EQ(addr.ip, address);
+        ASSERT_NE(addr.port, decltype(addr.port){0});
+
+        handle.close();
+    });
+
+    server->bind(uvw::Addr{ address, port });
+    server->listen();
+    client->connect(uvw::Addr{ address, port });
+
+    loop->run();
+}
+
+
+TEST(Tcp, Shutdown) {
+    const std::string address = std::string{"127.0.0.1"};
+    const unsigned int port = 4242;
+    auto data = std::unique_ptr<char[]>(new char[3]{ 'a', 'b', 'c' });
+
     auto loop = uvw::Loop::getDefault();
     auto server = loop->resource<uvw::TcpHandle>();
     auto client = loop->resource<uvw::TcpHandle>();
@@ -70,25 +124,20 @@ TEST(Tcp, SockPeer) {
 
         handle.accept(*socket);
         socket->read();
-
-        uvw::Addr addr = handle.sock();
-
-        ASSERT_EQ(addr.ip, "127.0.0.1");
-        ASSERT_EQ(addr.port, decltype(addr.port){4242});
     });
 
-    client->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TcpHandle &handle) {
-        uvw::Addr addr = handle.peer();
-
-        ASSERT_EQ(addr.ip, "127.0.0.1");
-        ASSERT_NE(addr.port, decltype(addr.port){0});
-
+    client->once<uvw::ShutdownEvent>([](const uvw::ShutdownEvent &, uvw::TcpHandle &handle) {
         handle.close();
     });
 
-    server->bind(uvw::Addr{ "127.0.0.1", 4242 });
+    client->once<uvw::ConnectEvent>([&data](const uvw::ConnectEvent &, uvw::TcpHandle &handle) {
+        handle.write(data.get(), 3);
+        handle.shutdown();
+    });
+
+    server->bind(address, port);
     server->listen();
-    client->connect(uvw::Addr{ "127.0.0.1", 4242 });
+    client->connect(address, port);
 
     loop->run();
 }
