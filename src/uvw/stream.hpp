@@ -156,7 +156,7 @@ class StreamHandle: public Handle<T, U> {
 public:
 #ifdef _WIN32
     StreamHandle(typename Handle<T, U>::ConstructorAccess ca, std::shared_ptr<Loop> ref)
-        : Handle<T, U>{std::move(ca), std::move(ref)}
+        : Handle<T, U>{ca, std::move(ref)}
     {}
 #else
     using Handle<T, U>::Handle;
