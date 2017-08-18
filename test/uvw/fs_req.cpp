@@ -264,6 +264,16 @@ TEST(FsReq, RenameSync) {
 }
 
 
+TEST(FsReq, CopyFile) {
+    // TODO
+}
+
+
+TEST(FsReq, CopyFileSync) {
+    // TODO
+}
+
+
 TEST(FsReq, Access) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
 
@@ -501,7 +511,7 @@ TEST(FsReq, SymlinkAndUnlink) {
     });
 
     fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename, &linkname](const auto &, auto &) {
-        fsReq->symlink(filename, linkname, 0);
+        fsReq->symlink(filename, linkname);
     });
 
     fileReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
@@ -527,7 +537,7 @@ TEST(FsReq, SymlinkAndUnlinkSync) {
 
     ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
     ASSERT_TRUE(fileReq->closeSync());
-    ASSERT_TRUE(fsReq->symlinkSync(filename, linkname, 0));
+    ASSERT_TRUE(fsReq->symlinkSync(filename, linkname));
     ASSERT_TRUE(fsReq->unlinkSync(linkname));
 
     loop->run();

@@ -47,7 +47,8 @@ enum class UVFsType: std::underlying_type_t<uv_fs_type> {
     READLINK = UV_FS_READLINK,
     CHOWN = UV_FS_CHOWN,
     FCHOWN = UV_FS_FCHOWN,
-    REALPATH = UV_FS_REALPATH
+    REALPATH = UV_FS_REALPATH,
+    COPYFILE = UV_FS_COPYFILE
 };
 
 
@@ -60,6 +61,17 @@ enum class UVDirentTypeT: std::underlying_type_t<uv_dirent_type_t> {
     SOCKET = UV_DIRENT_SOCKET,
     CHAR = UV_DIRENT_CHAR,
     BLOCK = UV_DIRENT_BLOCK
+};
+
+
+enum class UVCopyFileFlags: int {
+    EXCL = UV_FS_COPYFILE_EXCL
+};
+
+
+enum class UVSymLinkFlags: int {
+    DIR = UV_FS_SYMLINK_DIR,
+    JUNCTION = UV_FS_SYMLINK_JUNCTION
 };
 
 
@@ -101,6 +113,7 @@ enum class UVDirentTypeT: std::underlying_type_t<uv_dirent_type_t> {
  * * `FsRequest::Type::CHOWN`
  * * `FsRequest::Type::FCHOWN`
  * * `FsRequest::Type::REALPATH`
+ * * `FsRequest::Type::COPYFILE`
  *
  * It will be emitted by FsReq and/or FileReq according with their
  * functionalities.
@@ -697,6 +710,20 @@ public:
     }
 
     /**
+     * @brief Gets the OS dependent handle.
+     *
+     * For a file descriptor in the C runtime, get the OS-dependent handle. On
+     * UNIX, returns the file descriptor as-is. On Windows, this calls a system
+     * function.<br/>
+     * Note that the return value is still owned by the C runtime, any attempts
+     * to close it or to use it after closing the file descriptor may lead to
+     * malfunction.
+     */
+    OSFileDescriptor handle() const noexcept {
+        return uv_get_osfhandle(file);
+    }
+
+    /**
      * @brief Cast operator to FileHandle.
      *
      * Cast operator to an internal representation of the underlying file
@@ -733,6 +760,9 @@ class FsReq final: public FsRequest<FsReq> {
     }
 
 public:
+    using CopyFile = details::UVCopyFileFlags;
+    using SymLink = details::UVSymLinkFlags;
+
     using FsRequest::FsRequest;
 
     ~FsReq() noexcept {
@@ -742,7 +772,7 @@ public:
     /**
      * @brief Async [unlink](http://linux.die.net/man/2/unlink).
      *
-     * Emit a `FsEvent<FileReq::Type::UNLINK>` event when completed.<br/>
+     * Emit a `FsEvent<FsReq::Type::UNLINK>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -765,7 +795,7 @@ public:
     /**
      * @brief Async [mkdir](http://linux.die.net/man/2/mkdir).
      *
-     * Emit a `FsEvent<FileReq::Type::MKDIR>` event when completed.<br/>
+     * Emit a `FsEvent<FsReq::Type::MKDIR>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -790,7 +820,7 @@ public:
     /**
      * @brief Async [mktemp](http://linux.die.net/man/3/mkdtemp).
      *
-     * Emit a `FsEvent<FileReq::Type::MKDTEMP>` event when completed.<br/>
+     * Emit a `FsEvent<FsReq::Type::MKDTEMP>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
      * @param tpl Template, as described in the official documentation.
@@ -817,7 +847,7 @@ public:
     /**
      * @brief Async [rmdir](http://linux.die.net/man/2/rmdir).
      *
-     * Emit a `FsEvent<FileReq::Type::RMDIR>` event when completed.<br/>
+     * Emit a `FsEvent<FsReq::Type::RMDIR>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -840,7 +870,7 @@ public:
     /**
      * @brief Async [scandir](http://linux.die.net/man/3/scandir).
      *
-     * Emit a `FsEvent<FileReq::Type::SCANDIR>` event when completed.<br/>
+     * Emit a `FsEvent<FsReq::Type::SCANDIR>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -913,7 +943,7 @@ public:
     /**
      * @brief Async [stat](http://linux.die.net/man/2/stat).
      *
-     * Emit a `FsEvent<FileReq::Type::STAT>` event when completed.<br/>
+     * Emit a `FsEvent<FsReq::Type::STAT>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -940,7 +970,7 @@ public:
     /**
      * @brief Async [lstat](http://linux.die.net/man/2/lstat).
      *
-     * Emit a `FsEvent<FileReq::Type::LSTAT>` event when completed.<br/>
+     * Emit a `FsEvent<FsReq::Type::LSTAT>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -967,7 +997,7 @@ public:
     /**
      * @brief Async [rename](http://linux.die.net/man/2/rename).
      *
-     * Emit a `FsEvent<FileReq::Type::RENAME>` event when completed.<br/>
+     * Emit a `FsEvent<FsReq::Type::RENAME>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
      * @param old Old path, as described in the official documentation.
@@ -990,9 +1020,60 @@ public:
     }
 
     /**
+     * @brief Copies a file asynchronously from a path to a new one.
+     *
+     * Emit a `FsEvent<FsReq::Type::UV_FS_COPYFILE>` event when
+     * completed.<br/>
+     * Emit an ErrorEvent event in case of errors.
+     *
+     * Available flags are:
+     *
+     * * `FsReq::CopyFile::EXCL`: it fails if the destination path
+     * already exists (the default behavior is to overwrite the destination if
+     * it exists).
+     *
+     * If the destination path is created, but an error occurs while copying the
+     * data, then the destination path is removed. There is a brief window of
+     * time between closing and removing the file where another process could
+     * access the file.
+     *
+     * @param old Old path, as described in the official documentation.
+     * @param path New path, as described in the official documentation.
+     * @param flags Optional additional flags.
+     */
+    void copyfile(std::string old, std::string path, Flags<CopyFile> flags = Flags<CopyFile>{}) {
+        cleanupAndInvoke(&uv_fs_copyfile, parent(), get(), old.data(), path.data(), flags, &fsGenericCallback<Type::COPYFILE>);
+    }
+
+    /**
+     * @brief Copies a file synchronously from a path to a new one.
+     *
+     * Available flags are:
+     *
+     * * `FsReq::CopyFile::EXCL`: it fails if the destination path
+     * already exists (the default behavior is to overwrite the destination if
+     * it exists).
+     *
+     * If the destination path is created, but an error occurs while copying the
+     * data, then the destination path is removed. There is a brief window of
+     * time between closing and removing the file where another process could
+     * access the file.
+     *
+     * @param old Old path, as described in the official documentation.
+     * @param path New path, as described in the official documentation.
+     * @param flags Optional additional flags.
+     * @return True in case of success, false otherwise.
+     */
+    bool copyfileSync(std::string old, std::string path, Flags<CopyFile> flags = Flags<CopyFile>{}) {
+        auto req = get();
+        cleanupAndInvokeSync(&uv_fs_copyfile, parent(), get(), old.data(), path.data(), flags);
+        return !(req->result < 0);
+    }
+
+    /**
      * @brief Async [access](http://linux.die.net/man/2/access).
      *
-     * Emit a `FsEvent<FileReq::Type::ACCESS>` event when completed.<br/>
+     * Emit a `FsEvent<FsReq::Type::ACCESS>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -1017,7 +1098,7 @@ public:
     /**
      * @brief Async [chmod](http://linux.die.net/man/2/chmod).
      *
-     * Emit a `FsEvent<FileReq::Type::CHMOD>` event when completed.<br/>
+     * Emit a `FsEvent<FsReq::Type::CHMOD>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -1042,7 +1123,7 @@ public:
     /**
      * @brief Async [utime](http://linux.die.net/man/2/utime).
      *
-     * Emit a `FsEvent<FileReq::Type::UTIME>` event when completed.<br/>
+     * Emit a `FsEvent<FsReq::Type::UTIME>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -1073,7 +1154,7 @@ public:
     /**
      * @brief Async [link](http://linux.die.net/man/2/link).
      *
-     * Emit a `FsEvent<FileReq::Type::LINK>` event when completed.<br/>
+     * Emit a `FsEvent<FsReq::Type::LINK>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
      * @param old Old path, as described in the official documentation.
@@ -1098,25 +1179,40 @@ public:
     /**
      * @brief Async [symlink](http://linux.die.net/man/2/symlink).
      *
-     * Emit a `FsEvent<FileReq::Type::SYMLINK>` event when completed.<br/>
+     * Emit a `FsEvent<FsReq::Type::SYMLINK>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
+     *
+     * Available flags are:
+     *
+     * * `FsReq::SymLink::DIR`: it indicates that the old path points to a
+     * directory.
+     * * `FsReq::SymLink::JUNCTION`: it requests that the symlink is created
+     * using junction points.
      *
      * @param old Old path, as described in the official documentation.
      * @param path New path, as described in the official documentation.
-     * @param flags Flags, as described in the official documentation.
+     * @param flags Optional additional flags.
      */
-    void symlink(std::string old, std::string path, int flags) {
+    void symlink(std::string old, std::string path, Flags<SymLink> flags = Flags<SymLink>{}) {
         cleanupAndInvoke(&uv_fs_symlink, parent(), get(), old.data(), path.data(), flags, &fsGenericCallback<Type::SYMLINK>);
     }
 
     /**
      * @brief Sync [symlink](http://linux.die.net/man/2/symlink).
+     *
+     * Available flags are:
+     *
+     * * `FsReq::SymLink::DIR`: it indicates that the old path points to a
+     * directory.
+     * * `FsReq::SymLink::JUNCTION`: it requests that the symlink is created
+     * using junction points.
+     *
      * @param old Old path, as described in the official documentation.
      * @param path New path, as described in the official documentation.
      * @param flags Flags, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool symlinkSync(std::string old, std::string path, int flags) {
+    bool symlinkSync(std::string old, std::string path, Flags<SymLink> flags = Flags<SymLink>{}) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_symlink, parent(), req, old.data(), path.data(), flags);
         return !(req->result < 0);
@@ -1125,7 +1221,7 @@ public:
     /**
      * @brief Async [readlink](http://linux.die.net/man/2/readlink).
      *
-     * Emit a `FsEvent<FileReq::Type::READLINK>` event when completed.<br/>
+     * Emit a `FsEvent<FsReq::Type::READLINK>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -1156,7 +1252,7 @@ public:
     /**
      * @brief Async [realpath](http://linux.die.net/man/3/realpath).
      *
-     * Emit a `FsEvent<FileReq::Type::REALPATH>` event when completed.<br/>
+     * Emit a `FsEvent<FsReq::Type::REALPATH>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -1183,7 +1279,7 @@ public:
     /**
      * @brief Async [chown](http://linux.die.net/man/2/chown).
      *
-     * Emit a `FsEvent<FileReq::Type::CHOWN>` event when completed.<br/>
+     * Emit a `FsEvent<FsReq::Type::CHOWN>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
      * @param path Path, as described in the official documentation.

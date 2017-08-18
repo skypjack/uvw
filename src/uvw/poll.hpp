@@ -18,7 +18,8 @@ namespace details {
 enum class UVPollEvent: std::underlying_type_t<uv_poll_event> {
     READABLE = UV_READABLE,
     WRITABLE = UV_WRITABLE,
-    DISCONNECT = UV_DISCONNECT
+    DISCONNECT = UV_DISCONNECT,
+    PRIORITIZED = UV_PRIORITIZED
 };
 
 
@@ -43,6 +44,7 @@ struct PollEvent {
      * * `PollHandle::Event::READABLE`
      * * `PollHandle::Event::WRITABLE`
      * * `PollHandle::Event::DISCONNECT`
+     * * `PollHandle::Event::PRIORITIZED`
      */
     Flags<details::UVPollEvent> flags;
 };
@@ -100,6 +102,7 @@ public:
      * * `PollHandle::Event::READABLE`
      * * `PollHandle::Event::WRITABLE`
      * * `PollHandle::Event::DISCONNECT`
+     * * `PollHandle::Event::PRIORITIZED`
      *
      * As soon as an event is detected, a PollEvent is emitted by the
      * handle.<br>
@@ -122,6 +125,7 @@ public:
      * * `PollHandle::Event::READABLE`
      * * `PollHandle::Event::WRITABLE`
      * * `PollHandle::Event::DISCONNECT`
+     * * `PollHandle::Event::PRIORITIZED`
      *
      * As soon as an event is detected, a PollEvent is emitted by the
      * handle.<br>
