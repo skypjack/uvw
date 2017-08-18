@@ -111,8 +111,9 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool init() {
-        // fake initialization so as to have leak invoked
-        return initialize([](auto...){ return 0; });
+        // deferred initialization: libuv initializes process handles only when
+        // uv_spawn is invoked and uvw stays true to the underlying library
+        return true;
     }
 
     /**
@@ -154,6 +155,10 @@ public:
         poStdio.insert(poStdio.begin(), poFdStdio.cbegin(), poFdStdio.cend());
         po.stdio_count = static_cast<decltype(po.stdio_count)>(poStdio.size());
         po.stdio = poStdio.data();
+
+        // fake initialization so as to have leak invoked
+        // see init member function for more details
+        initialize([](auto...){ return 0; });
 
         invoke(&uv_spawn, parent(), get(), &po);
     }
