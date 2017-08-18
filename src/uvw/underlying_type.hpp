@@ -17,6 +17,9 @@ namespace uvw {
  */
 template<typename T, typename U>
 class UnderlyingType {
+    template<typename, typename>
+    friend class UnderlyingType;
+
 protected:
     struct ConstructorAccess { explicit ConstructorAccess(int) {} };
 
@@ -34,10 +37,20 @@ protected:
         return reinterpret_cast<R *>(&resource);
     }
 
+    template<typename R, typename... P>
+    auto get(UnderlyingType<P...> &other) noexcept {
+        return reinterpret_cast<R *>(&other.resource);
+    }
+
     template<typename R>
     auto get() const noexcept {
         static_assert(not std::is_same<R, U>::value, "!");
         return reinterpret_cast<const R *>(&resource);
+    }
+
+    template<typename R, typename... P>
+    auto get(const UnderlyingType<P...> &other) const noexcept {
+        return reinterpret_cast<const R *>(&other.resource);
     }
 
 public:
