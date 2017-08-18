@@ -15,8 +15,6 @@ namespace uvw {
  * @brief CheckEvent event.
  *
  * It will be emitted by CheckHandle according with its functionalities.
- *
- * To create a `CheckHandle` through a `Loop`, no arguments are required.
  */
 struct CheckEvent {};
 
@@ -26,6 +24,8 @@ struct CheckEvent {};
  *
  * Check handles will emit a CheckEvent event once per loop iteration, right
  * after polling for I/O.
+ *
+ * To create a `CheckHandle` through a `Loop`, no arguments are required.
  */
 class CheckHandle final: public Handle<CheckHandle, uv_check_t> {
     static void startCallback(uv_check_t *handle) {

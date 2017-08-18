@@ -15,8 +15,6 @@ namespace uvw {
  * @brief PrepareEvent event.
  *
  * It will be emitted by PrepareHandle according with its functionalities.
- *
- * To create a `PrepareHandle` through a `Loop`, no arguments are required.
  */
 struct PrepareEvent {};
 
@@ -26,6 +24,8 @@ struct PrepareEvent {};
  *
  * Prepare handles will emit a PrepareEvent event once per loop iteration, right
  * before polling for I/O.
+ *
+ * To create a `PrepareHandle` through a `Loop`, no arguments are required.
  */
 class PrepareHandle final: public Handle<PrepareHandle, uv_prepare_t> {
     static void startCallback(uv_prepare_t *handle) {
