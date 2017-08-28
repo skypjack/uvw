@@ -117,19 +117,3 @@ set(CPACK_SOURCE_GENERATOR TGZ)
 set(CPACK_PACKAGING_INSTALL_DIRECTORY "uvw-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
 
 include(CPack)
-
-#
-# I use QtCreator and I need the lines below, so do not ask. :-)
-#
-
-file(
-    GLOB_RECURSE PROJECT_FILES FOLLOW_SYMLINKS
-    *.txt *.c *.cpp *.hpp *.h *.in *.dox *.cmake *.sh *.md *.yml *.bat
-    AUTHORS LICENSE TODO
-)
-
-add_custom_target(
-    QTCREATOR_FALLBACK ALL
-    COMMENT "Feel free to ignore this target, but please do not remove it."
-    SOURCES ${PROJECT_FILES}
-)
