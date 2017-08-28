@@ -154,7 +154,7 @@ class StreamHandle: public Handle<T, U> {
     }
 
 public:
-#ifdef _WIN32
+#ifdef _MSC_VER
     StreamHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref)
         : Handle{ca, std::move(ref)}
     {}
