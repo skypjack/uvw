@@ -187,7 +187,7 @@ public:
      * @param path The working directory to be used when `spawn()` is invoked.
      * @return A reference to this process handle.
      */
-    ProcessHandle & cwd(std::string &path) noexcept {
+    ProcessHandle & cwd(std::string path) noexcept {
         poCwd = path;
         return *this;
     }
