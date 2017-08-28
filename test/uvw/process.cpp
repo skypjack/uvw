@@ -8,6 +8,8 @@ TEST(Process, StdIO) {
     auto pipe = loop->resource<uvw::PipeHandle>();
 
     handle->stdio(*pipe, uvw::Flags<uvw::ProcessHandle::StdIO>::from<uvw::ProcessHandle::StdIO::CREATE_PIPE, uvw::ProcessHandle::StdIO::READABLE_PIPE>());
+    handle->stdio(uvw::StdIN, uvw::ProcessHandle::StdIO::READABLE_PIPE);
+
     pipe->close();
     loop->run();
 }
