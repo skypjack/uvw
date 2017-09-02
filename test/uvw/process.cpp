@@ -30,6 +30,8 @@ TEST(Process, StdIO) {
     uvw::ProcessHandle::disableStdIOInheritance();
     handle->stdio(*pipe, uvw::Flags<uvw::ProcessHandle::StdIO>::from<uvw::ProcessHandle::StdIO::CREATE_PIPE, uvw::ProcessHandle::StdIO::READABLE_PIPE>());
     handle->stdio(uvw::StdIN, uvw::ProcessHandle::StdIO::IGNORE_STREAM);
+    handle->stdio(uvw::StdOUT, uvw::ProcessHandle::StdIO::IGNORE_STREAM);
+    handle->stdio(uvw::StdOUT, uvw::ProcessHandle::StdIO::INHERIT_FD);
 
     pipe->close();
     loop->run();
