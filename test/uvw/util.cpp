@@ -104,10 +104,10 @@ TEST(Util, Utilities) {
     ASSERT_FALSE(interfaceAddresses[0].netmask.ip.empty());
 
     ASSERT_TRUE(uvw::Utilities::replaceAllocator(
-        +[](size_t size) { return malloc(size); },
-        +[](void *ptr, size_t size) { return realloc(ptr, size); },
-        +[](size_t num, size_t size) { return calloc(num, size); },
-        +[](void *ptr) { return free(ptr); }
+        [](size_t size) { return malloc(size); },
+        [](void *ptr, size_t size) { return realloc(ptr, size); },
+        [](size_t num, size_t size) { return calloc(num, size); },
+        [](void *ptr) { return free(ptr); }
     ));
 
     ASSERT_NO_THROW(uvw::Utilities::loadAverage());
