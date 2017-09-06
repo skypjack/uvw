@@ -1,4 +1,5 @@
 #include <memory>
+#include <cstdlib>
 #include <gtest/gtest.h>
 #include <uvw.hpp>
 
@@ -102,6 +103,13 @@ TEST(Util, Utilities) {
     ASSERT_FALSE(interfaceAddresses[0].address.ip.empty());
     ASSERT_FALSE(interfaceAddresses[0].netmask.ip.empty());
 
+    ASSERT_TRUE(uvw::Utilities::replaceAllocator(
+        +[](size_t size) { return malloc(size); },
+        +[](void *ptr, size_t size) { return realloc(ptr, size); },
+        +[](size_t num, size_t size) { return calloc(num, size); },
+        +[](void *ptr) { return free(ptr); }
+    ));
+
     ASSERT_NO_THROW(uvw::Utilities::loadAverage());
     ASSERT_NE(uvw::Utilities::totalMemory(), decltype(uvw::Utilities::totalMemory()){0});
     ASSERT_NE(uvw::Utilities::uptime(), decltype(uvw::Utilities::uptime()){0});
@@ -118,4 +126,6 @@ TEST(Util, Utilities) {
     ASSERT_NE(uvw::Utilities::setupArgs(1, &argv), nullptr);
     ASSERT_NE(uvw::Utilities::processTitle(), std::string{});
     ASSERT_TRUE(uvw::Utilities::processTitle(uvw::Utilities::processTitle()));
+
+
 }
