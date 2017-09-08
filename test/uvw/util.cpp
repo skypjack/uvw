@@ -90,6 +90,17 @@ TEST(Util, Utilities) {
     ASSERT_EQ(uvw::Utilities::guessHandle(uvw::FileHandle{-1}), uvw::HandleType::UNKNOWN);
     ASSERT_NE(uvw::Utilities::guessHandle(uvw::StdIN), uvw::HandleType::UNKNOWN);
 
+    auto loop = uvw::Loop::getDefault();
+
+    ASSERT_EQ(uvw::Utilities::guessHandle(loop->resource<uvw::AsyncHandle>()->category()), uvw::HandleType::ASYNC);
+    ASSERT_EQ(uvw::Utilities::guessHandle(loop->resource<uvw::CheckHandle>()->category()), uvw::HandleType::CHECK);
+    ASSERT_EQ(uvw::Utilities::guessHandle(loop->resource<uvw::IdleHandle>()->category()), uvw::HandleType::IDLE);
+    ASSERT_EQ(uvw::Utilities::guessHandle(loop->resource<uvw::PipeHandle>()->category()), uvw::HandleType::PIPE);
+    ASSERT_EQ(uvw::Utilities::guessHandle(loop->resource<uvw::PrepareHandle>()->category()), uvw::HandleType::PREPARE);
+    ASSERT_EQ(uvw::Utilities::guessHandle(loop->resource<uvw::TcpHandle>()->category()), uvw::HandleType::TCP);
+    ASSERT_EQ(uvw::Utilities::guessHandle(loop->resource<uvw::TimerHandle>()->category()), uvw::HandleType::TIMER);
+    ASSERT_EQ(uvw::Utilities::guessHandle(loop->resource<uvw::UDPHandle>()->category()), uvw::HandleType::UDP);
+
     auto cpuInfo = uvw::Utilities::cpuInfo();
 
     ASSERT_NE(cpuInfo.size(), decltype(cpuInfo.size()){0});
