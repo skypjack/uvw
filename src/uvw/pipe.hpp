@@ -143,8 +143,8 @@ public:
      * * `HandleType::UNKNOWN`
      */
     HandleType receive() noexcept {
-        auto type = uv_pipe_pending_type(get());
-        return Utilities::guessHandle(type);
+        HandleCategory category = uv_pipe_pending_type(get());
+        return Utilities::guessHandle(category);
     }
 
 private:

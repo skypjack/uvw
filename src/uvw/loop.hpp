@@ -12,6 +12,7 @@
 #include <chrono>
 #include <uv.h>
 #include "emitter.hpp"
+#include "util.hpp"
 
 
 namespace uvw {
@@ -43,8 +44,29 @@ enum class UVRunMode: std::underlying_type_t<uv_run_mode> {
  * users walk them as untyped instances.<br/>
  * This can help to end all the pending requests by closing the handles.
  */
-class BaseHandle {
-public:
+struct BaseHandle {
+    /**
+     * @brief Gets the category of the handle.
+     *
+     * A base handle offers no functionality to promote it to the actual handle
+     * type. By means of this function, an opaque value that identifies the
+     * category of the handle is made available to the users.
+     *
+     * @return The actual category of the handle.
+     */
+    virtual HandleCategory category() const noexcept = 0;
+
+    /**
+     * @brief Gets the type of the handle.
+     *
+     * A base handle offers no functionality to promote it to the actual handle
+     * type. By means of this function, the type of the underlying handle as
+     * specified by HandleType is made available to the user.
+     *
+     * @return The actual type of the handle.
+     */
+    virtual HandleType type() const noexcept = 0;
+
     /**
      * @brief Checks if the handle is active.
      *

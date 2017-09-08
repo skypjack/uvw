@@ -182,6 +182,7 @@ struct WinSize {
 
 using HandleType = details::UVHandleType; /*!< The type of a handle. */
 
+using HandleCategory = details::UVTypeWrapper<uv_handle_type>; /*!< Utility class that wraps an internal handle type. */
 using FileHandle = details::UVTypeWrapper<uv_file>; /*!< Utility class that wraps an internal file handle. */
 using OSSocketHandle = details::UVTypeWrapper<uv_os_sock_t>; /*!< Utility class that wraps an os socket handle. */
 using OSFileDescriptor = details::UVTypeWrapper<uv_os_fd_t>; /*!< Utility class that wraps an os file descriptor. */
@@ -505,27 +506,12 @@ struct Utilities {
     };
 
     /**
-     * @brief Gets the type of the stream to be used with the given descriptor.
-     *
-     * Returns the type of stream that should be used with a given file
-     * descriptor.<br/>
-     * Usually this will be used during initialization to guess the type of the
-     * stdio streams.
-     *
-     * @param file A valid descriptor.
-     * @return One of the following types:
-     *
-     * * `HandleType::UNKNOWN`
-     * * `HandleType::PIPE`
-     * * `HandleType::TCP`
-     * * `HandleType::TTY`
-     * * `HandleType::UDP`
-     * * `HandleType::FILE`
+     * @brief Gets the type of the handle given a category.
+     * @param category A properly initialized handle category.
+     * @return The actual type of the handle as defined by HandleType
      */
-    static HandleType guessHandle(FileHandle file) noexcept {
-        auto type = uv_guess_handle(file);
-
-        switch(type) {
+    static HandleType guessHandle(HandleCategory category) noexcept {
+        switch(category) {
         case UV_ASYNC:
             return HandleType::ASYNC;
         case UV_CHECK:
@@ -563,6 +549,29 @@ struct Utilities {
         default:
             return HandleType::UNKNOWN;
         }
+    }
+
+    /**
+     * @brief Gets the type of the stream to be used with the given descriptor.
+     *
+     * Returns the type of stream that should be used with a given file
+     * descriptor.<br/>
+     * Usually this will be used during initialization to guess the type of the
+     * stdio streams.
+     *
+     * @param file A valid descriptor.
+     * @return One of the following types:
+     *
+     * * `HandleType::UNKNOWN`
+     * * `HandleType::PIPE`
+     * * `HandleType::TCP`
+     * * `HandleType::TTY`
+     * * `HandleType::UDP`
+     * * `HandleType::FILE`
+     */
+    static HandleType guessHandle(FileHandle file) noexcept {
+        HandleCategory category = uv_guess_handle(file);
+        return guessHandle(category);
     }
 
 

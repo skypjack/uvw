@@ -209,7 +209,7 @@ To know what are the handles that are still alive and bound to a given loop, jus
 loop.walk([](uvw::BaseHandle &){ /* application code here */ });
 ```
 
-`BaseHandle` exposes a few methods and cannot be used to know the original type of the handle.<br/>
+`BaseHandle` exposes a few methods and cannot be promoted to the original type of the handle (even though `type` and `category` member functions fill the gap somehow).<br/>
 Anyway, it can be used to close the handle that originated from it. As an example, all the pending handles can be closed easily as it follows:
 
 ```cpp

@@ -67,6 +67,32 @@ public:
     using Resource<T, U>::Resource;
 
     /**
+     * @brief Gets the category of the handle.
+     *
+     * A base handle offers no functionality to promote it to the actual handle
+     * type. By means of this function, an opaque value that identifies the
+     * category of the handle is made available to the users.
+     *
+     * @return The actual category of the handle.
+     */
+    HandleCategory category() const noexcept override {
+        return HandleCategory{this->template get<uv_handle_t>()->type};
+    }
+
+    /**
+     * @brief Gets the type of the handle.
+     *
+     * A base handle offers no functionality to promote it to the actual handle
+     * type. By means of this function, the type of the underlying handle as
+     * specified by HandleType is made available to the users.
+     *
+     * @return The actual type of the handle.
+     */
+    HandleType type() const noexcept override {
+        return Utilities::guessHandle(category());
+    }
+
+    /**
      * @brief Checks if the handle is active.
      *
      * What _active_ means depends on the type of handle:
