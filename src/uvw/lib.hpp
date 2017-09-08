@@ -21,12 +21,6 @@ namespace uvw {
  */
 class SharedLib final: public UnderlyingType<SharedLib, uv_lib_t> {
 public:
-    /**
-     * @brief Creates a new shared library object.
-     * @param loop A pointer to the loop from which the handle generated.
-     * @param filename The filename of the library in UTF8.
-     * @return A pointer to the newly created handle.
-     */
     explicit SharedLib(ConstructorAccess ca, std::shared_ptr<Loop> ref, std::string filename) noexcept
         : UnderlyingType{ca, std::move(ref)}
     {
