@@ -17,6 +17,9 @@ TEST(Handle, Functionalities) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::AsyncHandle>();
 
+    ASSERT_EQ(uvw::Utilities::guessHandle(handle->category()), uvw::HandleType::ASYNC);
+    ASSERT_EQ(handle->type(), uvw::HandleType::ASYNC);
+
     ASSERT_TRUE(handle->active());
     ASSERT_FALSE(handle->closing());
     ASSERT_NO_THROW(handle->close());
