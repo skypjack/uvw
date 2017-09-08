@@ -131,6 +131,7 @@ TEST(Tcp, Shutdown) {
     });
 
     client->once<uvw::ConnectEvent>([&data](const uvw::ConnectEvent &, uvw::TcpHandle &handle) {
+        handle.tryWrite(data.get(), 3);
         handle.write(data.get(), 3);
         handle.shutdown();
     });
