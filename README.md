@@ -296,8 +296,10 @@ Check the [contributors list](https://github.com/skypjack/uvw/blob/master/AUTHOR
 
 Below an incomplete list of projects that use `uvw`:
 
-* Internal tools (not publicly available) at [**Cynny SpA**](https://www.morphcast.com/) and [**Cynny Space**](http://www.cynnyspace.com/).
-* [**Calaos.fr**](https://www.calaos.fr/en/) (Open source home automation) on [GitHub](https://github.com/calaos).
+* Internal tools (not publicly available) at **[Cynny SpA](https://www.morphcast.com/)** and **[Cynny Space](http://www.cynnyspace.com/)**.
+* **[Calaos.fr](https://www.calaos.fr/en/)** (Open source home automation) on [GitHub](https://github.com/calaos).
+* **[Iroha](http://iroha.tech/en/) - A simple, decentralized ledger** on [Github](https://github.com/hyperledger/iroha).
+* **Iroha blockchain core** on [Github](https://github.com/finshield/iroha-core).
 * **Ecwid Console Downloader** on [GitHub](https://github.com/dvetutnev/Ecwid-Console-downloader).
 * **Simple network ping pong for lazy students** on [GitHub](https://github.com/dvetutnev/ping_pong).
 
