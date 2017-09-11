@@ -10,6 +10,7 @@
 #include "request.hpp"
 #include "handle.hpp"
 #include "loop.hpp"
+#include <cerrno>
 
 
 namespace uvw {
@@ -142,8 +143,14 @@ class StreamHandle: public Handle<T, U> {
             // data available
             ref.publish(DataEvent{std::move(data), static_cast<std::size_t>(nread)});
         } else {
-            // transmission error
-            ref.publish(ErrorEvent(nread));
+            if (nread == 0) {
+                // equivalent to EAGAIN/EWOULDBLOCK
+                // http://docs.libuv.org/en/v1.x/stream.html
+                ref.publish(ErrorEvent(EAGAIN));
+            } else {
+                // transmission error
+                ref.publish(ErrorEvent(nread));
+            }
         }
     }
 
