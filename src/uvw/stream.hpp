@@ -135,17 +135,17 @@ class StreamHandle: public Handle<T, U> {
         // data will be destroyed no matter of what the value of nread is
         std::unique_ptr<char[]> data{buf->base};
 
+        // nread == 0 is ignored (see http://docs.libuv.org/en/v1.x/stream.html)
+        // equivalent to EAGAIN/EWOULDBLOCK, it shouldn't be treated as an error
+        // for we don't have data to emit though, it's fine to suppress it
+
         if(nread == UV_EOF) {
             // end of stream
             ref.publish(EndEvent{});
         } else if(nread > 0) {
             // data available
             ref.publish(DataEvent{std::move(data), static_cast<std::size_t>(nread)});
-        } else if(nread == 0) {
-            // equivalent to EAGAIN/EWOULDBLOCK
-            // http://docs.libuv.org/en/v1.x/stream.html
-            // simply catch this condition and do not publish an event
-        } else {
+        } else if(nread < 0) {
             // transmission error
             ref.publish(ErrorEvent(nread));
         }
