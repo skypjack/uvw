@@ -106,7 +106,6 @@ TEST(Tcp, SockPeer) {
 TEST(Tcp, Shutdown) {
     const std::string address = std::string{"127.0.0.1"};
     const unsigned int port = 4242;
-    auto data = std::unique_ptr<char[]>(new char[3]{ 'a', 'b', 'c' });
 
     auto loop = uvw::Loop::getDefault();
     auto server = loop->resource<uvw::TcpHandle>();
@@ -130,9 +129,7 @@ TEST(Tcp, Shutdown) {
         handle.close();
     });
 
-    client->once<uvw::ConnectEvent>([&data](const uvw::ConnectEvent &, uvw::TcpHandle &handle) {
-        handle.tryWrite(data.get(), 3);
-        handle.write(data.get(), 3);
+    client->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TcpHandle &handle) {
         handle.shutdown();
     });
 
