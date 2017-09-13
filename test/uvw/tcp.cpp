@@ -139,3 +139,31 @@ TEST(Tcp, Shutdown) {
 
     loop->run();
 }
+
+
+TEST(Tcp, WriteError) {
+    auto loop = uvw::Loop::getDefault();
+    auto handle = loop->resource<uvw::TcpHandle>();
+
+    bool checkWriteSmartPtrErrorEvent = false;
+    bool checkWriteNakedPtrErrorEvent = false;
+    bool checkTryWriteSmartPtrErrorEvent = false;
+    bool checkTryWriteNakedPtrErrorEvent = false;
+
+    handle->close();
+    handle->once<uvw::ErrorEvent>([&checkWriteSmartPtrErrorEvent](const auto &, auto &) { checkWriteSmartPtrErrorEvent = true; });
+    handle->write(std::unique_ptr<char[]>{}, 0);
+    handle->once<uvw::ErrorEvent>([&checkWriteNakedPtrErrorEvent](const auto &, auto &) { checkWriteNakedPtrErrorEvent = true; });
+    handle->write(nullptr, 0);
+    handle->once<uvw::ErrorEvent>([&checkTryWriteSmartPtrErrorEvent](const auto &, auto &) { checkTryWriteSmartPtrErrorEvent = true; });
+    handle->tryWrite(std::unique_ptr<char[]>{}, 0);
+    handle->once<uvw::ErrorEvent>([&checkTryWriteNakedPtrErrorEvent](const auto &, auto &) { checkTryWriteNakedPtrErrorEvent = true; });
+    handle->tryWrite(nullptr, 0);
+
+    loop->run();
+
+    ASSERT_TRUE(checkWriteSmartPtrErrorEvent);
+    ASSERT_TRUE(checkWriteNakedPtrErrorEvent);
+    ASSERT_TRUE(checkTryWriteSmartPtrErrorEvent);
+    ASSERT_TRUE(checkTryWriteNakedPtrErrorEvent);
+}
