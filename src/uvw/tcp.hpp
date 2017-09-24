@@ -49,8 +49,6 @@ public:
     using IPv4 = uvw::IPv4;
     using IPv6 = uvw::IPv6;
 
-    using StreamHandle::StreamHandle;
-
     explicit TcpHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
         : StreamHandle{ca, std::move(ref)}, tag{FLAGS}, flags{f}
     {}
