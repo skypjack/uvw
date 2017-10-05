@@ -113,10 +113,14 @@ class Mutex final: public UnderlyingType<Mutex, uv_mutex_t> {
     friend class Condition;
 
 public:
-    explicit Mutex(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept
+    explicit Mutex(ConstructorAccess ca, std::shared_ptr<Loop> ref, bool recursive = false) noexcept
         : UnderlyingType{ca, std::move(ref)}
     {
-        uv_mutex_init(get());
+        if(recursive) {
+            uv_mutex_init_recursive(get());
+        } else {
+            uv_mutex_init(get());
+        }
     }
 
     ~Mutex() noexcept {
