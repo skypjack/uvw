@@ -1,0 +1,7 @@
+<map id="uvw::Handle&lt; T, U &gt;" name="uvw::Handle&lt; T, U &gt;">
+<area shape="rect" id="node6" href="$classuvw_1_1StreamHandle.html" title="The StreamHandle handle. " alt="" coords="78,244,223,285"/>
+<area shape="rect" id="node2" href="$structuvw_1_1BaseHandle.html" title="Untyped handle class. " alt="" coords="5,95,131,121"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Resource.html" title="Common class for almost all the resources available in uvw. " alt="" coords="155,95,315,121"/>
+<area shape="rect" id="node4" href="$classuvw_1_1UnderlyingType.html" title="Wrapper class for underlying types. " alt="" coords="81,5,226,47"/>
+<area shape="rect" id="node5" href="$classuvw_1_1Emitter.html" title="Event emitter base class. " alt="" coords="251,13,379,39"/>
+</map>

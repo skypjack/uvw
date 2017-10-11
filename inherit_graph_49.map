@@ -1,0 +1,5 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classuvw_1_1Emitter.html" title="uvw::Emitter\&lt; ConnectReq \&gt;" alt="" coords="11,5,205,32"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title="uvw::Resource\&lt; ConnectReq,\l uv_connect_t \&gt;" alt="" coords="259,27,457,69"/>
+<area shape="rect" id="node3" href="$classuvw_1_1UnderlyingType.html" title="uvw::UnderlyingType\l\&lt; ConnectReq, uv_connect_t \&gt;" alt="" coords="5,57,211,98"/>
+</map>

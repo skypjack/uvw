@@ -1,0 +1,7 @@
+<map id="uvw::CheckHandle" name="uvw::CheckHandle">
+<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title="uvw::Handle\&lt; CheckHandle,\l uv_check_t \&gt;" alt="" coords="67,184,258,225"/>
+<area shape="rect" id="node3" href="$structuvw_1_1BaseHandle.html" title="Untyped handle class. " alt="" coords="5,102,131,129"/>
+<area shape="rect" id="node4" href="$classuvw_1_1Resource.html" title="uvw::Resource\&lt; CheckHandle,\l uv_check_t \&gt;" alt="" coords="155,95,360,136"/>
+<area shape="rect" id="node5" href="$classuvw_1_1UnderlyingType.html" title="uvw::UnderlyingType\l\&lt; CheckHandle, uv_check_t \&gt;" alt="" coords="45,5,245,47"/>
+<area shape="rect" id="node6" href="$classuvw_1_1Emitter.html" title="uvw::Emitter\&lt; CheckHandle \&gt;" alt="" coords="269,13,467,39"/>
+</map>
