@@ -128,6 +128,8 @@ To navigate it with your favorite browser:
 * `$ cd build`
 * `$ your_favorite_browser docs/html/index.html`
 
+The API reference is also available [online](https://skypjack.github.io/uvw/) for the latest version.
+
 ### Crash Course
 
 #### Vademecum
