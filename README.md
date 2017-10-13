@@ -140,7 +140,8 @@ Resources belong mainly to two families: _handles_ and _requests_.<br/>
 Handles represent long-lived objects capable of performing certain operations while active.<br/>
 Requests represent (typically) short-lived operations performed either over a handle or standalone.
 
-The following sections will explain in short what it means to initialize and terminate these kinds of resources.
+The following sections will explain in short what it means to initialize and terminate these kinds of resources.<br/>
+For more details, please refer to the [online documentation](https://skypjack.github.io/uvw/).
 
 #### Handles
 
