@@ -114,8 +114,6 @@ Branch `master` of `uvw` will be a work in progress branch that follows branch _
 
 ## Documentation
 
-### API Reference
-
 The documentation is based on [`doxygen`](http://www.stack.nl/~dimitri/doxygen/). To build it:
 
 * `$ cd build`
@@ -130,9 +128,26 @@ To navigate it with your favorite browser:
 
 The API reference is also available [online](https://skypjack.github.io/uvw/) for the latest version.
 
-### Crash Course
+### Note
 
-#### Vademecum
+The documentation is mostly inspired by the official [libuv API documentation](http://docs.libuv.org/en/v1.x/) for obvious reasons.<br/>
+If you are mainly interested in the way `uvw` imports `libuv` in a `cmake` based project, I suggest you to take a look at [this](https://github.com/skypjack/libuv_cmake) repository instead.
+
+## Tests
+
+To compile and run the tests, `uvw` requires *libuv* and *googletest*.<br/>
+`cmake` will download and compile both the libraries before to compile anything else.
+
+To build the tests:
+
+* `$ cd build`
+* `$ cmake ..`
+* `$ make`
+* `$ make test`
+
+# Crash Course
+
+## Vademecum
 
 There is only one rule when using `uvw`: always initialize the resources and terminate them.
 
@@ -143,19 +158,19 @@ Requests represent (typically) short-lived operations performed either over a ha
 The following sections will explain in short what it means to initialize and terminate these kinds of resources.<br/>
 For more details, please refer to the [online documentation](https://skypjack.github.io/uvw/).
 
-#### Handles
+## Handles
 
 Initialization is usually performed under the hood and can be even passed over, as far as handles are created using the `Loop::resource` member function.<br/>
 On the other side, handles keep themselves alive until one explicitly closes them. Because of that, memory usage will grow up if users simply forget about a handle.<br/>
 Therefore the rule quickly becomes *always close your handles*. It's as simple as calling the `close` member function on them.
 
-#### Requests
+## Requests
 
 Usually initializing a request object is not required. Anyway, the recommended way to create a request is still through the `Loop::resource` member function.<br/>
 Requests will keep themselves alive as long as they are bound to unfinished underlying activities. This means that users have not to discard explicitly a request.<br/>
 Therefore the rule quickly becomes *feel free to make a request and forget about it*. It's as simple as calling a member function on them.
 
-#### The Loop and the Resource
+## The Loop and the Resource
 
 The first thing to do to use `uvw` is to create a loop. In case the default one is enough, it's easy as doing this:
 
@@ -223,7 +238,7 @@ No need to keep track of them.
 
 To know what are the available resources' types, please refer the API reference.
 
-#### The event-based approach
+## The event-based approach
 
 For `uvw` offers an event-based approach, resources are small event emitters to which listeners can be attached.<br/>
 Attaching a listener to a resource is the recommended way to be notified about changes.<br/>
@@ -278,18 +293,6 @@ It's suffice to explicitly specify `uvw::IPv6` as the underlying protocol to use
 
 The API reference is the recommended documentation for further details about resources and their methods.
 
-## Tests
-
-To compile and run the tests, `uvw` requires *libuv* and *googletest*.<br/>
-`cmake` will download and compile both the libraries before to compile anything else.
-
-To build the tests:
-
-* `$ cd build`
-* `$ cmake ..`
-* `$ make`
-* `$ make test`
-
 # Contributors
 
 If you want to contribute, please send patches as pull requests against the branch master.<br/>
@@ -313,11 +316,6 @@ If you know of other projects that use `libuv` through `uvw`, feel free to open 
 Code and documentation Copyright (c) 2017 Michele Caini.<br/>
 Code released under [the MIT license](https://github.com/skypjack/uvw/blob/master/LICENSE).<br/>
 Docs released under [Creative Commons](https://github.com/skypjack/uvw/blob/master/docs/LICENSE).
-
-# Note
-
-The documentation is mostly inspired by the official [libuv API documentation](http://docs.libuv.org/en/v1.x/) for obvious reasons.<br/>
-If you are mainly interested in the way `uvw` imports `libuv` in a `cmake` based project, I suggest you to take a look at [this](https://github.com/skypjack/libuv_cmake) repository instead.
 
 # Donation
 
