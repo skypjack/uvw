@@ -253,7 +253,7 @@ public:
      * `std::function<void(const E &, T &)`, where `E` is the type of the event
      * and `T` is the type of the resource.
      *
-     * @param f Avalid listener to be registered.
+     * @param f A valid listener to be registered.
      * @return Connection object to be used later to disconnect the listener.
      */
     template<typename E>
