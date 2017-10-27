@@ -320,5 +320,5 @@ Docs released under [Creative Commons](https://github.com/skypjack/uvw/blob/mast
 # Donation
 
 Developing and maintaining `uvw` takes some time and lots of coffee. It still lacks a proper test suite, documentation is partially incomplete and not all functionalities have been fully implemented yet.<br/>
-If you want to support this project, you can offer me an espresso. I'm from Italy, we're used to turning the best coffee ever in code.<br/>
+If you want to support this project, you can offer me an espresso. I'm from Italy, we're used to turning the best coffee ever in code. If you find that it's not enough, feel free to support me the way you prefer.<br/>
 Take a look at the donation button at the top of the page for more details or just click [here](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=W2HF9FESD5LJY&lc=IT&item_name=Michele%20Caini&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted).
