@@ -64,6 +64,31 @@ enum class UVDirentTypeT: std::underlying_type_t<uv_dirent_type_t> {
 };
 
 
+enum class UVFileOpenFlags: int {
+    APPEND = UV_FS_O_APPEND,
+    CREAT = UV_FS_O_CREAT,
+    DIRECT = UV_FS_O_DIRECT,
+    DIRECTORY = UV_FS_O_DIRECTORY,
+    DSYNC = UV_FS_O_DSYNC,
+    EXCL = UV_FS_O_EXCL,
+    EXLOCK = UV_FS_O_EXLOCK,
+    NOATIME = UV_FS_O_NOATIME,
+    NOCTTY = UV_FS_O_NOCTTY,
+    NOFOLLOW = UV_FS_O_NOFOLLOW,
+    NONBLOCK = UV_FS_O_NONBLOCK,
+    RANDOM = UV_FS_O_RANDOM,
+    RDONLY = UV_FS_O_RDONLY,
+    RDWR = UV_FS_O_RDWR,
+    SEQUENTIAL = UV_FS_O_SEQUENTIAL,
+    SHORT_LIVED = UV_FS_O_SHORT_LIVED,
+    SYMLINK = UV_FS_O_SYMLINK,
+    SYNC = UV_FS_O_SYNC,
+    TEMPORARY = UV_FS_O_TEMPORARY,
+    TRUNC = UV_FS_O_TRUNC,
+    WRONLY = UV_FS_O_WRONLY
+};
+
+
 enum class UVCopyFileFlags: int {
     EXCL = UV_FS_COPYFILE_EXCL
 };
@@ -363,6 +388,8 @@ class FileReq final: public FsRequest<FileReq> {
     }
 
 public:
+    using FileOpen = details::UVFileOpenFlags;
+
     using FsRequest::FsRequest;
 
     ~FileReq() noexcept {
@@ -396,22 +423,79 @@ public:
      * Emit a `FsEvent<FileReq::Type::OPEN>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      *
+     * Available flags are:
+     *
+     * * `FileReq::FileOpen::APPEND`
+     * * `FileReq::FileOpen::CREAT`
+     * * `FileReq::FileOpen::DIRECT`
+     * * `FileReq::FileOpen::DIRECTORY`
+     * * `FileReq::FileOpen::DSYNC`
+     * * `FileReq::FileOpen::EXCL`
+     * * `FileReq::FileOpen::EXLOCK`
+     * * `FileReq::FileOpen::NOATIME`
+     * * `FileReq::FileOpen::NOCTTY`
+     * * `FileReq::FileOpen::NOFOLLOW`
+     * * `FileReq::FileOpen::NONBLOCK`
+     * * `FileReq::FileOpen::RANDOM`
+     * * `FileReq::FileOpen::RDONLY`
+     * * `FileReq::FileOpen::RDWR`
+     * * `FileReq::FileOpen::SEQUENTIAL`
+     * * `FileReq::FileOpen::SHORT_LIVED`
+     * * `FileReq::FileOpen::SYMLINK`
+     * * `FileReq::FileOpen::SYNC`
+     * * `FileReq::FileOpen::TEMPORARY`
+     * * `FileReq::FileOpen::TRUNC`
+     * * `FileReq::FileOpen::WRONLY`
+     *
+     * See the official
+     * [documentation](http://docs.libuv.org/en/v1.x/fs.html#file-open-constants)
+     * for further details.
+     *
      * @param path A valid path name for a file.
-     * @param flags Flags, as described in the official documentation.
+     * @param flags Flags made out of underlying constants.
      * @param mode Mode, as described in the official documentation.
      */
-    void open(std::string path, int flags, int mode) {
+    void open(std::string path, Flags<FileOpen> flags, int mode) {
         cleanupAndInvoke(&uv_fs_open, parent(), get(), path.data(), flags, mode, &fsOpenCallback);
     }
 
     /**
      * @brief Sync [open](http://linux.die.net/man/2/open).
+     *
+     * Available flags are:
+     *
+     * * `FileReq::FileOpen::APPEND`
+     * * `FileReq::FileOpen::CREAT`
+     * * `FileReq::FileOpen::DIRECT`
+     * * `FileReq::FileOpen::DIRECTORY`
+     * * `FileReq::FileOpen::DSYNC`
+     * * `FileReq::FileOpen::EXCL`
+     * * `FileReq::FileOpen::EXLOCK`
+     * * `FileReq::FileOpen::NOATIME`
+     * * `FileReq::FileOpen::NOCTTY`
+     * * `FileReq::FileOpen::NOFOLLOW`
+     * * `FileReq::FileOpen::NONBLOCK`
+     * * `FileReq::FileOpen::RANDOM`
+     * * `FileReq::FileOpen::RDONLY`
+     * * `FileReq::FileOpen::RDWR`
+     * * `FileReq::FileOpen::SEQUENTIAL`
+     * * `FileReq::FileOpen::SHORT_LIVED`
+     * * `FileReq::FileOpen::SYMLINK`
+     * * `FileReq::FileOpen::SYNC`
+     * * `FileReq::FileOpen::TEMPORARY`
+     * * `FileReq::FileOpen::TRUNC`
+     * * `FileReq::FileOpen::WRONLY`
+     *
+     * See the official
+     * [documentation](http://docs.libuv.org/en/v1.x/fs.html#file-open-constants)
+     * for further details.
+     *
      * @param path A valid path name for a file.
-     * @param flags Flags, as described in the official documentation.
+     * @param flags Flags made out of underlying constants.
      * @param mode Mode, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool openSync(std::string path, int flags, int mode) {
+    bool openSync(std::string path, Flags<FileOpen> flags, int mode) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_open, parent(), req, path.data(), flags, mode);
         if(req->result >= 0) { file = static_cast<uv_file>(req->result); }

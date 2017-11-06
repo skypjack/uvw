@@ -52,12 +52,24 @@ template<typename T>
 struct UVTypeWrapper {
     using Type = T;
 
+    constexpr UVTypeWrapper(): value{} {}
     constexpr UVTypeWrapper(Type val): value{val} {}
+
     constexpr operator Type() const noexcept { return value; }
+
+    bool operator==(UVTypeWrapper other) const noexcept {
+        return value == other.value;
+    }
 
 private:
     const Type value;
 };
+
+
+template<typename T>
+bool operator==(UVTypeWrapper<T> lhs, UVTypeWrapper<T> rhs) {
+    return !(lhs == rhs);
+}
 
 
 }
@@ -186,6 +198,7 @@ using HandleCategory = details::UVTypeWrapper<uv_handle_type>; /*!< Utility clas
 using FileHandle = details::UVTypeWrapper<uv_file>; /*!< Utility class that wraps an internal file handle. */
 using OSSocketHandle = details::UVTypeWrapper<uv_os_sock_t>; /*!< Utility class that wraps an os socket handle. */
 using OSFileDescriptor = details::UVTypeWrapper<uv_os_fd_t>; /*!< Utility class that wraps an os file descriptor. */
+using PidType = details::UVTypeWrapper<uv_pid_t>; /*!< Utility class that wraps a cross platform representation of a pid. */
 
 constexpr FileHandle StdIN{0}; /*!< Placeholder for stdin descriptor. */
 constexpr FileHandle StdOUT{1}; /*!< Placeholder for stdout descriptor. */
@@ -407,6 +420,20 @@ std::string tryRead(F &&f, Args&&... args) noexcept {
 }
 
 
+template<typename F, typename... Args>
+std::string indexTo(F &&f, Args&&... args) noexcept {
+    std::size_t size = UV_IF_NAMESIZE;
+    char buf[size];
+    std::string str{};
+
+    if(0 == std::forward<F>(f)(args..., buf, &size)) {
+        str.assign(buf, size);
+    }
+
+    return str;
+}
+
+
 }
 
 
@@ -425,6 +452,19 @@ struct Utilities {
      * @brief OS dedicated utilities.
      */
     struct OS {
+        /**
+         * @brief Returns the parent process id.
+         *
+         * See the official
+         * [documentation](http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_getppid)
+         * for further details.
+         *
+         * @return The parent process id.
+         */
+        static PidType pid() noexcept {
+            return uv_os_getppid();
+        }
+
         /**
          * @brief Gets the current user's home directory.
          *
@@ -599,7 +639,6 @@ struct Utilities {
         return cpuinfos;
     }
 
-
     /**
      * @brief Gets a set of descriptors of all the available interfaces.
      *
@@ -639,6 +678,36 @@ struct Utilities {
         return interfaces;
     }
 
+    /**
+     * @brief IPv6-capable implementation of
+     * [if_indextoname](https://linux.die.net/man/3/if_indextoname).
+     *
+     * Mapping between network interface names and indexes.
+     *
+     * See the official
+     * [documentation](http://docs.libuv.org/en/v1.x/misc.html#c.uv_if_indextoname)
+     * for further details.
+     *
+     * @param index Network interface index.
+     * @return Network interface name.
+     */
+    static std::string indexToName(unsigned int index) noexcept {
+        return details::indexTo(&uv_if_indextoname, index);
+    }
+
+    /**
+     * @brief Retrieves a network interface identifier.
+     *
+     * See the official
+     * [documentation](http://docs.libuv.org/en/v1.x/misc.html#c.uv_if_indextoiid)
+     * for further details.
+     *
+     * @param index Network interface index.
+     * @return Network interface identifier.
+     */
+    static std::string indexToIid(unsigned int index) noexcept {
+        return details::indexTo(&uv_if_indextoiid, index);
+    }
 
     /**
      * @brief Override the use of some standard library’s functions.

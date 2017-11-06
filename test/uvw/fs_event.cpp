@@ -32,7 +32,8 @@ TEST(FsEvent, Functionalities) {
     });
 
     handle->start(std::string{TARGET_FS_EVENT_DIR}, uvw::FsEventHandle::Event::RECURSIVE);
-    request->open(filename, O_CREAT | O_RDWR | O_TRUNC, 0644);
+    auto flags = uvw::Flags<uvw::FileReq::FileOpen>::from<uvw::FileReq::FileOpen::CREAT, uvw::FileReq::FileOpen::RDWR, uvw::FileReq::FileOpen::TRUNC>();
+    request->open(filename, flags, 0644);
 
     ASSERT_EQ(handle->path(), std::string{TARGET_FS_EVENT_DIR});
     ASSERT_TRUE(handle->active());

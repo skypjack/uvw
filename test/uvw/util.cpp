@@ -73,6 +73,9 @@ TEST(Util, ScopedFlags) {
 
 
 TEST(Util, Utilities) {
+    ASSERT_EQ(uvw::PidType{}, uvw::PidType{});
+
+    ASSERT_NE(uvw::Utilities::OS::pid(), uvw::PidType{});
     ASSERT_FALSE(uvw::Utilities::OS::homedir().empty());
     ASSERT_FALSE(uvw::Utilities::OS::tmpdir().empty());
     ASSERT_NE(uvw::Utilities::OS::hostname(), "");
@@ -126,6 +129,9 @@ TEST(Util, Utilities) {
     ASSERT_FALSE(interfaceAddresses[0].name.empty());
     ASSERT_FALSE(interfaceAddresses[0].address.ip.empty());
     ASSERT_FALSE(interfaceAddresses[0].netmask.ip.empty());
+
+    ASSERT_NO_THROW(uvw::Utilities::indexToName(0));
+    ASSERT_NO_THROW(uvw::Utilities::indexToIid(0));
 
     ASSERT_TRUE(uvw::Utilities::replaceAllocator(
         [](size_t size) { return malloc(size); },

@@ -15,6 +15,18 @@
 namespace uvw {
 
 
+namespace details {
+
+
+enum class UVChmodFlags: std::underlying_type_t<uv_poll_event> {
+    READABLE = UV_READABLE,
+    WRITABLE = UV_WRITABLE
+};
+
+
+}
+
+
 /**
  * @brief The PipeHandle handle.
  *
@@ -28,6 +40,8 @@ namespace uvw {
  */
 class PipeHandle final: public StreamHandle<PipeHandle, uv_pipe_t> {
 public:
+    using Chmod = details::UVChmodFlags;
+
     explicit PipeHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, bool pass = false)
         : StreamHandle{ca, std::move(ref)}, ipc{pass}
     {}
@@ -145,6 +159,27 @@ public:
     HandleType receive() noexcept {
         HandleCategory category = uv_pipe_pending_type(get());
         return Utilities::guessHandle(category);
+    }
+
+    /**
+     * @brief Alters pipe permissions.
+     *
+     * It allows the pipe to be accessed from processes run by different users.
+     *
+     * Available flags are:
+     *
+     * * `PipeHandle::Chmod::READABLE`
+     * * `PipeHandle::Chmod::WRITABLE`
+     *
+     * See the official
+     * [documentation](http://docs.libuv.org/en/v1.x/pipe.html#c.uv_pipe_chmod)
+     * for further details.
+     *
+     * @param flags A valid set of flags.
+     * @return True in case of success, false otherwise.
+     */
+    bool chmod(Flags<Chmod> flags) noexcept {
+        return (0 == uv_pipe_chmod(get(), flags));
     }
 
 private:
