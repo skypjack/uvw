@@ -420,20 +420,6 @@ std::string tryRead(F &&f, Args&&... args) noexcept {
 }
 
 
-template<typename F, typename... Args>
-std::string indexTo(F &&f, Args&&... args) noexcept {
-    std::size_t size = UV_IF_NAMESIZE;
-    char buf[size];
-    std::string str{};
-
-    if(0 == std::forward<F>(f)(args..., buf, &size)) {
-        str.assign(buf, size);
-    }
-
-    return str;
-}
-
-
 }
 
 
@@ -692,7 +678,7 @@ struct Utilities {
      * @return Network interface name.
      */
     static std::string indexToName(unsigned int index) noexcept {
-        return details::indexTo(&uv_if_indextoname, index);
+        return details::tryRead(&uv_if_indextoname, index);
     }
 
     /**
@@ -706,7 +692,7 @@ struct Utilities {
      * @return Network interface identifier.
      */
     static std::string indexToIid(unsigned int index) noexcept {
-        return details::indexTo(&uv_if_indextoiid, index);
+        return details::tryRead(&uv_if_indextoiid, index);
     }
 
     /**
