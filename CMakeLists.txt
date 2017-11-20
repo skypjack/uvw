@@ -76,7 +76,7 @@ configure_file(${PROJECT_CMAKE_IN}/googletest.in ${GOOGLETEST_DEPS_DIR}/CMakeLis
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${GOOGLETEST_DEPS_DIR})
 execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${GOOGLETEST_DEPS_DIR})
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-add_subdirectory(${GOOGLETEST_DEPS_DIR}/src ${GOOGLETEST_DEPS_DIR}/build)
+add_subdirectory(${GOOGLETEST_DEPS_DIR}/src)
 
 configure_file(${PROJECT_CMAKE_IN}/libuv.in ${LIBUV_DEPS_DIR}/CMakeLists.txt)
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${LIBUV_DEPS_DIR})
