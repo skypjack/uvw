@@ -211,7 +211,7 @@ public:
     void connect(std::string ip, unsigned int port) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        connect(addr);
+        connect<I>(addr);
     }
 
     /**
