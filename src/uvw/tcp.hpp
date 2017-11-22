@@ -183,14 +183,10 @@ public:
      * established.<br/>
      * An ErrorEvent event is emitted in case of errors during the connection.
      *
-     * @param ip The address to which to bind.
-     * @param port The port to which to bind.
+     * @param addr The address to connect to.
      */
     template<typename I = IPv4>
-    void connect(std::string ip, unsigned int port) {
-        typename details::IpTraits<I>::Type addr;
-        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-
+    void connect(typename details::IpTraits<I>::Type addr) {
         auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
@@ -199,6 +195,23 @@ public:
         req->once<ErrorEvent>(listener);
         req->once<ConnectEvent>(listener);
         req->connect(&uv_tcp_connect, get(), reinterpret_cast<const sockaddr *>(&addr));
+    }
+
+    /**
+     * @brief Establishes an IPv4 or IPv6 TCP connection.
+     *
+     * A ConnectEvent event is emitted when the connection has been
+     * established.<br/>
+     * An ErrorEvent event is emitted in case of errors during the connection.
+     *
+     * @param ip The address to connect to.
+     * @param port The port to conect to.
+     */
+    template<typename I = IPv4>
+    void connect(std::string ip, unsigned int port) {
+        typename details::IpTraits<I>::Type addr;
+        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
+        connect<I>(addr);
     }
 
     /**
