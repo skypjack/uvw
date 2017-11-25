@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <cstddef>
+#include <functional>
 #include <utility>
 #include <string>
 #include <vector>
@@ -299,6 +300,10 @@ struct IPv6 {};
 struct Addr {
     std::string ip; /*!< Either an IPv4 or an IPv6. */
     unsigned int port; /*!< A valid service identifier. */
+
+    bool operator==(const Addr &other) const {
+        return ip == other.ip && port == other.port;
+    }
 };
 
 
@@ -840,4 +845,16 @@ struct Utilities {
 };
 
 
+}
+
+
+namespace std {
+template <>
+struct hash<uvw::Addr> {
+    std::size_t operator()(const uvw::Addr &addr) const noexcept {
+        std::size_t h1 = std::hash<std::string>{}(addr.ip);
+        std::size_t h2 = std::hash<unsigned int>{}(addr.port);
+        return h1 ^ h2;
+    }
+};
 }
