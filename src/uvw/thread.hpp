@@ -48,7 +48,8 @@ public:
     }
 
     ~Thread() noexcept {
-        join();
+        auto ptr = get();
+        if (*ptr) uv_thread_join(ptr);
     }
 
     bool run() noexcept {
