@@ -203,6 +203,15 @@ public:
 
     /**
      * @brief Async [getnameinfo](http://linux.die.net/man/3/getnameinfo).
+     * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
+     * @param flags Optional flags that modify the behavior of `getnameinfo`.
+     */
+    void nameInfo(const sockaddr &addr, int flags = 0) {
+        invoke(&uv_getnameinfo, parent(), get(), &nameInfoCallback, &addr, flags);
+    }
+
+    /**
+     * @brief Async [getnameinfo](http://linux.die.net/man/3/getnameinfo).
      * @param ip A valid IP address.
      * @param port A valid port number.
      * @param flags Optional flags that modify the behavior of `getnameinfo`.
@@ -211,8 +220,7 @@ public:
     void nameInfo(std::string ip, unsigned int port, int flags = 0) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        auto saddr = reinterpret_cast<const sockaddr *>(&addr);
-        invoke(&uv_getnameinfo, parent(), get(), &nameInfoCallback, saddr, flags);
+        nameInfo(reinterpret_cast<const sockaddr &>(addr), flags);
     }
 
     /**
@@ -222,7 +230,26 @@ public:
      */
     template<typename I = IPv4>
     void nameInfo(Addr addr, int flags = 0) {
-        nameInfo<I>(addr.ip, addr.port, flags);
+        nameInfo<I>(std::move(addr.ip), addr.port, flags);
+    }
+
+    /**
+     * @brief Sync [getnameinfo](http://linux.die.net/man/3/getnameinfo).
+     *
+     * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
+     * @param flags Optional flags that modify the behavior of `getnameinfo`.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * A `std::pair` composed as it follows:
+     *   * A `const char *` containing a valid hostname.
+     *   * A `const char *` containing a valid service name.
+     */
+    std::pair<bool, std::pair<const char *, const char *>>
+    nameInfoSync(const sockaddr &addr, int flags = 0) {
+        auto req = get();
+        auto err = uv_getnameinfo(parent(), req, nullptr, &addr, flags);
+        return std::make_pair(!err, std::make_pair(req->host, req->service));
     }
 
     /**
@@ -243,10 +270,7 @@ public:
     nameInfoSync(std::string ip, unsigned int port, int flags = 0) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        auto req = get();
-        auto saddr = reinterpret_cast<const sockaddr *>(&addr);
-        auto err = uv_getnameinfo(parent(), req, nullptr, saddr, flags);
-        return std::make_pair(!err, std::make_pair(req->host, req->service));
+        return nameInfoSync(reinterpret_cast<const sockaddr &>(addr), flags);
     }
 
     /**
@@ -264,7 +288,7 @@ public:
     template<typename I = IPv4>
     std::pair<bool, std::pair<const char *, const char *>>
     nameInfoSync(Addr addr, int flags = 0) {
-        return nameInfoSync<I>(addr.ip, addr.port, flags);
+        return nameInfoSync<I>(std::move(addr.ip), addr.port, flags);
     }
 };
 

@@ -130,7 +130,7 @@ public:
      * @param opts Optional additional flags.
      */
     void bind(const sockaddr &addr, Flags<Bind> opts = Flags<Bind>{}) {
-        invoke(&uv_tcp_bind, get(), reinterpret_cast<const sockaddr *>(&addr), opts);
+        invoke(&uv_tcp_bind, get(), &addr, opts);
     }
 
     /**
@@ -175,7 +175,7 @@ public:
      */
     template<typename I = IPv4>
     void bind(Addr addr, Flags<Bind> opts = Flags<Bind>{}) {
-        bind<I>(addr.ip, addr.port, opts);
+        bind<I>(std::move(addr.ip), addr.port, std::move(opts));
     }
 
     /**
@@ -244,7 +244,7 @@ public:
      */
     template<typename I = IPv4>
     void connect(Addr addr) {
-        connect<I>(addr.ip, addr.port);
+        connect<I>(std::move(addr.ip), addr.port);
     }
 
 private:
