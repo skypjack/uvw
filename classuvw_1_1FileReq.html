@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">1.3.0</span>
+   &#160;<span id="projectnumber">1.4.0</span>
    </div>
   </td>
  </tr>
@@ -100,12 +100,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a6a7a53cc446b7da0210bf38f1bbd64bf"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1FileReq.html#a6a7a53cc446b7da0210bf38f1bbd64bf">closeSync</a> ()</td></tr>
 <tr class="memdesc:a6a7a53cc446b7da0210bf38f1bbd64bf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sync <a href="http://linux.die.net/man/2/close">close</a>.  <a href="#a6a7a53cc446b7da0210bf38f1bbd64bf">More...</a><br /></td></tr>
 <tr class="separator:a6a7a53cc446b7da0210bf38f1bbd64bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaa7820a3ea455036997b3807f104135f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1FileReq.html#aaa7820a3ea455036997b3807f104135f">open</a> (std::string path, int flags, int mode)</td></tr>
-<tr class="memdesc:aaa7820a3ea455036997b3807f104135f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Async <a href="http://linux.die.net/man/2/open">open</a>.  <a href="#aaa7820a3ea455036997b3807f104135f">More...</a><br /></td></tr>
-<tr class="separator:aaa7820a3ea455036997b3807f104135f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af6a79115c169d0ecd4ffaf24a9590f5e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1FileReq.html#af6a79115c169d0ecd4ffaf24a9590f5e">openSync</a> (std::string path, int flags, int mode)</td></tr>
-<tr class="memdesc:af6a79115c169d0ecd4ffaf24a9590f5e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sync <a href="http://linux.die.net/man/2/open">open</a>.  <a href="#af6a79115c169d0ecd4ffaf24a9590f5e">More...</a><br /></td></tr>
-<tr class="separator:af6a79115c169d0ecd4ffaf24a9590f5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af3dec41ec463768d57e8577f25abde2b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1FileReq.html#af3dec41ec463768d57e8577f25abde2b">open</a> (std::string path, <a class="el" href="classuvw_1_1Flags.html">Flags</a>&lt; FileOpen &gt; flags, int mode)</td></tr>
+<tr class="memdesc:af3dec41ec463768d57e8577f25abde2b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Async <a href="http://linux.die.net/man/2/open">open</a>.  <a href="#af3dec41ec463768d57e8577f25abde2b">More...</a><br /></td></tr>
+<tr class="separator:af3dec41ec463768d57e8577f25abde2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af736e79ca10967b98cc63100b5e0ef71"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1FileReq.html#af736e79ca10967b98cc63100b5e0ef71">openSync</a> (std::string path, <a class="el" href="classuvw_1_1Flags.html">Flags</a>&lt; FileOpen &gt; flags, int mode)</td></tr>
+<tr class="memdesc:af736e79ca10967b98cc63100b5e0ef71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sync <a href="http://linux.die.net/man/2/open">open</a>.  <a href="#af736e79ca10967b98cc63100b5e0ef71">More...</a><br /></td></tr>
+<tr class="separator:af736e79ca10967b98cc63100b5e0ef71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9eff819bdc6c56b9a05d6e3228e176fc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1FileReq.html#a9eff819bdc6c56b9a05d6e3228e176fc">read</a> (int64_t offset, unsigned int len)</td></tr>
 <tr class="memdesc:a9eff819bdc6c56b9a05d6e3228e176fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Async <a href="http://linux.die.net/man/2/preadv">read</a>.  <a href="#a9eff819bdc6c56b9a05d6e3228e176fc">More...</a><br /></td></tr>
 <tr class="separator:a9eff819bdc6c56b9a05d6e3228e176fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -183,7 +183,7 @@ Public Member Functions</h2></td></tr>
 <p>To create a <code><a class="el" href="classuvw_1_1FileReq.html" title="The FileReq request. ">FileReq</a></code> through a <code><a class="el" href="classuvw_1_1Loop.html" title="The Loop class. ">Loop</a></code>, no arguments are required.</p>
 <p>See the official <a href="http://docs.libuv.org/en/v1.x/fs.html">documentation</a> for further details. </p>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00334">334</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00359">359</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a24884d3d814759dcc079f29720b6056c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a24884d3d814759dcc079f29720b6056c">&#9670;&nbsp;</a></span>chmod()</h2>
@@ -219,7 +219,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00643">643</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00727">727</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -256,7 +256,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00652">652</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00736">736</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -305,7 +305,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00696">696</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00780">780</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -353,7 +353,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00706">706</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00790">790</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -384,7 +384,7 @@ Public Member Functions</h2></td></tr>
 <p>Emit a <code><a class="el" href="structuvw_1_1FsEvent.html" title="Default FsEvent event. ">FsEvent</a>&lt;FileReq::Type::CLOSE&gt;</code> event when completed.<br />
  Emit an <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> event in case of errors. </p>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00378">378</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00405">405</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -414,7 +414,7 @@ Public Member Functions</h2></td></tr>
 <p>Sync <a href="http://linux.die.net/man/2/close">close</a>. </p>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00386">386</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00413">413</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -445,7 +445,7 @@ Public Member Functions</h2></td></tr>
 <p>Emit a <code><a class="el" href="structuvw_1_1FsEvent.html" title="Default FsEvent event. ">FsEvent</a>&lt;FileReq::Type::FDATASYNC&gt;</code> event when completed.<br />
  Emit an <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> event in case of errors. </p>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00566">566</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00650">650</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -475,7 +475,7 @@ Public Member Functions</h2></td></tr>
 <p>Sync <a href="http://linux.die.net/man/2/fdatasync">fdatasync</a>. </p>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00574">574</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00658">658</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -506,12 +506,12 @@ Public Member Functions</h2></td></tr>
 <p>For a file descriptor in the C runtime, get the OS-dependent handle. On UNIX, returns the file descriptor as-is. On Windows, this calls a system function.<br />
  Note that the return value is still owned by the C runtime, any attempts to close it or to use it after closing the file descriptor may lead to malfunction. </p>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00722">722</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00806">806</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
-<a id="aaa7820a3ea455036997b3807f104135f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaa7820a3ea455036997b3807f104135f">&#9670;&nbsp;</a></span>open()</h2>
+<a id="af3dec41ec463768d57e8577f25abde2b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af3dec41ec463768d57e8577f25abde2b">&#9670;&nbsp;</a></span>open()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -528,7 +528,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype"><a class="el" href="classuvw_1_1Flags.html">Flags</a>&lt; FileOpen &gt;&#160;</td>
           <td class="paramname"><em>flags</em>, </td>
         </tr>
         <tr>
@@ -553,21 +553,46 @@ Public Member Functions</h2></td></tr>
 <p>Async <a href="http://linux.die.net/man/2/open">open</a>. </p>
 <p>Emit a <code><a class="el" href="structuvw_1_1FsEvent.html" title="Default FsEvent event. ">FsEvent</a>&lt;FileReq::Type::OPEN&gt;</code> event when completed.<br />
  Emit an <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> event in case of errors.</p>
+<p>Available flags are:</p>
+<ul>
+<li><code>FileReq::FileOpen::APPEND</code></li>
+<li><code>FileReq::FileOpen::CREAT</code></li>
+<li><code>FileReq::FileOpen::DIRECT</code></li>
+<li><code>FileReq::FileOpen::DIRECTORY</code></li>
+<li><code>FileReq::FileOpen::DSYNC</code></li>
+<li><code>FileReq::FileOpen::EXCL</code></li>
+<li><code>FileReq::FileOpen::EXLOCK</code></li>
+<li><code>FileReq::FileOpen::NOATIME</code></li>
+<li><code>FileReq::FileOpen::NOCTTY</code></li>
+<li><code>FileReq::FileOpen::NOFOLLOW</code></li>
+<li><code>FileReq::FileOpen::NONBLOCK</code></li>
+<li><code>FileReq::FileOpen::RANDOM</code></li>
+<li><code>FileReq::FileOpen::RDONLY</code></li>
+<li><code>FileReq::FileOpen::RDWR</code></li>
+<li><code>FileReq::FileOpen::SEQUENTIAL</code></li>
+<li><code>FileReq::FileOpen::SHORT_LIVED</code></li>
+<li><code>FileReq::FileOpen::SYMLINK</code></li>
+<li><code>FileReq::FileOpen::SYNC</code></li>
+<li><code>FileReq::FileOpen::TEMPORARY</code></li>
+<li><code>FileReq::FileOpen::TRUNC</code></li>
+<li><code>FileReq::FileOpen::WRONLY</code></li>
+</ul>
+<p>See the official <a href="http://docs.libuv.org/en/v1.x/fs.html#file-open-constants">documentation</a> for further details.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">path</td><td>A valid path name for a file. </td></tr>
-    <tr><td class="paramname">flags</td><td><a class="el" href="classuvw_1_1Flags.html" title="Utility class to handle flags. ">Flags</a>, as described in the official documentation. </td></tr>
+    <tr><td class="paramname">flags</td><td><a class="el" href="classuvw_1_1Flags.html" title="Utility class to handle flags. ">Flags</a> made out of underlying constants. </td></tr>
     <tr><td class="paramname">mode</td><td>Mode, as described in the official documentation. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00403">403</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00458">458</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
-<a id="af6a79115c169d0ecd4ffaf24a9590f5e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af6a79115c169d0ecd4ffaf24a9590f5e">&#9670;&nbsp;</a></span>openSync()</h2>
+<a id="af736e79ca10967b98cc63100b5e0ef71"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af736e79ca10967b98cc63100b5e0ef71">&#9670;&nbsp;</a></span>openSync()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -584,7 +609,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
+          <td class="paramtype"><a class="el" href="classuvw_1_1Flags.html">Flags</a>&lt; FileOpen &gt;&#160;</td>
           <td class="paramname"><em>flags</em>, </td>
         </tr>
         <tr>
@@ -607,17 +632,42 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Sync <a href="http://linux.die.net/man/2/open">open</a>. </p>
+<p>Available flags are:</p>
+<ul>
+<li><code>FileReq::FileOpen::APPEND</code></li>
+<li><code>FileReq::FileOpen::CREAT</code></li>
+<li><code>FileReq::FileOpen::DIRECT</code></li>
+<li><code>FileReq::FileOpen::DIRECTORY</code></li>
+<li><code>FileReq::FileOpen::DSYNC</code></li>
+<li><code>FileReq::FileOpen::EXCL</code></li>
+<li><code>FileReq::FileOpen::EXLOCK</code></li>
+<li><code>FileReq::FileOpen::NOATIME</code></li>
+<li><code>FileReq::FileOpen::NOCTTY</code></li>
+<li><code>FileReq::FileOpen::NOFOLLOW</code></li>
+<li><code>FileReq::FileOpen::NONBLOCK</code></li>
+<li><code>FileReq::FileOpen::RANDOM</code></li>
+<li><code>FileReq::FileOpen::RDONLY</code></li>
+<li><code>FileReq::FileOpen::RDWR</code></li>
+<li><code>FileReq::FileOpen::SEQUENTIAL</code></li>
+<li><code>FileReq::FileOpen::SHORT_LIVED</code></li>
+<li><code>FileReq::FileOpen::SYMLINK</code></li>
+<li><code>FileReq::FileOpen::SYNC</code></li>
+<li><code>FileReq::FileOpen::TEMPORARY</code></li>
+<li><code>FileReq::FileOpen::TRUNC</code></li>
+<li><code>FileReq::FileOpen::WRONLY</code></li>
+</ul>
+<p>See the official <a href="http://docs.libuv.org/en/v1.x/fs.html#file-open-constants">documentation</a> for further details.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">path</td><td>A valid path name for a file. </td></tr>
-    <tr><td class="paramname">flags</td><td><a class="el" href="classuvw_1_1Flags.html" title="Utility class to handle flags. ">Flags</a>, as described in the official documentation. </td></tr>
+    <tr><td class="paramname">flags</td><td><a class="el" href="classuvw_1_1Flags.html" title="Utility class to handle flags. ">Flags</a> made out of underlying constants. </td></tr>
     <tr><td class="paramname">mode</td><td>Mode, as described in the official documentation. </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00414">414</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00498">498</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -648,7 +698,7 @@ Public Member Functions</h2></td></tr>
 <p>Cast operator to an internal representation of the underlying file handle.</p>
 <dl class="section return"><dt>Returns</dt><dd>A valid instance of FileHandle (the descriptor can be invalid). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00734">734</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00818">818</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -697,7 +747,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00430">430</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00514">514</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -753,7 +803,7 @@ Public Member Functions</h2></td></tr>
 </ul>
 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00450">450</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00534">534</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -809,7 +859,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00613">613</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00697">697</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -868,7 +918,7 @@ Public Member Functions</h2></td></tr>
 </ul>
 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00628">628</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00712">712</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -899,7 +949,7 @@ Public Member Functions</h2></td></tr>
 <p>Emit a <code><a class="el" href="structuvw_1_1FsEvent.html" title="Default FsEvent event. ">FsEvent</a>&lt;FileReq::Type::FSTAT&gt;</code> event when completed.<br />
  Emit an <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> event in case of errors. </p>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00523">523</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00607">607</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -933,7 +983,7 @@ Public Member Functions</h2></td></tr>
 </ul>
 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00534">534</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00618">618</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -964,7 +1014,7 @@ Public Member Functions</h2></td></tr>
 <p>Emit a <code><a class="el" href="structuvw_1_1FsEvent.html" title="Default FsEvent event. ">FsEvent</a>&lt;FileReq::Type::FSYNC&gt;</code> event when completed.<br />
  Emit an <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> event in case of errors. </p>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00546">546</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00630">630</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -994,7 +1044,7 @@ Public Member Functions</h2></td></tr>
 <p>Sync <a href="http://linux.die.net/man/2/fsync">fsync</a>. </p>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00554">554</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00638">638</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1032,7 +1082,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00588">588</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00672">672</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1069,7 +1119,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00597">597</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00681">681</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1118,7 +1168,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00669">669</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00753">753</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1166,7 +1216,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00681">681</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00765">765</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1223,7 +1273,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00473">473</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00557">557</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1280,7 +1330,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00492">492</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00576">576</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1339,7 +1389,7 @@ Public Member Functions</h2></td></tr>
 </ul>
 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00508">508</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00592">592</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['rusage',['RUsage',['../namespaceuvw.html#a9a25d3f086b078e4b9b370fe5c4316a2',1,'uvw']]]
+  ['pidtype',['PidType',['../namespaceuvw.html#aad24ed8fb712caa655da6e3d7cb95bdd',1,'uvw']]]
 ];

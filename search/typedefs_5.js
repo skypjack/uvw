@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['stat',['Stat',['../namespaceuvw.html#ad3e2552cab7a68ba72e447f7656f01d7',1,'uvw']]]
+  ['rusage',['RUsage',['../namespaceuvw.html#a9a25d3f086b078e4b9b370fe5c4316a2',1,'uvw']]]
 ];

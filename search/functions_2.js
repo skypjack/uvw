@@ -2,7 +2,7 @@ var searchData=
 [
   ['category',['category',['../classuvw_1_1Handle.html#a96162bff13f6bf9a53be386765f01030',1,'uvw::Handle::category()'],['../structuvw_1_1BaseHandle.html#a0d00140c6b4d9f662f8f4590521eebc7',1,'uvw::BaseHandle::category()']]],
   ['chdir',['chdir',['../structuvw_1_1Utilities.html#a1fabc7507a23df71a3baf0894be8ee65',1,'uvw::Utilities']]],
-  ['chmod',['chmod',['../classuvw_1_1FileReq.html#a24884d3d814759dcc079f29720b6056c',1,'uvw::FileReq::chmod()'],['../classuvw_1_1FsReq.html#ad8605ac6a15ac3a2cc7f01a78649ef44',1,'uvw::FsReq::chmod()']]],
+  ['chmod',['chmod',['../classuvw_1_1FileReq.html#a24884d3d814759dcc079f29720b6056c',1,'uvw::FileReq::chmod()'],['../classuvw_1_1FsReq.html#ad8605ac6a15ac3a2cc7f01a78649ef44',1,'uvw::FsReq::chmod()'],['../classuvw_1_1PipeHandle.html#a467c10506cdf86173ff912b5d3f14d8d',1,'uvw::PipeHandle::chmod()']]],
   ['chmodsync',['chmodSync',['../classuvw_1_1FileReq.html#a2c09c5b523f648fd77250d08689ba85c',1,'uvw::FileReq::chmodSync()'],['../classuvw_1_1FsReq.html#acdb6c21ea26624e727d2a1862e6e004a',1,'uvw::FsReq::chmodSync()']]],
   ['chown',['chown',['../classuvw_1_1FileReq.html#a522d13b83943aa9f6854f9f81b083c09',1,'uvw::FileReq::chown()'],['../classuvw_1_1FsReq.html#a23709516bc1d4a04d3416c7f28fe25ae',1,'uvw::FsReq::chown()']]],
   ['chownsync',['chownSync',['../classuvw_1_1FileReq.html#a7480624e5ca058037e3fa987251b84da',1,'uvw::FileReq::chownSync()'],['../classuvw_1_1FsReq.html#a0adb8408a8d2f707d2f9c045788011e9',1,'uvw::FsReq::chownSync()']]],
