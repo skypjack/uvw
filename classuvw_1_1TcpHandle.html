@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">1.4.0</span>
+   &#160;<span id="projectnumber">1.5.0</span>
    </div>
   </td>
  </tr>
@@ -119,6 +119,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a005b4643e2926b090a2585b48c7a387c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1TcpHandle.html#a005b4643e2926b090a2585b48c7a387c">simultaneousAccepts</a> (bool enable=true)</td></tr>
 <tr class="memdesc:a005b4643e2926b090a2585b48c7a387c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Enables/Disables simultaneous asynchronous accept requests.  <a href="#a005b4643e2926b090a2585b48c7a387c">More...</a><br /></td></tr>
 <tr class="separator:a005b4643e2926b090a2585b48c7a387c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adce459eef5dc54eac73fc38b46544ec0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1TcpHandle.html#adce459eef5dc54eac73fc38b46544ec0">bind</a> (const sockaddr &amp;addr, <a class="el" href="classuvw_1_1Flags.html">Flags</a>&lt; Bind &gt; opts=<a class="el" href="classuvw_1_1Flags.html">Flags</a>&lt; Bind &gt;{})</td></tr>
+<tr class="memdesc:adce459eef5dc54eac73fc38b46544ec0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds the handle to an address and port.  <a href="#adce459eef5dc54eac73fc38b46544ec0">More...</a><br /></td></tr>
+<tr class="separator:adce459eef5dc54eac73fc38b46544ec0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f1aaf85110e2f1af6ea562313719163"><td class="memTemplParams" colspan="2">template&lt;typename I  = IPv4&gt; </td></tr>
 <tr class="memitem:a6f1aaf85110e2f1af6ea562313719163"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classuvw_1_1TcpHandle.html#a6f1aaf85110e2f1af6ea562313719163">bind</a> (std::string ip, unsigned int port, <a class="el" href="classuvw_1_1Flags.html">Flags</a>&lt; Bind &gt; opts=<a class="el" href="classuvw_1_1Flags.html">Flags</a>&lt; Bind &gt;{})</td></tr>
 <tr class="memdesc:a6f1aaf85110e2f1af6ea562313719163"><td class="mdescLeft">&#160;</td><td class="mdescRight">Binds the handle to an address and port.  <a href="#a6f1aaf85110e2f1af6ea562313719163">More...</a><br /></td></tr>
@@ -135,6 +138,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0d1a767f0f6da7f32e492485f4adab1a"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="structuvw_1_1Addr.html">Addr</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classuvw_1_1TcpHandle.html#a0d1a767f0f6da7f32e492485f4adab1a">peer</a> () const noexcept</td></tr>
 <tr class="memdesc:a0d1a767f0f6da7f32e492485f4adab1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the address of the peer connected to the handle.  <a href="#a0d1a767f0f6da7f32e492485f4adab1a">More...</a><br /></td></tr>
 <tr class="separator:a0d1a767f0f6da7f32e492485f4adab1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae70b9bcd2d0e0309d9c4064ad2eafdd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1TcpHandle.html#aae70b9bcd2d0e0309d9c4064ad2eafdd">connect</a> (const sockaddr &amp;addr)</td></tr>
+<tr class="memdesc:aae70b9bcd2d0e0309d9c4064ad2eafdd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Establishes an <a class="el" href="structuvw_1_1IPv4.html" title="The IPv4 tag. ">IPv4</a> or <a class="el" href="structuvw_1_1IPv6.html" title="The IPv6 tag. ">IPv6</a> TCP connection.  <a href="#aae70b9bcd2d0e0309d9c4064ad2eafdd">More...</a><br /></td></tr>
+<tr class="separator:aae70b9bcd2d0e0309d9c4064ad2eafdd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abb2dcfd605fea355ab3c8a2dde74bb13"><td class="memTemplParams" colspan="2">template&lt;typename I  = IPv4&gt; </td></tr>
 <tr class="memitem:abb2dcfd605fea355ab3c8a2dde74bb13"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classuvw_1_1TcpHandle.html#abb2dcfd605fea355ab3c8a2dde74bb13">connect</a> (std::string ip, unsigned int port)</td></tr>
 <tr class="memdesc:abb2dcfd605fea355ab3c8a2dde74bb13"><td class="mdescLeft">&#160;</td><td class="mdescRight">Establishes an <a class="el" href="structuvw_1_1IPv4.html" title="The IPv4 tag. ">IPv4</a> or <a class="el" href="structuvw_1_1IPv6.html" title="The IPv6 tag. ">IPv6</a> TCP connection.  <a href="#abb2dcfd605fea355ab3c8a2dde74bb13">More...</a><br /></td></tr>
@@ -277,8 +283,61 @@ Additional Inherited Members</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00045">45</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="adce459eef5dc54eac73fc38b46544ec0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adce459eef5dc54eac73fc38b46544ec0">&#9670;&nbsp;</a></span>bind() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void uvw::TcpHandle::bind </td>
+          <td>(</td>
+          <td class="paramtype">const sockaddr &amp;&#160;</td>
+          <td class="paramname"><em>addr</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classuvw_1_1Flags.html">Flags</a>&lt; Bind &gt;&#160;</td>
+          <td class="paramname"><em>opts</em> = <code><a class="el" href="classuvw_1_1Flags.html">Flags</a>&lt;Bind&gt;{}</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Binds the handle to an address and port. </p>
+<p>A successful call to this function does not guarantee that the call to <code><a class="el" href="classuvw_1_1StreamHandle.html#ae7f3eeb7d21ca0bbbb7df591fade4e46" title="Starts listening for incoming connections. ">listen()</a></code> or <code><a class="el" href="classuvw_1_1TcpHandle.html#aae70b9bcd2d0e0309d9c4064ad2eafdd" title="Establishes an IPv4 or IPv6 TCP connection. ">connect()</a></code> will work properly.<br />
+ <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> events can be emitted because of either this function or the ones mentioned above.</p>
+<p>Available flags are:</p>
+<ul>
+<li><code>TcpHandle::Bind::IPV6ONLY</code>: it disables dual-stack support and only <a class="el" href="structuvw_1_1IPv6.html" title="The IPv6 tag. ">IPv6</a> is used.</li>
+</ul>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">addr</td><td>Initialized <code>sockaddr_in</code> or <code>sockaddr_in6</code> data structure. </td></tr>
+    <tr><td class="paramname">opts</td><td>Optional additional flags. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00132">132</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a6f1aaf85110e2f1af6ea562313719163"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6f1aaf85110e2f1af6ea562313719163">&#9670;&nbsp;</a></span>bind() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f1aaf85110e2f1af6ea562313719163">&#9670;&nbsp;</a></span>bind() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -320,7 +379,7 @@ template&lt;typename I  = IPv4&gt; </div>
 </div><div class="memdoc">
 
 <p>Binds the handle to an address and port. </p>
-<p>A successful call to this function does not guarantee that the call to <code><a class="el" href="classuvw_1_1StreamHandle.html#ae7f3eeb7d21ca0bbbb7df591fade4e46" title="Starts listening for incoming connections. ">listen()</a></code> or <code><a class="el" href="classuvw_1_1TcpHandle.html#abb2dcfd605fea355ab3c8a2dde74bb13" title="Establishes an IPv4 or IPv6 TCP connection. ">connect()</a></code> will work properly.<br />
+<p>A successful call to this function does not guarantee that the call to <code><a class="el" href="classuvw_1_1StreamHandle.html#ae7f3eeb7d21ca0bbbb7df591fade4e46" title="Starts listening for incoming connections. ">listen()</a></code> or <code><a class="el" href="classuvw_1_1TcpHandle.html#aae70b9bcd2d0e0309d9c4064ad2eafdd" title="Establishes an IPv4 or IPv6 TCP connection. ">connect()</a></code> will work properly.<br />
  <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> events can be emitted because of either this function or the ones mentioned above.</p>
 <p>Available flags are:</p>
 <ul>
@@ -335,12 +394,12 @@ template&lt;typename I  = IPv4&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00134">134</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00154">154</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
 
 </div>
 </div>
 <a id="a5bf82b9a34bc9a5c4dc3099d6960c80b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5bf82b9a34bc9a5c4dc3099d6960c80b">&#9670;&nbsp;</a></span>bind() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5bf82b9a34bc9a5c4dc3099d6960c80b">&#9670;&nbsp;</a></span>bind() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -376,7 +435,7 @@ template&lt;typename I  = IPv4&gt; </div>
 </div><div class="memdoc">
 
 <p>Binds the handle to an address and port. </p>
-<p>A successful call to this function does not guarantee that the call to <code><a class="el" href="classuvw_1_1StreamHandle.html#ae7f3eeb7d21ca0bbbb7df591fade4e46" title="Starts listening for incoming connections. ">listen()</a></code> or <code><a class="el" href="classuvw_1_1TcpHandle.html#abb2dcfd605fea355ab3c8a2dde74bb13" title="Establishes an IPv4 or IPv6 TCP connection. ">connect()</a></code> will work properly.<br />
+<p>A successful call to this function does not guarantee that the call to <code><a class="el" href="classuvw_1_1StreamHandle.html#ae7f3eeb7d21ca0bbbb7df591fade4e46" title="Starts listening for incoming connections. ">listen()</a></code> or <code><a class="el" href="classuvw_1_1TcpHandle.html#aae70b9bcd2d0e0309d9c4064ad2eafdd" title="Establishes an IPv4 or IPv6 TCP connection. ">connect()</a></code> will work properly.<br />
  <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> events can be emitted because of either this function or the ones mentioned above.</p>
 <p>Available flags are:</p>
 <ul>
@@ -390,12 +449,50 @@ template&lt;typename I  = IPv4&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00157">157</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00177">177</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aae70b9bcd2d0e0309d9c4064ad2eafdd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae70b9bcd2d0e0309d9c4064ad2eafdd">&#9670;&nbsp;</a></span>connect() <span class="overload">[1/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void uvw::TcpHandle::connect </td>
+          <td>(</td>
+          <td class="paramtype">const sockaddr &amp;&#160;</td>
+          <td class="paramname"><em>addr</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Establishes an <a class="el" href="structuvw_1_1IPv4.html" title="The IPv4 tag. ">IPv4</a> or <a class="el" href="structuvw_1_1IPv6.html" title="The IPv6 tag. ">IPv6</a> TCP connection. </p>
+<p>A <a class="el" href="structuvw_1_1ConnectEvent.html" title="ConnectEvent event. ">ConnectEvent</a> event is emitted when the connection has been established.<br />
+ An <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> event is emitted in case of errors during the connection.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">addr</td><td>Initialized <code>sockaddr_in</code> or <code>sockaddr_in6</code> data structure. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00208">208</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
 
 </div>
 </div>
 <a id="abb2dcfd605fea355ab3c8a2dde74bb13"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#abb2dcfd605fea355ab3c8a2dde74bb13">&#9670;&nbsp;</a></span>connect() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#abb2dcfd605fea355ab3c8a2dde74bb13">&#9670;&nbsp;</a></span>connect() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -441,12 +538,12 @@ template&lt;typename I  = IPv4&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00190">190</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00230">230</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
 
 </div>
 </div>
 <a id="a696d8ad1f20b5f48d72e47e9452ad8f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a696d8ad1f20b5f48d72e47e9452ad8f3">&#9670;&nbsp;</a></span>connect() <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a696d8ad1f20b5f48d72e47e9452ad8f3">&#9670;&nbsp;</a></span>connect() <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -481,7 +578,7 @@ template&lt;typename I  = IPv4&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00214">214</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00246">246</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
 
 </div>
 </div>
@@ -665,7 +762,7 @@ template&lt;typename I  = IPv4&gt; </div>
 <p>Gets the address of the peer connected to the handle. </p>
 <dl class="section return"><dt>Returns</dt><dd>A valid instance of <a class="el" href="structuvw_1_1Addr.html" title="Address representation. ">Addr</a>, an empty one in case of errors. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00175">175</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00195">195</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
 
 </div>
 </div>
@@ -736,7 +833,7 @@ template&lt;typename I  = IPv4&gt; </div>
 <p>Gets the current address to which the handle is bound. </p>
 <dl class="section return"><dt>Returns</dt><dd>A valid instance of <a class="el" href="structuvw_1_1Addr.html" title="Address representation. ">Addr</a>, an empty one in case of errors. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00166">166</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00186">186</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
 
 </div>
 </div>
