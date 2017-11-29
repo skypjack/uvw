@@ -6,7 +6,9 @@
 
 TEST(Thread, TODO) {
     auto loop = uvw::Loop::getDefault();
-    auto resource = loop->resource<uvw::Thread>(std::function<void(std::shared_ptr<void>)>{});
+    auto resource = loop->resource<uvw::Thread>([](std::shared_ptr<void>){});
+
+    resource->run();
 
     // TODO
 }
