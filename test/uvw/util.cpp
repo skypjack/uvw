@@ -1,4 +1,5 @@
 #include <memory>
+#include <unordered_set>
 #include <cstdlib>
 #include <gtest/gtest.h>
 #include <uvw.hpp>
@@ -156,4 +157,25 @@ TEST(Util, Utilities) {
     ASSERT_NE(uvw::Utilities::setupArgs(1, &argv), nullptr);
     ASSERT_NE(uvw::Utilities::processTitle(), std::string{});
     ASSERT_TRUE(uvw::Utilities::processTitle(uvw::Utilities::processTitle()));
+}
+
+
+TEST(Util, AddrHashing) {
+    const std::string ip = "127.0.0.1";
+    const unsigned int port = 80;
+    std::unordered_set<uvw::Addr> addrs;
+
+    uvw::Addr a;
+    a.ip = ip;
+    a.port = port;
+    addrs.insert(a);
+    ASSERT_EQ(addrs.size(), 1);
+
+    uvw::Addr b;
+    b.ip = ip;
+    b.port = port;
+    ASSERT_EQ(a, b);
+
+    addrs.erase(b);
+    ASSERT_EQ(addrs.size(), 0);
 }
