@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">1.5.0</span>
+   &#160;<span id="projectnumber">1.6.0</span>
    </div>
   </td>
  </tr>
@@ -79,8 +79,11 @@ $(function() {
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a60f780bc1b7778d64706cb6a4877795c"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespaceuvw.html#aad24ed8fb712caa655da6e3d7cb95bdd">PidType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1Utilities_1_1OS.html#a60f780bc1b7778d64706cb6a4877795c">pid</a> () noexcept</td></tr>
-<tr class="memdesc:a60f780bc1b7778d64706cb6a4877795c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the parent process id.  <a href="#a60f780bc1b7778d64706cb6a4877795c">More...</a><br /></td></tr>
+<tr class="memdesc:a60f780bc1b7778d64706cb6a4877795c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current process id.  <a href="#a60f780bc1b7778d64706cb6a4877795c">More...</a><br /></td></tr>
 <tr class="separator:a60f780bc1b7778d64706cb6a4877795c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2145593521219f0184522ea6b7b6d790"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespaceuvw.html#aad24ed8fb712caa655da6e3d7cb95bdd">PidType</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1Utilities_1_1OS.html#a2145593521219f0184522ea6b7b6d790">parent</a> () noexcept</td></tr>
+<tr class="memdesc:a2145593521219f0184522ea6b7b6d790"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the parent process id.  <a href="#a2145593521219f0184522ea6b7b6d790">More...</a><br /></td></tr>
+<tr class="separator:a2145593521219f0184522ea6b7b6d790"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a770ab48231aa27f3868516b0fdf3cacd"><td class="memItemLeft" align="right" valign="top">static std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1Utilities_1_1OS.html#a770ab48231aa27f3868516b0fdf3cacd">homedir</a> () noexcept</td></tr>
 <tr class="memdesc:a770ab48231aa27f3868516b0fdf3cacd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current user's home directory.  <a href="#a770ab48231aa27f3868516b0fdf3cacd">More...</a><br /></td></tr>
 <tr class="separator:a770ab48231aa27f3868516b0fdf3cacd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -138,7 +141,7 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The value of the environment variable, an empty string in case of errors. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00487">487</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00500">500</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
 
 </div>
 </div>
@@ -186,7 +189,7 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00498">498</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00511">511</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
 
 </div>
 </div>
@@ -217,7 +220,7 @@ Static Public Member Functions</h2></td></tr>
 <p>See the official <a href="http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_homedir">documentation</a> for further details.</p>
 <dl class="section return"><dt>Returns</dt><dd>The current user's home directory, an empty string in case of errors. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00464">464</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00477">477</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
 
 </div>
 </div>
@@ -247,7 +250,38 @@ Static Public Member Functions</h2></td></tr>
 <p>Returns the hostname. </p>
 <dl class="section return"><dt>Returns</dt><dd>The hostname, an empty string in case of errors. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00506">506</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00519">519</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a2145593521219f0184522ea6b7b6d790"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2145593521219f0184522ea6b7b6d790">&#9670;&nbsp;</a></span>parent()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="namespaceuvw.html#aad24ed8fb712caa655da6e3d7cb95bdd">PidType</a> uvw::Utilities::OS::parent </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the parent process id. </p>
+<p>See the official <a href="http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_getppid">documentation</a> for further details.</p>
+<dl class="section return"><dt>Returns</dt><dd>The parent process id. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00463">463</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
 
 </div>
 </div>
@@ -279,7 +313,7 @@ Static Public Member Functions</h2></td></tr>
 <p>See the official <a href="http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_get_passwd">documentation</a> for further details.</p>
 <dl class="section return"><dt>Returns</dt><dd>The accessible subset of the password file entry. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00522">522</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00535">535</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
 
 </div>
 </div>
@@ -306,9 +340,9 @@ Static Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Returns the parent process id. </p>
-<p>See the official <a href="http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_getppid">documentation</a> for further details.</p>
-<dl class="section return"><dt>Returns</dt><dd>The parent process id. </dd></dl>
+<p>Returns the current process id. </p>
+<p>See the official <a href="http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_getpid">documentation</a> for further details.</p>
+<dl class="section return"><dt>Returns</dt><dd>The current process id. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00450">450</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
 
@@ -341,7 +375,7 @@ Static Public Member Functions</h2></td></tr>
 <p>See the official <a href="http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_tmpdir">documentation</a> for further details.</p>
 <dl class="section return"><dt>Returns</dt><dd>The temp directory, an empty string in case of errors. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00477">477</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00490">490</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
 
 </div>
 </div>
