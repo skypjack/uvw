@@ -76,6 +76,7 @@ TEST(Util, Utilities) {
     ASSERT_EQ(uvw::PidType{}, uvw::PidType{});
 
     ASSERT_NE(uvw::Utilities::OS::pid(), uvw::PidType{});
+    ASSERT_NE(uvw::Utilities::OS::parent(), uvw::PidType{});
     ASSERT_FALSE(uvw::Utilities::OS::homedir().empty());
     ASSERT_FALSE(uvw::Utilities::OS::tmpdir().empty());
     ASSERT_NE(uvw::Utilities::OS::hostname(), "");

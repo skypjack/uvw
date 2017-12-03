@@ -16,7 +16,7 @@ endif()
 # Project configuration
 #
 
-project(uvw VERSION 1.5.0)
+project(uvw VERSION 1.6.0)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
@@ -118,3 +118,17 @@ set(CPACK_SOURCE_GENERATOR TGZ)
 set(CPACK_PACKAGING_INSTALL_DIRECTORY "uvw-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
 
 include(CPack)
+
+#
+# AOB
+#
+
+add_custom_target(
+    uvw_aob
+    SOURCES
+        appveyor.yml
+        AUTHORS
+        LICENSE
+        README.md
+        .travis.yml
+)

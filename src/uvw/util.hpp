@@ -439,6 +439,19 @@ struct Utilities {
      */
     struct OS {
         /**
+         * @brief Returns the current process id.
+         *
+         * See the official
+         * [documentation](http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_getpid)
+         * for further details.
+         *
+         * @return The current process id.
+         */
+        static PidType pid() noexcept {
+            return uv_os_getpid();
+        }
+
+        /**
          * @brief Returns the parent process id.
          *
          * See the official
@@ -447,7 +460,7 @@ struct Utilities {
          *
          * @return The parent process id.
          */
-        static PidType pid() noexcept {
+        static PidType parent() noexcept {
             return uv_os_getppid();
         }
 
