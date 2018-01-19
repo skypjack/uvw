@@ -432,8 +432,26 @@ public:
         if(err) { publish(ErrorEvent{err}); }
     }
 
+    /**
+     * @brief Gets user-defined data. `uvw` won't use this field in any case.
+     * @return User-defined data if any, an invalid pointer otherwise.
+     */
+    template<typename R = void>
+    std::shared_ptr<R> data() const {
+        return std::static_pointer_cast<R>(userData);
+    }
+
+    /**
+     * @brief Sets arbitrary data. `uvw` won't use this field in any case.
+     * @param uData User-defined arbitrary data.
+     */
+    void data(std::shared_ptr<void> uData) {
+        userData = std::move(uData);
+    }
+
 private:
     std::unique_ptr<uv_loop_t, Deleter> loop;
+    std::shared_ptr<void> userData{nullptr};
 };
 
 
