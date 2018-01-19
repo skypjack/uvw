@@ -199,6 +199,10 @@ public:
     /**
      * @brief Establishes an IPv4 or IPv6 TCP connection.
      *
+     * On Windows if the addr is initialized to point to an unspecified address
+     * (`0.0.0.0` or `::`) it will be changed to point to localhost. This is
+     * done to match the behavior of Linux systems.
+     *
      * A ConnectEvent event is emitted when the connection has been
      * established.<br/>
      * An ErrorEvent event is emitted in case of errors during the connection.
