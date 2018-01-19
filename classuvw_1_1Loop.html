@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">1.6.0</span>
+   &#160;<span id="projectnumber">1.7.0</span>
    </div>
   </td>
  </tr>
@@ -138,6 +138,13 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a23471c5025efc9db3cc42f6950f952b1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1Loop.html#a23471c5025efc9db3cc42f6950f952b1">fork</a> () noexcept</td></tr>
 <tr class="memdesc:a23471c5025efc9db3cc42f6950f952b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reinitialize any kernel state necessary in the child process after a fork(2) system call.  <a href="#a23471c5025efc9db3cc42f6950f952b1">More...</a><br /></td></tr>
 <tr class="separator:a23471c5025efc9db3cc42f6950f952b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07480967d95c0f9908fc75292b07c858"><td class="memTemplParams" colspan="2">template&lt;typename R  = void&gt; </td></tr>
+<tr class="memitem:a07480967d95c0f9908fc75292b07c858"><td class="memTemplItemLeft" align="right" valign="top">std::shared_ptr&lt; R &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classuvw_1_1Loop.html#a07480967d95c0f9908fc75292b07c858">data</a> () const</td></tr>
+<tr class="memdesc:a07480967d95c0f9908fc75292b07c858"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets user-defined data. <code>uvw</code> won't use this field in any case.  <a href="#a07480967d95c0f9908fc75292b07c858">More...</a><br /></td></tr>
+<tr class="separator:a07480967d95c0f9908fc75292b07c858"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ab9a0c0d23b615c3f5de7b15d742aaf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1Loop.html#a8ab9a0c0d23b615c3f5de7b15d742aaf">data</a> (std::shared_ptr&lt; void &gt; uData)</td></tr>
+<tr class="memdesc:a8ab9a0c0d23b615c3f5de7b15d742aaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets arbitrary data. <code>uvw</code> won't use this field in any case.  <a href="#a8ab9a0c0d23b615c3f5de7b15d742aaf">More...</a><br /></td></tr>
+<tr class="separator:a8ab9a0c0d23b615c3f5de7b15d742aaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classuvw_1_1Emitter"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classuvw_1_1Emitter')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classuvw_1_1Emitter.html">uvw::Emitter&lt; Loop &gt;</a></td></tr>
 <tr class="memitem:af6ba3eecb542efbef8d62ae905d8a8cd inherit pub_methods_classuvw_1_1Emitter"><td class="memItemLeft" align="right" valign="top">Connection&lt; E &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1Emitter.html#af6ba3eecb542efbef8d62ae905d8a8cd">on</a> (Listener&lt; E &gt; f)</td></tr>
 <tr class="memdesc:af6ba3eecb542efbef8d62ae905d8a8cd inherit pub_methods_classuvw_1_1Emitter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a long-lived listener with the event emitter.  <a href="classuvw_1_1Emitter.html#af6ba3eecb542efbef8d62ae905d8a8cd">More...</a><br /></td></tr>
@@ -316,6 +323,74 @@ template&lt;typename... Args&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the newly created loop. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00161">161</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a07480967d95c0f9908fc75292b07c858"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07480967d95c0f9908fc75292b07c858">&#9670;&nbsp;</a></span>data() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename R  = void&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;R&gt; uvw::Loop::data </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets user-defined data. <code>uvw</code> won't use this field in any case. </p>
+<dl class="section return"><dt>Returns</dt><dd>User-defined data if any, an invalid pointer otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00440">440</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a8ab9a0c0d23b615c3f5de7b15d742aaf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ab9a0c0d23b615c3f5de7b15d742aaf">&#9670;&nbsp;</a></span>data() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void uvw::Loop::data </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; void &gt;&#160;</td>
+          <td class="paramname"><em>uData</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets arbitrary data. <code>uvw</code> won't use this field in any case. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">uData</td><td>User-defined arbitrary data. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00448">448</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
