@@ -313,7 +313,7 @@ If you know of other projects that use `libuv` through `uvw`, feel free to open 
 
 # License
 
-Code and documentation Copyright (c) 2017 Michele Caini.<br/>
+Code and documentation Copyright (c) 2018 Michele Caini.<br/>
 Code released under [the MIT license](https://github.com/skypjack/uvw/blob/master/LICENSE).<br/>
 Docs released under [Creative Commons](https://github.com/skypjack/uvw/blob/master/docs/LICENSE).
 
