@@ -445,6 +445,14 @@ public:
     bool blocking(bool enable = false) {
         return (0 == uv_stream_set_blocking(this->template get<uv_stream_t>(), enable));
     }
+
+    /**
+     * @brief Warpper to access uv_stream_t.write_queue_size
+     * @return Amount of queued bytes waiting to be sent
+     */
+    size_t get_write_queue_size() const noexcept {
+        return this->template get<uv_stream_t>()->write_queue_size;
+    }
 };
 
 
