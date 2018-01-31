@@ -447,11 +447,11 @@ public:
     }
 
     /**
-     * @brief Warpper to access uv_stream_t.write_queue_size
+     * @brief Retrieves stream->write_queue_size
      * @return Amount of queued bytes waiting to be sent
      */
-    size_t get_write_queue_size() const noexcept {
-        return this->template get<uv_stream_t>()->write_queue_size;
+    size_t writeQueueSize() const noexcept {
+        return uv_stream_get_write_queue_size(this->template get<uv_stream_t>());
     }
 };
 
