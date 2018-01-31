@@ -593,6 +593,22 @@ public:
         invoke(&uv_udp_recv_stop, get());
     }
 
+    /**
+     * @brief Retrieves handle->send_queue_size
+     * @return Number of bytes queued for sending. This field strictly shows how much information is currently queued.
+     */
+    size_t sendQueueSize() const noexcept {
+        return uv_udp_get_send_queue_size(get());
+    }
+
+    /**
+     * @brief Retrieves handle->send_queue_count
+     * @return Number of send requests currently in the queue awaiting to be processed.
+     */
+    size_t sendQueueCount() const noexcept {
+        return uv_udp_get_send_queue_count(get());
+    }
+
 private:
     enum { DEFAULT, FLAGS } tag{DEFAULT};
     unsigned int flags{};
