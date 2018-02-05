@@ -447,8 +447,8 @@ public:
     }
 
     /**
-     * @brief Retrieves stream->write_queue_size
-     * @return Amount of queued bytes waiting to be sent
+     * @brief Gets the amount of queued bytes waiting to be sent.
+     * @return Amount of queued bytes waiting to be sent.
      */
     size_t writeQueueSize() const noexcept {
         return uv_stream_get_write_queue_size(this->template get<uv_stream_t>());
