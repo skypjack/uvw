@@ -594,16 +594,19 @@ public:
     }
 
     /**
-     * @brief Retrieves handle->send_queue_size
-     * @return Number of bytes queued for sending. This field strictly shows how much information is currently queued.
+     * @brief Gets the number of bytes queued for sending.
+     *
+     * It strictly shows how much information is currently queued.
+     *
+     * @return Number of bytes queued for sending.
      */
     size_t sendQueueSize() const noexcept {
         return uv_udp_get_send_queue_size(get());
     }
 
     /**
-     * @brief Retrieves handle->send_queue_count
-     * @return Number of send requests currently in the queue awaiting to be processed.
+     * @brief Number of send requests currently in the queue awaiting to be processed.
+     * @return Number of send requests currently in the queue.
      */
     size_t sendQueueCount() const noexcept {
         return uv_udp_get_send_queue_count(get());
