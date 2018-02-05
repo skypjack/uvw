@@ -445,6 +445,14 @@ public:
     bool blocking(bool enable = false) {
         return (0 == uv_stream_set_blocking(this->template get<uv_stream_t>(), enable));
     }
+
+    /**
+     * @brief Gets the amount of queued bytes waiting to be sent.
+     * @return Amount of queued bytes waiting to be sent.
+     */
+    size_t writeQueueSize() const noexcept {
+        return uv_stream_get_write_queue_size(this->template get<uv_stream_t>());
+    }
 };
 
 
