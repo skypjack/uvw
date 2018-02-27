@@ -183,7 +183,7 @@ Loops can be started using the `run` member function. The two calls below are eq
 
 ```cpp
 loop->run();
-loop->run<uvw::Loop::Mode::DEFAULT>
+loop->run<uvw::Loop::Mode::DEFAULT>();
 ```
 
 Available modes are: `DEFAULT`, `ONCE`, `NOWAIT`. Please refer to the documentation of *libuv* for further details.
