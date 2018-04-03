@@ -7,6 +7,8 @@ var searchData=
   ['sendbuffersize',['sendBufferSize',['../classuvw_1_1Handle.html#a381427eccddbc061341642a0647eb5c5',1,'uvw::Handle::sendBufferSize()'],['../classuvw_1_1Handle.html#ac5101de6d8dea3bdd2bca444cde821db',1,'uvw::Handle::sendBufferSize(int value)']]],
   ['sendfile',['sendfile',['../classuvw_1_1FileReq.html#a9dc41646b349bafd6685b6690a181c09',1,'uvw::FileReq']]],
   ['sendfilesync',['sendfileSync',['../classuvw_1_1FileReq.html#a0839e8352179af6604493aee4b69cb2d',1,'uvw::FileReq']]],
+  ['sendqueuecount',['sendQueueCount',['../classuvw_1_1UDPHandle.html#a66bcf98d5a258492842fe6ae022fb961',1,'uvw::UDPHandle']]],
+  ['sendqueuesize',['sendQueueSize',['../classuvw_1_1UDPHandle.html#a4e89abbcd88eacf11ada45cd5c65fb3e',1,'uvw::UDPHandle']]],
   ['serviceaddrinfo',['serviceAddrInfo',['../classuvw_1_1GetAddrInfoReq.html#a5e44eb4fe6c7a6faddf2e55465dafbb1',1,'uvw::GetAddrInfoReq']]],
   ['serviceaddrinfosync',['serviceAddrInfoSync',['../classuvw_1_1GetAddrInfoReq.html#a68f6ec4153d3399ab75ff2bf096c125f',1,'uvw::GetAddrInfoReq']]],
   ['setupargs',['setupArgs',['../structuvw_1_1Utilities.html#ae7e6b1b44125ea2cf529a8d88d135fa4',1,'uvw::Utilities']]],

@@ -9,6 +9,8 @@ var searchData=
   ['sendevent',['SendEvent',['../structuvw_1_1SendEvent.html',1,'uvw']]],
   ['sendfile',['sendfile',['../classuvw_1_1FileReq.html#a9dc41646b349bafd6685b6690a181c09',1,'uvw::FileReq']]],
   ['sendfilesync',['sendfileSync',['../classuvw_1_1FileReq.html#a0839e8352179af6604493aee4b69cb2d',1,'uvw::FileReq']]],
+  ['sendqueuecount',['sendQueueCount',['../classuvw_1_1UDPHandle.html#a66bcf98d5a258492842fe6ae022fb961',1,'uvw::UDPHandle']]],
+  ['sendqueuesize',['sendQueueSize',['../classuvw_1_1UDPHandle.html#a4e89abbcd88eacf11ada45cd5c65fb3e',1,'uvw::UDPHandle']]],
   ['service',['service',['../structuvw_1_1NameInfoEvent.html#a77fa385a27629d1b20ca743fe349c930',1,'uvw::NameInfoEvent']]],
   ['serviceaddrinfo',['serviceAddrInfo',['../classuvw_1_1GetAddrInfoReq.html#a5e44eb4fe6c7a6faddf2e55465dafbb1',1,'uvw::GetAddrInfoReq']]],
   ['serviceaddrinfosync',['serviceAddrInfoSync',['../classuvw_1_1GetAddrInfoReq.html#a68f6ec4153d3399ab75ff2bf096c125f',1,'uvw::GetAddrInfoReq']]],

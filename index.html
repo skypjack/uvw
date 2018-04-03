@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">1.7.0</span>
+   &#160;<span id="projectnumber">1.8.0</span>
    </div>
   </td>
  </tr>
@@ -156,7 +156,7 @@ $(function() {
 <p>The first thing to do to use <code>uvw</code> is to create a loop. In case the default one is enough, it's easy as doing this:</p>
 <div class="fragment"><div class="line"><span class="keyword">auto</span> loop = <a class="code" href="classuvw_1_1Loop.html#a284450b3ef37c62bd7a984c73552d7b8">uvw::Loop::getDefault</a>();</div></div><!-- fragment --><p>Note that loop objects don't require to be closed explicitly, even if they offer the <code>close</code> member function in case an user wants to do that.<br />
  Loops can be started using the <code>run</code> member function. The two calls below are equivalent:</p>
-<div class="fragment"><div class="line">loop-&gt;<a class="code" href="classuvw_1_1Loop.html#aa86d06ae9f91d8b48d1d5358040f2547">run</a>();</div><div class="line">loop-&gt;<a class="code" href="classuvw_1_1Loop.html#aa86d06ae9f91d8b48d1d5358040f2547">run</a>&lt;uvw::Loop::Mode::DEFAULT&gt;</div></div><!-- fragment --><p>Available modes are: <code>DEFAULT</code>, <code>ONCE</code>, <code>NOWAIT</code>. Please refer to the documentation of <em>libuv</em> for further details.</p>
+<div class="fragment"><div class="line">loop-&gt;<a class="code" href="classuvw_1_1Loop.html#aa86d06ae9f91d8b48d1d5358040f2547">run</a>();</div><div class="line">loop-&gt;<a class="code" href="classuvw_1_1Loop.html#aa86d06ae9f91d8b48d1d5358040f2547">run</a>&lt;uvw::Loop::Mode::DEFAULT&gt;();</div></div><!-- fragment --><p>Available modes are: <code>DEFAULT</code>, <code>ONCE</code>, <code>NOWAIT</code>. Please refer to the documentation of <em>libuv</em> for further details.</p>
 <p>In order to create a resource and to bind it to the given loop, just do the following:</p>
 <div class="fragment"><div class="line"><span class="keyword">auto</span> tcp = loop.<a class="code" href="classuvw_1_1Loop.html#a3898884e2019aa052235377dcd03c0f3">resource</a>&lt;<a class="code" href="classuvw_1_1TcpHandle.html">uvw::TcpHandle</a>&gt;();</div></div><!-- fragment --><p>The line above will create and initialize a tcp handle, then a shared pointer to that resource will be returned.<br />
  Users should check if pointers have been correctly initialized: in case of errors, they won't be.<br />
@@ -217,7 +217,7 @@ $(function() {
 </ul>
 <p>If you know of other projects that use <code>libuv</code> through <code>uvw</code>, feel free to open a PR and I'll be glad to add them to the list.</p>
 <h1>License</h1>
-<p>Code and documentation Copyright (c) 2017 Michele Caini.<br />
+<p>Code and documentation Copyright (c) 2018 Michele Caini.<br />
  Code released under <a href="https://github.com/skypjack/uvw/blob/master/LICENSE">the MIT license</a>.<br />
  Docs released under <a href="https://github.com/skypjack/uvw/blob/master/docs/LICENSE">Creative Commons</a>.</p>
 <h1>Donation</h1>

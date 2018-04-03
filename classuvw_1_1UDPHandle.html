@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">1.7.0</span>
+   &#160;<span id="projectnumber">1.8.0</span>
    </div>
   </td>
  </tr>
@@ -197,6 +197,12 @@ Public Member Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1UDPHandle.html#a23646fc83bf9aede62f01d2e3db1f7dc">stop</a> ()</td></tr>
 <tr class="memdesc:a23646fc83bf9aede62f01d2e3db1f7dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stops listening for incoming datagrams. <br /></td></tr>
 <tr class="separator:a23646fc83bf9aede62f01d2e3db1f7dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e89abbcd88eacf11ada45cd5c65fb3e"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1UDPHandle.html#a4e89abbcd88eacf11ada45cd5c65fb3e">sendQueueSize</a> () const noexcept</td></tr>
+<tr class="memdesc:a4e89abbcd88eacf11ada45cd5c65fb3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the number of bytes queued for sending.  <a href="#a4e89abbcd88eacf11ada45cd5c65fb3e">More...</a><br /></td></tr>
+<tr class="separator:a4e89abbcd88eacf11ada45cd5c65fb3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66bcf98d5a258492842fe6ae022fb961"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1UDPHandle.html#a66bcf98d5a258492842fe6ae022fb961">sendQueueCount</a> () const noexcept</td></tr>
+<tr class="memdesc:a66bcf98d5a258492842fe6ae022fb961"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of send requests currently in the queue awaiting to be processed.  <a href="#a66bcf98d5a258492842fe6ae022fb961">More...</a><br /></td></tr>
+<tr class="separator:a66bcf98d5a258492842fe6ae022fb961"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classuvw_1_1Handle"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classuvw_1_1Handle')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classuvw_1_1Handle.html">uvw::Handle&lt; UDPHandle, uv_udp_t &gt;</a></td></tr>
 <tr class="memitem:a96162bff13f6bf9a53be386765f01030 inherit pub_methods_classuvw_1_1Handle"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceuvw.html#aa3ae4a038de60a69b2513a039add1e48">HandleCategory</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1Handle.html#a96162bff13f6bf9a53be386765f01030">category</a> () const noexcept override</td></tr>
 <tr class="memdesc:a96162bff13f6bf9a53be386765f01030 inherit pub_methods_classuvw_1_1Handle"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the category of the handle.  <a href="classuvw_1_1Handle.html#a96162bff13f6bf9a53be386765f01030">More...</a><br /></td></tr>
@@ -1140,6 +1146,67 @@ template&lt;typename I  = IPv4&gt; </div>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="udp_8hpp_source.html#l00452">452</a> of file <a class="el" href="udp_8hpp_source.html">udp.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a66bcf98d5a258492842fe6ae022fb961"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66bcf98d5a258492842fe6ae022fb961">&#9670;&nbsp;</a></span>sendQueueCount()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t uvw::UDPHandle::sendQueueCount </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Number of send requests currently in the queue awaiting to be processed. </p>
+<dl class="section return"><dt>Returns</dt><dd>Number of send requests currently in the queue. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="udp_8hpp_source.html#l00611">611</a> of file <a class="el" href="udp_8hpp_source.html">udp.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a4e89abbcd88eacf11ada45cd5c65fb3e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4e89abbcd88eacf11ada45cd5c65fb3e">&#9670;&nbsp;</a></span>sendQueueSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t uvw::UDPHandle::sendQueueSize </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the number of bytes queued for sending. </p>
+<p>It strictly shows how much information is currently queued.</p>
+<dl class="section return"><dt>Returns</dt><dd>Number of bytes queued for sending. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="udp_8hpp_source.html#l00603">603</a> of file <a class="el" href="udp_8hpp_source.html">udp.hpp</a>.</p>
 
 </div>
 </div>
