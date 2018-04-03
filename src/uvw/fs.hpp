@@ -90,7 +90,9 @@ enum class UVFileOpenFlags: int {
 
 
 enum class UVCopyFileFlags: int {
-    EXCL = UV_FS_COPYFILE_EXCL
+    EXCL = UV_FS_COPYFILE_EXCL,
+    FICLONE = UV_FS_COPYFILE_FICLONE,
+    FICLONE_FORCE = UV_FS_COPYFILE_FICLONE_FORCE
 };
 
 
@@ -1115,7 +1117,14 @@ public:
      * * `FsReq::CopyFile::EXCL`: it fails if the destination path
      * already exists (the default behavior is to overwrite the destination if
      * it exists).
+     * * `FsReq::CopyFile::FICLONE`: If present, it will attempt to create a
+     * copy-on-write reflink. If the underlying platform does not support
+     * copy-on-write, then a fallback copy mechanism is used.
+     * * `FsReq::CopyFile::FICLONE_FORCE`: If present, it will attempt to create
+     * a copy-on-write reflink. If the underlying platform does not support
+     * copy-on-write, then an error is returned.
      *
+     * @warning
      * If the destination path is created, but an error occurs while copying the
      * data, then the destination path is removed. There is a brief window of
      * time between closing and removing the file where another process could
