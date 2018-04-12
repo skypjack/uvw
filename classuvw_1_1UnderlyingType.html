@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">1.8.0</span>
+   &#160;<span id="projectnumber">1.8.1</span>
    </div>
   </td>
  </tr>
@@ -92,6 +92,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aab78fbfffb3c03d78aab515e605ecb18"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classuvw_1_1Loop.html">Loop</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1UnderlyingType.html#aab78fbfffb3c03d78aab515e605ecb18">loop</a> () const noexcept</td></tr>
 <tr class="memdesc:aab78fbfffb3c03d78aab515e605ecb18"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the loop from which the resource was originated.  <a href="#aab78fbfffb3c03d78aab515e605ecb18">More...</a><br /></td></tr>
 <tr class="separator:aab78fbfffb3c03d78aab515e605ecb18"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab2dddf23a571afb113c8b9c5e83f056f"><td class="memItemLeft" align="right" valign="top">const U *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1UnderlyingType.html#ab2dddf23a571afb113c8b9c5e83f056f">raw</a> () const noexcept</td></tr>
+<tr class="memdesc:ab2dddf23a571afb113c8b9c5e83f056f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the underlying raw data structure.  <a href="#ab2dddf23a571afb113c8b9c5e83f056f">More...</a><br /></td></tr>
+<tr class="separator:ab2dddf23a571afb113c8b9c5e83f056f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78ac17a623e508fa410453f8c17e5970"><td class="memItemLeft" align="right" valign="top">U *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1UnderlyingType.html#a78ac17a623e508fa410453f8c17e5970">raw</a> () noexcept</td></tr>
+<tr class="memdesc:a78ac17a623e508fa410453f8c17e5970"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the underlying raw data structure.  <a href="#a78ac17a623e508fa410453f8c17e5970">More...</a><br /></td></tr>
+<tr class="separator:a78ac17a623e508fa410453f8c17e5970"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -179,6 +185,76 @@ template&lt;typename T, typename U&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A reference to a loop instance. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="underlying__type_8hpp_source.html#l00085">85</a> of file <a class="el" href="underlying__type_8hpp_source.html">underlying_type.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ab2dddf23a571afb113c8b9c5e83f056f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab2dddf23a571afb113c8b9c5e83f056f">&#9670;&nbsp;</a></span>raw() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T, typename U&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const U* <a class="el" href="classuvw_1_1UnderlyingType.html">uvw::UnderlyingType</a>&lt; T, U &gt;::raw </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the underlying raw data structure. </p>
+<p>This function should not be used, unless you know exactly what you are doing and what are the risks.<br />
+ Going raw is dangerous, mainly because the lifetime management of a loop, a handle or a request is in charge to the library itself and users should not work around it.</p>
+<dl class="section warning"><dt>Warning</dt><dd>Use this function at your own risk, but do not expect any support in case of bugs.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The underlying raw data structure. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="underlying__type_8hpp_source.html#l00102">102</a> of file <a class="el" href="underlying__type_8hpp_source.html">underlying_type.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a78ac17a623e508fa410453f8c17e5970"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a78ac17a623e508fa410453f8c17e5970">&#9670;&nbsp;</a></span>raw() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T, typename U&gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">U* <a class="el" href="classuvw_1_1UnderlyingType.html">uvw::UnderlyingType</a>&lt; T, U &gt;::raw </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the underlying raw data structure. </p>
+<p>This function should not be used, unless you know exactly what you are doing and what are the risks.<br />
+ Going raw is dangerous, mainly because the lifetime management of a loop, a handle or a request is in charge to the library itself and users should not work around it.</p>
+<dl class="section warning"><dt>Warning</dt><dd>Use this function at your own risk, but do not expect any support in case of bugs.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The underlying raw data structure. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="underlying__type_8hpp_source.html#l00121">121</a> of file <a class="el" href="underlying__type_8hpp_source.html">underlying_type.hpp</a>.</p>
 
 </div>
 </div>

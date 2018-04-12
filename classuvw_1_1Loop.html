@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">1.8.0</span>
+   &#160;<span id="projectnumber">1.8.1</span>
    </div>
   </td>
  </tr>
@@ -145,6 +145,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8ab9a0c0d23b615c3f5de7b15d742aaf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1Loop.html#a8ab9a0c0d23b615c3f5de7b15d742aaf">data</a> (std::shared_ptr&lt; void &gt; uData)</td></tr>
 <tr class="memdesc:a8ab9a0c0d23b615c3f5de7b15d742aaf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets arbitrary data. <code>uvw</code> won't use this field in any case.  <a href="#a8ab9a0c0d23b615c3f5de7b15d742aaf">More...</a><br /></td></tr>
 <tr class="separator:a8ab9a0c0d23b615c3f5de7b15d742aaf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac33b64667ba24e94456ed4ec172372c6"><td class="memItemLeft" align="right" valign="top">const uv_loop_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1Loop.html#ac33b64667ba24e94456ed4ec172372c6">raw</a> () const noexcept</td></tr>
+<tr class="memdesc:ac33b64667ba24e94456ed4ec172372c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the underlying raw data structure.  <a href="#ac33b64667ba24e94456ed4ec172372c6">More...</a><br /></td></tr>
+<tr class="separator:ac33b64667ba24e94456ed4ec172372c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d7d1f89d6e74b8c542e6de4ef4a1753"><td class="memItemLeft" align="right" valign="top">uv_loop_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1Loop.html#a4d7d1f89d6e74b8c542e6de4ef4a1753">raw</a> () noexcept</td></tr>
+<tr class="memdesc:a4d7d1f89d6e74b8c542e6de4ef4a1753"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the underlying raw data structure.  <a href="#a4d7d1f89d6e74b8c542e6de4ef4a1753">More...</a><br /></td></tr>
+<tr class="separator:a4d7d1f89d6e74b8c542e6de4ef4a1753"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classuvw_1_1Emitter"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classuvw_1_1Emitter')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classuvw_1_1Emitter.html">uvw::Emitter&lt; Loop &gt;</a></td></tr>
 <tr class="memitem:af6ba3eecb542efbef8d62ae905d8a8cd inherit pub_methods_classuvw_1_1Emitter"><td class="memItemLeft" align="right" valign="top">Connection&lt; E &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1Emitter.html#af6ba3eecb542efbef8d62ae905d8a8cd">on</a> (Listener&lt; E &gt; f)</td></tr>
 <tr class="memdesc:af6ba3eecb542efbef8d62ae905d8a8cd inherit pub_methods_classuvw_1_1Emitter"><td class="mdescLeft">&#160;</td><td class="mdescRight">Registers a long-lived listener with the event emitter.  <a href="classuvw_1_1Emitter.html#af6ba3eecb542efbef8d62ae905d8a8cd">More...</a><br /></td></tr>
@@ -525,6 +531,72 @@ template&lt;typename R  = void&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>The current timestamp in milliseconds (actual type is <code>std::chrono::duration&lt;uint64_t, std::milli&gt;</code>). </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00366">366</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ac33b64667ba24e94456ed4ec172372c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac33b64667ba24e94456ed4ec172372c6">&#9670;&nbsp;</a></span>raw() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">const uv_loop_t* uvw::Loop::raw </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the underlying raw data structure. </p>
+<p>This function should not be used, unless you know exactly what you are doing and what are the risks.<br />
+ Going raw is dangerous, mainly because the lifetime management of a loop, a handle or a request is in charge to the library itself and users should not work around it.</p>
+<dl class="section warning"><dt>Warning</dt><dd>Use this function at your own risk, but do not expect any support in case of bugs.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The underlying raw data structure. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00467">467</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a4d7d1f89d6e74b8c542e6de4ef4a1753"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d7d1f89d6e74b8c542e6de4ef4a1753">&#9670;&nbsp;</a></span>raw() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uv_loop_t* uvw::Loop::raw </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the underlying raw data structure. </p>
+<p>This function should not be used, unless you know exactly what you are doing and what are the risks.<br />
+ Going raw is dangerous, mainly because the lifetime management of a loop, a handle or a request is in charge to the library itself and users should not work around it.</p>
+<dl class="section warning"><dt>Warning</dt><dd>Use this function at your own risk, but do not expect any support in case of bugs.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>The underlying raw data structure. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00486">486</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>

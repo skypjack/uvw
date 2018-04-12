@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['raw',['raw',['../classuvw_1_1Loop.html#ac33b64667ba24e94456ed4ec172372c6',1,'uvw::Loop::raw() const noexcept'],['../classuvw_1_1Loop.html#a4d7d1f89d6e74b8c542e6de4ef4a1753',1,'uvw::Loop::raw() noexcept'],['../classuvw_1_1UnderlyingType.html#ab2dddf23a571afb113c8b9c5e83f056f',1,'uvw::UnderlyingType::raw() const noexcept'],['../classuvw_1_1UnderlyingType.html#a78ac17a623e508fa410453f8c17e5970',1,'uvw::UnderlyingType::raw() noexcept']]],
   ['read',['read',['../classuvw_1_1FileReq.html#a9eff819bdc6c56b9a05d6e3228e176fc',1,'uvw::FileReq::read()'],['../classuvw_1_1StreamHandle.html#a2bce95db93fb64ee8b86c41b65a060c8',1,'uvw::StreamHandle::read()']]],
   ['readable',['readable',['../classuvw_1_1StreamHandle.html#a91efe7dfb93505779edbf603a6a1c515',1,'uvw::StreamHandle']]],
   ['readlink',['readlink',['../classuvw_1_1FsReq.html#ae6092d3602b2f2601a8476dbfdcd7fad',1,'uvw::FsReq']]],
