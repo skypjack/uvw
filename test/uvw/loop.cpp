@@ -81,3 +81,13 @@ TEST(Loop, Configure) {
     ASSERT_NO_THROW(loop->configure(uvw::Loop::Configure::BLOCK_SIGNAL, 9));
     ASSERT_NO_THROW(loop->run());
 }
+
+TEST(Loop, Raw) {
+    auto loop = uvw::Loop::getDefault();
+    const auto &cloop = uvw::Loop::getDefault();
+
+    auto *raw = loop->raw();
+    auto *craw = cloop->raw();
+
+    ASSERT_EQ(raw, craw);
+}

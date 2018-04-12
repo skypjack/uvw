@@ -84,6 +84,44 @@ public:
      */
     Loop & loop() const noexcept { return *pLoop; }
 
+    /**
+     * @brief Gets the underlying raw data structure.
+     *
+     * This function should not be used, unless you know exactly what you are
+     * doing and what are the risks.<br/>
+     * Going raw is dangerous, mainly because the lifetime management of a loop,
+     * a handle or a request is in charge to the library itself and users should
+     * not work around it.
+     *
+     * @warning
+     * Use this function at your own risk, but do not expect any support in case
+     * of bugs.
+     *
+     * @return The underlying raw data structure.
+     */
+    const U * raw() const noexcept {
+        return &resource;
+    }
+
+    /**
+     * @brief Gets the underlying raw data structure.
+     *
+     * This function should not be used, unless you know exactly what you are
+     * doing and what are the risks.<br/>
+     * Going raw is dangerous, mainly because the lifetime management of a loop,
+     * a handle or a request is in charge to the library itself and users should
+     * not work around it.
+     *
+     * @warning
+     * Use this function at your own risk, but do not expect any support in case
+     * of bugs.
+     *
+     * @return The underlying raw data structure.
+     */
+    U * raw() noexcept {
+        return const_cast<U *>(const_cast<const UnderlyingType *>(this)->raw());
+    }
+
 private:
     std::shared_ptr<Loop> pLoop;
     U resource;

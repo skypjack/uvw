@@ -293,23 +293,33 @@ It's suffice to explicitly specify `uvw::IPv6` as the underlying protocol to use
 
 The API reference is the recommended documentation for further details about resources and their methods.
 
+## Going raw
+
+In case users need to use functionalities not wrapped yet by `uvw` or if they
+want to get the underlying data structures as defined by `libuv` for some other
+reasons, almost all the classes in `uvw` give direct access to them.<br/>
+Please, note that this functions should not be used directly unless users know
+exactly what they are doing and what are the risks. Going raw is dangerous,
+mainly because the lifetime management of a loop, a handle or a request is
+completely in charge to the library and working around it could quickly break
+things.
+
+That being said, _going raw_ is a matter of using the `raw` member functions:
+
+```cpp
+auto loop = uvw::Loop::getDefault();
+auto tcp = loop.resource<uvw::TcpHandle>();
+
+uv_loop_t *raw = loop->raw();
+uv_tcp_t *handle = tcp->raw();
+```
+
+Go the raw way at your own risk, but do not expect any support in case of bugs.
+
 # Contributors
 
 If you want to contribute, please send patches as pull requests against the branch master.<br/>
 Check the [contributors list](https://github.com/skypjack/uvw/blob/master/AUTHORS) to see who has partecipated so far.
-
-# Projects that use `uvw`
-
-Below an incomplete list of projects that use `uvw`:
-
-* Internal tools (not publicly available) at **[Cynny SpA](https://www.morphcast.com/)** and **[Cynny Space](http://www.cynnyspace.com/)**.
-* **[Calaos.fr](https://www.calaos.fr/en/)** (Open source home automation) on [GitHub](https://github.com/calaos).
-* **[Iroha](http://iroha.tech/en/) - A simple, decentralized ledger** on [Github](https://github.com/hyperledger/iroha).
-* **Iroha blockchain core** on [Github](https://github.com/finshield/iroha-core).
-* **Ecwid Console Downloader** on [GitHub](https://github.com/dvetutnev/Ecwid-Console-downloader).
-* **Simple network ping pong for lazy students** on [GitHub](https://github.com/dvetutnev/ping_pong).
-
-If you know of other projects that use `libuv` through `uvw`, feel free to open a PR and I'll be glad to add them to the list.
 
 # License
 

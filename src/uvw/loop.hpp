@@ -449,6 +449,44 @@ public:
         userData = std::move(uData);
     }
 
+    /**
+     * @brief Gets the underlying raw data structure.
+     *
+     * This function should not be used, unless you know exactly what you are
+     * doing and what are the risks.<br/>
+     * Going raw is dangerous, mainly because the lifetime management of a loop,
+     * a handle or a request is in charge to the library itself and users should
+     * not work around it.
+     *
+     * @warning
+     * Use this function at your own risk, but do not expect any support in case
+     * of bugs.
+     *
+     * @return The underlying raw data structure.
+     */
+    const uv_loop_t * raw() const noexcept {
+        return loop.get();
+    }
+
+    /**
+     * @brief Gets the underlying raw data structure.
+     *
+     * This function should not be used, unless you know exactly what you are
+     * doing and what are the risks.<br/>
+     * Going raw is dangerous, mainly because the lifetime management of a loop,
+     * a handle or a request is in charge to the library itself and users should
+     * not work around it.
+     *
+     * @warning
+     * Use this function at your own risk, but do not expect any support in case
+     * of bugs.
+     *
+     * @return The underlying raw data structure.
+     */
+    uv_loop_t * raw() noexcept {
+        return const_cast<uv_loop_t *>(const_cast<const Loop *>(this)->raw());
+    }
+
 private:
     std::unique_ptr<uv_loop_t, Deleter> loop;
     std::shared_ptr<void> userData{nullptr};
