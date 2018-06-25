@@ -65,27 +65,6 @@ find_package(Threads REQUIRED)
 find_package(Doxygen 1.8)
 
 #
-# Download and unpack dependencies
-#
-
-set(GOOGLETEST_DEPS_DIR ${PROJECT_DEPS_DIR}/googletest)
-set(LIBUV_DEPS_DIR ${PROJECT_DEPS_DIR}/libuv)
-
-# gtest, gtest_main, gmock and gmock_main targets are available from now on
-configure_file(${PROJECT_CMAKE_IN}/googletest.in ${GOOGLETEST_DEPS_DIR}/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${GOOGLETEST_DEPS_DIR})
-execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${GOOGLETEST_DEPS_DIR})
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-add_subdirectory(${GOOGLETEST_DEPS_DIR}/src)
-
-configure_file(${PROJECT_CMAKE_IN}/libuv.in ${LIBUV_DEPS_DIR}/CMakeLists.txt)
-execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${LIBUV_DEPS_DIR})
-execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${LIBUV_DEPS_DIR})
-include_directories(${LIBUV_DEPS_DIR}/src/include)
-find_library(libuv_static NAMES libuv.a libuv PATHS ${LIBUV_DEPS_DIR}/src PATH_SUFFIXES .libs Release NO_DEFAULT_PATH)
-find_library(libuv_shared NAMES uv libuv PATHS ${LIBUV_DEPS_DIR}/src PATH_SUFFIXES .libs Release NO_DEFAULT_PATH)
-
-#
 # Referenced directories and targets
 #
 
@@ -94,6 +73,23 @@ if(DOXYGEN_FOUND)
 endif()
 
 if(BUILD_TESTING)
+    set(GOOGLETEST_DEPS_DIR ${PROJECT_DEPS_DIR}/googletest)
+    set(LIBUV_DEPS_DIR ${PROJECT_DEPS_DIR}/libuv)
+
+    # gtest, gtest_main, gmock and gmock_main targets are available from now on
+    configure_file(${PROJECT_CMAKE_IN}/googletest.in ${GOOGLETEST_DEPS_DIR}/CMakeLists.txt)
+    execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${GOOGLETEST_DEPS_DIR})
+    execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${GOOGLETEST_DEPS_DIR})
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    add_subdirectory(${GOOGLETEST_DEPS_DIR}/src)
+
+    configure_file(${PROJECT_CMAKE_IN}/libuv.in ${LIBUV_DEPS_DIR}/CMakeLists.txt)
+    execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${LIBUV_DEPS_DIR})
+    execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${LIBUV_DEPS_DIR})
+    include_directories(${LIBUV_DEPS_DIR}/src/include)
+    find_library(libuv_static NAMES libuv.a libuv PATHS ${LIBUV_DEPS_DIR}/src PATH_SUFFIXES .libs Release NO_DEFAULT_PATH)
+    find_library(libuv_shared NAMES uv libuv PATHS ${LIBUV_DEPS_DIR}/src PATH_SUFFIXES .libs Release NO_DEFAULT_PATH)
+
     enable_testing()
     add_subdirectory(test)
 endif()
@@ -118,6 +114,32 @@ set(CPACK_SOURCE_GENERATOR TGZ)
 set(CPACK_PACKAGING_INSTALL_DIRECTORY "uvw-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
 
 include(CPack)
+
+#
+# Install headers
+#
+
+INCLUDE(GNUInstallDirs)
+
+IF(NOT DEFINED INCLUDE_INSTALL_DIR)
+    SET(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}")
+ENDIF()
+
+file(GLOB HEADERS src/uvw/*.hpp)
+
+install(
+    FILES ${HEADERS}
+    COMPONENT ${PROJECT_NAME}
+    DESTINATION ${INCLUDE_INSTALL_DIR}/uvw
+    PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+)
+
+install(
+    FILES src/uvw.hpp
+    COMPONENT ${PROJECT_NAME}
+    DESTINATION ${INCLUDE_INSTALL_DIR}
+    PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+)
 
 #
 # AOB

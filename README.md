@@ -1,4 +1,4 @@
-![cynny-logo](https://web.cynny.com/live/static/favicon/favicon-16.png) **Sponsored and contributed by [Cynny SpA](https://www.cynny.com/).**
+**Sponsored and contributed by [Cynny SpA](https://www.cynny.com/).**
 
 # uvw - libuv wrapper in modern C++
 
