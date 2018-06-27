@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">1.8.1</span>
+   &#160;<span id="projectnumber">1.9.0</span>
    </div>
   </td>
  </tr>
@@ -199,6 +199,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a0adb8408a8d2f707d2f9c045788011e9"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1FsReq.html#a0adb8408a8d2f707d2f9c045788011e9">chownSync</a> (std::string path, <a class="el" href="namespaceuvw.html#a01d13fc4b5d1b58c936fdbf15c4d0a10">Uid</a> uid, <a class="el" href="namespaceuvw.html#a82c74b9200b97f2e1668fe2719eef72e">Gid</a> gid)</td></tr>
 <tr class="memdesc:a0adb8408a8d2f707d2f9c045788011e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sync <a href="http://linux.die.net/man/2/chown">chown</a>.  <a href="#a0adb8408a8d2f707d2f9c045788011e9">More...</a><br /></td></tr>
 <tr class="separator:a0adb8408a8d2f707d2f9c045788011e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac12b4c0cc91cb5704cebfc6f6b4afcb2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1FsReq.html#ac12b4c0cc91cb5704cebfc6f6b4afcb2">lchown</a> (std::string path, <a class="el" href="namespaceuvw.html#a01d13fc4b5d1b58c936fdbf15c4d0a10">Uid</a> uid, <a class="el" href="namespaceuvw.html#a82c74b9200b97f2e1668fe2719eef72e">Gid</a> gid)</td></tr>
+<tr class="memdesc:ac12b4c0cc91cb5704cebfc6f6b4afcb2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Async <a href="https://linux.die.net/man/2/lchown">lchown</a>.  <a href="#ac12b4c0cc91cb5704cebfc6f6b4afcb2">More...</a><br /></td></tr>
+<tr class="separator:ac12b4c0cc91cb5704cebfc6f6b4afcb2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a598f1bc27e771e1f36033a85c61a45ec"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1FsReq.html#a598f1bc27e771e1f36033a85c61a45ec">lchownSync</a> (std::string path, <a class="el" href="namespaceuvw.html#a01d13fc4b5d1b58c936fdbf15c4d0a10">Uid</a> uid, <a class="el" href="namespaceuvw.html#a82c74b9200b97f2e1668fe2719eef72e">Gid</a> gid)</td></tr>
+<tr class="memdesc:a598f1bc27e771e1f36033a85c61a45ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sync <a href="https://linux.die.net/man/2/lchown">lchown</a>.  <a href="#a598f1bc27e771e1f36033a85c61a45ec">More...</a><br /></td></tr>
+<tr class="separator:a598f1bc27e771e1f36033a85c61a45ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>The <a class="el" href="classuvw_1_1FsReq.html" title="The FsReq request. ">FsReq</a> request. </p>
@@ -207,7 +213,7 @@ Public Member Functions</h2></td></tr>
 <p>To create a <code><a class="el" href="classuvw_1_1FsReq.html" title="The FsReq request. ">FsReq</a></code> through a <code><a class="el" href="classuvw_1_1Loop.html" title="The Loop class. ">Loop</a></code>, no arguments are required.</p>
 <p>See the official <a href="http://docs.libuv.org/en/v1.x/fs.html">documentation</a> for further details. </p>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00841">841</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00843">843</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a72c47c990b174b4cbf9ab77edc300272"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a72c47c990b174b4cbf9ab77edc300272">&#9670;&nbsp;</a></span>access()</h2>
@@ -254,7 +260,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01175">1175</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01177">1177</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -302,7 +308,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01185">1185</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01187">1187</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -351,7 +357,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01200">1200</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01202">1202</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -399,7 +405,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01210">1210</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01212">1212</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -455,7 +461,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01382">1382</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01384">1384</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -510,7 +516,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01393">1393</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01395">1395</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -573,7 +579,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01137">1137</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01139">1139</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -633,7 +639,118 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01160">1160</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01162">1162</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ac12b4c0cc91cb5704cebfc6f6b4afcb2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac12b4c0cc91cb5704cebfc6f6b4afcb2">&#9670;&nbsp;</a></span>lchown()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void uvw::FsReq::lchown </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceuvw.html#a01d13fc4b5d1b58c936fdbf15c4d0a10">Uid</a>&#160;</td>
+          <td class="paramname"><em>uid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceuvw.html#a82c74b9200b97f2e1668fe2719eef72e">Gid</a>&#160;</td>
+          <td class="paramname"><em>gid</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Async <a href="https://linux.die.net/man/2/lchown">lchown</a>. </p>
+<p>Emit a <code><a class="el" href="structuvw_1_1FsEvent.html" title="Default FsEvent event. ">FsEvent</a>&lt;FsReq::Type::LCHOWN&gt;</code> event when completed.<br />
+ Emit an <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> event in case of errors.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Path, as described in the official documentation. </td></tr>
+    <tr><td class="paramname">uid</td><td>UID, as described in the official documentation. </td></tr>
+    <tr><td class="paramname">gid</td><td>GID, as described in the official documentation. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01411">1411</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a598f1bc27e771e1f36033a85c61a45ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a598f1bc27e771e1f36033a85c61a45ec">&#9670;&nbsp;</a></span>lchownSync()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool uvw::FsReq::lchownSync </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>path</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceuvw.html#a01d13fc4b5d1b58c936fdbf15c4d0a10">Uid</a>&#160;</td>
+          <td class="paramname"><em>uid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespaceuvw.html#a82c74b9200b97f2e1668fe2719eef72e">Gid</a>&#160;</td>
+          <td class="paramname"><em>gid</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sync <a href="https://linux.die.net/man/2/lchown">lchown</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td>Path, as described in the official documentation. </td></tr>
+    <tr><td class="paramname">uid</td><td>UID, as described in the official documentation. </td></tr>
+    <tr><td class="paramname">gid</td><td>GID, as described in the official documentation. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01422">1422</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -682,7 +799,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01256">1256</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01258">1258</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -730,7 +847,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01266">1266</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01268">1268</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -768,7 +885,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01064">1064</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01066">1066</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -809,7 +926,7 @@ Public Member Functions</h2></td></tr>
 </ul>
 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01077">1077</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01079">1079</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -858,7 +975,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00890">890</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00892">892</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -906,7 +1023,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00900">900</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00902">902</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -944,7 +1061,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00914">914</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00916">916</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -985,7 +1102,7 @@ Public Member Functions</h2></td></tr>
 </ul>
 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00927">927</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00929">929</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1023,7 +1140,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01322">1322</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01324">1324</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1068,7 +1185,7 @@ Public Member Functions</h2></td></tr>
 </ul>
 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01338">1338</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01340">1340</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1106,7 +1223,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01353">1353</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01355">1355</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1147,7 +1264,7 @@ Public Member Functions</h2></td></tr>
 </ul>
 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01366">1366</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01368">1368</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1196,7 +1313,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01092">1092</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01094">1094</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1244,7 +1361,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01102">1102</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01104">1104</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1282,7 +1399,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00941">941</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00943">943</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1319,7 +1436,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00950">950</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00952">952</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1368,7 +1485,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00965">965</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00967">967</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1419,7 +1536,7 @@ Public Member Functions</h2></td></tr>
 <li>The second parameter is an instance of <code>Entry</code> (see above). </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01015">1015</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01017">1017</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1471,7 +1588,7 @@ Public Member Functions</h2></td></tr>
 </ul>
 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00979">979</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00981">981</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1509,7 +1626,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01037">1037</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01039">1039</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1550,7 +1667,7 @@ Public Member Functions</h2></td></tr>
 </ul>
 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01050">1050</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01052">1052</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1611,7 +1728,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01289">1289</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01291">1291</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1671,7 +1788,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01308">1308</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01310">1310</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1709,7 +1826,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00866">866</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00868">868</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1746,7 +1863,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00875">875</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l00877">877</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1802,7 +1919,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01228">1228</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01230">1230</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>
@@ -1857,7 +1974,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01241">1241</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="fs_8hpp_source.html#l01243">1243</a> of file <a class="el" href="fs_8hpp_source.html">fs.hpp</a>.</p>
 
 </div>
 </div>

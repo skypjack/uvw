@@ -1,5 +1,7 @@
 var searchData=
 [
+  ['lchown',['lchown',['../classuvw_1_1FsReq.html#ac12b4c0cc91cb5704cebfc6f6b4afcb2',1,'uvw::FsReq']]],
+  ['lchownsync',['lchownSync',['../classuvw_1_1FsReq.html#a598f1bc27e771e1f36033a85c61a45ec',1,'uvw::FsReq']]],
   ['link',['link',['../classuvw_1_1FsReq.html#a7e0183c8a94d4acb064e2b665caae85d',1,'uvw::FsReq']]],
   ['linksync',['linkSync',['../classuvw_1_1FsReq.html#a42522dc4f9f94d711b74d048d0d59fd5',1,'uvw::FsReq']]],
   ['listen',['listen',['../classuvw_1_1StreamHandle.html#ae7f3eeb7d21ca0bbbb7df591fade4e46',1,'uvw::StreamHandle']]],
