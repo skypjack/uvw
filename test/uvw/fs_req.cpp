@@ -726,3 +726,64 @@ TEST(FsReq, ChownSync) {
 
     loop->run();
 }
+
+
+TEST(FsReq, Lchown) {
+    const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+    bool checkFsLChownEvent = false;
+
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    fileReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+
+    fsReq->on<uvw::FsEvent<uvw::FsReq::Type::LCHOWN>>([&checkFsLChownEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkFsLChownEvent);
+        checkFsLChownEvent = true;
+    });
+
+    fsReq->on<uvw::FsEvent<uvw::FsReq::Type::STAT>>([&filename](const auto &event, auto &request) {
+        auto uid = static_cast<uvw::Uid>(event.stat.st_uid);
+        auto gid = static_cast<uvw::Uid>(event.stat.st_gid);
+        request.lchown(filename, uid, gid);
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&fsReq, &filename](const auto &, auto &) {
+        fsReq->stat(filename);
+    });
+
+    fileReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &request) {
+        request.close();
+    });
+
+    auto flags = uvw::Flags<uvw::FileReq::FileOpen>::from<uvw::FileReq::FileOpen::CREAT, uvw::FileReq::FileOpen::RDWR, uvw::FileReq::FileOpen::TRUNC>();
+    fileReq->open(filename, flags, 0644);
+
+    loop->run();
+
+    ASSERT_TRUE(checkFsLChownEvent);
+}
+
+
+TEST(FsReq, LchownSync) {
+    const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fileReq = loop->resource<uvw::FileReq>();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+    ASSERT_TRUE(fileReq->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
+    ASSERT_TRUE(fileReq->closeSync());
+
+    auto statR = fsReq->statSync(filename);
+
+    ASSERT_TRUE(statR.first);
+    auto uid = static_cast<uvw::Uid>(statR.second.st_uid);
+    auto gid = static_cast<uvw::Uid>(statR.second.st_gid);
+    ASSERT_TRUE(fsReq->lchownSync(filename, uid, gid));
+
+    loop->run();
+}

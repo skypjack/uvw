@@ -47,6 +47,7 @@ enum class UVFsType: std::underlying_type_t<uv_fs_type> {
     READLINK = UV_FS_READLINK,
     CHOWN = UV_FS_CHOWN,
     FCHOWN = UV_FS_FCHOWN,
+    LCHOWN = UV_FS_LCHOWN,
     REALPATH = UV_FS_REALPATH,
     COPYFILE = UV_FS_COPYFILE
 };
@@ -139,6 +140,7 @@ enum class UVSymLinkFlags: int {
  * * `FsRequest::Type::READLINK`
  * * `FsRequest::Type::CHOWN`
  * * `FsRequest::Type::FCHOWN`
+ * * `FsRequest::Type::LCHOWN`
  * * `FsRequest::Type::REALPATH`
  * * `FsRequest::Type::COPYFILE`
  *
@@ -1393,6 +1395,33 @@ public:
     bool chownSync(std::string path, Uid uid, Gid gid) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_chown, parent(), req, path.data(), uid, gid);
+        return !(req->result < 0);
+    }
+
+    /**
+     * @brief Async [lchown](https://linux.die.net/man/2/lchown).
+     *
+     * Emit a `FsEvent<FsReq::Type::LCHOWN>` event when completed.<br/>
+     * Emit an ErrorEvent event in case of errors.
+     *
+     * @param path Path, as described in the official documentation.
+     * @param uid UID, as described in the official documentation.
+     * @param gid GID, as described in the official documentation.
+     */
+    void lchown(std::string path, Uid uid, Gid gid) {
+        cleanupAndInvoke(&uv_fs_lchown, parent(), get(), path.data(), uid, gid, &fsGenericCallback<Type::LCHOWN>);
+    }
+
+    /**
+     * @brief Sync [lchown](https://linux.die.net/man/2/lchown).
+     * @param path Path, as described in the official documentation.
+     * @param uid UID, as described in the official documentation.
+     * @param gid GID, as described in the official documentation.
+     * @return True in case of success, false otherwise.
+     */
+    bool lchownSync(std::string path, Uid uid, Gid gid) {
+        auto req = get();
+        cleanupAndInvokeSync(&uv_fs_lchown, parent(), req, path.data(), uid, gid);
         return !(req->result < 0);
     }
 };

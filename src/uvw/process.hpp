@@ -34,7 +34,8 @@ enum class UVStdIOFlags: std::underlying_type_t<uv_stdio_flags> {
     INHERIT_FD = UV_INHERIT_FD,
     INHERIT_STREAM = UV_INHERIT_STREAM,
     READABLE_PIPE = UV_READABLE_PIPE,
-    WRITABLE_PIPE = UV_WRITABLE_PIPE
+    WRITABLE_PIPE = UV_WRITABLE_PIPE,
+    OVERLAPPED_PIPE = UV_OVERLAPPED_PIPE
 };
 
 
@@ -226,6 +227,7 @@ public:
      * * `ProcessHandle::StdIO::INHERIT_STREAM`
      * * `ProcessHandle::StdIO::READABLE_PIPE`
      * * `ProcessHandle::StdIO::WRITABLE_PIPE`
+     * * `ProcessHandle::StdIO::OVERLAPPED_PIPE`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_stdio_flags)
@@ -256,6 +258,7 @@ public:
      * * `ProcessHandle::StdIO::INHERIT_STREAM`
      * * `ProcessHandle::StdIO::READABLE_PIPE`
      * * `ProcessHandle::StdIO::WRITABLE_PIPE`
+     * * `ProcessHandle::StdIO::OVERLAPPED_PIPE`
      *
      * Default file descriptors are:
      *     * `uvw::StdIN` for `stdin`
