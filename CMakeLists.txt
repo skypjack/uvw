@@ -61,7 +61,7 @@ option(BUILD_TESTING "Enable testing with ctest." ON)
 
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
-find_package(Threads REQUIRED)
+include(FindThreads)
 find_package(Doxygen 1.8)
 
 #
