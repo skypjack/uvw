@@ -151,9 +151,11 @@ public:
          * > The convention is that stdio[0] points to stdin, fd 1 is used
          * > for stdout, and fd 2 is stderr.
          */
-        std::vector<uv_stdio_container_t> poStdio{poFdStdio.size() + poStreamStdio.size()};
-        poStdio.insert(poStdio.begin(), poStreamStdio.cbegin(), poStreamStdio.cend());
+        std::vector<uv_stdio_container_t> poStdio;
+        poStdio.reserve(poFdStdio.size() + poStreamStdio.size());
         poStdio.insert(poStdio.begin(), poFdStdio.cbegin(), poFdStdio.cend());
+        poStdio.insert(poStdio.end(), poStreamStdio.cbegin(), poStreamStdio.cend());
+       
         po.stdio_count = static_cast<decltype(po.stdio_count)>(poStdio.size());
         po.stdio = poStdio.data();
 
