@@ -73,6 +73,7 @@ if(DOXYGEN_FOUND)
 endif()
 
 if(BUILD_TESTING)
+    enable_testing()
     set(GOOGLETEST_DEPS_DIR ${PROJECT_DEPS_DIR}/googletest)
     set(LIBUV_DEPS_DIR ${PROJECT_DEPS_DIR}/libuv)
 
@@ -94,7 +95,6 @@ if(BUILD_TESTING)
     # Enable testing for uvw
     set(BUILD_TESTING ON)
 
-    enable_testing()
     add_subdirectory(test)
 endif()
 
