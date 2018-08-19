@@ -14,7 +14,7 @@ set(
     COMMON_LINK_LIBS
     gtest_main
     ${LIBRT}
-    ${libuv_static}
+    uv_a
     Threads::Threads
     ${WINSOCK2}
 )
@@ -41,7 +41,7 @@ endmacro()
 macro(ADD_UVW_LIB_TEST TEST_NAME TEST_SOURCE)
     ADD_UVW_TEST(${TEST_NAME} ${TEST_SOURCE})
     target_link_libraries(${TEST_NAME} PRIVATE ${CMAKE_DL_LIBS})
-    target_compile_definitions(${TEST_NAME} PRIVATE TARGET_LIB_SO="${libuv_shared}")
+    target_compile_definitions(${TEST_NAME} PRIVATE TARGET_LIB_SO="$<TARGET_FILE:uv>")
 endmacro()
 
 # List of available targets

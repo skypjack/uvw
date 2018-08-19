@@ -73,24 +73,28 @@ if(DOXYGEN_FOUND)
 endif()
 
 if(BUILD_TESTING)
+    enable_testing()
     set(GOOGLETEST_DEPS_DIR ${PROJECT_DEPS_DIR}/googletest)
     set(LIBUV_DEPS_DIR ${PROJECT_DEPS_DIR}/libuv)
 
+    configure_file(${PROJECT_CMAKE_IN}/deps.in ${PROJECT_DEPS_DIR}/CMakeLists.txt)
+    execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${PROJECT_DEPS_DIR})
+    execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${PROJECT_DEPS_DIR})
+
+    # Disable testing for dependencies
+    set(BUILD_TESTING OFF)
+
     # gtest, gtest_main, gmock and gmock_main targets are available from now on
-    configure_file(${PROJECT_CMAKE_IN}/googletest.in ${GOOGLETEST_DEPS_DIR}/CMakeLists.txt)
-    execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${GOOGLETEST_DEPS_DIR})
-    execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${GOOGLETEST_DEPS_DIR})
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-    add_subdirectory(${GOOGLETEST_DEPS_DIR}/src)
+    add_subdirectory(${GOOGLETEST_DEPS_DIR})
 
-    configure_file(${PROJECT_CMAKE_IN}/libuv.in ${LIBUV_DEPS_DIR}/CMakeLists.txt)
-    execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${LIBUV_DEPS_DIR})
-    execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${LIBUV_DEPS_DIR})
-    include_directories(${LIBUV_DEPS_DIR}/src/include)
-    find_library(libuv_static NAMES libuv.a libuv PATHS ${LIBUV_DEPS_DIR}/src PATH_SUFFIXES .libs Release NO_DEFAULT_PATH)
-    find_library(libuv_shared NAMES uv libuv PATHS ${LIBUV_DEPS_DIR}/src PATH_SUFFIXES .libs Release NO_DEFAULT_PATH)
+    # uv and uv_a targets are available from now on
+    add_subdirectory(${LIBUV_DEPS_DIR})
+    include_directories(${LIBUV_DEPS_DIR}/include)
 
-    enable_testing()
+    # Enable testing for uvw
+    set(BUILD_TESTING ON)
+
     add_subdirectory(test)
 endif()
 
