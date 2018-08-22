@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">1.10.0</span>
+   &#160;<span id="projectnumber">1.11.0</span>
    </div>
   </td>
  </tr>
@@ -201,10 +201,10 @@ Additional Inherited Members</h2></td></tr>
 <div class="textblock"><p>The <a class="el" href="classuvw_1_1IdleHandle.html" title="The IdleHandle handle. ">IdleHandle</a> handle. </p>
 <p>Idle handles will emit a <a class="el" href="structuvw_1_1IdleEvent.html" title="IdleEvent event. ">IdleEvent</a> event once per loop iteration, right before the <a class="el" href="classuvw_1_1PrepareHandle.html" title="The PrepareHandle handle. ">PrepareHandle</a> handles.</p>
 <p>The notable difference with prepare handles is that when there are active idle handles, the loop will perform a zero timeout poll instead of blocking for I/O.</p>
-<p><b>Note</b>: despite the name, idle handles will emit events on every loop iteration, not when the loop is actually <em>idle</em>.</p>
+<dl class="section note"><dt>Note</dt><dd>Despite the name, idle handles will emit events on every loop iteration, not when the loop is actually <em>idle</em>.</dd></dl>
 <p>To create an <code><a class="el" href="classuvw_1_1IdleHandle.html" title="The IdleHandle handle. ">IdleHandle</a></code> through a <code><a class="el" href="classuvw_1_1Loop.html" title="The Loop class. ">Loop</a></code>, no arguments are required. </p>
 
-<p class="definition">Definition at line <a class="el" href="idle_8hpp_source.html#l00037">37</a> of file <a class="el" href="idle_8hpp_source.html">idle.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="idle_8hpp_source.html#l00038">38</a> of file <a class="el" href="idle_8hpp_source.html">idle.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a87fe3f5bc5cb5ecfb00d5f1cd0acb10a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a87fe3f5bc5cb5ecfb00d5f1cd0acb10a">&#9670;&nbsp;</a></span>init()</h2>
@@ -232,7 +232,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Initializes the handle. </p>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="idle_8hpp_source.html#l00050">50</a> of file <a class="el" href="idle_8hpp_source.html">idle.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="idle_8hpp_source.html#l00051">51</a> of file <a class="el" href="idle_8hpp_source.html">idle.hpp</a>.</p>
 
 </div>
 </div>
@@ -262,7 +262,7 @@ Additional Inherited Members</h2></td></tr>
 <p>Starts the handle. </p>
 <p>A <a class="el" href="structuvw_1_1IdleEvent.html" title="IdleEvent event. ">IdleEvent</a> event will be emitted once per loop iteration, right before polling the <a class="el" href="classuvw_1_1PrepareHandle.html" title="The PrepareHandle handle. ">PrepareHandle</a> handles. </p>
 
-<p class="definition">Definition at line <a class="el" href="idle_8hpp_source.html#l00060">60</a> of file <a class="el" href="idle_8hpp_source.html">idle.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="idle_8hpp_source.html#l00061">61</a> of file <a class="el" href="idle_8hpp_source.html">idle.hpp</a>.</p>
 
 </div>
 </div>

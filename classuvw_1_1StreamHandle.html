@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">1.10.0</span>
+   &#160;<span id="projectnumber">1.11.0</span>
    </div>
   </td>
  </tr>
@@ -283,7 +283,7 @@ template&lt;typename S &gt; </div>
  An <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> event will be emitted in case of errors.</p>
 <p>When the <a class="el" href="structuvw_1_1ListenEvent.html" title="ListenEvent event. ">ListenEvent</a> event is emitted it is guaranteed that this function will complete successfully the first time. If you attempt to use it more than once, it may fail.<br />
  It is suggested to only call this function once per <a class="el" href="structuvw_1_1ListenEvent.html" title="ListenEvent event. ">ListenEvent</a> event.</p>
-<p><b>Note</b>: both the handles must be running on the same loop.</p>
+<dl class="section note"><dt>Note</dt><dd>Both the handles must be running on the same loop.</dd></dl>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">ref</td><td>An initialized handle to be used to accept the connection. </td></tr>
@@ -291,7 +291,7 @@ template&lt;typename S &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00220">220</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00221">221</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
 
 </div>
 </div>
@@ -332,7 +332,7 @@ template&lt;typename T, typename U&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00445">445</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00446">446</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
 
 </div>
 </div>
@@ -405,7 +405,7 @@ template&lt;typename T, typename U&gt; </div>
 <p>A <a class="el" href="structuvw_1_1DataEvent.html" title="DataEvent event. ">DataEvent</a> event will be emitted several times until there is no more data to read or <code><a class="el" href="classuvw_1_1StreamHandle.html#aa7ecf6a0a39f74707b79ff4e8f696bb8" title="Stops reading data from the stream. ">stop()</a></code> is called.<br />
  An <a class="el" href="structuvw_1_1EndEvent.html" title="EndEvent event. ">EndEvent</a> event will be emitted when there is no more data to read. </p>
 
-<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00231">231</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00232">232</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
 
 </div>
 </div>
@@ -437,7 +437,7 @@ template&lt;typename T, typename U&gt; </div>
 <p>Checks if the stream is readable. </p>
 <dl class="section return"><dt>Returns</dt><dd>True if the stream is readable, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00418">418</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00419">419</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
 
 </div>
 </div>
@@ -502,7 +502,7 @@ template&lt;typename T, typename U&gt; </div>
 <p>Stops reading data from the stream. </p>
 <p>This function is idempotent and may be safely called on a stopped stream. </p>
 
-<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00240">240</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00241">241</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
 
 </div>
 </div>
@@ -554,7 +554,7 @@ template&lt;typename T, typename U&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of bytes written. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00379">379</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00380">380</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
 
 </div>
 </div>
@@ -606,7 +606,7 @@ template&lt;typename T, typename U&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Number of bytes written. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00402">402</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00403">403</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
 
 </div>
 </div>
@@ -638,7 +638,7 @@ template&lt;typename T, typename U&gt; </div>
 <p>Checks if the stream is writable. </p>
 <dl class="section return"><dt>Returns</dt><dd>True if the stream is writable, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00426">426</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00427">427</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
 
 </div>
 </div>
@@ -690,7 +690,7 @@ template&lt;typename T, typename U&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00256">256</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00257">257</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
 
 </div>
 </div>
@@ -742,7 +742,7 @@ template&lt;typename T, typename U&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00283">283</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00284">284</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
 
 </div>
 </div>
@@ -805,7 +805,7 @@ template&lt;typename S &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00318">318</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00319">319</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
 
 </div>
 </div>
@@ -868,7 +868,7 @@ template&lt;typename S &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00353">353</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00354">354</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
 
 </div>
 </div>
@@ -900,7 +900,7 @@ template&lt;typename T, typename U&gt; </div>
 <p>Gets the amount of queued bytes waiting to be sent. </p>
 <dl class="section return"><dt>Returns</dt><dd>Amount of queued bytes waiting to be sent. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00453">453</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00454">454</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
 
 </div>
 </div>

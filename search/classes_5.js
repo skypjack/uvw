@@ -16,6 +16,7 @@ var searchData=
   ['fsevent_3c_20details_3a_3auvfstype_3a_3awrite_20_3e',['FsEvent&lt; details::UVFsType::WRITE &gt;',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1WRITE_01_4.html',1,'uvw']]],
   ['fseventevent',['FsEventEvent',['../structuvw_1_1FsEventEvent.html',1,'uvw']]],
   ['fseventhandle',['FsEventHandle',['../classuvw_1_1FsEventHandle.html',1,'uvw']]],
+  ['fshelper',['FsHelper',['../structuvw_1_1FsHelper.html',1,'uvw']]],
   ['fspollevent',['FsPollEvent',['../structuvw_1_1FsPollEvent.html',1,'uvw']]],
   ['fspollhandle',['FsPollHandle',['../classuvw_1_1FsPollHandle.html',1,'uvw']]],
   ['fsreq',['FsReq',['../classuvw_1_1FsReq.html',1,'uvw']]],

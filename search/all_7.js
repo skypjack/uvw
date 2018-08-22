@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['handle',['Handle',['../classuvw_1_1Handle.html',1,'uvw::Handle&lt; T, U &gt;'],['../classuvw_1_1FileReq.html#a41183547033b33d16a7efcf371d5b101',1,'uvw::FileReq::handle()']]],
+  ['handle',['Handle',['../classuvw_1_1Handle.html',1,'uvw::Handle&lt; T, U &gt;'],['../structuvw_1_1FsHelper.html#ac961df94619778e94dd039fc657cc395',1,'uvw::FsHelper::handle()']]],
   ['handle_3c_20asynchandle_2c_20uv_5fasync_5ft_20_3e',['Handle&lt; AsyncHandle, uv_async_t &gt;',['../classuvw_1_1Handle.html',1,'uvw']]],
   ['handle_3c_20checkhandle_2c_20uv_5fcheck_5ft_20_3e',['Handle&lt; CheckHandle, uv_check_t &gt;',['../classuvw_1_1Handle.html',1,'uvw']]],
   ['handle_3c_20fseventhandle_2c_20uv_5ffs_5fevent_5ft_20_3e',['Handle&lt; FsEventHandle, uv_fs_event_t &gt;',['../classuvw_1_1Handle.html',1,'uvw']]],
