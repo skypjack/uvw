@@ -212,7 +212,8 @@ public:
      * it more than once, it may fail.<br/>
      * It is suggested to only call this function once per ListenEvent event.
      *
-     * **Note**: both the handles must be running on the same loop.
+     * @note
+     * Both the handles must be running on the same loop.
      *
      * @param ref An initialized handle to be used to accept the connection.
      */

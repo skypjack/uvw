@@ -29,8 +29,9 @@ struct IdleEvent {};
  * idle handles, the loop will perform a zero timeout poll instead of blocking
  * for I/O.
  *
- * **Note**: despite the name, idle handles will emit events on every loop
- * iteration, not when the loop is actually _idle_.
+ * @note
+ * Despite the name, idle handles will emit events on every loop iteration, not
+ * when the loop is actually _idle_.
  *
  * To create an `IdleHandle` through a `Loop`, no arguments are required.
  */

@@ -8,6 +8,7 @@
 #include <utility>
 #include <string>
 #include <vector>
+#include <memory>
 #include <array>
 #include <uv.h>
 
@@ -545,6 +546,48 @@ struct Utilities {
     };
 
     /**
+     * @brief Retrieves the scheduling priority of a process.
+     *
+     * The returned value is between -20 (high priority) and 19 (low priority).
+     * A value that is out of range is returned in case of errors.
+     *
+     * @note
+     * On Windows, the result won't equal necessarily the exact value of the
+     * priority because of a mapping to a Windows priority class.
+     *
+     * @param pid A valid process id.
+     * @return The scheduling priority of the process.
+     */
+    static int osPriority(PidType pid) {
+        int prio = 0;
+
+        if(uv_os_getpriority(pid, &prio)) {
+            prio = UV_PRIORITY_LOW + 1;
+        }
+
+        return prio;
+    }
+
+    /**
+     * @brief Sets the scheduling priority of a process.
+     *
+     * The returned value range is between -20 (high priority) and 19 (low
+     * priority).
+     *
+     * @note
+     * On Windows, the priority is mapped to a Windows priority class. When
+     * retrieving the process priority, the result won't equal necessarily the
+     * exact value of the priority.
+     *
+     * @param pid A valid process id.
+     * @param prio The scheduling priority to set to the process.
+     * @return True in case of success, false otherwise.
+     */
+    static bool osPriority(PidType pid, int prio) {
+        return 0 == uv_os_setpriority(pid, prio);
+    }
+
+    /**
      * @brief Gets the type of the handle given a category.
      * @param category A properly initialized handle category.
      * @return The actual type of the handle as defined by HandleType
@@ -719,10 +762,11 @@ struct Utilities {
      *
      * If any of the function pointers is _null_, the invokation will fail.
      *
-     * **Note**: there is no protection against changing the allocator multiple
-     * times. If the user changes it they are responsible for making sure the
-     * allocator is changed while no memory was allocated with the previous
-     * allocator, or that they are compatible.
+     * @note
+     * There is no protection against changing the allocator multiple times. If
+     * the user changes it they are responsible for making sure the allocator is
+     * changed while no memory was allocated with the previous allocator, or
+     * that they are compatible.
      *
      * @param mallocFunc Replacement function for _malloc_.
      * @param reallocFunc Replacement function for _realloc_.
