@@ -29,6 +29,7 @@ matrix:
         sources: ['ubuntu-toolchain-r-test']
         packages: ['g++-6']
     env:
+      - C_COMPILER=gcc-6
       - COMPILER=g++-6
       - CXXFLAGS="-O0 --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
     before_script:
@@ -45,6 +46,7 @@ notifications:
 install:
   - echo ${PATH}
   - cmake --version
+  - export CC=${C_COMPILER}
   - export CXX=${COMPILER}
   - echo ${CXX}
   - ${CXX} --version
