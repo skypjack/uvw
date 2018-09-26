@@ -1,12 +1,16 @@
-**Sponsored and contributed by [Cynny SpA](https://www.cynny.com/).**
+![uvw - libuv wrapper in modern C++](https://user-images.githubusercontent.com/1812216/46069406-c977a600-c17b-11e8-9a47-9bba6f412c57.png)
 
-# uvw - libuv wrapper in modern C++
-
+<!--
+@cond TURN_OFF_DOXYGEN
+-->
 [![Build Status](https://travis-ci.org/skypjack/uvw.svg?branch=master)](https://travis-ci.org/skypjack/uvw)
 [![Build status](https://ci.appveyor.com/api/projects/status/m5ndm8gnu8isg2to?svg=true)](https://ci.appveyor.com/project/skypjack/uvw)
 [![Coverage Status](https://coveralls.io/repos/github/skypjack/uvw/badge.svg?branch=master)](https://coveralls.io/github/skypjack/uvw?branch=master)
 [![Gitter chat](https://badges.gitter.im/skypjack/uvw.png)](https://gitter.im/skypjack/uvw)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=W2HF9FESD5LJY&lc=IT&item_name=Michele%20Caini&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
+<!--
+@endcond TURN_OFF_DOXYGEN
+-->
 
 # Introduction
 
@@ -324,9 +328,15 @@ Check the [contributors list](https://github.com/skypjack/uvw/blob/master/AUTHOR
 
 # License
 
-Code and documentation Copyright (c) 2018 Michele Caini.<br/>
-Code released under [the MIT license](https://github.com/skypjack/uvw/blob/master/LICENSE).<br/>
-Docs released under [Creative Commons](https://github.com/skypjack/uvw/blob/master/docs/LICENSE).
+Code and documentation Copyright (c) 2017-2018 Michele Caini.<br/>
+Logo Copyright (c) 2018 Richard Caseres.
+
+Code released under
+[the MIT license](https://github.com/skypjack/entt/blob/master/LICENSE).
+Documentation released under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).<br/>
+Logo released under
+[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
 # Donation
 
