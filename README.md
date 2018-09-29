@@ -8,6 +8,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/skypjack/uvw/badge.svg?branch=master)](https://coveralls.io/github/skypjack/uvw?branch=master)
 [![Gitter chat](https://badges.gitter.im/skypjack/uvw.png)](https://gitter.im/skypjack/uvw)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=W2HF9FESD5LJY&lc=IT&item_name=Michele%20Caini&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
+[![Patreon](https://img.shields.io/badge/donate-patreon-orange.svg)](https://www.patreon.com/bePatron?c=1772573)
 <!--
 @endcond TURN_OFF_DOXYGEN
 -->
@@ -338,8 +339,34 @@ Documentation released under
 Logo released under
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
-# Donation
+<!--
+@cond TURN_OFF_DOXYGEN
+-->
+# Support
+
+## Patreon
+
+Become a [patron](https://www.patreon.com/bePatron?c=1772573) and get access to
+extra content, help me spend more time on the projects you love and create new
+ones for you. Your support will help me to continue the work done so far and
+make it more professional and feature-rich every day.<br/>
+It takes very little to
+[become a patron](https://www.patreon.com/bePatron?c=1772573) and thus help the
+software you use every day. Don't miss the chance.
+
+## Donation
 
 Developing and maintaining `uvw` takes some time and lots of coffee. It still lacks a proper test suite, documentation is partially incomplete and not all functionalities have been fully implemented yet.<br/>
 If you want to support this project, you can offer me an espresso. I'm from Italy, we're used to turning the best coffee ever in code. If you find that it's not enough, feel free to support me the way you prefer.<br/>
 Take a look at the donation button at the top of the page for more details or just click [here](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=W2HF9FESD5LJY&lc=IT&item_name=Michele%20Caini&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted).
+
+## Hire me
+
+If you start using `uvw` and need help, if you want a new feature and want me
+to give it the highest priority, if you have any other reason to contact me:
+do not hesitate. I'm available for hiring.<br/>
+Feel free to take a look at my [profile](https://github.com/skypjack) and
+contact me by mail.
+<!--
+@endcond TURN_OFF_DOXYGEN
+-->
