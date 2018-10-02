@@ -73,10 +73,8 @@ public:
     using StdIO = details::UVStdIOFlags;
 
     ProcessHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref)
-        : Handle{ca, std::move(ref)}, poFdStdio{1}
+        : Handle{ca, std::move(ref)}
     {
-        // stdin container default initialization
-        poFdStdio[0].flags = static_cast<uv_stdio_flags>(StdIO::IGNORE_STREAM);
     }
 
     /**
@@ -280,22 +278,18 @@ public:
 
         auto actual = FileHandle::Type{fd};
 
-        if(actual == FileHandle::Type{StdIN}) {
-            poFdStdio[0].flags = fgs;
-        } else {
-            auto it = std::find_if(poFdStdio.begin(), poFdStdio.end(), [actual](auto &&container){
-                return container.data.fd == actual;
-            });
+        auto it = std::find_if(poFdStdio.begin(), poFdStdio.end(), [actual](auto &&container){
+            return container.data.fd == actual;
+        });
 
-            if(it == poFdStdio.cend()) {
-                uv_stdio_container_t container;
-                container.flags = fgs;
-                container.data.fd = actual;
-                poFdStdio.push_back(std::move(container));
-            } else {
-                it->flags = fgs;
-                it->data.fd = actual;
-            }
+        if(it == poFdStdio.cend()) {
+            uv_stdio_container_t container;
+            container.flags = fgs;
+            container.data.fd = actual;
+            poFdStdio.push_back(std::move(container));
+        } else {
+            it->flags = fgs;
+            it->data.fd = actual;
         }
 
         return *this;
