@@ -329,7 +329,7 @@ Check the [contributors list](https://github.com/skypjack/uvw/blob/master/AUTHOR
 
 # License
 
-Code and documentation Copyright (c) 2017-2018 Michele Caini.<br/>
+Code and documentation Copyright (c) 2016-2018 Michele Caini.<br/>
 Logo Copyright (c) 2018 Richard Caseres.
 
 Code released under
