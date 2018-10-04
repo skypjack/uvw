@@ -73,11 +73,8 @@ public:
     using StdIO = details::UVStdIOFlags;
 
     ProcessHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref)
-        : Handle{ca, std::move(ref)}, poFdStdio{1}
-    {
-        // stdin container default initialization
-        poFdStdio[0].flags = static_cast<uv_stdio_flags>(StdIO::IGNORE_STREAM);
-    }
+        : Handle{ca, std::move(ref)}
+    {}
 
     /**
      * @brief Disables inheritance for file descriptors/handles.
@@ -135,7 +132,6 @@ public:
         uv_process_options_t po;
 
         po.exit_cb = &exitCallback;
-
         po.file = file;
         po.args = args;
         po.env = env;
@@ -144,13 +140,6 @@ public:
         po.uid = poUid;
         po.gid = poGid;
 
-        /**
-         * See the constructor, poFdStdio[0] is stdin. It must be poStdio[0] by
-         * convention. From the official documentation:
-         *
-         * > The convention is that stdio[0] points to stdin, fd 1 is used
-         * > for stdout, and fd 2 is stderr.
-         */
         std::vector<uv_stdio_container_t> poStdio;
         poStdio.reserve(poFdStdio.size() + poStreamStdio.size());
         poStdio.insert(poStdio.begin(), poFdStdio.cbegin(), poFdStdio.cend());
@@ -280,22 +269,18 @@ public:
 
         auto actual = FileHandle::Type{fd};
 
-        if(actual == FileHandle::Type{StdIN}) {
-            poFdStdio[0].flags = fgs;
-        } else {
-            auto it = std::find_if(poFdStdio.begin(), poFdStdio.end(), [actual](auto &&container){
-                return container.data.fd == actual;
-            });
+        auto it = std::find_if(poFdStdio.begin(), poFdStdio.end(), [actual](auto &&container){
+            return container.data.fd == actual;
+        });
 
-            if(it == poFdStdio.cend()) {
-                uv_stdio_container_t container;
-                container.flags = fgs;
-                container.data.fd = actual;
-                poFdStdio.push_back(std::move(container));
-            } else {
-                it->flags = fgs;
-                it->data.fd = actual;
-            }
+        if(it == poFdStdio.cend()) {
+            uv_stdio_container_t container;
+            container.flags = fgs;
+            container.data.fd = actual;
+            poFdStdio.push_back(std::move(container));
+        } else {
+            it->flags = fgs;
+            it->data.fd = actual;
         }
 
         return *this;
