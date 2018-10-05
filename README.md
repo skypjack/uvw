@@ -147,9 +147,9 @@ To compile and run the tests, `uvw` requires *libuv* and *googletest*.<br/>
 To build the tests:
 
 * `$ cd build`
-* `$ cmake ..`
+* `$ cmake .. -DBUILD_TESTING=On`
 * `$ make`
-* `$ make test`
+* `$ ctest -j4 -R uvw` (omit `-R uvw` if you also want to test libuv and other dependencies)
 
 # Crash Course
 
