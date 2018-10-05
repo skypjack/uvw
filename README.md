@@ -149,7 +149,9 @@ To build the tests:
 * `$ cd build`
 * `$ cmake .. -DBUILD_TESTING=ON`
 * `$ make`
-* `$ ctest -j4 -R uvw` (omit `-R uvw` if you also want to test libuv and other dependencies)
+* `$ ctest -j4 -R uvw`
+
+Omit `-R uvw` if you also want to test `libuv` and other dependencies.
 
 # Crash Course
 
