@@ -45,3 +45,30 @@ TEST(Check, Fake) {
 
     loop->run();
 }
+
+TEST(Check, DefaultMode) {
+    auto loop = uvw::Loop::getDefault();
+    auto handle = loop->resource<uvw::CheckHandle>();
+
+    handle->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+
+    int count = 0;
+    handle->on<uvw::CheckEvent>([&count](const auto &, auto &hndl) {
+        ++count;
+        ASSERT_TRUE(count <= 5);
+        if (count == 5) {
+            hndl.stop();
+            hndl.close();
+            ASSERT_TRUE(hndl.closing());
+        }
+    });
+
+    handle->start();
+
+    ASSERT_TRUE(handle->active());
+    ASSERT_FALSE(handle->closing());
+
+    loop->run();
+
+    ASSERT_TRUE(count == 5);
+}
