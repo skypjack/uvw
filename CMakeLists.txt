@@ -50,12 +50,6 @@ set(PROJECT_SRC_DIR ${uvw_SOURCE_DIR}/src)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 
 #
-# Enable test support using ctest-like interface
-#
-
-option(BUILD_TESTING "Enable testing with ctest." ON)
-
-#
 # Referenced packages
 #
 
@@ -81,9 +75,6 @@ if(BUILD_TESTING)
     execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${PROJECT_DEPS_DIR})
     execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${PROJECT_DEPS_DIR})
 
-    # Disable testing for dependencies
-    set(BUILD_TESTING OFF)
-
     # gtest, gtest_main, gmock and gmock_main targets are available from now on
     set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
     add_subdirectory(${GOOGLETEST_DEPS_DIR})
@@ -91,9 +82,6 @@ if(BUILD_TESTING)
     # uv and uv_a targets are available from now on
     add_subdirectory(${LIBUV_DEPS_DIR})
     include_directories(${LIBUV_DEPS_DIR}/include)
-
-    # Enable testing for uvw
-    set(BUILD_TESTING ON)
 
     add_subdirectory(test)
 endif()

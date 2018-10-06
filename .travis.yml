@@ -54,5 +54,5 @@ install:
 
 script:
   - mkdir -p build && cd build
-  - cmake .. && make -j4
-  - CTEST_OUTPUT_ON_FAILURE=1 make test
+  - cmake .. -DBUILD_TESTING=ON && make -j4
+  - CTEST_OUTPUT_ON_FAILURE=1 ctest -j4 -R uvw
