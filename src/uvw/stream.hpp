@@ -159,8 +159,8 @@ class StreamHandle: public Handle<T, U> {
 
 public:
 #ifdef _MSC_VER
-    StreamHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref)
-        : Handle{ca, std::move(ref)}
+    StreamHandle(typename Handle<T, U>::ConstructorAccess ca, std::shared_ptr<Loop> ref)
+        : Handle<T, U>{ca, std::move(ref)}
     {}
 #else
     using Handle<T, U>::Handle;
