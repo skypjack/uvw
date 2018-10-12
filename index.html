@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">1.11.1</span>
+   &#160;<span id="projectnumber">1.11.2</span>
    </div>
   </td>
  </tr>
@@ -129,10 +129,11 @@ $(function() {
 <p>To build the tests:</p>
 <ul>
 <li><code>$ cd build</code></li>
-<li><code>$ cmake ..</code></li>
+<li><code>$ cmake .. -DBUILD_TESTING=ON</code></li>
 <li><code>$ make</code></li>
-<li><code>$ make test</code></li>
+<li><code>$ ctest -j4 -R uvw</code></li>
 </ul>
+<p>Omit <code>-R uvw</code> if you also want to test <code>libuv</code> and other dependencies.</p>
 <h1>Crash Course</h1>
 <h2>Vademecum</h2>
 <p>There is only one rule when using <code>uvw</code>: always initialize the resources and terminate them.</p>
@@ -208,14 +209,10 @@ $(function() {
 <p>If you want to contribute, please send patches as pull requests against the branch master.<br />
  Check the <a href="https://github.com/skypjack/uvw/blob/master/AUTHORS">contributors list</a> to see who has partecipated so far.</p>
 <h1>License</h1>
-<p>Code and documentation Copyright (c) 2017-2018 Michele Caini.<br />
+<p>Code and documentation Copyright (c) 2016-2018 Michele Caini.<br />
  Logo Copyright (c) 2018 Richard Caseres.</p>
 <p>Code released under <a href="https://github.com/skypjack/entt/blob/master/LICENSE">the MIT license</a>. Documentation released under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.<br />
- Logo released under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>.</p>
-<h1>Donation</h1>
-<p>Developing and maintaining <code>uvw</code> takes some time and lots of coffee. It still lacks a proper test suite, documentation is partially incomplete and not all functionalities have been fully implemented yet.<br />
- If you want to support this project, you can offer me an espresso. I'm from Italy, we're used to turning the best coffee ever in code. If you find that it's not enough, feel free to support me the way you prefer.<br />
- Take a look at the donation button at the top of the page for more details or just click <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_donations&amp;business=W2HF9FESD5LJY&amp;lc=IT&amp;item_name=Michele%20Caini&amp;currency_code=EUR&amp;bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted">here</a>. </p>
+ Logo released under <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. </p>
 </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
