@@ -2,3 +2,5 @@
 *.user
 
 TODO
+
+.conan/test_package/build
