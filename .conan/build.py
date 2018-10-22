@@ -3,6 +3,7 @@
 
 import os
 import re
+import platform
 from cpt.packager import ConanMultiPackager
 
 
@@ -37,8 +38,10 @@ if __name__ == "__main__":
                                  username=get_username(),
                                  upload=get_upload(),
                                  remotes="https://api.bintray.com/conan/bincrafters/public-conan",
-                                 test_folder=test_folder)
-    builder.add(settings={"compiler": "gcc", "compiler.version": "7",
-                          "arch": "x86_64", "build_type": "Release"},
-                options={}, env_vars={}, build_requires={})
+                                 test_folder=test_folder,
+                                 stable_branch_pattern=r'v?\d+\.\d+\.\d+.*')
+    if platform.system() == "Linux":
+        builder.add(settings={"compiler": "gcc", "compiler.version": "8",
+                            "arch": "x86_64", "build_type": "Release"},
+                    options={}, env_vars={}, build_requires={})
     builder.run()
