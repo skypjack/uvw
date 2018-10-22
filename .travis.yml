@@ -38,6 +38,7 @@ matrix:
       - coveralls --gcov gcov-6 --gcov-options '\-lp' --root ${TRAVIS_BUILD_DIR} --build-root ${TRAVIS_BUILD_DIR}/build --extension cpp --extension hpp --exclude deps --include src
   - os: linux
     dist: xenial
+    sudo: true
     language: python
     python: "3.7"
     services:
