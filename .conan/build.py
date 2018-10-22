@@ -36,7 +36,7 @@ if __name__ == "__main__":
     builder = ConanMultiPackager(reference=get_reference(),
                                  username=get_username(),
                                  upload=get_upload(),
-                                 remote="https://api.bintray.com/conan/bincrafters/public-conan",
+                                 remotes="https://api.bintray.com/conan/bincrafters/public-conan",
                                  test_folder=test_folder)
     builder.add(settings={"compiler": "gcc", "compiler.version": "7",
                           "arch": "x86_64", "build_type": "Release"},
