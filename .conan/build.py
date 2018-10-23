@@ -32,6 +32,10 @@ def get_upload():
     return os.getenv("CONAN_UPLOAD", default_upload)
 
 
+def upload_when_stable():
+    return os.getenv("CONAN_UPLOAD_ONLY_WHEN_STABLE", "1").lower() not in ["0", "false", "no"]
+
+
 if __name__ == "__main__":
     test_folder = os.path.join(".conan", "test_package")
     builder = ConanMultiPackager(reference=get_reference(),
@@ -39,7 +43,8 @@ if __name__ == "__main__":
                                  upload=get_upload(),
                                  remotes="https://api.bintray.com/conan/bincrafters/public-conan",
                                  test_folder=test_folder,
-                                 stable_branch_pattern=r'v?\d+\.\d+\.\d+.*')
+                                 stable_branch_pattern=r'v?\d+\.\d+\.\d+.*',
+                                 upload_only_when_stable=upload_when_stable())
     if platform.system() == "Linux":
         builder.add(settings={"compiler": "gcc", "compiler.version": "8",
                             "arch": "x86_64", "build_type": "Release"},
