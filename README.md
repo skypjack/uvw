@@ -336,7 +336,7 @@ Code and documentation Copyright (c) 2016-2018 Michele Caini.<br/>
 Logo Copyright (c) 2018 Richard Caseres.
 
 Code released under
-[the MIT license](https://github.com/skypjack/entt/blob/master/LICENSE).
+[the MIT license](https://github.com/skypjack/uvw/blob/master/LICENSE).
 Documentation released under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).<br/>
 Logo released under
