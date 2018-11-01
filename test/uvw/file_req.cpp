@@ -18,12 +18,12 @@ TEST(FileReq, OpenAndCloseErr) {
     bool checkFileOpenErrorEvent = false;
     bool checkFileCloseErrorEvent = false;
 
-    openReq->on<uvw::ErrorEvent>([&checkFileOpenErrorEvent](const auto &, auto &) {
+    openReq->on<uvw::ErrorEvent>([&checkFileOpenErrorEvent](const uvw::ErrorEvent &, uvw::FileReq &) {
         ASSERT_FALSE(checkFileOpenErrorEvent);
         checkFileOpenErrorEvent = true;
     });
 
-    closeReq->on<uvw::ErrorEvent>([&checkFileCloseErrorEvent](const auto &, auto &) {
+    closeReq->on<uvw::ErrorEvent>([&checkFileCloseErrorEvent](const uvw::ErrorEvent &, uvw::FileReq &) {
         ASSERT_FALSE(checkFileCloseErrorEvent);
         checkFileCloseErrorEvent = true;
     });
@@ -61,14 +61,14 @@ TEST(FileReq, OpenAndClose) {
     bool checkFileOpenEvent = false;
     bool checkFileCloseEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    request->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::FileReq &) { FAIL(); });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&checkFileCloseEvent](const auto &, auto &) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::CLOSE>>([&checkFileCloseEvent](const uvw::FsEvent<uvw::FileReq::Type::CLOSE> &, uvw::FileReq &) {
         ASSERT_FALSE(checkFileCloseEvent);
         checkFileCloseEvent = true;
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&checkFileOpenEvent](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&checkFileOpenEvent](const uvw::FsEvent<uvw::FileReq::Type::OPEN> &, uvw::FileReq &req) {
         ASSERT_FALSE(checkFileOpenEvent);
         checkFileOpenEvent = true;
         req.close();
@@ -106,22 +106,22 @@ TEST(FileReq, RWChecked) {
     bool checkFileWriteEvent = false;
     bool checkFileReadEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    request->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::FileReq &) { FAIL(); });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::READ>>([&checkFileReadEvent](const auto &event, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::READ>>([&checkFileReadEvent](const uvw::FsEvent<uvw::FileReq::Type::READ> &event, uvw::FileReq &req) {
         ASSERT_FALSE(checkFileReadEvent);
         ASSERT_EQ(event.data[0], 42);
         checkFileReadEvent = true;
         req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::WRITE>>([&checkFileWriteEvent](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::WRITE>>([&checkFileWriteEvent](const uvw::FsEvent<uvw::FileReq::Type::WRITE> &, uvw::FileReq &req) {
         ASSERT_FALSE(checkFileWriteEvent);
         checkFileWriteEvent = true;
         req.read(0, 1);
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const uvw::FsEvent<uvw::FileReq::Type::OPEN> &, uvw::FileReq &req) {
         req.write(std::unique_ptr<char[]>{new char[1]{ 42 }}, 1, 0);
     });
 
@@ -145,22 +145,22 @@ TEST(FileReq, RWUnchecked) {
     bool checkFileWriteEvent = false;
     bool checkFileReadEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    request->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::FileReq &) { FAIL(); });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::READ>>([&checkFileReadEvent](const auto &event, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::READ>>([&checkFileReadEvent](const uvw::FsEvent<uvw::FileReq::Type::READ> &event, uvw::FileReq &req) {
         ASSERT_FALSE(checkFileReadEvent);
         ASSERT_EQ(event.data[0], 42);
         checkFileReadEvent = true;
         req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::WRITE>>([&checkFileWriteEvent](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::WRITE>>([&checkFileWriteEvent](const uvw::FsEvent<uvw::FileReq::Type::WRITE> &, uvw::FileReq &req) {
         ASSERT_FALSE(checkFileWriteEvent);
         checkFileWriteEvent = true;
         req.read(0, 1);
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&data](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&data](const uvw::FsEvent<uvw::FileReq::Type::OPEN> &, uvw::FileReq &req) {
         req.write(data.get(), 1, 0);
     });
 
@@ -207,15 +207,15 @@ TEST(FileReq, Stat) {
 
     bool checkFileStatEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    request->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::FileReq &) { FAIL(); });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FSTAT>>([&checkFileStatEvent](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FSTAT>>([&checkFileStatEvent](const uvw::FsEvent<uvw::FileReq::Type::FSTAT> &, uvw::FileReq &req) {
         ASSERT_FALSE(checkFileStatEvent);
         checkFileStatEvent = true;
         req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const uvw::FsEvent<uvw::FileReq::Type::OPEN> &, uvw::FileReq &req) {
         req.stat();
     });
 
@@ -254,15 +254,15 @@ TEST(FileReq, Sync) {
 
     bool checkFileSyncEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    request->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::FileReq &) { FAIL(); });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FSYNC>>([&checkFileSyncEvent](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FSYNC>>([&checkFileSyncEvent](const uvw::FsEvent<uvw::FileReq::Type::FSYNC> &, uvw::FileReq &req) {
         ASSERT_FALSE(checkFileSyncEvent);
         checkFileSyncEvent = true;
         req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const uvw::FsEvent<uvw::FileReq::Type::OPEN> &, uvw::FileReq &req) {
         req.sync();
     });
 
@@ -297,15 +297,15 @@ TEST(FileReq, Datasync) {
 
     bool checkFileDatasyncEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    request->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::FileReq &) { FAIL(); });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FDATASYNC>>([&checkFileDatasyncEvent](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FDATASYNC>>([&checkFileDatasyncEvent](const uvw::FsEvent<uvw::FileReq::Type::FDATASYNC> &, uvw::FileReq &req) {
         ASSERT_FALSE(checkFileDatasyncEvent);
         checkFileDatasyncEvent = true;
         req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const uvw::FsEvent<uvw::FileReq::Type::OPEN> &, uvw::FileReq &req) {
         req.datasync();
     });
 
@@ -340,15 +340,15 @@ TEST(FileReq, Truncate) {
 
     bool checkFileTruncateEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    request->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::FileReq &) { FAIL(); });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FTRUNCATE>>([&checkFileTruncateEvent](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FTRUNCATE>>([&checkFileTruncateEvent](const uvw::FsEvent<uvw::FileReq::Type::FTRUNCATE> &, uvw::FileReq &req) {
         ASSERT_FALSE(checkFileTruncateEvent);
         checkFileTruncateEvent = true;
         req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const uvw::FsEvent<uvw::FileReq::Type::OPEN> &, uvw::FileReq &req) {
         req.truncate(0);
     });
 
@@ -385,21 +385,21 @@ TEST(FileReq, SendFile) {
 
     bool checkFileSendFileEvent = false;
 
-    dstReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    srcReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    dstReq->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::FileReq &) { FAIL(); });
+    srcReq->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::FileReq &) { FAIL(); });
 
-    dstReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&srcReq](const auto &, auto &req) {
+    dstReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&srcReq](const uvw::FsEvent<uvw::FileReq::Type::OPEN> &, uvw::FileReq &req) {
         srcReq->sendfile(static_cast<uvw::FileHandle>(req), 0, 0);
     });
 
-    srcReq->on<uvw::FsEvent<uvw::FileReq::Type::SENDFILE>>([&checkFileSendFileEvent, &dstReq](const auto &, auto &req) {
+    srcReq->on<uvw::FsEvent<uvw::FileReq::Type::SENDFILE>>([&checkFileSendFileEvent, &dstReq](const uvw::FsEvent<uvw::FileReq::Type::SENDFILE> &, uvw::FileReq &req) {
         ASSERT_FALSE(checkFileSendFileEvent);
         checkFileSendFileEvent = true;
         dstReq->close();
         req.close();
     });
 
-    srcReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&dstFilename, &dstReq](const auto &, auto &) {
+    srcReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&dstFilename, &dstReq](const uvw::FsEvent<uvw::FileReq::Type::OPEN> &, uvw::FileReq &) {
         auto flags = uvw::Flags<uvw::FileReq::FileOpen>::from<uvw::FileReq::FileOpen::CREAT, uvw::FileReq::FileOpen::WRONLY, uvw::FileReq::FileOpen::TRUNC>();
         dstReq->open(dstFilename, flags, 0644);
     });
@@ -442,15 +442,15 @@ TEST(FileReq, Chmod) {
 
     bool checkFileChmodEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    request->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::FileReq &) { FAIL(); });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FCHMOD>>([&checkFileChmodEvent](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FCHMOD>>([&checkFileChmodEvent](const uvw::FsEvent<uvw::FileReq::Type::FCHMOD> &, uvw::FileReq &req) {
         ASSERT_FALSE(checkFileChmodEvent);
         checkFileChmodEvent = true;
         req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const uvw::FsEvent<uvw::FileReq::Type::OPEN> &, uvw::FileReq &req) {
         req.chmod(0644);
     });
 
@@ -485,15 +485,15 @@ TEST(FileReq, Utime) {
 
     bool checkFileUtimeEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    request->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::FileReq &) { FAIL(); });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FUTIME>>([&checkFileUtimeEvent](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FUTIME>>([&checkFileUtimeEvent](const uvw::FsEvent<uvw::FileReq::Type::FUTIME> &, uvw::FileReq &req) {
         ASSERT_FALSE(checkFileUtimeEvent);
         checkFileUtimeEvent = true;
         req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const uvw::FsEvent<uvw::FileReq::Type::OPEN> &, uvw::FileReq &req) {
         auto now = std::chrono::system_clock::now();
         auto epoch = now.time_since_epoch();
         auto value = std::chrono::duration_cast<std::chrono::seconds>(epoch);
@@ -537,21 +537,21 @@ TEST(FileReq, Chown) {
 
     bool checkFileChownEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    request->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::FileReq &) { FAIL(); });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FCHOWN>>([&checkFileChownEvent](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FCHOWN>>([&checkFileChownEvent](const uvw::FsEvent<uvw::FileReq::Type::FCHOWN> &, uvw::FileReq &req) {
         ASSERT_FALSE(checkFileChownEvent);
         checkFileChownEvent = true;
         req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::FSTAT>>([](const auto &event, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::FSTAT>>([](const uvw::FsEvent<uvw::FileReq::Type::FSTAT> &event, uvw::FileReq &req) {
         auto uid = static_cast<uvw::Uid>(event.stat.st_uid);
         auto gid = static_cast<uvw::Uid>(event.stat.st_gid);
         req.chown(uid, gid);
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const uvw::FsEvent<uvw::FileReq::Type::OPEN> &, uvw::FileReq &req) {
         req.stat();
     });
 

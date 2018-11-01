@@ -15,7 +15,7 @@ namespace uvw {
 namespace details {
 
 
-enum class UVPollEvent: std::underlying_type_t<uv_poll_event> {
+enum class UVPollEvent: typename std::underlying_type<uv_poll_event>::type {
     READABLE = UV_READABLE,
     WRITABLE = UV_WRITABLE,
     DISCONNECT = UV_DISCONNECT,
@@ -70,7 +70,7 @@ class PollHandle final: public Handle<PollHandle, uv_poll_t> {
     static void startCallback(uv_poll_t *handle, int status, int events) {
         PollHandle &poll = *(static_cast<PollHandle*>(handle->data));
         if(status) { poll.publish(ErrorEvent{status}); }
-        else { poll.publish(PollEvent{static_cast<std::underlying_type_t<Event>>(events)}); }
+        else { poll.publish(PollEvent{static_cast<typename std::underlying_type<Event>::type>(events)}); }
     }
 
 public:

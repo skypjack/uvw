@@ -9,7 +9,7 @@ struct FakeHandle: uvw::Handle<FakeHandle, fake_handle_t> {
     using Handle::Handle;
 
     template<typename... Args>
-    bool init(Args&&...) { return initialize([](auto...){ return true; }); }
+    bool init(Args&&...) { return initialize([](uv_loop_t*, fake_handle_t*){ return true; }); }
 };
 
 

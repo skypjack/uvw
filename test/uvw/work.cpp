@@ -9,7 +9,7 @@ TEST(Work, RunTask) {
     bool checkWorkEvent = false;
     bool checkTask = false;
 
-    handle->on<uvw::CheckEvent>([&checkWorkEvent](const auto &, auto &hndl) {
+    handle->on<uvw::CheckEvent>([&checkWorkEvent](const uvw::CheckEvent &, uvw::CheckHandle &hndl) {
         if(checkWorkEvent) {
             hndl.stop();
             hndl.close();
@@ -21,9 +21,9 @@ TEST(Work, RunTask) {
         checkTask = true;
     });
 
-    req->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    req->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::WorkReq &) { FAIL(); });
 
-    req->on<uvw::WorkEvent>([&checkWorkEvent](const auto &, auto &) {
+    req->on<uvw::WorkEvent>([&checkWorkEvent](const uvw::WorkEvent &, uvw::WorkReq &) {
         ASSERT_FALSE(checkWorkEvent);
         checkWorkEvent = true;
     });
@@ -42,7 +42,7 @@ TEST(Work, Cancellation) {
 
     bool checkErrorEvent = false;
 
-    handle->on<uvw::TimerEvent>([](const auto &, auto &hndl) {
+    handle->on<uvw::TimerEvent>([](const uvw::TimerEvent &, uvw::TimerHandle &hndl) {
         hndl.stop();
         hndl.close();
     });
@@ -50,8 +50,8 @@ TEST(Work, Cancellation) {
     for(auto i = 0; i < 5 /* default uv thread pool size + 1 */; ++i) {
         auto req = loop->resource<uvw::WorkReq>([]() {});
 
-        req->on<uvw::WorkEvent>([](const auto &, auto &) {});
-        req->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &) { checkErrorEvent = true; });
+        req->on<uvw::WorkEvent>([](const uvw::WorkEvent &, uvw::WorkReq &) {});
+        req->on<uvw::ErrorEvent>([&checkErrorEvent](const uvw::ErrorEvent &, uvw::WorkReq &) { checkErrorEvent = true; });
 
         req->queue();
         req->cancel();

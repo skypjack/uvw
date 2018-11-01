@@ -23,8 +23,8 @@ TEST(Tcp, ReadWrite) {
     auto server = loop->resource<uvw::TcpHandle>();
     auto client = loop->resource<uvw::TcpHandle>();
 
-    server->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    client->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
+    client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
 
     server->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &handle) {
         std::shared_ptr<uvw::TcpHandle> socket = handle.loop().resource<uvw::TcpHandle>();
@@ -67,8 +67,8 @@ TEST(Tcp, SockPeer) {
     auto server = loop->resource<uvw::TcpHandle>();
     auto client = loop->resource<uvw::TcpHandle>();
 
-    server->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    client->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
+    client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
 
     server->once<uvw::ListenEvent>([&address, port](const uvw::ListenEvent &, uvw::TcpHandle &handle) {
         std::shared_ptr<uvw::TcpHandle> socket = handle.loop().resource<uvw::TcpHandle>();
@@ -111,8 +111,8 @@ TEST(Tcp, Shutdown) {
     auto server = loop->resource<uvw::TcpHandle>();
     auto client = loop->resource<uvw::TcpHandle>();
 
-    server->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    client->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
+    client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
 
     server->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &handle) {
         std::shared_ptr<uvw::TcpHandle> socket = handle.loop().resource<uvw::TcpHandle>();
@@ -151,13 +151,13 @@ TEST(Tcp, WriteError) {
     bool checkTryWriteNakedPtrErrorEvent = false;
 
     handle->close();
-    handle->once<uvw::ErrorEvent>([&checkWriteSmartPtrErrorEvent](const auto &, auto &) { checkWriteSmartPtrErrorEvent = true; });
+    handle->once<uvw::ErrorEvent>([&checkWriteSmartPtrErrorEvent](const uvw::ErrorEvent &, uvw::TcpHandle &) { checkWriteSmartPtrErrorEvent = true; });
     handle->write(std::unique_ptr<char[]>{}, 0);
-    handle->once<uvw::ErrorEvent>([&checkWriteNakedPtrErrorEvent](const auto &, auto &) { checkWriteNakedPtrErrorEvent = true; });
+    handle->once<uvw::ErrorEvent>([&checkWriteNakedPtrErrorEvent](const uvw::ErrorEvent &, uvw::TcpHandle &) { checkWriteNakedPtrErrorEvent = true; });
     handle->write(nullptr, 0);
-    handle->once<uvw::ErrorEvent>([&checkTryWriteSmartPtrErrorEvent](const auto &, auto &) { checkTryWriteSmartPtrErrorEvent = true; });
+    handle->once<uvw::ErrorEvent>([&checkTryWriteSmartPtrErrorEvent](const uvw::ErrorEvent &, uvw::TcpHandle &) { checkTryWriteSmartPtrErrorEvent = true; });
     handle->tryWrite(std::unique_ptr<char[]>{}, 0);
-    handle->once<uvw::ErrorEvent>([&checkTryWriteNakedPtrErrorEvent](const auto &, auto &) { checkTryWriteNakedPtrErrorEvent = true; });
+    handle->once<uvw::ErrorEvent>([&checkTryWriteNakedPtrErrorEvent](const uvw::ErrorEvent &, uvw::TcpHandle &) { checkTryWriteNakedPtrErrorEvent = true; });
     handle->tryWrite(nullptr, 0);
 
     loop->run();

@@ -23,33 +23,33 @@ class UnderlyingType {
 protected:
     struct ConstructorAccess { explicit ConstructorAccess(int) {} };
 
-    auto get() noexcept {
+    auto get() noexcept -> U * {
         return &resource;
     }
 
-    auto get() const noexcept {
+    auto get() const noexcept -> const U * {
         return &resource;
     }
 
     template<typename R>
-    auto get() noexcept {
+    auto get() noexcept -> R * {
         static_assert(not std::is_same<R, U>::value, "!");
         return reinterpret_cast<R *>(&resource);
     }
 
     template<typename R, typename... P>
-    auto get(UnderlyingType<P...> &other) noexcept {
+    auto get(UnderlyingType<P...> &other) noexcept -> R * {
         return reinterpret_cast<R *>(&other.resource);
     }
 
     template<typename R>
-    auto get() const noexcept {
+    auto get() const noexcept -> const R * {
         static_assert(not std::is_same<R, U>::value, "!");
         return reinterpret_cast<const R *>(&resource);
     }
 
     template<typename R, typename... P>
-    auto get(const UnderlyingType<P...> &other) const noexcept {
+    auto get(const UnderlyingType<P...> &other) const noexcept -> const R * {
         return reinterpret_cast<const R *>(&other.resource);
     }
 

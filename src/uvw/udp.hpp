@@ -32,7 +32,7 @@ struct SendEvent {};
  */
 struct UDPDataEvent {
     explicit UDPDataEvent(Addr sndr, std::unique_ptr<const char[]> buf, std::size_t len, bool part) noexcept
-        : data{std::move(buf)}, length{len}, sender{std::move(sndr)}, partial{part}
+        : data{std::move(buf)}, length{len}, sender(std::move(sndr)), partial{part}
     {}
 
     std::unique_ptr<const char[]> data; /*!< A bunch of data read on the stream. */
@@ -45,13 +45,13 @@ struct UDPDataEvent {
 namespace details {
 
 
-enum class UVUdpFlags: std::underlying_type_t<uv_udp_flags> {
+enum class UVUdpFlags: typename std::underlying_type<uv_udp_flags>::type {
     IPV6ONLY = UV_UDP_IPV6ONLY,
     REUSEADDR = UV_UDP_REUSEADDR
 };
 
 
-enum class UVMembership: std::underlying_type_t<uv_membership> {
+enum class UVMembership: typename std::underlying_type<uv_membership>::type {
     LEAVE_GROUP = UV_LEAVE_GROUP,
     JOIN_GROUP = UV_JOIN_GROUP
 };
@@ -64,7 +64,7 @@ public:
     SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len)
         : Request<SendReq, uv_udp_send_t>{ca, std::move(loop)},
           data{std::move(dt)},
-          buf{uv_buf_init(data.get(), len)}
+          buf(uv_buf_init(data.get(), len))
     {}
 
     void send(uv_udp_t *handle, const struct sockaddr* addr) {
@@ -81,13 +81,13 @@ private:
 
 
 /**
- * @brief The UDPHandle handle.
+ * @brief The UdpHandle handle.
  *
  * UDP handles encapsulate UDP communication for both clients and servers.<br/>
  * By default, _IPv4_ is used as a template parameter. The handle already
  * supports _IPv6_ out-of-the-box by using `uvw::IPv6`.
  *
- * To create an `UDPHandle` through a `Loop`, arguments follow:
+ * To create an `UdpHandle` through a `Loop`, arguments follow:
  *
  * * An optional integer value that indicates optional flags used to initialize
  * the socket.
@@ -96,12 +96,12 @@ private:
  * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_init_ex)
  * for further details.
  */
-class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
+class UdpHandle final: public Handle<UdpHandle, uv_udp_t> {
     template<typename I>
     static void recvCallback(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
         const typename details::IpTraits<I>::Type *aptr = reinterpret_cast<const typename details::IpTraits<I>::Type *>(addr);
 
-        UDPHandle &udp = *(static_cast<UDPHandle*>(handle->data));
+        UdpHandle &udp = *(static_cast<UdpHandle*>(handle->data));
         // data will be destroyed no matter of what the value of nread is
         std::unique_ptr<const char[]> data{buf->base};
 
@@ -127,7 +127,7 @@ public:
 
     using Handle::Handle;
 
-    explicit UDPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
+    explicit UdpHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
         : Handle{ca, std::move(ref)}, tag{FLAGS}, flags{f}
     {}
 
@@ -318,12 +318,16 @@ public:
                         data.release(), [](char *ptr) { delete[] ptr; }
                     }, len);
 
-        auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
+        auto ptr = shared_from_this();
+        auto errorEventListener = [ptr](const ErrorEvent &event, const details::SendReq &) {
+            ptr->publish(event);
+        };
+        auto sendEventListener = [ptr](const SendEvent &event, const details::SendReq &) {
             ptr->publish(event);
         };
 
-        req->once<ErrorEvent>(listener);
-        req->once<SendEvent>(listener);
+        req->once<ErrorEvent>(errorEventListener);
+        req->once<SendEvent>(sendEventListener);
         req->send(get(), &addr);
     }
 
@@ -397,12 +401,16 @@ public:
                         data, [](char *) {}
                     }, len);
 
-        auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
+        auto ptr = shared_from_this();
+        auto errorEventListener = [ptr](const ErrorEvent &event, const details::SendReq &) {
+            ptr->publish(event);
+        };
+        auto sendEventListener = [ptr](const SendEvent &event, const details::SendReq &) {
             ptr->publish(event);
         };
 
-        req->once<ErrorEvent>(listener);
-        req->once<SendEvent>(listener);
+        req->once<ErrorEvent>(errorEventListener);
+        req->once<SendEvent>(sendEventListener);
         req->send(get(), &addr);
     }
 

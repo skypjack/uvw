@@ -89,7 +89,7 @@ class GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
         invoke(&uv_getaddrinfo, parent(), get(), &addrInfoCallback, node, service, hints);
     }
 
-    auto nodeAddrInfoSync(const char *node, const char *service, addrinfo *hints = nullptr) {
+    auto nodeAddrInfoSync(const char *node, const char *service, addrinfo *hints = nullptr) -> std::pair<int, std::unique_ptr<addrinfo, void(*)(addrinfo *)>> {
         auto req = get();
         auto err = uv_getaddrinfo(parent(), req, nullptr, node, service, hints);
         auto data = std::unique_ptr<addrinfo, void(*)(addrinfo *)>{req->addrinfo, [](addrinfo *addr){ uv_freeaddrinfo(addr); }};

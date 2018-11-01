@@ -11,10 +11,10 @@ TEST(FsPoll, Functionalities) {
 
     bool checkFsPollEvent = false;
 
-    handle->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    handle->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::FsPollHandle &) { FAIL(); });
+    request->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::FileReq &) { FAIL(); });
 
-    handle->on<uvw::FsPollEvent>([&checkFsPollEvent](const auto &, auto &hndl) {
+    handle->on<uvw::FsPollEvent>([&checkFsPollEvent](const uvw::FsPollEvent &, uvw::FsPollHandle &hndl) {
         ASSERT_FALSE(checkFsPollEvent);
         checkFsPollEvent = true;
         hndl.stop();
@@ -22,7 +22,7 @@ TEST(FsPoll, Functionalities) {
         ASSERT_TRUE(hndl.closing());
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::WRITE>>([](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::WRITE>>([](const uvw::FsEvent<uvw::FileReq::Type::WRITE> &, uvw::FileReq &req) {
         req.close();
     });
 

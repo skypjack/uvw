@@ -10,10 +10,10 @@ TEST(Timer, StartAndStop) {
     bool checkTimerNoRepeatEvent = false;
     bool checkTimerRepeatEvent = false;
 
-    handleNoRepeat->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    handleRepeat->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    handleNoRepeat->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TimerHandle &) { FAIL(); });
+    handleRepeat->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TimerHandle &) { FAIL(); });
 
-    handleNoRepeat->on<uvw::TimerEvent>([&checkTimerNoRepeatEvent](const auto &, auto &handle) {
+    handleNoRepeat->on<uvw::TimerEvent>([&checkTimerNoRepeatEvent](const uvw::TimerEvent &, uvw::TimerHandle &handle) {
         ASSERT_FALSE(checkTimerNoRepeatEvent);
         checkTimerNoRepeatEvent = true;
         handle.stop();
@@ -21,7 +21,7 @@ TEST(Timer, StartAndStop) {
         ASSERT_TRUE(handle.closing());
     });
 
-    handleRepeat->on<uvw::TimerEvent>([&checkTimerRepeatEvent](const auto &, auto &handle) {
+    handleRepeat->on<uvw::TimerEvent>([&checkTimerRepeatEvent](const uvw::TimerEvent &, uvw::TimerHandle &handle) {
         if(checkTimerRepeatEvent) {
             handle.stop();
             handle.close();
@@ -55,12 +55,12 @@ TEST(Timer, Again) {
     bool checkErrorEvent = false;
     bool checkTimerEvent = false;
 
-    handle->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &) {
+    handle->on<uvw::ErrorEvent>([&checkErrorEvent](const uvw::ErrorEvent &, uvw::TimerHandle &) {
         ASSERT_FALSE(checkErrorEvent);
         checkErrorEvent = true;
     });
 
-    handle->on<uvw::TimerEvent>([&checkTimerEvent](const auto &, auto &hndl) {
+    handle->on<uvw::TimerEvent>([&checkTimerEvent](const uvw::TimerEvent &, uvw::TimerHandle &hndl) {
         static bool guard = false;
 
         if(guard) {
@@ -111,9 +111,8 @@ TEST(Timer, Fake) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::TimerHandle>();
 
-    auto l = [](const auto &, auto &) { FAIL(); };
-    handle->on<uvw::ErrorEvent>(l);
-    handle->on<uvw::TimerEvent>(l);
+    handle->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TimerHandle &) { FAIL(); });
+    handle->on<uvw::TimerEvent>([](const uvw::TimerEvent &, uvw::TimerHandle &) { FAIL(); });
 
     handle->start(uvw::TimerHandle::Time{0}, uvw::TimerHandle::Time{0});
     handle->close();

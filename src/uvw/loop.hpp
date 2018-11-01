@@ -21,12 +21,12 @@ namespace uvw {
 namespace details {
 
 
-enum class UVLoopOption: std::underlying_type_t<uv_loop_option> {
+enum class UVLoopOption: typename std::underlying_type<uv_loop_option>::type {
     BLOCK_SIGNAL = UV_LOOP_BLOCK_SIGNAL
 };
 
 
-enum class UVRunMode: std::underlying_type_t<uv_run_mode> {
+enum class UVRunMode: typename std::underlying_type<uv_run_mode>::type {
     DEFAULT = UV_RUN_DEFAULT,
     ONCE = UV_RUN_ONCE,
     NOWAIT = UV_RUN_NOWAIT
@@ -230,7 +230,7 @@ public:
      */
     template<typename... Args>
     void configure(Configure flag, Args&&... args) {
-        auto option = static_cast<std::underlying_type_t<Configure>>(flag);
+        auto option = static_cast<typename std::underlying_type<Configure>::type>(flag);
         auto err = uv_loop_configure(loop.get(), static_cast<uv_loop_option>(option), std::forward<Args>(args)...);
         if(err) { publish(ErrorEvent{err}); }
     }
@@ -246,7 +246,7 @@ public:
      * @return A pointer to the newly created resource.
      */
     template<typename R, typename... Args>
-    std::enable_if_t<std::is_base_of<BaseHandle, R>::value, std::shared_ptr<R>>
+    typename std::enable_if<std::is_base_of<BaseHandle, R>::value, std::shared_ptr<R>>::type
     resource(Args&&... args) {
         auto ptr = R::create(shared_from_this(), std::forward<Args>(args)...);
         ptr = ptr->init() ? ptr : nullptr;
@@ -264,7 +264,7 @@ public:
      * @return A pointer to the newly created resource.
      */
     template<typename R, typename... Args>
-    std::enable_if_t<not std::is_base_of<BaseHandle, R>::value, std::shared_ptr<R>>
+    typename std::enable_if<not std::is_base_of<BaseHandle, R>::value, std::shared_ptr<R>>::type
     resource(Args&&... args) {
         return R::create(shared_from_this(), std::forward<Args>(args)...);
     }
@@ -302,7 +302,7 @@ public:
      */
     template<Mode mode = Mode::DEFAULT>
     bool run() noexcept {
-        auto utm = static_cast<std::underlying_type_t<Mode>>(mode);
+        auto utm = static_cast<typename std::underlying_type<Mode>::type>(mode);
         auto uvrm = static_cast<uv_run_mode>(utm);
         return (uv_run(loop.get(), uvrm) == 0);
     }

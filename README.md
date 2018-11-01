@@ -78,7 +78,7 @@ The main reason for which `uvw` has been written is the fact that it does not ex
 
 To be able to use `uvw`, users must provide the following system-wide tools:
 
-* A full-featured compiler that supports at least C++14.
+* A full-featured compiler that supports at least C++11.
 * `libuv` (which version depends on the tag of `uvw` in use).
 
 The requirements below are mandatory to compile the tests and to extract the documentation:

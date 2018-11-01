@@ -18,7 +18,7 @@ namespace uvw {
 namespace details {
 
 
-enum class UVTcpFlags: std::underlying_type_t<uv_tcp_flags> {
+enum class UVTcpFlags: typename std::underlying_type<uv_tcp_flags>::type {
     IPV6ONLY = UV_TCP_IPV6ONLY
 };
 
@@ -210,13 +210,18 @@ public:
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      */
     void connect(const sockaddr &addr) {
-        auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
+        auto ptr = shared_from_this();
+        auto errorEventListener = [ptr](const ErrorEvent &event, const details::ConnectReq &) {
+            ptr->publish(event);
+        };
+        auto connectEventListener = [ptr](const ConnectEvent &event, const details::ConnectReq &) {
             ptr->publish(event);
         };
 
+
         auto req = loop().resource<details::ConnectReq>();
-        req->once<ErrorEvent>(listener);
-        req->once<ConnectEvent>(listener);
+        req->once<ErrorEvent>(errorEventListener);
+        req->once<ConnectEvent>(connectEventListener);
         req->connect(&uv_tcp_connect, get(), &addr);
     }
 

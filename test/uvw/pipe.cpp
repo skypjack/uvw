@@ -9,8 +9,8 @@ TEST(Pipe, ReadWrite) {
     auto server = loop->resource<uvw::PipeHandle>();
     auto client = loop->resource<uvw::PipeHandle>();
 
-    server->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    client->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::PipeHandle &) { FAIL(); });
+    client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::PipeHandle &) { FAIL(); });
 
     server->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::PipeHandle &handle) {
         std::shared_ptr<uvw::PipeHandle> socket = handle.loop().resource<uvw::PipeHandle>();
@@ -52,8 +52,8 @@ TEST(Pipe, SockPeer) {
     auto server = loop->resource<uvw::PipeHandle>();
     auto client = loop->resource<uvw::PipeHandle>();
 
-    server->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    client->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::PipeHandle &) { FAIL(); });
+    client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::PipeHandle &) { FAIL(); });
 
     server->once<uvw::ListenEvent>([&sockname](const uvw::ListenEvent &, uvw::PipeHandle &handle) {
         std::shared_ptr<uvw::PipeHandle> socket = handle.loop().resource<uvw::PipeHandle>();
@@ -90,8 +90,8 @@ TEST(Pipe, Shutdown) {
     auto server = loop->resource<uvw::PipeHandle>();
     auto client = loop->resource<uvw::PipeHandle>();
 
-    server->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    client->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::PipeHandle &) { FAIL(); });
+    client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::PipeHandle &) { FAIL(); });
 
     server->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::PipeHandle &handle) {
         std::shared_ptr<uvw::PipeHandle> socket = handle.loop().resource<uvw::PipeHandle>();

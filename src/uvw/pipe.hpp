@@ -18,7 +18,7 @@ namespace uvw {
 namespace details {
 
 
-enum class UVChmodFlags: std::underlying_type_t<uv_poll_event> {
+enum class UVChmodFlags: typename std::underlying_type<uv_poll_event>::type {
     READABLE = UV_READABLE,
     WRITABLE = UV_WRITABLE
 };
@@ -90,13 +90,17 @@ public:
      * @param name A valid domain socket or named pipe.
      */
     void connect(std::string name) {
-        auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
+        auto ptr = shared_from_this();
+        auto errorEventListener = [ptr](const ErrorEvent &event, const details::ConnectReq &) {
+            ptr->publish(event);
+        };
+        auto connectEventListener = [ptr](const ConnectEvent &event, const details::ConnectReq &) {
             ptr->publish(event);
         };
 
         auto connect = loop().resource<details::ConnectReq>();
-        connect->once<ErrorEvent>(listener);
-        connect->once<ConnectEvent>(listener);
+        connect->once<ErrorEvent>(errorEventListener);
+        connect->once<ConnectEvent>(connectEventListener);
         connect->connect(&uv_pipe_connect, get(), name.data());
     }
 

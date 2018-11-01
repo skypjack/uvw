@@ -27,7 +27,7 @@ namespace uvw {
 namespace details {
 
 
-enum class UVHandleType: std::underlying_type_t<uv_handle_type> {
+enum class UVHandleType: typename std::underlying_type<uv_handle_type>::type {
     UNKNOWN = UV_UNKNOWN_HANDLE,
     ASYNC = UV_ASYNC,
     CHECK = UV_CHECK,
@@ -88,7 +88,7 @@ bool operator==(UVTypeWrapper<T> lhs, UVTypeWrapper<T> rhs) {
  */
 template<typename E>
 class Flags final {
-    using InnerType = std::underlying_type_t<E>;
+    using InnerType = typename std::underlying_type<E>::type;
 
     constexpr InnerType toInnerType(E flag) const noexcept { return static_cast<InnerType>(flag); }
 
@@ -237,7 +237,7 @@ struct Passwd {
      * @brief Gets the uid.
      * @return The current effective uid (not the real uid).
      */
-    auto uid() const noexcept {
+    auto uid() const noexcept -> decltype(uv_passwd_t::uid) {
         return (passwd ? passwd->uid : decltype(uv_passwd_t::uid){});
     }
 
@@ -245,7 +245,7 @@ struct Passwd {
      * @brief Gets the gid.
      * @return The gid of the current effective uid (not the real uid).
      */
-    auto gid() const noexcept {
+    auto gid() const noexcept -> decltype(uv_passwd_t::gid) {
         return (passwd ?  passwd->gid : decltype(uv_passwd_t::gid){});
     }
 
@@ -351,7 +351,7 @@ struct IpTraits<IPv4> {
     using NameFuncType = int(*)(const Type *, char *, std::size_t);
     static constexpr AddrFuncType addrFunc = &uv_ip4_addr;
     static constexpr NameFuncType nameFunc = &uv_ip4_name;
-    static constexpr auto sinPort(const Type *addr) { return addr->sin_port; }
+    static constexpr auto sinPort(const Type *addr) -> decltype(addr->sin_port){ return addr->sin_port; }
 };
 
 
@@ -362,7 +362,7 @@ struct IpTraits<IPv6> {
     using NameFuncType = int(*)(const Type *, char *, std::size_t);
     static constexpr AddrFuncType addrFunc = &uv_ip6_addr;
     static constexpr NameFuncType nameFunc = &uv_ip6_name;
-    static constexpr auto sinPort(const Type *addr) { return addr->sin6_port; }
+    static constexpr auto sinPort(const Type *addr) -> decltype(addr->sin6_port) { return addr->sin6_port; }
 };
 
 
@@ -671,7 +671,7 @@ struct Utilities {
         int count;
 
         if(0 == uv_cpu_info(&infos, &count)) {
-            std::for_each(infos, infos+count, [&cpuinfos](const auto &info) {
+            std::for_each(infos, infos+count, [&cpuinfos](const uv_cpu_info_t &info) {
                 cpuinfos.push_back({ info.model, info.speed, info.cpu_times });
             });
 
@@ -696,7 +696,7 @@ struct Utilities {
         int count{0};
 
         if(0 == uv_interface_addresses(&ifaces, &count)) {
-            std::for_each(ifaces, ifaces+count, [&interfaces](const auto &iface) {
+            std::for_each(ifaces, ifaces+count, [&interfaces](const uv_interface_address_t &iface) {
                 InterfaceAddress interfaceAddress;
 
                 interfaceAddress.name = iface.name;
