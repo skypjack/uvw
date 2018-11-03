@@ -35,7 +35,8 @@ void listen(uvw::Loop &loop) {
     tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &srv) {
         std::shared_ptr<uvw::TcpHandle> client = srv.loop().resource<uvw::TcpHandle>();
 
-        client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::TcpHandle &) { ptr->close(); });
+        auto ptr = srv.shared_from_this();
+        client->on<uvw::CloseEvent>([ptr](const uvw::CloseEvent &, uvw::TcpHandle &) { ptr->close(); });
         client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &client) { client.close(); });
 
         srv.accept(*client);
