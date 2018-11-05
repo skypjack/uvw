@@ -809,7 +809,7 @@ public:
 
 private:
     std::unique_ptr<char[]> data{nullptr};
-    uv_buf_t buffer{};
+    uv_buf_t buffer;
     uv_file file{BAD_FD};
 };
 

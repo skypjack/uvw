@@ -55,7 +55,7 @@ protected:
 
 public:
     explicit UnderlyingType(ConstructorAccess, std::shared_ptr<Loop> ref) noexcept
-        : pLoop{std::move(ref)}, resource{}
+        : pLoop{std::move(ref)}, resource()
     {}
 
     UnderlyingType(const UnderlyingType &) = delete;

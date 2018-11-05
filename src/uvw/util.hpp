@@ -845,7 +845,7 @@ struct Utilities {
     static RUsage rusage() noexcept {
         RUsage ru;
         auto err = uv_getrusage(&ru);
-        return err ? RUsage{} : ru;
+        return err ? RUsage() : ru;
     }
 
     /**
