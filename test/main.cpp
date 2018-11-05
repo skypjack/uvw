@@ -21,7 +21,8 @@ void listen(uvw::Loop &loop) {
             std::cout << "error " << std::endl;
         });
 
-        client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::TcpHandle &) {
+        auto ptr = srv.shared_from_this();
+        client->on<uvw::CloseEvent>([ptr](const uvw::CloseEvent &, uvw::TcpHandle &) {
             std::cout << "close" << std::endl;
             ptr->close();
         });

@@ -21,7 +21,7 @@ struct ResetModeMemo {
 };
 
 
-enum class UVTTYModeT: std::underlying_type_t<uv_tty_mode_t> {
+enum class UVTTYModeT: typename std::underlying_type<uv_tty_mode_t>::type {
     NORMAL = UV_TTY_MODE_NORMAL,
     RAW = UV_TTY_MODE_RAW,
     IO = UV_TTY_MODE_IO
@@ -50,7 +50,7 @@ enum class UVTTYModeT: std::underlying_type_t<uv_tty_mode_t> {
  * for further details.
  */
 class TTYHandle final: public StreamHandle<TTYHandle, uv_tty_t> {
-    static auto resetModeMemo() {
+    static auto resetModeMemo() -> std::shared_ptr<details::ResetModeMemo> {
         static std::weak_ptr<details::ResetModeMemo> weak;
         auto shared = weak.lock();
         if(!shared) { weak = shared = std::make_shared<details::ResetModeMemo>(); }
@@ -92,7 +92,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool mode(Mode m) {
-        return (0 == uv_tty_set_mode(get(), static_cast<std::underlying_type_t<Mode>>(m)));
+        return (0 == uv_tty_set_mode(get(), static_cast<typename std::underlying_type<Mode>::type>(m)));
     }
 
     /**

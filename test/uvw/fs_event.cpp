@@ -11,10 +11,10 @@ TEST(FsEvent, Functionalities) {
 
     bool checkFsEventEvent = false;
 
-    handle->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    handle->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::FsEventHandle &) { FAIL(); });
+    request->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::FileReq &) { FAIL(); });
 
-    handle->on<uvw::FsEventEvent>([&checkFsEventEvent](const auto &event, auto &hndl) {
+    handle->on<uvw::FsEventEvent>([&checkFsEventEvent](const uvw::FsEventEvent &event, uvw::FsEventHandle &hndl) {
         ASSERT_FALSE(checkFsEventEvent);
         ASSERT_EQ(std::string{event.filename}, std::string{"test.file"});
         checkFsEventEvent = true;
@@ -23,11 +23,11 @@ TEST(FsEvent, Functionalities) {
         ASSERT_TRUE(hndl.closing());
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::WRITE>>([](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::WRITE>>([](const uvw::FsEvent<uvw::FileReq::Type::WRITE> &, uvw::FileReq &req) {
         req.close();
     });
 
-    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
+    request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const uvw::FsEvent<uvw::FileReq::Type::OPEN> &, uvw::FileReq &req) {
         req.write(std::unique_ptr<char[]>{new char[1]{ 42 }}, 1, 0);
     });
 

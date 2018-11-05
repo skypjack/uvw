@@ -9,14 +9,14 @@ TEST(TTY, Functionalities) {
 
     bool checkWriteEvent = false;
 
-    handle->on<uvw::WriteEvent>([&checkWriteEvent](const auto &, auto &hndl){
+    handle->on<uvw::WriteEvent>([&checkWriteEvent](const uvw::WriteEvent &, uvw::TTYHandle &hndl){
         ASSERT_FALSE(checkWriteEvent);
         checkWriteEvent = true;
         hndl.close();
     });
 
-    timer->on<uvw::TimerEvent>([handle](const auto &, auto &hndl){
-        auto data = std::make_unique<char[]>('*');
+    timer->on<uvw::TimerEvent>([handle](const uvw::TimerEvent &, uvw::TimerHandle &hndl){
+        auto data = std::unique_ptr<char[]>(new char[1]{'*'});
         handle->write(std::move(data), 1);
         hndl.close();
     });

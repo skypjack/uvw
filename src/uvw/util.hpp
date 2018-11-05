@@ -13,21 +13,13 @@
 #include <uv.h>
 
 
-#ifdef _WIN32
-// MSVC doesn't have C++14 relaxed constexpr support yet. Hence the jugglery.
-#define CONSTEXPR_SPECIFIER
-#else
-#define CONSTEXPR_SPECIFIER constexpr
-#endif
-
-
 namespace uvw {
 
 
 namespace details {
 
 
-enum class UVHandleType: std::underlying_type_t<uv_handle_type> {
+enum class UVHandleType: typename std::underlying_type<uv_handle_type>::type {
     UNKNOWN = UV_UNKNOWN_HANDLE,
     ASYNC = UV_ASYNC,
     CHECK = UV_CHECK,
@@ -88,7 +80,7 @@ bool operator==(UVTypeWrapper<T> lhs, UVTypeWrapper<T> rhs) {
  */
 template<typename E>
 class Flags final {
-    using InnerType = std::underlying_type_t<E>;
+    using InnerType = typename std::underlying_type<E>::type;
 
     constexpr InnerType toInnerType(E flag) const noexcept { return static_cast<InnerType>(flag); }
 
@@ -100,7 +92,7 @@ public:
      * @return A valid instance of Flags instantiated from values `V`.
      */
     template<E... V>
-    static CONSTEXPR_SPECIFIER Flags<E> from() {
+    static Flags<E> from() {
         auto flags = Flags<E>{};
         int _[] = { 0, (flags = flags | V, 0)... };
         return void(_), flags;
@@ -129,12 +121,12 @@ public:
 
     ~Flags() noexcept { static_assert(std::is_enum<E>::value, "!"); }
 
-    CONSTEXPR_SPECIFIER Flags & operator=(const Flags &f) noexcept {
+    Flags & operator=(const Flags &f) noexcept {
         flags = f.flags;
         return *this;
     }
 
-    CONSTEXPR_SPECIFIER Flags & operator=(Flags &&f) noexcept {
+    Flags & operator=(Flags &&f) noexcept {
         flags = std::move(f.flags);
         return *this;
     }
@@ -237,7 +229,7 @@ struct Passwd {
      * @brief Gets the uid.
      * @return The current effective uid (not the real uid).
      */
-    auto uid() const noexcept {
+    auto uid() const noexcept -> decltype(uv_passwd_t::uid) {
         return (passwd ? passwd->uid : decltype(uv_passwd_t::uid){});
     }
 
@@ -245,7 +237,7 @@ struct Passwd {
      * @brief Gets the gid.
      * @return The gid of the current effective uid (not the real uid).
      */
-    auto gid() const noexcept {
+    auto gid() const noexcept -> decltype(uv_passwd_t::gid) {
         return (passwd ?  passwd->gid : decltype(uv_passwd_t::gid){});
     }
 
@@ -351,7 +343,7 @@ struct IpTraits<IPv4> {
     using NameFuncType = int(*)(const Type *, char *, std::size_t);
     static constexpr AddrFuncType addrFunc = &uv_ip4_addr;
     static constexpr NameFuncType nameFunc = &uv_ip4_name;
-    static constexpr auto sinPort(const Type *addr) { return addr->sin_port; }
+    static constexpr auto sinPort(const Type *addr) -> decltype(addr->sin_port){ return addr->sin_port; }
 };
 
 
@@ -362,7 +354,7 @@ struct IpTraits<IPv6> {
     using NameFuncType = int(*)(const Type *, char *, std::size_t);
     static constexpr AddrFuncType addrFunc = &uv_ip6_addr;
     static constexpr NameFuncType nameFunc = &uv_ip6_name;
-    static constexpr auto sinPort(const Type *addr) { return addr->sin6_port; }
+    static constexpr auto sinPort(const Type *addr) -> decltype(addr->sin6_port) { return addr->sin6_port; }
 };
 
 
@@ -671,7 +663,7 @@ struct Utilities {
         int count;
 
         if(0 == uv_cpu_info(&infos, &count)) {
-            std::for_each(infos, infos+count, [&cpuinfos](const auto &info) {
+            std::for_each(infos, infos+count, [&cpuinfos](const uv_cpu_info_t &info) {
                 cpuinfos.push_back({ info.model, info.speed, info.cpu_times });
             });
 
@@ -696,7 +688,7 @@ struct Utilities {
         int count{0};
 
         if(0 == uv_interface_addresses(&ifaces, &count)) {
-            std::for_each(ifaces, ifaces+count, [&interfaces](const auto &iface) {
+            std::for_each(ifaces, ifaces+count, [&interfaces](const uv_interface_address_t &iface) {
                 InterfaceAddress interfaceAddress;
 
                 interfaceAddress.name = iface.name;
@@ -853,7 +845,7 @@ struct Utilities {
     static RUsage rusage() noexcept {
         RUsage ru;
         auto err = uv_getrusage(&ru);
-        return err ? RUsage{} : ru;
+        return err ? RUsage() : ru;
     }
 
     /**

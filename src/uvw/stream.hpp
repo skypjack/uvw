@@ -99,7 +99,7 @@ public:
     WriteReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len)
         : Request<WriteReq, uv_write_t>{ca, std::move(loop)},
           data{std::move(dt)},
-          buf{uv_buf_init(data.get(), len)}
+          buf(uv_buf_init(data.get(), len))
     {}
 
     void write(uv_stream_t *handle) {
@@ -174,13 +174,17 @@ public:
      * A ShutdownEvent event will be emitted after shutdown is complete.
      */
     void shutdown() {
-        auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
+        auto ptr = this->shared_from_this();
+        auto errorEventListener = [ptr](const ErrorEvent &event, const details::ShutdownReq &) {
+            ptr->publish(event);
+        };
+        auto shutdownEventListener = [ptr](const ShutdownEvent &event, const details::ShutdownReq &) {
             ptr->publish(event);
         };
 
         auto shutdown = this->loop().template resource<details::ShutdownReq>();
-        shutdown->template once<ErrorEvent>(listener);
-        shutdown->template once<ShutdownEvent>(listener);
+        shutdown->template once<ErrorEvent>(errorEventListener);
+        shutdown->template once<ShutdownEvent>(shutdownEventListener);
         shutdown->shutdown(this->template get<uv_stream_t>());
     }
 
@@ -260,12 +264,16 @@ public:
                         data.release(), [](char *ptr) { delete[] ptr; }
                     }, len);
 
-        auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
+        auto ptr = this->shared_from_this();
+        auto errorEventListener = [ptr](const ErrorEvent &event, const details::WriteReq &) {
+            ptr->publish(event);
+        };
+        auto writeEventListener = [ptr](const WriteEvent &event, const details::WriteReq &) {
             ptr->publish(event);
         };
 
-        req->template once<ErrorEvent>(listener);
-        req->template once<WriteEvent>(listener);
+        req->template once<ErrorEvent>(errorEventListener);
+        req->template once<WriteEvent>(writeEventListener);
         req->write(this->template get<uv_stream_t>());
     }
 
@@ -287,12 +295,17 @@ public:
                         data, [](char *) {}
                     }, len);
 
-        auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
+        auto ptr = this->shared_from_this();
+        auto errorEventListener = [ptr](const ErrorEvent &event, const details::WriteReq &) {
+            ptr->publish(event);
+        };
+        auto writeEventListener = [ptr](const WriteEvent &event, const details::WriteReq &) {
             ptr->publish(event);
         };
 
-        req->template once<ErrorEvent>(listener);
-        req->template once<WriteEvent>(listener);
+
+        req->template once<ErrorEvent>(errorEventListener);
+        req->template once<WriteEvent>(writeEventListener);
         req->write(this->template get<uv_stream_t>());
     }
 
@@ -322,12 +335,16 @@ public:
                         data.release(), [](char *ptr) { delete[] ptr; }
                     }, len);
 
-        auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
+        auto ptr = this->shared_from_this();
+        auto errorEventListener = [ptr](const ErrorEvent &event, const details::WriteReq &) {
+            ptr->publish(event);
+        };
+        auto writeEventListener = [ptr](const WriteEvent &event, const details::WriteReq &) {
             ptr->publish(event);
         };
 
-        req->template once<ErrorEvent>(listener);
-        req->template once<WriteEvent>(listener);
+        req->template once<ErrorEvent>(errorEventListener);
+        req->template once<WriteEvent>(writeEventListener);
         req->write(this->template get<uv_stream_t>(), send.template get<uv_stream_t>());
     }
 
@@ -357,12 +374,16 @@ public:
                         data, [](char *) {}
                     }, len);
 
-        auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
+        auto ptr = this->shared_from_this();
+        auto errorEventListener = [ptr](const ErrorEvent &event, const details::WriteReq &) {
+            ptr->publish(event);
+        };
+        auto writeEventListener = [ptr](const WriteEvent &event, const details::WriteReq &) {
             ptr->publish(event);
         };
 
-        req->template once<ErrorEvent>(listener);
-        req->template once<WriteEvent>(listener);
+        req->template once<ErrorEvent>(errorEventListener);
+        req->template once<WriteEvent>(writeEventListener);
         req->write(this->template get<uv_stream_t>(), send.template get<uv_stream_t>());
     }
 

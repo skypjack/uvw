@@ -19,7 +19,7 @@ namespace uvw {
 namespace details {
 
 
-enum class UVProcessFlags: std::underlying_type_t<uv_process_flags> {
+enum class UVProcessFlags: typename std::underlying_type<uv_process_flags>::type {
     SETUID = UV_PROCESS_SETUID,
     SETGID = UV_PROCESS_SETGID,
     WINDOWS_VERBATIM_ARGUMENTS = UV_PROCESS_WINDOWS_VERBATIM_ARGUMENTS,
@@ -28,7 +28,7 @@ enum class UVProcessFlags: std::underlying_type_t<uv_process_flags> {
 };
 
 
-enum class UVStdIOFlags: std::underlying_type_t<uv_stdio_flags> {
+enum class UVStdIOFlags: typename std::underlying_type<uv_stdio_flags>::type {
     IGNORE_STREAM = UV_IGNORE,
     CREATE_PIPE = UV_CREATE_PIPE,
     INHERIT_FD = UV_INHERIT_FD,
@@ -144,13 +144,13 @@ public:
         poStdio.reserve(poFdStdio.size() + poStreamStdio.size());
         poStdio.insert(poStdio.begin(), poFdStdio.cbegin(), poFdStdio.cend());
         poStdio.insert(poStdio.end(), poStreamStdio.cbegin(), poStreamStdio.cend());
-       
+
         po.stdio_count = static_cast<decltype(po.stdio_count)>(poStdio.size());
         po.stdio = poStdio.data();
 
         // fake initialization so as to have leak invoked
         // see init member function for more details
-        initialize([](auto...){ return 0; });
+        initialize([](uv_loop_t*, uv_process_t*){ return 0; });
 
         invoke(&uv_spawn, parent(), get(), &po);
     }
@@ -269,7 +269,7 @@ public:
 
         auto actual = FileHandle::Type{fd};
 
-        auto it = std::find_if(poFdStdio.begin(), poFdStdio.end(), [actual](auto &&container){
+        auto it = std::find_if(poFdStdio.begin(), poFdStdio.end(), [actual](const uv_stdio_container_t &container){
             return container.data.fd == actual;
         });
 

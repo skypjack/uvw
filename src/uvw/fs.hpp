@@ -17,7 +17,7 @@ namespace uvw {
 namespace details {
 
 
-enum class UVFsType: std::underlying_type_t<uv_fs_type> {
+enum class UVFsType: typename std::underlying_type<uv_fs_type>::type {
     UNKNOWN = UV_FS_UNKNOWN,
     CUSTOM = UV_FS_CUSTOM,
     OPEN = UV_FS_OPEN,
@@ -53,7 +53,7 @@ enum class UVFsType: std::underlying_type_t<uv_fs_type> {
 };
 
 
-enum class UVDirentTypeT: std::underlying_type_t<uv_dirent_type_t> {
+enum class UVDirentTypeT: typename std::underlying_type<uv_dirent_type_t>::type {
     UNKNOWN = UV_DIRENT_UNKNOWN,
     FILE = UV_DIRENT_FILE,
     DIR = UV_DIRENT_DIR,
@@ -220,7 +220,7 @@ struct FsEvent<details::UVFsType::SENDFILE> {
 template<>
 struct FsEvent<details::UVFsType::STAT> {
     FsEvent(const char *pathname, Stat curr) noexcept
-        : path{pathname}, stat{std::move(curr)}
+        : path{pathname}, stat(std::move(curr))
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -237,7 +237,7 @@ struct FsEvent<details::UVFsType::STAT> {
 template<>
 struct FsEvent<details::UVFsType::FSTAT> {
     FsEvent(const char *pathname, Stat curr) noexcept
-        : path{pathname}, stat{std::move(curr)}
+        : path{pathname}, stat(std::move(curr))
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -254,7 +254,7 @@ struct FsEvent<details::UVFsType::FSTAT> {
 template<>
 struct FsEvent<details::UVFsType::LSTAT> {
     FsEvent(const char *pathname, Stat curr) noexcept
-        : path{pathname}, stat{std::move(curr)}
+        : path{pathname}, stat(std::move(curr))
     {}
 
     const char * path; /*!< The path affecting the request. */
@@ -809,7 +809,7 @@ public:
 
 private:
     std::unique_ptr<char[]> data{nullptr};
-    uv_buf_t buffer{};
+    uv_buf_t buffer;
     uv_file file{BAD_FD};
 };
 

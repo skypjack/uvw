@@ -20,7 +20,7 @@ class Resource: public UnderlyingType<T, U>, public Emitter<T>, public std::enab
 protected:
     using ConstructorAccess = typename UnderlyingType<T, U>::ConstructorAccess;
 
-    auto parent() const noexcept {
+    auto parent() const noexcept -> uv_loop_t * {
         return this->loop().loop.get();
     }
 

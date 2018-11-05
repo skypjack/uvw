@@ -71,6 +71,14 @@ TEST(Util, ScopedFlags) {
     ASSERT_TRUE(flags & uvw::Flags<ScopedEnum>::from<ScopedEnum::QUUX>());
 }
 
+template<typename T, typename U>
+void guessHandle(T tag, U type) {
+    auto loop = uvw::Loop::getDefault();
+    auto handle = loop->resource<typename decltype(tag)::type>();
+    ASSERT_EQ(uvw::Utilities::guessHandle(handle->category()), type);
+    handle->close();
+    loop->run();
+};
 
 TEST(Util, Utilities) {
     ASSERT_EQ(uvw::PidType{}, uvw::PidType{});
@@ -98,14 +106,6 @@ TEST(Util, Utilities) {
     ASSERT_EQ(uvw::Utilities::guessHandle(uvw::FileHandle{-1}), uvw::HandleType::UNKNOWN);
     ASSERT_NE(uvw::Utilities::guessHandle(uvw::StdIN), uvw::HandleType::UNKNOWN);
 
-    auto guessHandle = [](auto tag, auto type) {
-        auto loop = uvw::Loop::getDefault();
-        auto handle = loop->resource<typename decltype(tag)::type>();
-        ASSERT_EQ(uvw::Utilities::guessHandle(handle->category()), type);
-        handle->close();
-        loop->run();
-    };
-
     guessHandle(tag<uvw::AsyncHandle>{}, uvw::HandleType::ASYNC);
     guessHandle(tag<uvw::CheckHandle>{}, uvw::HandleType::CHECK);
     guessHandle(tag<uvw::FsEventHandle>{}, uvw::HandleType::FS_EVENT);
@@ -115,7 +115,7 @@ TEST(Util, Utilities) {
     guessHandle(tag<uvw::PrepareHandle>{}, uvw::HandleType::PREPARE);
     guessHandle(tag<uvw::TcpHandle>{}, uvw::HandleType::TCP);
     guessHandle(tag<uvw::TimerHandle>{}, uvw::HandleType::TIMER);
-    guessHandle(tag<uvw::UDPHandle>{}, uvw::HandleType::UDP);
+    guessHandle(tag<uvw::UdpHandle>{}, uvw::HandleType::UDP);
     guessHandle(tag<uvw::SignalHandle>{}, uvw::HandleType::SIGNAL);
 
     auto cpuInfo = uvw::Utilities::cpuInfo();

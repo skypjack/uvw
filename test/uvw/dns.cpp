@@ -8,9 +8,9 @@ TEST(GetAddrInfo, GetNodeAddrInfo) {
 
     bool checkAddrInfoEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    request->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::GetAddrInfoReq &) { FAIL(); });
 
-    request->on<uvw::AddrInfoEvent>([&checkAddrInfoEvent](const auto &, auto &) {
+    request->on<uvw::AddrInfoEvent>([&checkAddrInfoEvent](const uvw::AddrInfoEvent &, uvw::GetAddrInfoReq &) {
         ASSERT_FALSE(checkAddrInfoEvent);
         checkAddrInfoEvent = true;
     });
@@ -40,7 +40,7 @@ TEST(GetAddrInfo, GetServiceAddrInfo) {
 
     bool checkErrorEvent = false;
 
-    request->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &) {
+    request->on<uvw::ErrorEvent>([&checkErrorEvent](const uvw::ErrorEvent &, uvw::GetAddrInfoReq &) {
         ASSERT_FALSE(checkErrorEvent);
         checkErrorEvent = true;
     });
@@ -69,9 +69,9 @@ TEST(GetAddrInfo, GetAddrInfo) {
 
     bool checkAddrInfoEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    request->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::GetAddrInfoReq &) { FAIL(); });
 
-    request->on<uvw::AddrInfoEvent>([&checkAddrInfoEvent](const auto &, auto &) {
+    request->on<uvw::AddrInfoEvent>([&checkAddrInfoEvent](const uvw::AddrInfoEvent &, uvw::GetAddrInfoReq &) {
         ASSERT_FALSE(checkAddrInfoEvent);
         checkAddrInfoEvent = true;
     });
@@ -103,12 +103,12 @@ TEST(GetNameInfo, GetNameInfo) {
     bool checkErrorEvent = false;
     bool checkNameInfoEvent = false;
 
-    koRequest->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &) {
+    koRequest->on<uvw::ErrorEvent>([&checkErrorEvent](const uvw::ErrorEvent &, uvw::GetNameInfoReq &) {
         ASSERT_FALSE(checkErrorEvent);
         checkErrorEvent = true;
     });
 
-    okRequest->on<uvw::NameInfoEvent>([&checkNameInfoEvent](const auto &, auto &) {
+    okRequest->on<uvw::NameInfoEvent>([&checkNameInfoEvent](const uvw::NameInfoEvent &, uvw::GetNameInfoReq &) {
         ASSERT_FALSE(checkNameInfoEvent);
         checkNameInfoEvent = true;
     });

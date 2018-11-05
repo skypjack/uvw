@@ -14,7 +14,7 @@ namespace uvw {
 template<typename T, typename U>
 class Request: public Resource<T, U> {
 protected:
-    static auto reserve(U *req) {
+    static auto reserve(U *req) -> std::shared_ptr<T> {
         auto ptr = static_cast<T*>(req->data)->shared_from_this();
         ptr->reset();
         return ptr;
@@ -29,7 +29,7 @@ protected:
 
     template<typename F, typename... Args>
     auto invoke(F &&f, Args&&... args)
-    -> std::enable_if_t<not std::is_void<std::result_of_t<F(Args...)>>::value> {
+    -> typename std::enable_if<not std::is_void<typename std::result_of<F(Args...)>::type>::value>::type {
         auto err = std::forward<F>(f)(std::forward<Args>(args)...);
         if(err) { Emitter<T>::publish(ErrorEvent{err}); }
         else { this->leak(); }
@@ -37,7 +37,7 @@ protected:
 
     template<typename F, typename... Args>
     auto invoke(F &&f, Args&&... args)
-    -> std::enable_if_t<std::is_void<std::result_of_t<F(Args...)>>::value> {
+    -> typename std::enable_if<std::is_void<typename std::result_of<F(Args...)>::type>::value>::type {
         std::forward<F>(f)(std::forward<Args>(args)...);
         this->leak();
     }

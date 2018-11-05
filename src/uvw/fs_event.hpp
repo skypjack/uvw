@@ -16,14 +16,14 @@ namespace uvw {
 namespace details {
 
 
-enum class UVFsEventFlags: std::underlying_type_t<uv_fs_event_flags> {
+enum class UVFsEventFlags: typename std::underlying_type<uv_fs_event_flags>::type {
     WATCH_ENTRY = UV_FS_EVENT_WATCH_ENTRY,
     STAT = UV_FS_EVENT_STAT,
     RECURSIVE = UV_FS_EVENT_RECURSIVE
 };
 
 
-enum class UVFsEvent: std::underlying_type_t<uv_fs_event> {
+enum class UVFsEvent: typename std::underlying_type<uv_fs_event>::type {
     RENAME = UV_RENAME,
     CHANGE = UV_CHANGE
 };
@@ -79,7 +79,7 @@ class FsEventHandle final: public Handle<FsEventHandle, uv_fs_event_t> {
     static void startCallback(uv_fs_event_t *handle, const char *filename, int events, int status) {
         FsEventHandle &fsEvent = *(static_cast<FsEventHandle*>(handle->data));
         if(status) { fsEvent.publish(ErrorEvent{status}); }
-        else { fsEvent.publish(FsEventEvent{filename, static_cast<std::underlying_type_t<details::UVFsEvent>>(events)}); }
+        else { fsEvent.publish(FsEventEvent{filename, static_cast<typename std::underlying_type<details::UVFsEvent>::type>(events)}); }
     }
 
 public:

@@ -21,7 +21,7 @@ namespace uvw {
  * Custom wrapper around error constants of `libuv`.
  */
 struct ErrorEvent {
-    template<typename U, typename = std::enable_if_t<std::is_integral<U>::value>>
+    template<typename U, typename V = typename std::enable_if<std::is_integral<U>::value>::type>
     explicit ErrorEvent(U val) noexcept
         : ec{static_cast<int>(val)}
     {}
@@ -99,7 +99,7 @@ class Emitter {
         using Connection = typename ListenerList::iterator;
 
         bool empty() const noexcept override {
-            auto pred = [](auto &&element){ return element.first; };
+            auto pred = [](const Element &element){ return element.first; };
 
             return std::all_of(onceL.cbegin(), onceL.cend(), pred) &&
                     std::all_of(onL.cbegin(), onL.cend(), pred);
@@ -107,7 +107,7 @@ class Emitter {
 
         void clear() noexcept override {
             if(publishing) {
-                auto func = [](auto &&element){ element.first = true; };
+                auto func = [](Element &element){ element.first = true; };
                 std::for_each(onceL.begin(), onceL.end(), func);
                 std::for_each(onL.begin(), onL.end(), func);
             } else {
@@ -117,18 +117,18 @@ class Emitter {
         }
 
         Connection once(Listener f) {
-            return onceL.emplace(onceL.cend(), false, std::move(f));
+            return onceL.emplace(onceL.end(), false, std::move(f));
         }
 
         Connection on(Listener f) {
-            return onL.emplace(onL.cend(), false, std::move(f));
+            return onL.emplace(onL.end(), false, std::move(f));
         }
 
         void erase(Connection conn) noexcept {
             conn->first = true;
 
             if(!publishing) {
-                auto pred = [](auto &&element){ return element.first; };
+                auto pred = [](const Element &element){ return element.first; };
                 onceL.remove_if(pred);
                 onL.remove_if(pred);
             }
@@ -138,7 +138,7 @@ class Emitter {
             ListenerList currentL;
             onceL.swap(currentL);
 
-            auto func = [&event, &ref](auto &&element) {
+            auto func = [&event, &ref](Element &element) {
                 return element.first ? void() : element.second(event, ref);
             };
 
@@ -149,7 +149,7 @@ class Emitter {
 
             publishing = false;
 
-            onL.remove_if([](auto &&element){ return element.first; });
+            onL.remove_if([](const Element &element){ return element.first; });
         }
 
     private:
@@ -178,7 +178,7 @@ class Emitter {
         }
 
         if(!handlers[type]) {
-           handlers[type] = std::make_unique<Handler<E>>();
+           handlers[type] = std::unique_ptr<Handler<E>>(new(std::nothrow) Handler<E>);
         }
 
         return static_cast<Handler<E>&>(*handlers[type]);
@@ -283,7 +283,7 @@ public:
      */
     void clear() noexcept {
         std::for_each(handlers.begin(), handlers.end(),
-                      [](auto &&hdlr){ if(hdlr) { hdlr->clear(); } });
+                      [](std::unique_ptr<BaseHandler> &hdlr){ if(hdlr) { hdlr->clear(); } });
     }
 
     /**
@@ -307,7 +307,7 @@ public:
      */
     bool empty() const noexcept {
         return std::all_of(handlers.cbegin(), handlers.cend(),
-                           [](auto &&hdlr){ return !hdlr || hdlr->empty(); });
+                           [](const std::unique_ptr<BaseHandler> &hdlr){ return !hdlr || hdlr->empty(); });
     }
 
 private:
