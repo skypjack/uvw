@@ -4,13 +4,13 @@
 #include <memory>
 
 void listen(uvw::Loop &loop) {
-    std::shared_ptr<uvw::TcpHandle> tcp = loop.resource<uvw::TcpHandle>();
+    std::shared_ptr<uvw::TCPHandle> tcp = loop.resource<uvw::TCPHandle>();
 
-    tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &srv) {
-        std::shared_ptr<uvw::TcpHandle> client = srv.loop().resource<uvw::TcpHandle>();
+    tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TCPHandle &srv) {
+        std::shared_ptr<uvw::TCPHandle> client = srv.loop().resource<uvw::TCPHandle>();
 
-        client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::TcpHandle &) { ptr->close(); });
-        client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &client) { client.close(); });
+        client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::TCPHandle &) { ptr->close(); });
+        client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TCPHandle &client) { client.close(); });
 
         srv.accept(*client);
         client->read();
@@ -21,11 +21,11 @@ void listen(uvw::Loop &loop) {
 }
 
 void conn(uvw::Loop &loop) {
-    auto tcp = loop.resource<uvw::TcpHandle>();
+    auto tcp = loop.resource<uvw::TCPHandle>();
 
-    tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { /* handle errors */ });
+    tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { /* handle errors */ });
 
-    tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TcpHandle &tcp) {
+    tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TCPHandle &tcp) {
         auto dataWrite = std::unique_ptr<char[]>(new char[2]{ 'b', 'c' });
         tcp.write(std::move(dataWrite), 2);
         tcp.close();
