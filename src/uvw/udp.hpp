@@ -45,7 +45,7 @@ struct UDPDataEvent {
 namespace details {
 
 
-enum class UVUdpFlags: std::underlying_type_t<uv_udp_flags> {
+enum class UVUDPFlags: std::underlying_type_t<uv_udp_flags> {
     IPV6ONLY = UV_UDP_IPV6ONLY,
     REUSEADDR = UV_UDP_REUSEADDR
 };
@@ -121,7 +121,7 @@ class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
 
 public:
     using Membership = details::UVMembership;
-    using Bind = details::UVUdpFlags;
+    using Bind = details::UVUDPFlags;
     using IPv4 = uvw::IPv4;
     using IPv6 = uvw::IPv6;
 

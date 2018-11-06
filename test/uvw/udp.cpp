@@ -2,7 +2,7 @@
 #include <uvw.hpp>
 
 
-TEST(Udp, Functionalities) {
+TEST(UDP, Functionalities) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::UDPHandle>();
 
@@ -21,7 +21,7 @@ TEST(Udp, Functionalities) {
 }
 
 
-TEST(Udp, BindRecvStop) {
+TEST(UDP, BindRecvStop) {
     const std::string address = std::string{"127.0.0.1"};
     const unsigned int port = 4242;
 
@@ -39,7 +39,7 @@ TEST(Udp, BindRecvStop) {
 }
 
 
-TEST(Udp, ReadTrySend) {
+TEST(UDP, ReadTrySend) {
     const std::string address = std::string{"127.0.0.1"};
     const unsigned int port = 4242;
 
@@ -70,7 +70,7 @@ TEST(Udp, ReadTrySend) {
 }
 
 
-TEST(Udp, ReadSend) {
+TEST(UDP, ReadSend) {
     const std::string address = std::string{"127.0.0.1"};
     const unsigned int port = 4242;
 
@@ -104,7 +104,7 @@ TEST(Udp, ReadSend) {
 }
 
 
-TEST(Udp, Sock) {
+TEST(UDP, Sock) {
     const std::string address = std::string{"127.0.0.1"};
     const unsigned int port = 4242;
 

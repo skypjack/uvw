@@ -124,7 +124,7 @@ private:
  *
  * Stream handles provide an abstraction of a duplex communication channel.
  * StreamHandle is an intermediate type, `uvw` provides three stream
- * implementations: TcpHandle, PipeHandle and TTYHandle.
+ * implementations: TCPHandle, PipeHandle and TTYHandle.
  */
 template<typename T, typename U>
 class StreamHandle: public Handle<T, U> {
@@ -301,7 +301,7 @@ public:
      *
      * The pipe must be initialized with `ipc == true`.
      *
-     * `send` must be a TcpHandle or PipeHandle handle, which is a server or a
+     * `send` must be a TCPHandle or PipeHandle handle, which is a server or a
      * connection (listening or connected state). Bound sockets or pipes will be
      * assumed to be servers.
      *
@@ -336,7 +336,7 @@ public:
      *
      * The pipe must be initialized with `ipc == true`.
      *
-     * `send` must be a TcpHandle or PipeHandle handle, which is a server or a
+     * `send` must be a TCPHandle or PipeHandle handle, which is a server or a
      * connection (listening or connected state). Bound sockets or pipes will be
      * assumed to be servers.
      *

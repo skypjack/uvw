@@ -18,7 +18,7 @@ namespace uvw {
 namespace details {
 
 
-enum class UVTcpFlags: std::underlying_type_t<uv_tcp_flags> {
+enum class UVTCPFlags: std::underlying_type_t<uv_tcp_flags> {
     IPV6ONLY = UV_TCP_IPV6ONLY
 };
 
@@ -27,13 +27,13 @@ enum class UVTcpFlags: std::underlying_type_t<uv_tcp_flags> {
 
 
 /**
- * @brief The TcpHandle handle.
+ * @brief The TCPHandle handle.
  *
  * TCP handles are used to represent both TCP streams and servers.<br/>
  * By default, _IPv4_ is used as a template parameter. The handle already
  * supports _IPv6_ out-of-the-box by using `uvw::IPv6`.
  *
- * To create a `TcpHandle` through a `Loop`, arguments follow:
+ * To create a `TCPHandle` through a `Loop`, arguments follow:
  *
  * * An optional integer value that indicates the flags used to initialize
  * the socket.
@@ -42,14 +42,14 @@ enum class UVTcpFlags: std::underlying_type_t<uv_tcp_flags> {
  * [documentation](http://docs.libuv.org/en/v1.x/tcp.html#c.uv_tcp_init_ex)
  * for further details.
  */
-class TcpHandle final: public StreamHandle<TcpHandle, uv_tcp_t> {
+class TCPHandle final: public StreamHandle<TCPHandle, uv_tcp_t> {
 public:
     using Time = std::chrono::duration<unsigned int>;
-    using Bind = details::UVTcpFlags;
+    using Bind = details::UVTCPFlags;
     using IPv4 = uvw::IPv4;
     using IPv6 = uvw::IPv6;
 
-    explicit TcpHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f = {})
+    explicit TCPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f = {})
         : StreamHandle{ca, std::move(ref)}, tag{f ? FLAGS : DEFAULT}, flags{f}
     {}
 
@@ -123,7 +123,7 @@ public:
      *
      * Available flags are:
      *
-     * * `TcpHandle::Bind::IPV6ONLY`: it disables dual-stack support and only
+     * * `TCPHandle::Bind::IPV6ONLY`: it disables dual-stack support and only
      * IPv6 is used.
      *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
@@ -143,7 +143,7 @@ public:
      *
      * Available flags are:
      *
-     * * `TcpHandle::Bind::IPV6ONLY`: it disables dual-stack support and only
+     * * `TCPHandle::Bind::IPV6ONLY`: it disables dual-stack support and only
      * IPv6 is used.
      *
      * @param ip The address to which to bind.
@@ -167,7 +167,7 @@ public:
      *
      * Available flags are:
      *
-     * * `TcpHandle::Bind::IPV6ONLY`: it disables dual-stack support and only
+     * * `TCPHandle::Bind::IPV6ONLY`: it disables dual-stack support and only
      * IPv6 is used.
      *
      * @param addr A valid instance of Addr.
