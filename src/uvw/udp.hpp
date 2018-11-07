@@ -81,13 +81,13 @@ private:
 
 
 /**
- * @brief The UDPHandle handle.
+ * @brief The UdpHandle handle.
  *
  * UDP handles encapsulate UDP communication for both clients and servers.<br/>
  * By default, _IPv4_ is used as a template parameter. The handle already
  * supports _IPv6_ out-of-the-box by using `uvw::IPv6`.
  *
- * To create an `UDPHandle` through a `Loop`, arguments follow:
+ * To create an `UdpHandle` through a `Loop`, arguments follow:
  *
  * * An optional integer value that indicates optional flags used to initialize
  * the socket.
@@ -96,12 +96,12 @@ private:
  * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_init_ex)
  * for further details.
  */
-class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
+class UdpHandle final: public Handle<UdpHandle, uv_udp_t> {
     template<typename I>
     static void recvCallback(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
         const typename details::IpTraits<I>::Type *aptr = reinterpret_cast<const typename details::IpTraits<I>::Type *>(addr);
 
-        UDPHandle &udp = *(static_cast<UDPHandle*>(handle->data));
+        UdpHandle &udp = *(static_cast<UdpHandle*>(handle->data));
         // data will be destroyed no matter of what the value of nread is
         std::unique_ptr<const char[]> data{buf->base};
 
@@ -127,7 +127,7 @@ public:
 
     using Handle::Handle;
 
-    explicit UDPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
+    explicit UdpHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
         : Handle{ca, std::move(ref)}, tag{FLAGS}, flags{f}
     {}
 

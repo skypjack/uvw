@@ -110,7 +110,6 @@ TEST(TCP, Shutdown) {
     auto loop = uvw::Loop::getDefault();
     auto server = loop->resource<uvw::TCPHandle>();
     auto client = loop->resource<uvw::TCPHandle>();
-
     server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { FAIL(); });
     client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { FAIL(); });
 

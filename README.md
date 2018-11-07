@@ -31,7 +31,7 @@ As an example, a *handle* should be initialized before any other operation and c
 
 void listen(uvw::Loop &loop) {
     std::shared_ptr<uvw::TCPHandle> tcp = loop.resource<uvw::TCPHandle>();
-
+    
     tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TCPHandle &srv) {
         std::shared_ptr<uvw::TCPHandle> client = srv.loop().resource<uvw::TCPHandle>();
 

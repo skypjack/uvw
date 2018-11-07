@@ -4,11 +4,11 @@
 
 TEST(UDP, Functionalities) {
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::UDPHandle>();
+    auto handle = loop->resource<uvw::UdpHandle>();
 
-    ASSERT_FALSE(handle->multicastMembership("0.0.0.0", "127.0.0.1", uvw::UDPHandle::Membership::JOIN_GROUP));
-    ASSERT_TRUE(handle->multicastMembership("224.0.0.1", "127.0.0.1", uvw::UDPHandle::Membership::JOIN_GROUP));
-    ASSERT_TRUE(handle->multicastMembership("224.0.0.1", "127.0.0.1", uvw::UDPHandle::Membership::LEAVE_GROUP));
+    ASSERT_FALSE(handle->multicastMembership("0.0.0.0", "127.0.0.1", uvw::UdpHandle::Membership::JOIN_GROUP));
+    ASSERT_TRUE(handle->multicastMembership("224.0.0.1", "127.0.0.1", uvw::UdpHandle::Membership::JOIN_GROUP));
+    ASSERT_TRUE(handle->multicastMembership("224.0.0.1", "127.0.0.1", uvw::UdpHandle::Membership::LEAVE_GROUP));
     ASSERT_TRUE(handle->multicastLoop(true));
     ASSERT_TRUE(handle->multicastTtl(42));
     ASSERT_TRUE(handle->multicastInterface("127.0.0.1"));
@@ -26,7 +26,7 @@ TEST(UDP, BindRecvStop) {
     const unsigned int port = 4242;
 
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::UDPHandle>();
+    auto handle = loop->resource<uvw::UdpHandle>();
 
     handle->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UDPHandle &) { FAIL(); });
 
@@ -44,13 +44,13 @@ TEST(UDP, ReadTrySend) {
     const unsigned int port = 4242;
 
     auto loop = uvw::Loop::getDefault();
-    auto server = loop->resource<uvw::UDPHandle>();
-    auto client = loop->resource<uvw::UDPHandle>();
+    auto server = loop->resource<uvw::UdpHandle>();
+    auto client = loop->resource<uvw::UdpHandle>();
 
     server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UDPHandle &) { FAIL(); });
     client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UDPHandle &) { FAIL(); });
 
-    server->once<uvw::UDPDataEvent>([&client](const uvw::UDPDataEvent &, uvw::UDPHandle &handle) {
+    server->once<uvw::UDPDataEvent>([&client](const uvw::UDPDataEvent &, uvw::UdpHandle &handle) {
         client->close();
         handle.close();
     });
@@ -75,17 +75,17 @@ TEST(UDP, ReadSend) {
     const unsigned int port = 4242;
 
     auto loop = uvw::Loop::getDefault();
-    auto server = loop->resource<uvw::UDPHandle>();
-    auto client = loop->resource<uvw::UDPHandle>();
+    auto server = loop->resource<uvw::UdpHandle>();
+    auto client = loop->resource<uvw::UdpHandle>();
 
     server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UDPHandle &) { FAIL(); });
     client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UDPHandle &) { FAIL(); });
 
-    server->once<uvw::UDPDataEvent>([](const uvw::UDPDataEvent &, uvw::UDPHandle &handle) {
+    server->once<uvw::UDPDataEvent>([](const uvw::UDPDataEvent &, uvw::UdpHandle &handle) {
         handle.close();
     });
 
-    client->once<uvw::SendEvent>([](const uvw::SendEvent &, uvw::UDPHandle &handle) {
+    client->once<uvw::SendEvent>([](const uvw::SendEvent &, uvw::UdpHandle &handle) {
         handle.close();
     });
 
@@ -109,7 +109,7 @@ TEST(UDP, Sock) {
     const unsigned int port = 4242;
 
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::UDPHandle>();
+    auto handle = loop->resource<uvw::UdpHandle>();
 
     handle->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UDPHandle &) { FAIL(); });
 
