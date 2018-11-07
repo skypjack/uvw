@@ -18,7 +18,8 @@ namespace uvw {
 namespace details {
 
 
-enum class UVTCPFlags: typename std::underlying_type<uv_tcp_flags>::type {    IPV6ONLY = UV_TCP_IPV6ONLY
+enum class UVTCPFlags: typename std::underlying_type<uv_tcp_flags>::type {
+    IPV6ONLY = UV_TCP_IPV6ONLY
 };
 
 
