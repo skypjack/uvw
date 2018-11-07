@@ -2,12 +2,12 @@
 #include <uvw.hpp>
 
 
-TEST(Tcp, Functionalities) {
+TEST(TCP, Functionalities) {
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::TcpHandle>();
+    auto handle = loop->resource<uvw::TCPHandle>();
 
     ASSERT_TRUE(handle->noDelay(true));
-    ASSERT_TRUE(handle->keepAlive(true, uvw::TcpHandle::Time{128}));
+    ASSERT_TRUE(handle->keepAlive(true, uvw::TCPHandle::Time{128}));
     ASSERT_TRUE(handle->simultaneousAccepts());
 
     handle->close();
@@ -15,33 +15,33 @@ TEST(Tcp, Functionalities) {
 }
 
 
-TEST(Tcp, ReadWrite) {
+TEST(TCP, ReadWrite) {
     const std::string address = std::string{"127.0.0.1"};
     const unsigned int port = 4242;
 
     auto loop = uvw::Loop::getDefault();
-    auto server = loop->resource<uvw::TcpHandle>();
-    auto client = loop->resource<uvw::TcpHandle>();
+    auto server = loop->resource<uvw::TCPHandle>();
+    auto client = loop->resource<uvw::TCPHandle>();
 
-    server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
-    client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
+    server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { FAIL(); });
+    client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { FAIL(); });
 
-    server->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &handle) {
-        std::shared_ptr<uvw::TcpHandle> socket = handle.loop().resource<uvw::TcpHandle>();
+    server->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TCPHandle &handle) {
+        std::shared_ptr<uvw::TCPHandle> socket = handle.loop().resource<uvw::TCPHandle>();
 
-        socket->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
-        socket->on<uvw::CloseEvent>([&handle](const uvw::CloseEvent &, uvw::TcpHandle &) { handle.close(); });
-        socket->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &sock) { sock.close(); });
+        socket->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { FAIL(); });
+        socket->on<uvw::CloseEvent>([&handle](const uvw::CloseEvent &, uvw::TCPHandle &) { handle.close(); });
+        socket->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TCPHandle &sock) { sock.close(); });
 
         handle.accept(*socket);
         socket->read();
     });
 
-    client->once<uvw::WriteEvent>([](const uvw::WriteEvent &, uvw::TcpHandle &handle) {
+    client->once<uvw::WriteEvent>([](const uvw::WriteEvent &, uvw::TCPHandle &handle) {
         handle.close();
     });
 
-    client->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TcpHandle &handle) {
+    client->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TCPHandle &handle) {
         ASSERT_TRUE(handle.writable());
         ASSERT_TRUE(handle.readable());
 
@@ -59,23 +59,23 @@ TEST(Tcp, ReadWrite) {
 }
 
 
-TEST(Tcp, SockPeer) {
+TEST(TCP, SockPeer) {
     const std::string address = std::string{"127.0.0.1"};
     const unsigned int port = 4242;
 
     auto loop = uvw::Loop::getDefault();
-    auto server = loop->resource<uvw::TcpHandle>();
-    auto client = loop->resource<uvw::TcpHandle>();
+    auto server = loop->resource<uvw::TCPHandle>();
+    auto client = loop->resource<uvw::TCPHandle>();
 
-    server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
-    client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
+    server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { FAIL(); });
+    client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { FAIL(); });
 
-    server->once<uvw::ListenEvent>([&address, port](const uvw::ListenEvent &, uvw::TcpHandle &handle) {
-        std::shared_ptr<uvw::TcpHandle> socket = handle.loop().resource<uvw::TcpHandle>();
+    server->once<uvw::ListenEvent>([&address, port](const uvw::ListenEvent &, uvw::TCPHandle &handle) {
+        std::shared_ptr<uvw::TCPHandle> socket = handle.loop().resource<uvw::TCPHandle>();
 
-        socket->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
-        socket->on<uvw::CloseEvent>([&handle](const uvw::CloseEvent &, uvw::TcpHandle &) { handle.close(); });
-        socket->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &sock) { sock.close(); });
+        socket->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { FAIL(); });
+        socket->on<uvw::CloseEvent>([&handle](const uvw::CloseEvent &, uvw::TCPHandle &) { handle.close(); });
+        socket->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TCPHandle &sock) { sock.close(); });
 
         handle.accept(*socket);
         socket->read();
@@ -86,7 +86,7 @@ TEST(Tcp, SockPeer) {
         ASSERT_EQ(addr.port, decltype(addr.port){port});
     });
 
-    client->once<uvw::ConnectEvent>([&address](const uvw::ConnectEvent &, uvw::TcpHandle &handle) {
+    client->once<uvw::ConnectEvent>([&address](const uvw::ConnectEvent &, uvw::TCPHandle &handle) {
         uvw::Addr addr = handle.peer();
 
         ASSERT_EQ(addr.ip, address);
@@ -103,33 +103,33 @@ TEST(Tcp, SockPeer) {
 }
 
 
-TEST(Tcp, Shutdown) {
+TEST(TCP, Shutdown) {
     const std::string address = std::string{"127.0.0.1"};
     const unsigned int port = 4242;
 
     auto loop = uvw::Loop::getDefault();
-    auto server = loop->resource<uvw::TcpHandle>();
-    auto client = loop->resource<uvw::TcpHandle>();
+    auto server = loop->resource<uvw::TCPHandle>();
+    auto client = loop->resource<uvw::TCPHandle>();
 
-    server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
-    client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
+    server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { FAIL(); });
+    client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { FAIL(); });
 
-    server->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &handle) {
-        std::shared_ptr<uvw::TcpHandle> socket = handle.loop().resource<uvw::TcpHandle>();
+    server->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TCPHandle &handle) {
+        std::shared_ptr<uvw::TCPHandle> socket = handle.loop().resource<uvw::TCPHandle>();
 
-        socket->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) { FAIL(); });
-        socket->on<uvw::CloseEvent>([&handle](const uvw::CloseEvent &, uvw::TcpHandle &) { handle.close(); });
-        socket->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &sock) { sock.close(); });
+        socket->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { FAIL(); });
+        socket->on<uvw::CloseEvent>([&handle](const uvw::CloseEvent &, uvw::TCPHandle &) { handle.close(); });
+        socket->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TCPHandle &sock) { sock.close(); });
 
         handle.accept(*socket);
         socket->read();
     });
 
-    client->once<uvw::ShutdownEvent>([](const uvw::ShutdownEvent &, uvw::TcpHandle &handle) {
+    client->once<uvw::ShutdownEvent>([](const uvw::ShutdownEvent &, uvw::TCPHandle &handle) {
         handle.close();
     });
 
-    client->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TcpHandle &handle) {
+    client->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TCPHandle &handle) {
         handle.shutdown();
     });
 
@@ -141,9 +141,9 @@ TEST(Tcp, Shutdown) {
 }
 
 
-TEST(Tcp, WriteError) {
+TEST(TCP, WriteError) {
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::TcpHandle>();
+    auto handle = loop->resource<uvw::TCPHandle>();
 
     bool checkWriteSmartPtrErrorEvent = false;
     bool checkWriteNakedPtrErrorEvent = false;
@@ -151,13 +151,13 @@ TEST(Tcp, WriteError) {
     bool checkTryWriteNakedPtrErrorEvent = false;
 
     handle->close();
-    handle->once<uvw::ErrorEvent>([&checkWriteSmartPtrErrorEvent](const uvw::ErrorEvent &, uvw::TcpHandle &) { checkWriteSmartPtrErrorEvent = true; });
+    handle->once<uvw::ErrorEvent>([&checkWriteSmartPtrErrorEvent](const uvw::ErrorEvent &, uvw::TCPHandle &) { checkWriteSmartPtrErrorEvent = true; });
     handle->write(std::unique_ptr<char[]>{}, 0);
-    handle->once<uvw::ErrorEvent>([&checkWriteNakedPtrErrorEvent](const uvw::ErrorEvent &, uvw::TcpHandle &) { checkWriteNakedPtrErrorEvent = true; });
+    handle->once<uvw::ErrorEvent>([&checkWriteNakedPtrErrorEvent](const uvw::ErrorEvent &, uvw::TCPHandle &) { checkWriteNakedPtrErrorEvent = true; });
     handle->write(nullptr, 0);
-    handle->once<uvw::ErrorEvent>([&checkTryWriteSmartPtrErrorEvent](const uvw::ErrorEvent &, uvw::TcpHandle &) { checkTryWriteSmartPtrErrorEvent = true; });
+    handle->once<uvw::ErrorEvent>([&checkTryWriteSmartPtrErrorEvent](const uvw::ErrorEvent &, uvw::TCPHandle &) { checkTryWriteSmartPtrErrorEvent = true; });
     handle->tryWrite(std::unique_ptr<char[]>{}, 0);
-    handle->once<uvw::ErrorEvent>([&checkTryWriteNakedPtrErrorEvent](const uvw::ErrorEvent &, uvw::TcpHandle &) { checkTryWriteNakedPtrErrorEvent = true; });
+    handle->once<uvw::ErrorEvent>([&checkTryWriteNakedPtrErrorEvent](const uvw::ErrorEvent &, uvw::TCPHandle &) { checkTryWriteNakedPtrErrorEvent = true; });
     handle->tryWrite(nullptr, 0);
 
     loop->run();

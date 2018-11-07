@@ -14,7 +14,7 @@ configuration:
 
 before_build:
   - cd %BUILD_DIR%
-  - cmake .. -G"Visual Studio 15 2017"
+  - cmake .. -DBUILD_TESTING=ON -G"Visual Studio 15 2017"
 
 build:
   parallel: true

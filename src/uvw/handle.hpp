@@ -99,7 +99,7 @@ public:
      *
      * * An AsyncHandle handle is always active and cannot be deactivated,
      * except by closing it with uv_close().
-     * * A PipeHandle, TcpHandle, UDPHandle, etc. handle - basically any handle
+     * * A PipeHandle, TCPHandle, UDPHandle, etc. handle - basically any handle
      * that deals with I/O - is active when it is doing something that involves
      * I/O, like reading, writing, connecting, accepting new connections, etc.
      * * A CheckHandle, IdleHandle, TimerHandle, etc. handle is active when it
@@ -183,8 +183,8 @@ public:
      *
      * Gets the size of the send buffer that the operating system uses for the
      * socket.<br/>
-     * This function works for TcpHandle, PipeHandle and UDPHandle handles on
-     * Unix and for TcpHandle and UDPHandle handles on Windows.<br/>
+     * This function works for TCPHandle, PipeHandle and UDPHandle handles on
+     * Unix and for TCPHandle and UDPHandle handles on Windows.<br/>
      * Note that Linux will return double the size of the original set value.
      *
      * @return The size of the send buffer, 0 in case of errors.
@@ -200,8 +200,8 @@ public:
      *
      * Sets the size of the send buffer that the operating system uses for the
      * socket.<br/>
-     * This function works for TcpHandle, PipeHandle and UDPHandle handles on
-     * Unix and for TcpHandle and UDPHandle handles on Windows.<br/>
+     * This function works for TCPHandle, PipeHandle and UDPHandle handles on
+     * Unix and for TCPHandle and UDPHandle handles on Windows.<br/>
      * Note that Linux will set double the size.
      *
      * @return True in case of success, false otherwise.
@@ -215,8 +215,8 @@ public:
      *
      * Gets the size of the receive buffer that the operating system uses for
      * the socket.<br/>
-     * This function works for TcpHandle, PipeHandle and UDPHandle handles on
-     * Unix and for TcpHandle and UDPHandle handles on Windows.<br/>
+     * This function works for TCPHandle, PipeHandle and UDPHandle handles on
+     * Unix and for TCPHandle and UDPHandle handles on Windows.<br/>
      * Note that Linux will return double the size of the original set value.
      *
      * @return The size of the receive buffer, 0 in case of errors.
@@ -232,8 +232,8 @@ public:
      *
      * Sets the size of the receive buffer that the operating system uses for
      * the socket.<br/>
-     * This function works for TcpHandle, PipeHandle and UDPHandle handles on
-     * Unix and for TcpHandle and UDPHandle handles on Windows.<br/>
+     * This function works for TCPHandle, PipeHandle and UDPHandle handles on
+     * Unix and for TCPHandle and UDPHandle handles on Windows.<br/>
      * Note that Linux will set double the size.
      *
      * @return True in case of success, false otherwise.
@@ -247,7 +247,7 @@ public:
      *
      * Supported handles:
      *
-     * * TcpHandle
+     * * TCPHandle
      * * PipeHandle
      * * TTYHandle
      * * UDPHandle

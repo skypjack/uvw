@@ -6,23 +6,23 @@
 
 
 void listen(uvw::Loop &loop) {
-    std::shared_ptr<uvw::TcpHandle> tcp = loop.resource<uvw::TcpHandle>();
+    std::shared_ptr<uvw::TCPHandle> tcp = loop.resource<uvw::TCPHandle>();
 
-    tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) {
+    tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) {
         std::cout << "error " << std::endl;
     });
 
-    tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TcpHandle &srv) {
+    tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TCPHandle &srv) {
         std::cout << "listen" << std::endl;
 
-        std::shared_ptr<uvw::TcpHandle> client = srv.loop().resource<uvw::TcpHandle>();
+        std::shared_ptr<uvw::TCPHandle> client = srv.loop().resource<uvw::TCPHandle>();
 
-        client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) {
+        client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) {
             std::cout << "error " << std::endl;
         });
 
         auto ptr = srv.shared_from_this();
-        client->on<uvw::CloseEvent>([ptr](const uvw::CloseEvent &, uvw::TcpHandle &) {
+        client->on<uvw::CloseEvent>([ptr](const uvw::CloseEvent &, uvw::TCPHandle &) {
             std::cout << "close" << std::endl;
             ptr->close();
         });
@@ -35,12 +35,12 @@ void listen(uvw::Loop &loop) {
         uvw::Addr remote = client->peer();
         std::cout << "remote: " << remote.ip << " " << remote.port << std::endl;
 
-        client->on<uvw::DataEvent>([](const uvw::DataEvent &event, uvw::TcpHandle &) {
+        client->on<uvw::DataEvent>([](const uvw::DataEvent &event, uvw::TCPHandle &) {
             std::cout.write(event.data.get(), event.length) << std::endl;
             std::cout << "data length: " << event.length << std::endl;
         });
 
-        client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TcpHandle &handle) {
+        client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TCPHandle &handle) {
             std::cout << "end" << std::endl;
             int count = 0;
             handle.loop().walk([&count](uvw::BaseHandle &) { ++count; });
@@ -51,7 +51,7 @@ void listen(uvw::Loop &loop) {
         client->read();
     });
 
-    tcp->once<uvw::CloseEvent>([](const uvw::CloseEvent &, uvw::TcpHandle &) {
+    tcp->once<uvw::CloseEvent>([](const uvw::CloseEvent &, uvw::TCPHandle &) {
         std::cout << "close" << std::endl;
     });
 
@@ -61,18 +61,18 @@ void listen(uvw::Loop &loop) {
 
 
 void conn(uvw::Loop &loop) {
-    auto tcp = loop.resource<uvw::TcpHandle>();
+    auto tcp = loop.resource<uvw::TCPHandle>();
 
-    tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TcpHandle &) {
+    tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) {
         std::cout << "error " << std::endl;
     });
 
-    tcp->once<uvw::WriteEvent>([](const uvw::WriteEvent &, uvw::TcpHandle &handle) {
+    tcp->once<uvw::WriteEvent>([](const uvw::WriteEvent &, uvw::TCPHandle &handle) {
         std::cout << "write" << std::endl;
         handle.close();
     });
 
-    tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TcpHandle &handle) {
+    tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TCPHandle &handle) {
         std::cout << "connect" << std::endl;
 
         auto dataTryWrite = std::unique_ptr<char[]>(new char[1]{ 'a' });
@@ -83,7 +83,7 @@ void conn(uvw::Loop &loop) {
         handle.write(std::move(dataWrite), 2);
     });
 
-    tcp->once<uvw::CloseEvent>([](const uvw::CloseEvent &, uvw::TcpHandle &) {
+    tcp->once<uvw::CloseEvent>([](const uvw::CloseEvent &, uvw::TCPHandle &) {
         std::cout << "close" << std::endl;
     });
 

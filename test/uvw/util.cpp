@@ -113,9 +113,9 @@ TEST(Util, Utilities) {
     guessHandle(tag<uvw::IdleHandle>{}, uvw::HandleType::IDLE);
     guessHandle(tag<uvw::PipeHandle>{}, uvw::HandleType::PIPE);
     guessHandle(tag<uvw::PrepareHandle>{}, uvw::HandleType::PREPARE);
-    guessHandle(tag<uvw::TcpHandle>{}, uvw::HandleType::TCP);
+    guessHandle(tag<uvw::TCPHandle>{}, uvw::HandleType::TCP);
     guessHandle(tag<uvw::TimerHandle>{}, uvw::HandleType::TIMER);
-    guessHandle(tag<uvw::UdpHandle>{}, uvw::HandleType::UDP);
+    guessHandle(tag<uvw::UDPHandle>{}, uvw::HandleType::UDP);
     guessHandle(tag<uvw::SignalHandle>{}, uvw::HandleType::SIGNAL);
 
     auto cpuInfo = uvw::Utilities::cpuInfo();

@@ -2,13 +2,13 @@
 #include <uvw.hpp>
 
 
-TEST(Udp, Functionalities) {
+TEST(UDP, Functionalities) {
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::UdpHandle>();
+    auto handle = loop->resource<uvw::UDPHandle>();
 
-    ASSERT_FALSE(handle->multicastMembership("0.0.0.0", "127.0.0.1", uvw::UdpHandle::Membership::JOIN_GROUP));
-    ASSERT_TRUE(handle->multicastMembership("224.0.0.1", "127.0.0.1", uvw::UdpHandle::Membership::JOIN_GROUP));
-    ASSERT_TRUE(handle->multicastMembership("224.0.0.1", "127.0.0.1", uvw::UdpHandle::Membership::LEAVE_GROUP));
+    ASSERT_FALSE(handle->multicastMembership("0.0.0.0", "127.0.0.1", uvw::UDPHandle::Membership::JOIN_GROUP));
+    ASSERT_TRUE(handle->multicastMembership("224.0.0.1", "127.0.0.1", uvw::UDPHandle::Membership::JOIN_GROUP));
+    ASSERT_TRUE(handle->multicastMembership("224.0.0.1", "127.0.0.1", uvw::UDPHandle::Membership::LEAVE_GROUP));
     ASSERT_TRUE(handle->multicastLoop(true));
     ASSERT_TRUE(handle->multicastTtl(42));
     ASSERT_TRUE(handle->multicastInterface("127.0.0.1"));
@@ -21,14 +21,14 @@ TEST(Udp, Functionalities) {
 }
 
 
-TEST(Udp, BindRecvStop) {
+TEST(UDP, BindRecvStop) {
     const std::string address = std::string{"127.0.0.1"};
     const unsigned int port = 4242;
 
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::UdpHandle>();
+    auto handle = loop->resource<uvw::UDPHandle>();
 
-    handle->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UdpHandle &) { FAIL(); });
+    handle->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UDPHandle &) { FAIL(); });
 
     handle->bind(address, port);
     handle->recv();
@@ -39,18 +39,18 @@ TEST(Udp, BindRecvStop) {
 }
 
 
-TEST(Udp, ReadTrySend) {
+TEST(UDP, ReadTrySend) {
     const std::string address = std::string{"127.0.0.1"};
     const unsigned int port = 4242;
 
     auto loop = uvw::Loop::getDefault();
-    auto server = loop->resource<uvw::UdpHandle>();
-    auto client = loop->resource<uvw::UdpHandle>();
+    auto server = loop->resource<uvw::UDPHandle>();
+    auto client = loop->resource<uvw::UDPHandle>();
 
-    server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UdpHandle &) { FAIL(); });
-    client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UdpHandle &) { FAIL(); });
+    server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UDPHandle &) { FAIL(); });
+    client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UDPHandle &) { FAIL(); });
 
-    server->once<uvw::UDPDataEvent>([&client](const uvw::UDPDataEvent &, uvw::UdpHandle &handle) {
+    server->once<uvw::UDPDataEvent>([&client](const uvw::UDPDataEvent &, uvw::UDPHandle &handle) {
         client->close();
         handle.close();
     });
@@ -70,22 +70,22 @@ TEST(Udp, ReadTrySend) {
 }
 
 
-TEST(Udp, ReadSend) {
+TEST(UDP, ReadSend) {
     const std::string address = std::string{"127.0.0.1"};
     const unsigned int port = 4242;
 
     auto loop = uvw::Loop::getDefault();
-    auto server = loop->resource<uvw::UdpHandle>();
-    auto client = loop->resource<uvw::UdpHandle>();
+    auto server = loop->resource<uvw::UDPHandle>();
+    auto client = loop->resource<uvw::UDPHandle>();
 
-    server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UdpHandle &) { FAIL(); });
-    client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UdpHandle &) { FAIL(); });
+    server->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UDPHandle &) { FAIL(); });
+    client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UDPHandle &) { FAIL(); });
 
-    server->once<uvw::UDPDataEvent>([](const uvw::UDPDataEvent &, uvw::UdpHandle &handle) {
+    server->once<uvw::UDPDataEvent>([](const uvw::UDPDataEvent &, uvw::UDPHandle &handle) {
         handle.close();
     });
 
-    client->once<uvw::SendEvent>([](const uvw::SendEvent &, uvw::UdpHandle &handle) {
+    client->once<uvw::SendEvent>([](const uvw::SendEvent &, uvw::UDPHandle &handle) {
         handle.close();
     });
 
@@ -104,14 +104,14 @@ TEST(Udp, ReadSend) {
 }
 
 
-TEST(Udp, Sock) {
+TEST(UDP, Sock) {
     const std::string address = std::string{"127.0.0.1"};
     const unsigned int port = 4242;
 
     auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::UdpHandle>();
+    auto handle = loop->resource<uvw::UDPHandle>();
 
-    handle->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UdpHandle &) { FAIL(); });
+    handle->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::UDPHandle &) { FAIL(); });
 
     handle->bind(address, port);
     handle->recv();
