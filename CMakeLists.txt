@@ -67,7 +67,8 @@ if(DOXYGEN_FOUND)
 endif()
 
 if(BUILD_TESTING)
-    enable_testing()
+    set(BUILD_TESTING OFF)
+
     set(GOOGLETEST_DEPS_DIR ${PROJECT_DEPS_DIR}/googletest)
     set(LIBUV_DEPS_DIR ${PROJECT_DEPS_DIR}/libuv)
 
@@ -82,6 +83,9 @@ if(BUILD_TESTING)
     # uv and uv_a targets are available from now on
     add_subdirectory(${LIBUV_DEPS_DIR})
     include_directories(${LIBUV_DEPS_DIR}/include)
+
+    set(BUILD_TESTING ON)
+    enable_testing()
 
     add_subdirectory(test)
 endif()

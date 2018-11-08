@@ -378,7 +378,7 @@ template<typename I, typename F, typename H>
 Addr address(F &&f, const H *handle) noexcept {
     sockaddr_storage ssto;
     int len = sizeof(ssto);
-    Addr addr{};
+    Addr addr;
 
     int err = std::forward<F>(f)(handle, reinterpret_cast<sockaddr *>(&ssto), &len);
 

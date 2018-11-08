@@ -45,7 +45,7 @@ struct UDPDataEvent {
 namespace details {
 
 
-enum class UVUdpFlags: typename std::underlying_type<uv_udp_flags>::type {
+enum class UVUDPFlags: typename std::underlying_type<uv_udp_flags>::type {
     IPV6ONLY = UV_UDP_IPV6ONLY,
     REUSEADDR = UV_UDP_REUSEADDR
 };
@@ -81,13 +81,13 @@ private:
 
 
 /**
- * @brief The UdpHandle handle.
+ * @brief The UDPHandle handle.
  *
  * UDP handles encapsulate UDP communication for both clients and servers.<br/>
  * By default, _IPv4_ is used as a template parameter. The handle already
  * supports _IPv6_ out-of-the-box by using `uvw::IPv6`.
  *
- * To create an `UdpHandle` through a `Loop`, arguments follow:
+ * To create an `UDPHandle` through a `Loop`, arguments follow:
  *
  * * An optional integer value that indicates optional flags used to initialize
  * the socket.
@@ -96,12 +96,12 @@ private:
  * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_init_ex)
  * for further details.
  */
-class UdpHandle final: public Handle<UdpHandle, uv_udp_t> {
+class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
     template<typename I>
     static void recvCallback(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
         const typename details::IpTraits<I>::Type *aptr = reinterpret_cast<const typename details::IpTraits<I>::Type *>(addr);
 
-        UdpHandle &udp = *(static_cast<UdpHandle*>(handle->data));
+        UDPHandle &udp = *(static_cast<UDPHandle*>(handle->data));
         // data will be destroyed no matter of what the value of nread is
         std::unique_ptr<const char[]> data{buf->base};
 
@@ -121,13 +121,13 @@ class UdpHandle final: public Handle<UdpHandle, uv_udp_t> {
 
 public:
     using Membership = details::UVMembership;
-    using Bind = details::UVUdpFlags;
+    using Bind = details::UVUDPFlags;
     using IPv4 = uvw::IPv4;
     using IPv6 = uvw::IPv6;
 
     using Handle::Handle;
 
-    explicit UdpHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
+    explicit UDPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
         : Handle{ca, std::move(ref)}, tag{FLAGS}, flags{f}
     {}
 
