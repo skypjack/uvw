@@ -24,7 +24,9 @@ enum class UVProcessFlags: std::underlying_type_t<uv_process_flags> {
     SETGID = UV_PROCESS_SETGID,
     WINDOWS_VERBATIM_ARGUMENTS = UV_PROCESS_WINDOWS_VERBATIM_ARGUMENTS,
     DETACHED = UV_PROCESS_DETACHED,
-    WINDOWS_HIDE = UV_PROCESS_WINDOWS_HIDE
+    WINDOWS_HIDE = UV_PROCESS_WINDOWS_HIDE,
+    WINDOWS_HIDE_CONSOLE = UV_PROCESS_WINDOWS_HIDE_CONSOLE,
+    WINDOWS_HIDE_GUI = UV_PROCESS_WINDOWS_HIDE_GUI
 };
 
 
@@ -144,7 +146,7 @@ public:
         poStdio.reserve(poFdStdio.size() + poStreamStdio.size());
         poStdio.insert(poStdio.begin(), poFdStdio.cbegin(), poFdStdio.cend());
         poStdio.insert(poStdio.end(), poStreamStdio.cbegin(), poStreamStdio.cend());
-       
+
         po.stdio_count = static_cast<decltype(po.stdio_count)>(poStdio.size());
         po.stdio = poStdio.data();
 
@@ -194,6 +196,8 @@ public:
      * * `ProcessHandle::Process::WINDOWS_VERBATIM_ARGUMENTS`
      * * `ProcessHandle::Process::DETACHED`
      * * `ProcessHandle::Process::WINDOWS_HIDE`
+     * * `ProcessHandle::Process::WINDOWS_HIDE_CONSOLE`
+     * * `ProcessHandle::Process::WINDOWS_HIDE_GUI`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_process_flags)
