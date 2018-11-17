@@ -19,7 +19,7 @@ var searchData=
   ['resource_3c_20shutdownreq_2c_20uv_5fshutdown_5ft_20_3e',['Resource&lt; ShutdownReq, uv_shutdown_t &gt;',['../classuvw_1_1Resource.html',1,'uvw']]],
   ['resource_3c_20signalhandle_2c_20uv_5fsignal_5ft_20_3e',['Resource&lt; SignalHandle, uv_signal_t &gt;',['../classuvw_1_1Resource.html',1,'uvw']]],
   ['resource_3c_20t_2c_20uv_5ffs_5ft_20_3e',['Resource&lt; T, uv_fs_t &gt;',['../classuvw_1_1Resource.html',1,'uvw']]],
-  ['resource_3c_20tcphandle_2c_20uv_5ftcp_5ft_20_3e',['Resource&lt; TcpHandle, uv_tcp_t &gt;',['../classuvw_1_1Resource.html',1,'uvw']]],
+  ['resource_3c_20tcphandle_2c_20uv_5ftcp_5ft_20_3e',['Resource&lt; TCPHandle, uv_tcp_t &gt;',['../classuvw_1_1Resource.html',1,'uvw']]],
   ['resource_3c_20timerhandle_2c_20uv_5ftimer_5ft_20_3e',['Resource&lt; TimerHandle, uv_timer_t &gt;',['../classuvw_1_1Resource.html',1,'uvw']]],
   ['resource_3c_20ttyhandle_2c_20uv_5ftty_5ft_20_3e',['Resource&lt; TTYHandle, uv_tty_t &gt;',['../classuvw_1_1Resource.html',1,'uvw']]],
   ['resource_3c_20udphandle_2c_20uv_5fudp_5ft_20_3e',['Resource&lt; UDPHandle, uv_udp_t &gt;',['../classuvw_1_1Resource.html',1,'uvw']]],

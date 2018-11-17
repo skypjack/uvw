@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['tcphandle',['TcpHandle',['../classuvw_1_1TcpHandle.html',1,'uvw']]],
+  ['tcphandle',['TCPHandle',['../classuvw_1_1TCPHandle.html',1,'uvw']]],
   ['timeout',['timeout',['../classuvw_1_1Loop.html#aa815a8db94b2beb2d23448fe81cf648c',1,'uvw::Loop']]],
   ['timerevent',['TimerEvent',['../structuvw_1_1TimerEvent.html',1,'uvw']]],
   ['timerhandle',['TimerHandle',['../classuvw_1_1TimerHandle.html',1,'uvw']]],

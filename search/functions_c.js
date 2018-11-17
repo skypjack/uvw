@@ -5,6 +5,6 @@ var searchData=
   ['nameinfosync',['nameInfoSync',['../classuvw_1_1GetNameInfoReq.html#aa10d4a54eeef5218cbc0c0f48ca2bbcf',1,'uvw::GetNameInfoReq::nameInfoSync(const sockaddr &amp;addr, int flags=0)'],['../classuvw_1_1GetNameInfoReq.html#a123524dc1c40f11ca6a8763dea75acb1',1,'uvw::GetNameInfoReq::nameInfoSync(std::string ip, unsigned int port, int flags=0)'],['../classuvw_1_1GetNameInfoReq.html#a12b389d3672d88d24c5c41a136e55394',1,'uvw::GetNameInfoReq::nameInfoSync(Addr addr, int flags=0)']]],
   ['nodeaddrinfo',['nodeAddrInfo',['../classuvw_1_1GetAddrInfoReq.html#ad79227261955329b227c04212567779b',1,'uvw::GetAddrInfoReq']]],
   ['nodeaddrinfosync',['nodeAddrInfoSync',['../classuvw_1_1GetAddrInfoReq.html#a2a1dbef8fa0cb180ab87e008958334da',1,'uvw::GetAddrInfoReq']]],
-  ['nodelay',['noDelay',['../classuvw_1_1TcpHandle.html#a4e494c5cf91a5c223ef8d5ce88262457',1,'uvw::TcpHandle']]],
+  ['nodelay',['noDelay',['../classuvw_1_1TCPHandle.html#a3837999138b3450036f3631b009b2c71',1,'uvw::TCPHandle']]],
   ['now',['now',['../classuvw_1_1Loop.html#abb1a1000e23e7d1e849a21fd79b86be9',1,'uvw::Loop']]]
 ];

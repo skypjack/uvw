@@ -1,0 +1,8 @@
+<map id="uvw::TCPHandle" name="uvw::TCPHandle">
+<area shape="rect" id="node2" href="$classuvw_1_1StreamHandle.html" title="uvw::StreamHandle\&lt;\l TCPHandle, uv_tcp_t \&gt;" alt="" coords="78,273,242,315"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Handle.html" title="uvw::Handle\&lt; TCPHandle,\l uv_tcp_t \&gt;" alt="" coords="71,184,249,225"/>
+<area shape="rect" id="node4" href="$structuvw_1_1BaseHandle.html" title="Untyped handle class. " alt="" coords="5,102,131,129"/>
+<area shape="rect" id="node5" href="$classuvw_1_1Resource.html" title="uvw::Resource\&lt; TCPHandle,\l uv_tcp_t \&gt;" alt="" coords="155,95,349,136"/>
+<area shape="rect" id="node6" href="$classuvw_1_1UnderlyingType.html" title="uvw::UnderlyingType\l\&lt; TCPHandle, uv_tcp_t \&gt;" alt="" coords="63,5,235,47"/>
+<area shape="rect" id="node7" href="$classuvw_1_1Emitter.html" title="uvw::Emitter\&lt; TCPHandle \&gt;" alt="" coords="259,13,447,39"/>
+</map>

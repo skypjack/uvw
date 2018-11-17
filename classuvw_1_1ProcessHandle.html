@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">1.11.2</span>
+   &#160;<span id="projectnumber">1.12.0</span>
    </div>
   </td>
  </tr>
@@ -229,7 +229,7 @@ Static Public Member Functions</h2></td></tr>
 <div class="textblock"><p>The <a class="el" href="classuvw_1_1ProcessHandle.html" title="The ProcessHandle handle. ">ProcessHandle</a> handle. </p>
 <p>Process handles will spawn a new process and allow the user to control it and establish communication channels with it using streams. </p>
 
-<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00065">65</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00067">67</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a29dca1723733e51edf063f93046f52b1"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a29dca1723733e51edf063f93046f52b1">&#9670;&nbsp;</a></span>cwd()</h2>
@@ -264,7 +264,7 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A reference to this process handle. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00182">182</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00184">184</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
 
 </div>
 </div>
@@ -296,7 +296,7 @@ Static Public Member Functions</h2></td></tr>
  It is recommended to call this function as early in your program as possible, before the inherited file descriptors can be closed or duplicated.</p>
 <p>See the official <a href="http://docs.libuv.org/en/v1.x/process.html#c.uv_disable_stdio_inheritance">documentation</a> for further details. </p>
 
-<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00093">93</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00095">95</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
 
 </div>
 </div>
@@ -332,6 +332,8 @@ Static Public Member Functions</h2></td></tr>
 <li><code>ProcessHandle::Process::WINDOWS_VERBATIM_ARGUMENTS</code></li>
 <li><code>ProcessHandle::Process::DETACHED</code></li>
 <li><code>ProcessHandle::Process::WINDOWS_HIDE</code></li>
+<li><code>ProcessHandle::Process::WINDOWS_HIDE_CONSOLE</code></li>
+<li><code>ProcessHandle::Process::WINDOWS_HIDE_GUI</code></li>
 </ul>
 <p>See the official <a href="http://docs.libuv.org/en/v1.x/process.html#c.uv_process_flags">documentation</a> for further details.</p>
 <dl class="params"><dt>Parameters</dt><dd>
@@ -342,7 +344,7 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A reference to this process handle. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00205">205</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00209">209</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
 
 </div>
 </div>
@@ -379,7 +381,7 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A reference to this process handle. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00304">304</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00308">308</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
 
 </div>
 </div>
@@ -409,7 +411,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Initializes the handle. </p>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00111">111</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00113">113</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
 
 </div>
 </div>
@@ -457,7 +459,7 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00103">103</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00105">105</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
 
 </div>
 </div>
@@ -493,7 +495,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00162">162</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00164">164</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
 
 </div>
 </div>
@@ -524,7 +526,7 @@ Static Public Member Functions</h2></td></tr>
 <p>It’s set after calling <code><a class="el" href="classuvw_1_1ProcessHandle.html#a9b2872324ef0ee004713a6128040a56a" title="spawn Starts the process. ">spawn()</a></code>.</p>
 <dl class="section return"><dt>Returns</dt><dd>The PID of the spawned process. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00173">173</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00175">175</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
 
 </div>
 </div>
@@ -580,7 +582,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00131">131</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00133">133</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
 
 </div>
 </div>
@@ -641,7 +643,7 @@ template&lt;typename T , typename U &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A reference to this process handle. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00232">232</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00236">236</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
 
 </div>
 </div>
@@ -705,7 +707,7 @@ template&lt;typename T , typename U &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A reference to this process handle. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00267">267</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00271">271</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
 
 </div>
 </div>
@@ -742,7 +744,7 @@ template&lt;typename T , typename U &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A reference to this process handle. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00294">294</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="process_8hpp_source.html#l00298">298</a> of file <a class="el" href="process_8hpp_source.html">process.hpp</a>.</p>
 
 </div>
 </div>

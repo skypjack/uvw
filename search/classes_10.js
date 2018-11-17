@@ -28,7 +28,7 @@ var searchData=
   ['underlyingtype_3c_20shutdownreq_2c_20uv_5fshutdown_5ft_20_3e',['UnderlyingType&lt; ShutdownReq, uv_shutdown_t &gt;',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],
   ['underlyingtype_3c_20signalhandle_2c_20uv_5fsignal_5ft_20_3e',['UnderlyingType&lt; SignalHandle, uv_signal_t &gt;',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],
   ['underlyingtype_3c_20t_2c_20uv_5ffs_5ft_20_3e',['UnderlyingType&lt; T, uv_fs_t &gt;',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],
-  ['underlyingtype_3c_20tcphandle_2c_20uv_5ftcp_5ft_20_3e',['UnderlyingType&lt; TcpHandle, uv_tcp_t &gt;',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],
+  ['underlyingtype_3c_20tcphandle_2c_20uv_5ftcp_5ft_20_3e',['UnderlyingType&lt; TCPHandle, uv_tcp_t &gt;',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],
   ['underlyingtype_3c_20thread_2c_20uv_5fthread_5ft_20_3e',['UnderlyingType&lt; Thread, uv_thread_t &gt;',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],
   ['underlyingtype_3c_20threadlocalstorage_2c_20uv_5fkey_5ft_20_3e',['UnderlyingType&lt; ThreadLocalStorage, uv_key_t &gt;',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],
   ['underlyingtype_3c_20timerhandle_2c_20uv_5ftimer_5ft_20_3e',['UnderlyingType&lt; TimerHandle, uv_timer_t &gt;',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],

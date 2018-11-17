@@ -19,7 +19,7 @@ var searchData=
   ['emitter_3c_20sendreq_20_3e',['Emitter&lt; SendReq &gt;',['../classuvw_1_1Emitter.html',1,'uvw']]],
   ['emitter_3c_20shutdownreq_20_3e',['Emitter&lt; ShutdownReq &gt;',['../classuvw_1_1Emitter.html',1,'uvw']]],
   ['emitter_3c_20signalhandle_20_3e',['Emitter&lt; SignalHandle &gt;',['../classuvw_1_1Emitter.html',1,'uvw']]],
-  ['emitter_3c_20tcphandle_20_3e',['Emitter&lt; TcpHandle &gt;',['../classuvw_1_1Emitter.html',1,'uvw']]],
+  ['emitter_3c_20tcphandle_20_3e',['Emitter&lt; TCPHandle &gt;',['../classuvw_1_1Emitter.html',1,'uvw']]],
   ['emitter_3c_20timerhandle_20_3e',['Emitter&lt; TimerHandle &gt;',['../classuvw_1_1Emitter.html',1,'uvw']]],
   ['emitter_3c_20ttyhandle_20_3e',['Emitter&lt; TTYHandle &gt;',['../classuvw_1_1Emitter.html',1,'uvw']]],
   ['emitter_3c_20udphandle_20_3e',['Emitter&lt; UDPHandle &gt;',['../classuvw_1_1Emitter.html',1,'uvw']]],

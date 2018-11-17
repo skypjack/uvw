@@ -7,6 +7,6 @@ var searchData=
   ['netmask',['netmask',['../structuvw_1_1InterfaceAddress.html#ae49c9d7b92ed40cfdf61d846e20eaefa',1,'uvw::InterfaceAddress']]],
   ['nodeaddrinfo',['nodeAddrInfo',['../classuvw_1_1GetAddrInfoReq.html#ad79227261955329b227c04212567779b',1,'uvw::GetAddrInfoReq']]],
   ['nodeaddrinfosync',['nodeAddrInfoSync',['../classuvw_1_1GetAddrInfoReq.html#a2a1dbef8fa0cb180ab87e008958334da',1,'uvw::GetAddrInfoReq']]],
-  ['nodelay',['noDelay',['../classuvw_1_1TcpHandle.html#a4e494c5cf91a5c223ef8d5ce88262457',1,'uvw::TcpHandle']]],
+  ['nodelay',['noDelay',['../classuvw_1_1TCPHandle.html#a3837999138b3450036f3631b009b2c71',1,'uvw::TCPHandle']]],
   ['now',['now',['../classuvw_1_1Loop.html#abb1a1000e23e7d1e849a21fd79b86be9',1,'uvw::Loop']]]
 ];

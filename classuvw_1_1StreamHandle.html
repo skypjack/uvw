@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">1.11.2</span>
+   &#160;<span id="projectnumber">1.12.0</span>
    </div>
   </td>
  </tr>
@@ -246,7 +246,7 @@ Additional Inherited Members</h2></td></tr>
 class uvw::StreamHandle&lt; T, U &gt;</h3>
 
 <p>The <a class="el" href="classuvw_1_1StreamHandle.html" title="The StreamHandle handle. ">StreamHandle</a> handle. </p>
-<p>Stream handles provide an abstraction of a duplex communication channel. <a class="el" href="classuvw_1_1StreamHandle.html" title="The StreamHandle handle. ">StreamHandle</a> is an intermediate type, <code>uvw</code> provides three stream implementations: <a class="el" href="classuvw_1_1TcpHandle.html" title="The TcpHandle handle. ">TcpHandle</a>, <a class="el" href="classuvw_1_1PipeHandle.html" title="The PipeHandle handle. ">PipeHandle</a> and <a class="el" href="classuvw_1_1TTYHandle.html" title="The TTYHandle handle. ">TTYHandle</a>. </p>
+<p>Stream handles provide an abstraction of a duplex communication channel. <a class="el" href="classuvw_1_1StreamHandle.html" title="The StreamHandle handle. ">StreamHandle</a> is an intermediate type, <code>uvw</code> provides three stream implementations: <a class="el" href="classuvw_1_1TCPHandle.html" title="The TCPHandle handle. ">TCPHandle</a>, <a class="el" href="classuvw_1_1PipeHandle.html" title="The PipeHandle handle. ">PipeHandle</a> and <a class="el" href="classuvw_1_1TTYHandle.html" title="The TTYHandle handle. ">TTYHandle</a>. </p>
 
 <p class="definition">Definition at line <a class="el" href="stream_8hpp_source.html#l00130">130</a> of file <a class="el" href="stream_8hpp_source.html">stream.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
@@ -792,7 +792,7 @@ template&lt;typename S &gt; </div>
 
 <p>Extended write function for sending handles over a pipe handle. </p>
 <p>The pipe must be initialized with <code>ipc == true</code>.</p>
-<p><code>send</code> must be a <a class="el" href="classuvw_1_1TcpHandle.html" title="The TcpHandle handle. ">TcpHandle</a> or <a class="el" href="classuvw_1_1PipeHandle.html" title="The PipeHandle handle. ">PipeHandle</a> handle, which is a server or a connection (listening or connected state). Bound sockets or pipes will be assumed to be servers.</p>
+<p><code>send</code> must be a <a class="el" href="classuvw_1_1TCPHandle.html" title="The TCPHandle handle. ">TCPHandle</a> or <a class="el" href="classuvw_1_1PipeHandle.html" title="The PipeHandle handle. ">PipeHandle</a> handle, which is a server or a connection (listening or connected state). Bound sockets or pipes will be assumed to be servers.</p>
 <p>The handle takes the ownership of the data and it is in charge of delete them.</p>
 <p>A <a class="el" href="structuvw_1_1WriteEvent.html" title="WriteEvent event. ">WriteEvent</a> event will be emitted when the data have been written.<br />
  An <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> wvent will be emitted in case of errors.</p>
@@ -855,7 +855,7 @@ template&lt;typename S &gt; </div>
 
 <p>Extended write function for sending handles over a pipe handle. </p>
 <p>The pipe must be initialized with <code>ipc == true</code>.</p>
-<p><code>send</code> must be a <a class="el" href="classuvw_1_1TcpHandle.html" title="The TcpHandle handle. ">TcpHandle</a> or <a class="el" href="classuvw_1_1PipeHandle.html" title="The PipeHandle handle. ">PipeHandle</a> handle, which is a server or a connection (listening or connected state). Bound sockets or pipes will be assumed to be servers.</p>
+<p><code>send</code> must be a <a class="el" href="classuvw_1_1TCPHandle.html" title="The TCPHandle handle. ">TCPHandle</a> or <a class="el" href="classuvw_1_1PipeHandle.html" title="The PipeHandle handle. ">PipeHandle</a> handle, which is a server or a connection (listening or connected state). Bound sockets or pipes will be assumed to be servers.</p>
 <p>The handle doesn't take the ownership of the data. Be sure that their lifetime overcome the one of the request.</p>
 <p>A <a class="el" href="structuvw_1_1WriteEvent.html" title="WriteEvent event. ">WriteEvent</a> event will be emitted when the data have been written.<br />
  An <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> wvent will be emitted in case of errors.</p>
