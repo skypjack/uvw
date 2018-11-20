@@ -1,4 +1,7 @@
-language: cpp
+language:
+- cpp
+- python
+
 dist: trusty
 sudo: false
 
@@ -6,6 +9,7 @@ matrix:
   include:
   - os: linux
     compiler: gcc
+    language: cpp
     addons:
       apt:
         sources: ['ubuntu-toolchain-r-test']
@@ -21,9 +25,11 @@ matrix:
   - os: osx
     osx_image: xcode8.3
     compiler: clang
+    language: cpp
     env: COMPILER=clang++
   - os: linux
     compiler: gcc
+    language: cpp
     addons:
       apt:
         sources: ['ubuntu-toolchain-r-test']
@@ -50,6 +56,8 @@ matrix:
       - pip install conan_package_tools
     script:
       - python .conan/build.py
+  allow_failures:
+  - language: python
 
 notifications:
   email:
