@@ -334,8 +334,8 @@ Check the [contributors list](https://github.com/skypjack/uvw/blob/master/AUTHOR
 
 # License
 
-Code and documentation Copyright (c) 2016-2018 Michele Caini.<br/>
-Logo Copyright (c) 2018 Richard Caseres.
+Code and documentation Copyright (c) 2016-2019 Michele Caini.<br/>
+Logo Copyright (c) 2018-2019 Richard Caseres.
 
 Code released under
 [the MIT license](https://github.com/skypjack/uvw/blob/master/LICENSE).
