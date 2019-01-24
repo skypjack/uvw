@@ -13,7 +13,7 @@ class UVMConan(ConanFile):
     exports = "LICENSE"
     exports_sources = "src/*"
     no_copy_source = True
-    requires = "libuv/1.24.0@bincrafters/stable"
+    requires = "libuv/1.25.0@bincrafters/stable"
 
     def package(self):
         self.copy(pattern="LICENSE", dst="licenses")
