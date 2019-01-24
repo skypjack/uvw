@@ -1,3 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structuvw_1_1Utilities.html" title="Miscellaneous utilities. " alt="" coords="5,5,104,32"/>
+<area shape="rect" id="node1" href="$classuvw_1_1Emitter.html" title="uvw::Emitter\&lt; WriteReq \&gt;" alt="" coords="5,5,180,32"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title="uvw::Resource\&lt; WriteReq,\l uv_write_t \&gt;" alt="" coords="228,27,409,69"/>
+<area shape="rect" id="node3" href="$classuvw_1_1UnderlyingType.html" title="uvw::UnderlyingType\l\&lt; WriteReq, uv_write_t \&gt;" alt="" coords="8,57,177,98"/>
 </map>

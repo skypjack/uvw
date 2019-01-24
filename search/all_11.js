@@ -45,5 +45,6 @@ var searchData=
   ['symlink',['symlink',['../classuvw_1_1FsReq.html#a2c68210c3af3022d692b8089f44f2938',1,'uvw::FsReq']]],
   ['symlinksync',['symlinkSync',['../classuvw_1_1FsReq.html#a6253ea10b84b9524c756a3dfea6c0cfb',1,'uvw::FsReq']]],
   ['sync',['sync',['../classuvw_1_1FileReq.html#a70356eb203b8617bc554ba0c37fa680f',1,'uvw::FileReq']]],
-  ['syncsync',['syncSync',['../classuvw_1_1FileReq.html#a55c257e01bd448b09be66406ab43f165',1,'uvw::FileReq']]]
+  ['syncsync',['syncSync',['../classuvw_1_1FileReq.html#a55c257e01bd448b09be66406ab43f165',1,'uvw::FileReq']]],
+  ['sysname',['sysname',['../structuvw_1_1UName.html#a2d863e9ecbc58a7d350024f457235117',1,'uvw::UName']]]
 ];

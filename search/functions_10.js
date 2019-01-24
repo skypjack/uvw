@@ -13,6 +13,7 @@ var searchData=
   ['recvbuffersize',['recvBufferSize',['../classuvw_1_1Handle.html#adf07222a2587ca1eb80aec5a9af892e7',1,'uvw::Handle::recvBufferSize()'],['../classuvw_1_1Handle.html#a549b5f46f62b8474bad8775c6e4ff1a9',1,'uvw::Handle::recvBufferSize(int value)']]],
   ['reference',['reference',['../classuvw_1_1Handle.html#acd04810b141d54cac4b51c69259f15e9',1,'uvw::Handle::reference()'],['../structuvw_1_1BaseHandle.html#a6269a35e7b9064f1b5a1721b4b024438',1,'uvw::BaseHandle::reference()']]],
   ['referenced',['referenced',['../classuvw_1_1Handle.html#ad44c23189e6c77b5a3807bb184366fd0',1,'uvw::Handle::referenced()'],['../structuvw_1_1BaseHandle.html#ac60a3ccabd066fc9da06aa458eb62f64',1,'uvw::BaseHandle::referenced()']]],
+  ['release',['release',['../structuvw_1_1UName.html#a7a37e3e18653526a0245ca49ce007a76',1,'uvw::UName']]],
   ['rename',['rename',['../classuvw_1_1FsReq.html#aa1b5c7c02f39ea85fd605a2ee4892f0d',1,'uvw::FsReq']]],
   ['renamesync',['renameSync',['../classuvw_1_1FsReq.html#a7ca6e1a9454cf174dbd3776623fcf118',1,'uvw::FsReq']]],
   ['repeat',['repeat',['../classuvw_1_1TimerHandle.html#a1775eedcc2a75f04a5b4bba61584a881',1,'uvw::TimerHandle::repeat(Time repeat)'],['../classuvw_1_1TimerHandle.html#acfaaf46d6fe0009df9dd45f70abe314f',1,'uvw::TimerHandle::repeat()']]],

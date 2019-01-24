@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['machine',['machine',['../structuvw_1_1UName.html#ab7e5590093ffcbf2c9eb32bfb91b62a3',1,'uvw::UName']]],
   ['mkdir',['mkdir',['../classuvw_1_1FsReq.html#a7fd7083a410ac2c7181dcdc809fee90a',1,'uvw::FsReq']]],
   ['mkdirsync',['mkdirSync',['../classuvw_1_1FsReq.html#a13e84b77215ee9addf1c4a5bfa20f533',1,'uvw::FsReq']]],
   ['mkdtemp',['mkdtemp',['../classuvw_1_1FsReq.html#a8b19c4cfea989183c42ad399ee99096f',1,'uvw::FsReq']]],
