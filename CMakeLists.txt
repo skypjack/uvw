@@ -16,7 +16,7 @@ endif()
 # Project configuration
 #
 
-project(uvw VERSION 1.12.0)
+project(uvw VERSION 1.13.0)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
@@ -144,6 +144,7 @@ install(
 add_custom_target(
     uvw_aob
     SOURCES
+        cmake/in/deps.in
         appveyor.yml
         AUTHORS
         LICENSE

@@ -279,6 +279,55 @@ private:
 
 
 /**
+ * @brief Utility class.
+ *
+ * This class can be used to get name and information about the current kernel.
+ * The populated data includes the operating system name, release, version, and
+ * machine.
+ *
+ * \sa Utilities::uname
+ */
+struct UName {
+    UName(std::shared_ptr<uv_utsname_t> utsname): utsname{utsname} {}
+
+    /**
+     * @brief Gets the operating system name (like "Linux").
+     * @return The operating system name.
+     */
+    std::string sysname() const noexcept {
+        return utsname ? utsname->sysname : "";
+    }
+
+    /**
+     * @brief Gets the operating system release (like "2.6.28").
+     * @return The operating system release.
+     */
+    std::string release() const noexcept {
+        return utsname ? utsname->release : "";
+    }
+
+    /**
+     * @brief Gets the operating system version.
+     * @return The operating system version
+     */
+    std::string version() const noexcept {
+        return utsname ? utsname->version : "";
+    }
+
+    /**
+     * @brief Gets the hardware identifier.
+     * @return The hardware identifier.
+     */
+    std::string machine() const noexcept {
+        return utsname ? utsname->machine : "";
+    }
+
+private:
+    std::shared_ptr<uv_utsname_t> utsname;
+};
+
+
+/**
  * @brief The IPv4 tag.
  *
  * To be used as template parameter to switch between IPv4 and IPv6.
@@ -519,6 +568,21 @@ struct Utilities {
          */
         static std::string hostname() noexcept {
             return details::tryRead(&uv_os_gethostname);
+        }
+
+        /**
+         * @brief Gets name and information about the current kernel.
+         *
+         * This function can be used to get name and information about the
+         * current kernel. The populated data includes the operating system
+         * name, release, version, and machine.
+         *
+         * @return Name and information about the current kernel.
+         */
+        static UName uname() noexcept {
+            auto ptr = std::make_shared<uv_utsname_t>();
+            uv_os_uname(ptr.get());
+            return ptr;
         }
 
         /**
