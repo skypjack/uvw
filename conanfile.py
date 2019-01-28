@@ -9,6 +9,7 @@ class UVMConan(ConanFile):
     homepage = "https://github.com/skypjack/uvw"
     url = homepage
     license = "MIT"
+    topics = ("conan", "uvw", "libuv", "header-only", "wrapper", "event-loop")
     author = "Michele Caini <michele.caini@gmail.com>"
     exports = "LICENSE"
     exports_sources = "src/*"
