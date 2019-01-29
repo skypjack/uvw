@@ -41,7 +41,6 @@ if __name__ == "__main__":
     builder = ConanMultiPackager(reference=get_reference(),
                                  username=get_username(),
                                  upload=get_upload(),
-                                 remotes="https://api.bintray.com/conan/bincrafters/public-conan",
                                  test_folder=test_folder,
                                  stable_branch_pattern=r'v?\d+\.\d+\.\d+.*',
                                  upload_only_when_stable=upload_when_stable())
