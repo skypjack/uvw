@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <cstddef>
 #include <type_traits>
 #include <utility>
 #include <uv.h>
@@ -11,6 +12,18 @@
 
 
 namespace uvw {
+
+
+namespace details {
+
+
+enum class UVThreadCreateFlags: std::underlying_type_t<uv_thread_create_flags> {
+    THREAD_NO_FLAGS = UV_THREAD_NO_FLAGS,
+    THREAD_HAS_STACK_SIZE = UV_THREAD_HAS_STACK_SIZE
+};
+
+
+}
 
 
 class Thread;
@@ -32,6 +45,7 @@ class Thread final: public UnderlyingType<Thread, uv_thread_t> {
     }
 
 public:
+    using Options = details::UVThreadCreateFlags;
     using Task = InternalTask;
     using Type = uv_thread_t;
 
@@ -53,6 +67,11 @@ public:
 
     bool run() noexcept {
         return (0 == uv_thread_create(get(), &createCallback, this));
+    }
+
+    bool run(Flags<Options> opts, std::size_t stack = {}) noexcept {
+        uv_thread_options_t params{opts, stack};
+        return (0 == uv_thread_create_ex(get(), &params, &createCallback, this));
     }
 
     bool join() noexcept {
