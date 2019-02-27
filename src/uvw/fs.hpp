@@ -388,7 +388,7 @@ class FileReq final: public FsRequest<FileReq> {
     static void fsReadCallback(uv_fs_t *req) {
         auto ptr = reserve(req);
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
-        else { ptr->publish(FsEvent<Type::READ>{req->path, std::move(ptr->data), static_cast<std::size_t>(req->result)}); }
+        else { ptr->publish(FsEvent<Type::READ>{req->path, std::move(ptr->current), static_cast<std::size_t>(req->result)}); }
     }
 
 public:
@@ -516,8 +516,8 @@ public:
      * @param len Length, as described in the official documentation.
      */
     void read(int64_t offset, unsigned int len) {
-        data = std::unique_ptr<char[]>{new char[len]};
-        buffer = uv_buf_init(data.get(), len);
+        current = std::unique_ptr<char[]>{new char[len]};
+        buffer = uv_buf_init(current.get(), len);
         uv_buf_t bufs[] = { buffer };
         cleanupAndInvoke(&uv_fs_read, parent(), get(), file, bufs, 1, offset, &fsReadCallback);
     }
@@ -536,13 +536,13 @@ public:
      */
     std::pair<bool, std::pair<std::unique_ptr<const char[]>, std::size_t>>
     readSync(int64_t offset, unsigned int len) {
-        data = std::unique_ptr<char[]>{new char[len]};
-        buffer = uv_buf_init(data.get(), len);
+        current = std::unique_ptr<char[]>{new char[len]};
+        buffer = uv_buf_init(current.get(), len);
         uv_buf_t bufs[] = { buffer };
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_read, parent(), req, file, bufs, 1, offset);
         bool err = req->result < 0;
-        return std::make_pair(!err, std::make_pair(std::move(data), err ? 0 : std::size_t(req->result)));
+        return std::make_pair(!err, std::make_pair(std::move(current), err ? 0 : std::size_t(req->result)));
     }
 
     /**
@@ -559,8 +559,8 @@ public:
      * @param offset Offset, as described in the official documentation.
      */
     void write(std::unique_ptr<char[]> buf, unsigned int len, int64_t offset) {
-        this->data = std::move(buf);
-        uv_buf_t bufs[] = { uv_buf_init(this->data.get(), len) };
+        current = std::move(buf);
+        uv_buf_t bufs[] = { uv_buf_init(current.get(), len) };
         cleanupAndInvoke(&uv_fs_write, parent(), get(), file, bufs, 1, offset, &fsResultCallback<Type::WRITE>);
     }
 
@@ -594,8 +594,8 @@ public:
      * * The amount of data written to the given path.
      */
     std::pair<bool, std::size_t> writeSync(std::unique_ptr<char[]> buf, unsigned int len, int64_t offset) {
-        this->data = std::move(buf);
-        uv_buf_t bufs[] = { uv_buf_init(this->data.get(), len) };
+        current = std::move(buf);
+        uv_buf_t bufs[] = { uv_buf_init(current.get(), len) };
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_write, parent(), req, file, bufs, 1, offset);
         bool err = req->result < 0;
@@ -808,7 +808,7 @@ public:
     operator FileHandle() const noexcept { return file; }
 
 private:
-    std::unique_ptr<char[]> data{nullptr};
+    std::unique_ptr<char[]> current{nullptr};
     uv_buf_t buffer{};
     uv_file file{BAD_FD};
 };

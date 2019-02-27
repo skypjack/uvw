@@ -10,7 +10,12 @@
 [![Gitter chat](https://badges.gitter.im/skypjack/uvw.png)](https://gitter.im/skypjack/uvw)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=W2HF9FESD5LJY&lc=IT&item_name=Michele%20Caini&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
 
-[![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/bePatron?u=11330786)
+Do you have a **question** that doesn't require you to open an issue? Join the
+[gitter channel](https://gitter.im/skypjack/uvw).<br/>
+If you use `uvw` and you want to **say thanks** or **support** the project,
+please **consider becoming a patron**:
+
+[![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/bePatron?c=1772573)
 
 <!--
 @endcond TURN_OFF_DOXYGEN
