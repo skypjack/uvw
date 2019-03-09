@@ -1,13 +1,18 @@
 var searchData=
 [
-  ['uid',['uid',['../classuvw_1_1ProcessHandle.html#a10dd82d4b091ca8b5922d9c60ada0b15',1,'uvw::ProcessHandle::uid()'],['../structuvw_1_1Passwd.html#a4e39fc936f1ccac26edd68c62a1646b2',1,'uvw::Passwd::uid()']]],
-  ['uname',['uname',['../structuvw_1_1Utilities_1_1OS.html#a91016dcef7ece7bb98dfd95172889fff',1,'uvw::Utilities::OS']]],
-  ['unlink',['unlink',['../classuvw_1_1FsReq.html#a39106328d144083174374792b8239bae',1,'uvw::FsReq']]],
-  ['unlinksync',['unlinkSync',['../classuvw_1_1FsReq.html#aed77b6a35a13e6b0c2065626aea32a66',1,'uvw::FsReq']]],
-  ['unreference',['unreference',['../classuvw_1_1Handle.html#af4bebc0f0cf639fcf38fd839017857e0',1,'uvw::Handle::unreference()'],['../structuvw_1_1BaseHandle.html#afe981579774731e02014b5c3d5ebb0bf',1,'uvw::BaseHandle::unreference()']]],
-  ['update',['update',['../classuvw_1_1Loop.html#a080af72a50c18b92bb50e89afa116e57',1,'uvw::Loop']]],
-  ['uptime',['uptime',['../structuvw_1_1Utilities.html#ae2b405d1b5d8de4bbb3e9a2707b9ec3a',1,'uvw::Utilities']]],
-  ['username',['username',['../structuvw_1_1Passwd.html#a32fb64ac957376ca92248767db8bc9eb',1,'uvw::Passwd']]],
-  ['utime',['utime',['../classuvw_1_1FileReq.html#a8c7e40372ca19806f5864576278ed82e',1,'uvw::FileReq::utime()'],['../classuvw_1_1FsReq.html#aabb98930481b954e0f2ad9046f1ab0b7',1,'uvw::FsReq::utime()']]],
-  ['utimesync',['utimeSync',['../classuvw_1_1FileReq.html#a5ced5c83df512a180bdba11f3509085e',1,'uvw::FileReq::utimeSync()'],['../classuvw_1_1FsReq.html#a88cede82fc90238aee034f6c24c66d1f',1,'uvw::FsReq::utimeSync()']]]
+  ['timedwait',['timedWait',['../classuvw_1_1Condition.html#afea23c026793301fadc8defc5d1990c5',1,'uvw::Condition']]],
+  ['timeout',['timeout',['../classuvw_1_1Loop.html#aa815a8db94b2beb2d23448fe81cf648c',1,'uvw::Loop']]],
+  ['tmpdir',['tmpdir',['../structuvw_1_1Utilities_1_1OS.html#a8f7125f1eecdbedeea3322453114eeb8',1,'uvw::Utilities::OS']]],
+  ['totalmemory',['totalMemory',['../structuvw_1_1Utilities.html#acd553ee275a0e28a10250fcb2f6b993a',1,'uvw::Utilities']]],
+  ['translate',['translate',['../structuvw_1_1ErrorEvent.html#a4b50d8375e94ca82ebe0e9942771e07c',1,'uvw::ErrorEvent']]],
+  ['truncate',['truncate',['../classuvw_1_1FileReq.html#a222bb36d1317171e08a13779a20f4239',1,'uvw::FileReq']]],
+  ['truncatesync',['truncateSync',['../classuvw_1_1FileReq.html#a167e0932b8ad887e0f07299f3f05f9e8',1,'uvw::FileReq']]],
+  ['trylock',['tryLock',['../classuvw_1_1Mutex.html#a9a3039055a81c002afd75912762cebff',1,'uvw::Mutex']]],
+  ['tryrdlock',['tryRdLock',['../classuvw_1_1RWLock.html#ab275d29234e62aca7baa48d3d76f0889',1,'uvw::RWLock']]],
+  ['trysend',['trySend',['../classuvw_1_1UDPHandle.html#a57ee2b1d037fd4c2d2f7487076241809',1,'uvw::UDPHandle::trySend(const sockaddr &amp;addr, std::unique_ptr&lt; char[]&gt; data, unsigned int len)'],['../classuvw_1_1UDPHandle.html#aa89b82ecf73039581c7207ef1c3d7cfd',1,'uvw::UDPHandle::trySend(std::string ip, unsigned int port, std::unique_ptr&lt; char[]&gt; data, unsigned int len)'],['../classuvw_1_1UDPHandle.html#a39c107fe0a7ca4db749dbf2e1fa8d32c',1,'uvw::UDPHandle::trySend(Addr addr, std::unique_ptr&lt; char[]&gt; data, unsigned int len)'],['../classuvw_1_1UDPHandle.html#a46fad3e1568cce4fee79047b579627c1',1,'uvw::UDPHandle::trySend(const sockaddr &amp;addr, char *data, unsigned int len)'],['../classuvw_1_1UDPHandle.html#a6d7de6f96f8c02e16b3146d144c49bc9',1,'uvw::UDPHandle::trySend(std::string ip, unsigned int port, char *data, unsigned int len)'],['../classuvw_1_1UDPHandle.html#a942992c0897638726a9cfb470e110a37',1,'uvw::UDPHandle::trySend(Addr addr, char *data, unsigned int len)']]],
+  ['trywait',['tryWait',['../classuvw_1_1Semaphore.html#a75aaa79f5cb47685b8e3f35a303b5a2f',1,'uvw::Semaphore']]],
+  ['trywrite',['tryWrite',['../classuvw_1_1StreamHandle.html#a3f6f26113dc02442a93b7643842fb415',1,'uvw::StreamHandle::tryWrite(std::unique_ptr&lt; char[]&gt; data, unsigned int len)'],['../classuvw_1_1StreamHandle.html#a72b95a0efb99c96a0427a8f44fd9ddb6',1,'uvw::StreamHandle::tryWrite(char *data, unsigned int len)']]],
+  ['trywrlock',['tryWrLock',['../classuvw_1_1RWLock.html#a06106cba6aabeb88bf6f9b002c05692e',1,'uvw::RWLock']]],
+  ['ttl',['ttl',['../classuvw_1_1UDPHandle.html#a95c37745be6ee35cb5ba5c2cece2c555',1,'uvw::UDPHandle']]],
+  ['type',['type',['../classuvw_1_1Handle.html#a9056993d6077e8bee8bd77c9b03f2797',1,'uvw::Handle::type()'],['../structuvw_1_1BaseHandle.html#a9771dcd6699b033ee484837a6419b195',1,'uvw::BaseHandle::type()']]]
 ];

@@ -1,5 +1,6 @@
 var searchData=
 [
+  ['get',['get',['../classuvw_1_1ThreadLocalStorage.html#a9a254fec9e362bdf91fbbae04dd07b0c',1,'uvw::ThreadLocalStorage']]],
   ['getaddrinforeq',['GetAddrInfoReq',['../classuvw_1_1GetAddrInfoReq.html',1,'uvw']]],
   ['getdefault',['getDefault',['../classuvw_1_1Loop.html#a284450b3ef37c62bd7a984c73552d7b8',1,'uvw::Loop']]],
   ['getnameinforeq',['GetNameInfoReq',['../classuvw_1_1GetNameInfoReq.html',1,'uvw']]],

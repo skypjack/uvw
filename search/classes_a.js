@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['nameinfoevent',['NameInfoEvent',['../structuvw_1_1NameInfoEvent.html',1,'uvw']]]
+  ['mutex',['Mutex',['../classuvw_1_1Mutex.html',1,'uvw']]]
 ];

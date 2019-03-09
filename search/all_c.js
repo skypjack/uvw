@@ -1,12 +1,15 @@
 var searchData=
 [
-  ['name',['name',['../structuvw_1_1InterfaceAddress.html#abfec6ae9914c03ef90f9d08c0c82759e',1,'uvw::InterfaceAddress::name()'],['../structuvw_1_1ErrorEvent.html#a261276889f9db8882e7412f32808b372',1,'uvw::ErrorEvent::name()']]],
-  ['nameinfo',['nameInfo',['../classuvw_1_1GetNameInfoReq.html#abf7da3fe9c6fd98cbd8e2d0031f1f3dc',1,'uvw::GetNameInfoReq::nameInfo(const sockaddr &amp;addr, int flags=0)'],['../classuvw_1_1GetNameInfoReq.html#a9318766e0e54deae150ecd8687a32a97',1,'uvw::GetNameInfoReq::nameInfo(std::string ip, unsigned int port, int flags=0)'],['../classuvw_1_1GetNameInfoReq.html#a6771dbaa2015337383ffe0b1a2b0d6af',1,'uvw::GetNameInfoReq::nameInfo(Addr addr, int flags=0)']]],
-  ['nameinfoevent',['NameInfoEvent',['../structuvw_1_1NameInfoEvent.html',1,'uvw']]],
-  ['nameinfosync',['nameInfoSync',['../classuvw_1_1GetNameInfoReq.html#aa10d4a54eeef5218cbc0c0f48ca2bbcf',1,'uvw::GetNameInfoReq::nameInfoSync(const sockaddr &amp;addr, int flags=0)'],['../classuvw_1_1GetNameInfoReq.html#a123524dc1c40f11ca6a8763dea75acb1',1,'uvw::GetNameInfoReq::nameInfoSync(std::string ip, unsigned int port, int flags=0)'],['../classuvw_1_1GetNameInfoReq.html#a12b389d3672d88d24c5c41a136e55394',1,'uvw::GetNameInfoReq::nameInfoSync(Addr addr, int flags=0)']]],
-  ['netmask',['netmask',['../structuvw_1_1InterfaceAddress.html#ae49c9d7b92ed40cfdf61d846e20eaefa',1,'uvw::InterfaceAddress']]],
-  ['nodeaddrinfo',['nodeAddrInfo',['../classuvw_1_1GetAddrInfoReq.html#ad79227261955329b227c04212567779b',1,'uvw::GetAddrInfoReq']]],
-  ['nodeaddrinfosync',['nodeAddrInfoSync',['../classuvw_1_1GetAddrInfoReq.html#a2a1dbef8fa0cb180ab87e008958334da',1,'uvw::GetAddrInfoReq']]],
-  ['nodelay',['noDelay',['../classuvw_1_1TCPHandle.html#a3837999138b3450036f3631b009b2c71',1,'uvw::TCPHandle']]],
-  ['now',['now',['../classuvw_1_1Loop.html#abb1a1000e23e7d1e849a21fd79b86be9',1,'uvw::Loop']]]
+  ['machine',['machine',['../structuvw_1_1UName.html#ab7e5590093ffcbf2c9eb32bfb91b62a3',1,'uvw::UName']]],
+  ['mkdir',['mkdir',['../classuvw_1_1FsReq.html#a7fd7083a410ac2c7181dcdc809fee90a',1,'uvw::FsReq']]],
+  ['mkdirsync',['mkdirSync',['../classuvw_1_1FsReq.html#a13e84b77215ee9addf1c4a5bfa20f533',1,'uvw::FsReq']]],
+  ['mkdtemp',['mkdtemp',['../classuvw_1_1FsReq.html#a8b19c4cfea989183c42ad399ee99096f',1,'uvw::FsReq']]],
+  ['mkdtempsync',['mkdtempSync',['../classuvw_1_1FsReq.html#aa70a69613e49bb83e3873eaf37dddf3f',1,'uvw::FsReq']]],
+  ['mode',['mode',['../classuvw_1_1TTYHandle.html#a586423b15b4659aeb772b4b308a01e97',1,'uvw::TTYHandle']]],
+  ['model',['model',['../structuvw_1_1CPUInfo.html#a83982b37fbb833b690f7d4a8de7e162c',1,'uvw::CPUInfo']]],
+  ['multicastinterface',['multicastInterface',['../classuvw_1_1UDPHandle.html#a7452f7e65290c913ab6a4df092cd57ee',1,'uvw::UDPHandle']]],
+  ['multicastloop',['multicastLoop',['../classuvw_1_1UDPHandle.html#af1736dbefd63e4df9c0a73006ff7ce85',1,'uvw::UDPHandle']]],
+  ['multicastmembership',['multicastMembership',['../classuvw_1_1UDPHandle.html#af4a4f4b90ebf62e8021b03bb5b4dee5b',1,'uvw::UDPHandle']]],
+  ['multicastttl',['multicastTtl',['../classuvw_1_1UDPHandle.html#a70a112900e1beea3c2c636bff6419491',1,'uvw::UDPHandle']]],
+  ['mutex',['Mutex',['../classuvw_1_1Mutex.html',1,'uvw']]]
 ];

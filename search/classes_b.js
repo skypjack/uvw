@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['os',['OS',['../structuvw_1_1Utilities_1_1OS.html',1,'uvw::Utilities']]]
+  ['nameinfoevent',['NameInfoEvent',['../structuvw_1_1NameInfoEvent.html',1,'uvw']]]
 ];

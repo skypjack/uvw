@@ -1,14 +1,15 @@
 var searchData=
 [
-  ['machine',['machine',['../structuvw_1_1UName.html#ab7e5590093ffcbf2c9eb32bfb91b62a3',1,'uvw::UName']]],
-  ['mkdir',['mkdir',['../classuvw_1_1FsReq.html#a7fd7083a410ac2c7181dcdc809fee90a',1,'uvw::FsReq']]],
-  ['mkdirsync',['mkdirSync',['../classuvw_1_1FsReq.html#a13e84b77215ee9addf1c4a5bfa20f533',1,'uvw::FsReq']]],
-  ['mkdtemp',['mkdtemp',['../classuvw_1_1FsReq.html#a8b19c4cfea989183c42ad399ee99096f',1,'uvw::FsReq']]],
-  ['mkdtempsync',['mkdtempSync',['../classuvw_1_1FsReq.html#aa70a69613e49bb83e3873eaf37dddf3f',1,'uvw::FsReq']]],
-  ['mode',['mode',['../classuvw_1_1TTYHandle.html#a586423b15b4659aeb772b4b308a01e97',1,'uvw::TTYHandle']]],
-  ['model',['model',['../structuvw_1_1CPUInfo.html#a83982b37fbb833b690f7d4a8de7e162c',1,'uvw::CPUInfo']]],
-  ['multicastinterface',['multicastInterface',['../classuvw_1_1UDPHandle.html#a7452f7e65290c913ab6a4df092cd57ee',1,'uvw::UDPHandle']]],
-  ['multicastloop',['multicastLoop',['../classuvw_1_1UDPHandle.html#af1736dbefd63e4df9c0a73006ff7ce85',1,'uvw::UDPHandle']]],
-  ['multicastmembership',['multicastMembership',['../classuvw_1_1UDPHandle.html#af4a4f4b90ebf62e8021b03bb5b4dee5b',1,'uvw::UDPHandle']]],
-  ['multicastttl',['multicastTtl',['../classuvw_1_1UDPHandle.html#a70a112900e1beea3c2c636bff6419491',1,'uvw::UDPHandle']]]
+  ['lchown',['lchown',['../classuvw_1_1FsReq.html#ac12b4c0cc91cb5704cebfc6f6b4afcb2',1,'uvw::FsReq']]],
+  ['lchownsync',['lchownSync',['../classuvw_1_1FsReq.html#a598f1bc27e771e1f36033a85c61a45ec',1,'uvw::FsReq']]],
+  ['length',['length',['../structuvw_1_1DataEvent.html#adc04245b045df6fa1b887722b4ea097d',1,'uvw::DataEvent::length()'],['../structuvw_1_1UDPDataEvent.html#a7fce1eef84538d8e2eaf6e9f6c0e7819',1,'uvw::UDPDataEvent::length()']]],
+  ['link',['link',['../classuvw_1_1FsReq.html#a7e0183c8a94d4acb064e2b665caae85d',1,'uvw::FsReq']]],
+  ['linksync',['linkSync',['../classuvw_1_1FsReq.html#a42522dc4f9f94d711b74d048d0d59fd5',1,'uvw::FsReq']]],
+  ['listen',['listen',['../classuvw_1_1StreamHandle.html#ae7f3eeb7d21ca0bbbb7df591fade4e46',1,'uvw::StreamHandle']]],
+  ['listenevent',['ListenEvent',['../structuvw_1_1ListenEvent.html',1,'uvw']]],
+  ['loadaverage',['loadAverage',['../structuvw_1_1Utilities.html#ad7b5f2ac88ab77355ab0a21307145864',1,'uvw::Utilities']]],
+  ['lock',['lock',['../classuvw_1_1Mutex.html#a0e3992255cc4fc911428089a99ec19fb',1,'uvw::Mutex']]],
+  ['loop',['Loop',['../classuvw_1_1Loop.html',1,'uvw::Loop'],['../classuvw_1_1UnderlyingType.html#aab78fbfffb3c03d78aab515e605ecb18',1,'uvw::UnderlyingType::loop()']]],
+  ['lstat',['lstat',['../classuvw_1_1FsReq.html#af17350e99079cf7359f9ba1e5e825578',1,'uvw::FsReq']]],
+  ['lstatsync',['lstatSync',['../classuvw_1_1FsReq.html#a7b34491e0169ff5e80b27a508b6aa1f3',1,'uvw::FsReq']]]
 ];
