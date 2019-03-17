@@ -219,7 +219,7 @@ public:
      */
     template<typename S>
     void accept(S &ref) {
-        this->invoke(&uv_accept, this->template get<uv_stream_t>(), ref.template get<uv_stream_t>());
+        this->invoke(&uv_accept, this->template get<uv_stream_t>(), this->template get<uv_stream_t>(ref));
     }
 
     /**
