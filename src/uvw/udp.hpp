@@ -177,6 +177,82 @@ public:
     }
 
     /**
+     * @brief Associates the handle to a remote address and port (either IPv4 or
+     * IPv6).
+     *
+     * Every message sent by this handle is automatically sent to the given
+     * destination.<br/>
+     * Trying to call this function on an already connected handle isn't
+     * allowed.
+     *
+     * An ErrorEvent event is emitted in case of errors during the connection.
+     *
+     * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
+     */
+    void connect(const sockaddr &addr) {
+        invoke(&uv_udp_connect, get(), &addr);
+    }
+
+    /**
+     * @brief Associates the handle to a remote address and port (either IPv4 or
+     * IPv6).
+     *
+     * Every message sent by this handle is automatically sent to the given
+     * destination.<br/>
+     * Trying to call this function on an already connected handle isn't
+     * allowed.
+     *
+     * An ErrorEvent event is emitted in case of errors during the connection.
+     *
+     * @param ip The address to which to bind.
+     * @param port The port to which to bind.
+     */
+    template<typename I = IPv4>
+    void connect(std::string ip, unsigned int port) {
+        typename details::IpTraits<I>::Type addr;
+        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
+        connect(reinterpret_cast<const sockaddr &>(addr));
+    }
+
+    /**
+     * @brief Associates the handle to a remote address and port (either IPv4 or
+     * IPv6).
+     *
+     * Every message sent by this handle is automatically sent to the given
+     * destination.<br/>
+     * Trying to call this function on an already connected handle isn't
+     * allowed.
+     *
+     * An ErrorEvent event is emitted in case of errors during the connection.
+     *
+     * @param addr A valid instance of Addr.
+     */
+    template<typename I = IPv4>
+    void connect(Addr addr) {
+        connect<I>(std::move(addr.ip), addr.port);
+    }
+
+    /**
+     * @brief Disconnects the handle.
+     *
+     * Trying to disconnect a handle that is not connected isn't allowed.
+     *
+     * An ErrorEvent event is emitted in case of errors.
+     */
+    void disconnect() {
+        invoke(&uv_udp_connect, get(), nullptr);
+    }
+
+    /**
+     * @brief Gets the remote address to which the handle is connected, if any.
+     * @return A valid instance of Addr, an empty one in case of errors.
+     */
+    template<typename I = IPv4>
+    Addr peer() const noexcept {
+        return details::address<I>(&uv_udp_getpeername, get());
+    }
+
+    /**
      * @brief Binds the UDP handle to an IP address and port.
      *
      * Available flags are:
