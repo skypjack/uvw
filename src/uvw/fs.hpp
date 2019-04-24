@@ -49,7 +49,10 @@ enum class UVFsType: std::underlying_type_t<uv_fs_type> {
     FCHOWN = UV_FS_FCHOWN,
     REALPATH = UV_FS_REALPATH,
     COPYFILE = UV_FS_COPYFILE,
-    LCHOWN = UV_FS_LCHOWN
+    LCHOWN = UV_FS_LCHOWN,
+    OPENDIR = UV_FS_OPENDIR,
+    READDIR = UV_FS_READDIR,
+    CLOSEDIR = UV_FS_CLOSEDIR
 };
 
 
@@ -143,6 +146,9 @@ enum class UVSymLinkFlags: int {
  * * `FsRequest::Type::REALPATH`
  * * `FsRequest::Type::COPYFILE`
  * * `FsRequest::Type::LCHOWN`
+ * * `FsRequest::Type::OPENDIR`
+ * * `FsRequest::Type::READDIR`
+ * * `FsRequest::Type::CLOSEDIR`
  *
  * It will be emitted by FsReq and/or FileReq according with their
  * functionalities.
@@ -298,6 +304,26 @@ struct FsEvent<details::UVFsType::READLINK> {
 
 
 /**
+ * @brief FsEvent event specialization for `FsRequest::Type::READDIR`.
+ *
+ * It will be emitted by FsReq and/or FileReq according with their
+ * functionalities.
+ */
+template<>
+struct FsEvent<details::UVFsType::READDIR> {
+    using EntryType = details::UVDirentTypeT;
+
+    FsEvent(const char *name, EntryType type, bool eos) noexcept
+        : name{name}, type{type}, eos{eos}
+    {}
+
+    const char * name; /*!< The name of the last entry. */
+    EntryType type; /*!< The entry type. */
+    bool eos; /*!< True if there a no more entries to read. */
+};
+
+
+/**
  * @brief Base class for FsReq and/or FileReq.
  *
  * Not directly instantiable, should not be used by the users of the library.
@@ -342,7 +368,6 @@ public:
     using Time = std::chrono::duration<double>;
     using Type = details::UVFsType;
     using EntryType = details::UVDirentTypeT;
-    using Entry = std::pair<EntryType, std::string>;
 
     using Request<T, uv_fs_t>::Request;
 };
@@ -833,6 +858,17 @@ class FsReq final: public FsRequest<FsReq> {
         else { ptr->publish(FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr), static_cast<std::size_t>(req->result)}); }
     }
 
+    static void fsReaddirCallback(uv_fs_t *req) {
+        auto ptr = reserve(req);
+
+        if(req->result < 0) {
+            ptr->publish(ErrorEvent{req->result});
+        } else {
+            auto *dir = static_cast<uv_dir_t *>(req->ptr);
+            ptr->publish(FsEvent<Type::READDIR>{dir->dirents[0].name, static_cast<EntryType>(dir->dirents[0].type), !req->result});
+        }
+    }
+
 public:
     using CopyFile = details::UVCopyFileFlags;
     using SymLink = details::UVSymLinkFlags;
@@ -974,10 +1010,10 @@ public:
     /**
      * @brief Gets entries populated with the next directory entry data.
      *
-     * Returns instances of Entry, that is an alias for a pair where:
+     * Returns a composed value where:
      *
      * * The first parameter indicates the entry type (see below).
-     * * The second parameter is a `std::string` that contains the actual value.
+     * * The second parameter is a string that contains the actual value.
      *
      * Available entry types are:
      *
@@ -998,16 +1034,18 @@ public:
      *
      * * The first parameter is a boolean value that indicates if the current
      * entry is still valid.
-     * * The second parameter is an instance of `Entry` (see above).
+     * * The second parameter is a composed value (see above).
      */
-    std::pair<bool, Entry> scandirNext() {
-        uv_dirent_t dirent;
-        std::pair<bool, Entry> ret{false, { EntryType::UNKNOWN, "" }};
-        auto res = uv_fs_scandir_next(get(), &dirent);
+    std::pair<bool, std::pair<EntryType, const char *>> scandirNext() {
+        std::pair<bool, std::pair<EntryType, const char *>> ret{false, { EntryType::UNKNOWN, nullptr }};
+
+        // we cannot use cleanupAndInvokeSync because of the return value of uv_fs_scandir_next
+        uv_fs_req_cleanup(get());
+        auto res = uv_fs_scandir_next(get(), dirents);
 
         if(UV_EOF != res) {
-            ret.second.first = static_cast<EntryType>(dirent.type);
-            ret.second.second = dirent.name;
+            ret.second.first = static_cast<EntryType>(dirents[0].type);
+            ret.second.second = dirents[0].name;
             ret.first = true;
         }
 
@@ -1410,6 +1448,131 @@ public:
         cleanupAndInvokeSync(&uv_fs_lchown, parent(), req, path.data(), uid, gid);
         return !(req->result < 0);
     }
+
+    /**
+     * @brief Opens a path asynchronously as a directory stream.
+     *
+     * Emit a `FsEvent<FsReq::Type::OPENDIR>` event when completed.<br/>
+     * Emit an ErrorEvent event in case of errors.
+     *
+     * The contents of the directory can be iterated over by means of the
+     * `readdir` od `readdirSync` member functions. The memory allocated by this
+     * function must be freed by calling `closedir` or `closedirSync`.
+     *
+     * @param path The path to open as a directory stream.
+     */
+    void opendir(std::string path) {
+        cleanupAndInvoke(&uv_fs_opendir, parent(), get(), path.data(), &fsGenericCallback<Type::OPENDIR>);
+    }
+
+    /**
+     * @brief Opens a path synchronously as a directory stream.
+     *
+     * The contents of the directory can be iterated over by means of the
+     * `readdir` od `readdirSync` member functions. The memory allocated by this
+     * function must be freed by calling `closedir` or `closedirSync`.
+     *
+     * @param path The path to open as a directory stream.
+     * @return True in case of success, false otherwise.
+     */
+    bool opendirSync(std::string path) {
+        auto req = get();
+        cleanupAndInvokeSync(&uv_fs_opendir, parent(), req, path.data());
+        return !(req->result < 0);
+    }
+
+    /**
+     * @brief Closes asynchronously a directory stream.
+     *
+     * Emit a `FsEvent<FsReq::Type::CLOSEDIR>` event when completed.<br/>
+     * Emit an ErrorEvent event in case of errors.
+     *
+     * It frees also the memory allocated internally when a path has been opened
+     * as a directory stream.
+     */
+    void closedir() {
+        auto req = get();
+        auto *dir = static_cast<uv_dir_t *>(req->ptr);
+        cleanupAndInvoke(&uv_fs_closedir, parent(), req, dir, &fsGenericCallback<Type::CLOSEDIR>);
+    }
+
+    /**
+     * @brief Closes synchronously a directory stream.
+     *
+     * It frees also the memory allocated internally when a path has been opened
+     * as a directory stream.
+     *
+     * @return True in case of success, false otherwise.
+     */
+    bool closedirSync() {
+        auto req = get();
+        auto *dir = static_cast<uv_dir_t *>(req->ptr);
+        cleanupAndInvokeSync(&uv_fs_closedir, parent(), req, dir);
+        return !(req->result < 0);
+    }
+
+    /**
+     * @brief Iterates asynchronously over a directory stream one entry at a
+     * time.
+     *
+     * Emit a `FsEvent<FsReq::Type::READDIR>` event when completed.<br/>
+     * Emit an ErrorEvent event in case of errors.
+     *
+     * This function isn't thread safe. Moreover, it doesn't return the `.` and
+     * `..` entries.
+     */
+    void readdir() {
+        auto req = get();
+        auto *dir = static_cast<uv_dir_t *>(req->ptr);
+        dir->dirents = dirents;
+        dir->nentries = 1;
+        cleanupAndInvoke(&uv_fs_readdir, parent(), req, dir, &fsReaddirCallback);
+    }
+
+    /**
+     * @brief Iterates synchronously over a directory stream one entry at a
+     * time.
+     *
+     * Returns a composed value where:
+     *
+     * * The first parameter indicates the entry type (see below).
+     * * The second parameter is a string that contains the actual value.
+     *
+     * Available entry types are:
+     *
+     * * `FsReq::EntryType::UNKNOWN`
+     * * `FsReq::EntryType::FILE`
+     * * `FsReq::EntryType::DIR`
+     * * `FsReq::EntryType::LINK`
+     * * `FsReq::EntryType::FIFO`
+     * * `FsReq::EntryType::SOCKET`
+     * * `FsReq::EntryType::CHAR`
+     * * `FsReq::EntryType::BLOCK`
+     *
+     * See the official
+     * [documentation](http://docs.libuv.org/en/v1.x/fs.html#c.uv_dirent_t)
+     * for further details.
+     *
+     * This function isn't thread safe. Moreover, it doesn't return the `.` and
+     * `..` entries.
+     *
+     * @return A pair where:
+     *
+     * * The first parameter is a boolean value that indicates if the current
+     * entry is still valid.
+     * * The second parameter is a composed value (see above).
+     */
+    std::pair<bool, std::pair<EntryType, const char *>> readdirSync() {
+        auto req = get();
+        auto *dir = static_cast<uv_dir_t *>(req->ptr);
+        dir->dirents = dirents;
+        dir->nentries = 1;
+        cleanupAndInvokeSync(&uv_fs_readdir, parent(), req, dir);
+        return {req->result, { static_cast<EntryType>(dirents[0].type), dirents[0].name }};
+    }
+
+private:
+    uv_dirent_t dirents[1];
 };
 
 

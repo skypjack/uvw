@@ -211,6 +211,7 @@ using Uid = uv_uid_t; /*!< Library equivalent for uv_uid_t. */
 using Gid = uv_gid_t; /*!< Library equivalent for uv_gid_t. */
 
 using TimeVal = uv_timeval_t; /*!< Library equivalent for uv_timeval_t. */
+using TimeVal64 = uv_timeval64_t; /*!< Library equivalent for uv_timeval64_t. */
 using RUsage = uv_rusage_t; /*!< Library equivalent for uv_rusage_t. */
 
 
@@ -287,8 +288,8 @@ private:
  *
  * \sa Utilities::uname
  */
-struct UName {
-    UName(std::shared_ptr<uv_utsname_t> utsname): utsname{utsname} {}
+struct UtsName {
+    UtsName(std::shared_ptr<uv_utsname_t> utsname): utsname{utsname} {}
 
     /**
      * @brief Gets the operating system name (like "Linux").
@@ -579,7 +580,7 @@ struct Utilities {
          *
          * @return Name and information about the current kernel.
          */
-        static UName uname() noexcept {
+        static UtsName uname() noexcept {
             auto ptr = std::make_shared<uv_utsname_t>();
             uv_os_uname(ptr.get());
             return ptr;
@@ -957,6 +958,17 @@ struct Utilities {
      */
     static bool chdir(const std::string &dir) noexcept {
         return (0 == uv_chdir(dir.data()));
+    }
+
+    /**
+     * @brief Cross-platform implementation of
+     * [`gettimeofday`](https://linux.die.net/man/2/gettimeofday)
+     * @return The current time.
+     */
+    static TimeVal64 timeOfDay() {
+        uv_timeval64_t ret;
+        uv_gettimeofday(&ret);
+        return ret;
     }
 };
 
