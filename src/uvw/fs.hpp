@@ -1568,7 +1568,7 @@ public:
         dir->dirents = dirents;
         dir->nentries = 1;
         cleanupAndInvokeSync(&uv_fs_readdir, parent(), req, dir);
-        return {req->result, { static_cast<EntryType>(dirents[0].type), dirents[0].name }};
+        return {req->result != 0, { static_cast<EntryType>(dirents[0].type), dirents[0].name }};
     }
 
 private:
