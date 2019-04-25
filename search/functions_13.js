@@ -1,6 +1,7 @@
 var searchData=
 [
   ['timedwait',['timedWait',['../classuvw_1_1Condition.html#afea23c026793301fadc8defc5d1990c5',1,'uvw::Condition']]],
+  ['timeofday',['timeOfDay',['../structuvw_1_1Utilities.html#aefd44f39ca8343cecb5e9331fb89ddb8',1,'uvw::Utilities']]],
   ['timeout',['timeout',['../classuvw_1_1Loop.html#aa815a8db94b2beb2d23448fe81cf648c',1,'uvw::Loop']]],
   ['tmpdir',['tmpdir',['../structuvw_1_1Utilities_1_1OS.html#a8f7125f1eecdbedeea3322453114eeb8',1,'uvw::Utilities::OS']]],
   ['totalmemory',['totalMemory',['../structuvw_1_1Utilities.html#acd553ee275a0e28a10250fcb2f6b993a',1,'uvw::Utilities']]],

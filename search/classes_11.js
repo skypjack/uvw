@@ -2,7 +2,6 @@ var searchData=
 [
   ['udpdataevent',['UDPDataEvent',['../structuvw_1_1UDPDataEvent.html',1,'uvw']]],
   ['udphandle',['UDPHandle',['../classuvw_1_1UDPHandle.html',1,'uvw']]],
-  ['uname',['UName',['../structuvw_1_1UName.html',1,'uvw']]],
   ['underlyingtype',['UnderlyingType',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],
   ['underlyingtype_3c_20asynchandle_2c_20uv_5fasync_5ft_20_3e',['UnderlyingType&lt; AsyncHandle, uv_async_t &gt;',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],
   ['underlyingtype_3c_20barrier_2c_20uv_5fbarrier_5ft_20_3e',['UnderlyingType&lt; Barrier, uv_barrier_t &gt;',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],
@@ -37,5 +36,6 @@ var searchData=
   ['underlyingtype_3c_20udphandle_2c_20uv_5fudp_5ft_20_3e',['UnderlyingType&lt; UDPHandle, uv_udp_t &gt;',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],
   ['underlyingtype_3c_20workreq_2c_20uv_5fwork_5ft_20_3e',['UnderlyingType&lt; WorkReq, uv_work_t &gt;',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],
   ['underlyingtype_3c_20writereq_2c_20uv_5fwrite_5ft_20_3e',['UnderlyingType&lt; WriteReq, uv_write_t &gt;',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],
-  ['utilities',['Utilities',['../structuvw_1_1Utilities.html',1,'uvw']]]
+  ['utilities',['Utilities',['../structuvw_1_1Utilities.html',1,'uvw']]],
+  ['utsname',['UtsName',['../structuvw_1_1UtsName.html',1,'uvw']]]
 ];

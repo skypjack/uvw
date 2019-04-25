@@ -10,6 +10,8 @@ var searchData=
   ['chownsync',['chownSync',['../classuvw_1_1FileReq.html#a7480624e5ca058037e3fa987251b84da',1,'uvw::FileReq::chownSync()'],['../classuvw_1_1FsReq.html#a0adb8408a8d2f707d2f9c045788011e9',1,'uvw::FsReq::chownSync()']]],
   ['clear',['clear',['../classuvw_1_1Emitter.html#a3d332776a2e35049549a723f35d88912',1,'uvw::Emitter::clear() noexcept'],['../classuvw_1_1Emitter.html#a6ff321dde35550bb40ab90a787b715cf',1,'uvw::Emitter::clear() noexcept']]],
   ['close',['close',['../classuvw_1_1FileReq.html#a88f20c4c68999e57e23eac208ff73a35',1,'uvw::FileReq::close()'],['../classuvw_1_1Handle.html#a83b7518a56ad891700c40a1578a1d2f1',1,'uvw::Handle::close()'],['../structuvw_1_1BaseHandle.html#a83b88fc17d491e48e4c519c9551ab0b4',1,'uvw::BaseHandle::close()'],['../classuvw_1_1Loop.html#ae0dbd76098075f5a187256834df568c3',1,'uvw::Loop::close()']]],
+  ['closedir',['closedir',['../classuvw_1_1FsReq.html#a45148f322e9a9056af6b907221fae94c',1,'uvw::FsReq']]],
+  ['closedirsync',['closedirSync',['../classuvw_1_1FsReq.html#a01a0518613d3625ae3eba6a70d88f124',1,'uvw::FsReq']]],
   ['closeevent',['CloseEvent',['../structuvw_1_1CloseEvent.html',1,'uvw']]],
   ['closesync',['closeSync',['../classuvw_1_1FileReq.html#a6a7a53cc446b7da0210bf38f1bbd64bf',1,'uvw::FileReq']]],
   ['closing',['closing',['../classuvw_1_1Handle.html#a94b17026726b0999d1dc20c82b84ef0e',1,'uvw::Handle::closing()'],['../structuvw_1_1BaseHandle.html#af52ea3d010c19fa5fa3effe2e0d14e0b',1,'uvw::BaseHandle::closing()']]],

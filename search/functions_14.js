@@ -1,7 +1,7 @@
 var searchData=
 [
   ['uid',['uid',['../classuvw_1_1ProcessHandle.html#a10dd82d4b091ca8b5922d9c60ada0b15',1,'uvw::ProcessHandle::uid()'],['../structuvw_1_1Passwd.html#a4e39fc936f1ccac26edd68c62a1646b2',1,'uvw::Passwd::uid()']]],
-  ['uname',['uname',['../structuvw_1_1Utilities_1_1OS.html#a91016dcef7ece7bb98dfd95172889fff',1,'uvw::Utilities::OS']]],
+  ['uname',['uname',['../structuvw_1_1Utilities_1_1OS.html#a1550cb8ea2a033653b89830911acd246',1,'uvw::Utilities::OS']]],
   ['unlink',['unlink',['../classuvw_1_1FsReq.html#a39106328d144083174374792b8239bae',1,'uvw::FsReq']]],
   ['unlinksync',['unlinkSync',['../classuvw_1_1FsReq.html#aed77b6a35a13e6b0c2065626aea32a66',1,'uvw::FsReq']]],
   ['unlock',['unlock',['../classuvw_1_1Mutex.html#a380b35d56534b4967049902ff34e9c45',1,'uvw::Mutex']]],

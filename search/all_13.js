@@ -4,12 +4,14 @@ var searchData=
   ['thread',['Thread',['../classuvw_1_1Thread.html',1,'uvw']]],
   ['threadlocalstorage',['ThreadLocalStorage',['../classuvw_1_1ThreadLocalStorage.html',1,'uvw']]],
   ['timedwait',['timedWait',['../classuvw_1_1Condition.html#afea23c026793301fadc8defc5d1990c5',1,'uvw::Condition']]],
+  ['timeofday',['timeOfDay',['../structuvw_1_1Utilities.html#aefd44f39ca8343cecb5e9331fb89ddb8',1,'uvw::Utilities']]],
   ['timeout',['timeout',['../classuvw_1_1Loop.html#aa815a8db94b2beb2d23448fe81cf648c',1,'uvw::Loop']]],
   ['timerevent',['TimerEvent',['../structuvw_1_1TimerEvent.html',1,'uvw']]],
   ['timerhandle',['TimerHandle',['../classuvw_1_1TimerHandle.html',1,'uvw']]],
   ['times',['times',['../structuvw_1_1CPUInfo.html#a821240a35b1bda6b7085362f6cbc14ea',1,'uvw::CPUInfo']]],
   ['timespec',['TimeSpec',['../namespaceuvw.html#a54075b41a774f40d65861b0d97068c17',1,'uvw']]],
   ['timeval',['TimeVal',['../namespaceuvw.html#a6a9c7b7d247c0873d9aac07d63f8360b',1,'uvw']]],
+  ['timeval64',['TimeVal64',['../namespaceuvw.html#ae7c2e4a87f2213a9509f99e3149c3e65',1,'uvw']]],
   ['tmpdir',['tmpdir',['../structuvw_1_1Utilities_1_1OS.html#a8f7125f1eecdbedeea3322453114eeb8',1,'uvw::Utilities::OS']]],
   ['totalmemory',['totalMemory',['../structuvw_1_1Utilities.html#acd553ee275a0e28a10250fcb2f6b993a',1,'uvw::Utilities']]],
   ['translate',['translate',['../structuvw_1_1ErrorEvent.html#a4b50d8375e94ca82ebe0e9942771e07c',1,'uvw::ErrorEvent']]],
@@ -23,5 +25,5 @@ var searchData=
   ['trywrlock',['tryWrLock',['../classuvw_1_1RWLock.html#a06106cba6aabeb88bf6f9b002c05692e',1,'uvw::RWLock']]],
   ['ttl',['ttl',['../classuvw_1_1UDPHandle.html#a95c37745be6ee35cb5ba5c2cece2c555',1,'uvw::UDPHandle']]],
   ['ttyhandle',['TTYHandle',['../classuvw_1_1TTYHandle.html',1,'uvw']]],
-  ['type',['type',['../classuvw_1_1Handle.html#a9056993d6077e8bee8bd77c9b03f2797',1,'uvw::Handle::type()'],['../structuvw_1_1BaseHandle.html#a9771dcd6699b033ee484837a6419b195',1,'uvw::BaseHandle::type()']]]
+  ['type',['type',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1READDIR_01_4.html#a168d3bed8bc5ecb0f4d3eb1d40ae0b29',1,'uvw::FsEvent&lt; details::UVFsType::READDIR &gt;::type()'],['../classuvw_1_1Handle.html#a9056993d6077e8bee8bd77c9b03f2797',1,'uvw::Handle::type()'],['../structuvw_1_1BaseHandle.html#a9771dcd6699b033ee484837a6419b195',1,'uvw::BaseHandle::type()']]]
 ];

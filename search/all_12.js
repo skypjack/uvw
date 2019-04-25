@@ -1,7 +1,7 @@
 var searchData=
 [
   ['scandir',['scandir',['../classuvw_1_1FsReq.html#ac38dd1e2182572e8b6b1c8be769e4123',1,'uvw::FsReq']]],
-  ['scandirnext',['scandirNext',['../classuvw_1_1FsReq.html#a43777f251d2e81046403ddde8b61b3bc',1,'uvw::FsReq']]],
+  ['scandirnext',['scandirNext',['../classuvw_1_1FsReq.html#a5b8cf46abdf583d0025d7980b1940039',1,'uvw::FsReq']]],
   ['scandirsync',['scandirSync',['../classuvw_1_1FsReq.html#a3503daf23c25d49714fd78796f4c0d36',1,'uvw::FsReq']]],
   ['self',['self',['../classuvw_1_1Thread.html#aef9fde2f8a565f90b9f80dfbfd9e8650',1,'uvw::Thread']]],
   ['semaphore',['Semaphore',['../classuvw_1_1Semaphore.html',1,'uvw']]],
@@ -49,5 +49,5 @@ var searchData=
   ['symlinksync',['symlinkSync',['../classuvw_1_1FsReq.html#a6253ea10b84b9524c756a3dfea6c0cfb',1,'uvw::FsReq']]],
   ['sync',['sync',['../classuvw_1_1FileReq.html#a70356eb203b8617bc554ba0c37fa680f',1,'uvw::FileReq']]],
   ['syncsync',['syncSync',['../classuvw_1_1FileReq.html#a55c257e01bd448b09be66406ab43f165',1,'uvw::FileReq']]],
-  ['sysname',['sysname',['../structuvw_1_1UName.html#a2d863e9ecbc58a7d350024f457235117',1,'uvw::UName']]]
+  ['sysname',['sysname',['../structuvw_1_1UtsName.html#a760372654deba31614051e0278177fa4',1,'uvw::UtsName']]]
 ];

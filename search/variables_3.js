@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['filename',['filename',['../structuvw_1_1FsEventEvent.html#a01de69aeafe47e4d8660099283bcae0c',1,'uvw::FsEventEvent']]],
-  ['flags',['flags',['../structuvw_1_1FsEventEvent.html#a6202e6116d6b61d1323ab63b8d4cd0cb',1,'uvw::FsEventEvent::flags()'],['../structuvw_1_1PollEvent.html#ac3d9842783aeb5e923e1b3bc12d81611',1,'uvw::PollEvent::flags()']]]
+  ['eos',['eos',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1READDIR_01_4.html#ab06654d696aa9420569225c24f0aa6a0',1,'uvw::FsEvent&lt; details::UVFsType::READDIR &gt;']]]
 ];

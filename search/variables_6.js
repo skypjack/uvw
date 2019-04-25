@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['length',['length',['../structuvw_1_1DataEvent.html#adc04245b045df6fa1b887722b4ea097d',1,'uvw::DataEvent::length()'],['../structuvw_1_1UDPDataEvent.html#a7fce1eef84538d8e2eaf6e9f6c0e7819',1,'uvw::UDPDataEvent::length()']]]
+  ['internal',['internal',['../structuvw_1_1InterfaceAddress.html#a402b5972c6175874d2e075e5d330192d',1,'uvw::InterfaceAddress']]],
+  ['ip',['ip',['../structuvw_1_1Addr.html#a398a3805b87c8c2b64baf94cdc586fef',1,'uvw::Addr']]]
 ];

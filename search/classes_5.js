@@ -9,6 +9,7 @@ var searchData=
   ['fsevent_3c_20details_3a_3auvfstype_3a_3afstat_20_3e',['FsEvent&lt; details::UVFsType::FSTAT &gt;',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1FSTAT_01_4.html',1,'uvw']]],
   ['fsevent_3c_20details_3a_3auvfstype_3a_3alstat_20_3e',['FsEvent&lt; details::UVFsType::LSTAT &gt;',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1LSTAT_01_4.html',1,'uvw']]],
   ['fsevent_3c_20details_3a_3auvfstype_3a_3aread_20_3e',['FsEvent&lt; details::UVFsType::READ &gt;',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1READ_01_4.html',1,'uvw']]],
+  ['fsevent_3c_20details_3a_3auvfstype_3a_3areaddir_20_3e',['FsEvent&lt; details::UVFsType::READDIR &gt;',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1READDIR_01_4.html',1,'uvw']]],
   ['fsevent_3c_20details_3a_3auvfstype_3a_3areadlink_20_3e',['FsEvent&lt; details::UVFsType::READLINK &gt;',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1READLINK_01_4.html',1,'uvw']]],
   ['fsevent_3c_20details_3a_3auvfstype_3a_3ascandir_20_3e',['FsEvent&lt; details::UVFsType::SCANDIR &gt;',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1SCANDIR_01_4.html',1,'uvw']]],
   ['fsevent_3c_20details_3a_3auvfstype_3a_3asendfile_20_3e',['FsEvent&lt; details::UVFsType::SENDFILE &gt;',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1SENDFILE_01_4.html',1,'uvw']]],

@@ -3,7 +3,7 @@ var searchData=
   ['udpdataevent',['UDPDataEvent',['../structuvw_1_1UDPDataEvent.html',1,'uvw']]],
   ['udphandle',['UDPHandle',['../classuvw_1_1UDPHandle.html',1,'uvw']]],
   ['uid',['uid',['../classuvw_1_1ProcessHandle.html#a10dd82d4b091ca8b5922d9c60ada0b15',1,'uvw::ProcessHandle::uid()'],['../structuvw_1_1Passwd.html#a4e39fc936f1ccac26edd68c62a1646b2',1,'uvw::Passwd::uid()'],['../namespaceuvw.html#a01d13fc4b5d1b58c936fdbf15c4d0a10',1,'uvw::Uid()']]],
-  ['uname',['UName',['../structuvw_1_1UName.html',1,'uvw::UName'],['../structuvw_1_1Utilities_1_1OS.html#a91016dcef7ece7bb98dfd95172889fff',1,'uvw::Utilities::OS::uname()']]],
+  ['uname',['uname',['../structuvw_1_1Utilities_1_1OS.html#a1550cb8ea2a033653b89830911acd246',1,'uvw::Utilities::OS']]],
   ['underlyingtype',['UnderlyingType',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],
   ['underlyingtype_3c_20asynchandle_2c_20uv_5fasync_5ft_20_3e',['UnderlyingType&lt; AsyncHandle, uv_async_t &gt;',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],
   ['underlyingtype_3c_20barrier_2c_20uv_5fbarrier_5ft_20_3e',['UnderlyingType&lt; Barrier, uv_barrier_t &gt;',['../classuvw_1_1UnderlyingType.html',1,'uvw']]],
@@ -48,5 +48,6 @@ var searchData=
   ['utilities',['Utilities',['../structuvw_1_1Utilities.html',1,'uvw']]],
   ['utime',['utime',['../classuvw_1_1FileReq.html#a8c7e40372ca19806f5864576278ed82e',1,'uvw::FileReq::utime()'],['../classuvw_1_1FsReq.html#aabb98930481b954e0f2ad9046f1ab0b7',1,'uvw::FsReq::utime()']]],
   ['utimesync',['utimeSync',['../classuvw_1_1FileReq.html#a5ced5c83df512a180bdba11f3509085e',1,'uvw::FileReq::utimeSync()'],['../classuvw_1_1FsReq.html#a88cede82fc90238aee034f6c24c66d1f',1,'uvw::FsReq::utimeSync()']]],
+  ['utsname',['UtsName',['../structuvw_1_1UtsName.html',1,'uvw']]],
   ['uvw',['uvw',['../namespaceuvw.html',1,'']]]
 ];
