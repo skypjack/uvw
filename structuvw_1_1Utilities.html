@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">1.16.0</span>
+   &#160;<span id="projectnumber">1.17.0</span>
    </div>
   </td>
  </tr>
@@ -127,6 +127,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:acd553ee275a0e28a10250fcb2f6b993a"><td class="memItemLeft" align="right" valign="top">static uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1Utilities.html#acd553ee275a0e28a10250fcb2f6b993a">totalMemory</a> () noexcept</td></tr>
 <tr class="memdesc:acd553ee275a0e28a10250fcb2f6b993a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets memory information (in bytes).  <a href="#acd553ee275a0e28a10250fcb2f6b993a">More...</a><br /></td></tr>
 <tr class="separator:acd553ee275a0e28a10250fcb2f6b993a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ac9418167cafe920c1cac353216d47c"><td class="memItemLeft" align="right" valign="top">static uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1Utilities.html#a7ac9418167cafe920c1cac353216d47c">constrainedMemory</a> () noexcept</td></tr>
+<tr class="memdesc:a7ac9418167cafe920c1cac353216d47c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the amount of memory available to the process (in bytes).  <a href="#a7ac9418167cafe920c1cac353216d47c">More...</a><br /></td></tr>
+<tr class="separator:a7ac9418167cafe920c1cac353216d47c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2b405d1b5d8de4bbb3e9a2707b9ec3a"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1Utilities.html#ae2b405d1b5d8de4bbb3e9a2707b9ec3a">uptime</a> () noexcept</td></tr>
 <tr class="memdesc:ae2b405d1b5d8de4bbb3e9a2707b9ec3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current system uptime.  <a href="#ae2b405d1b5d8de4bbb3e9a2707b9ec3a">More...</a><br /></td></tr>
 <tr class="separator:ae2b405d1b5d8de4bbb3e9a2707b9ec3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -188,7 +191,39 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00959">959</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00974">974</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a7ac9418167cafe920c1cac353216d47c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ac9418167cafe920c1cac353216d47c">&#9670;&nbsp;</a></span>constrainedMemory()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static uint64_t uvw::Utilities::constrainedMemory </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the amount of memory available to the process (in bytes). </p>
+<p>Gets the amount of memory available to the process based on limits imposed by the <a class="el" href="structuvw_1_1Utilities_1_1OS.html" title="OS dedicated utilities. ">OS</a>. If there is no such constraint, or the constraint is unknown, <code>0</code> is returned.<br />
+ Note that it is not unusual for this value to be less than or greater than <code>totalMemory</code>.</p>
+<dl class="section return"><dt>Returns</dt><dd>Amount of memory available to the process. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00911">911</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
 
 </div>
 </div>
@@ -249,7 +284,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Gets the current working directory. </p>
 <dl class="section return"><dt>Returns</dt><dd>The current working directory, an empty string in case of errors. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00950">950</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00965">965</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
 
 </div>
 </div>
@@ -364,7 +399,7 @@ Static Public Member Functions</h2></td></tr>
 <p>The time is expressed in nanoseconds. It is relative to an arbitrary time in the past. It is not related to the time of the day and therefore not subject to clock drift. The primary use is for measuring performance between interval.</p>
 <dl class="section return"><dt>Returns</dt><dd>The current high-resolution real time. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00934">934</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00949">949</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
 
 </div>
 </div>
@@ -621,7 +656,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Gets the executable path. </p>
 <dl class="section return"><dt>Returns</dt><dd>The executable path, an empty string in case of errors. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00942">942</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00957">957</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
 
 </div>
 </div>
@@ -784,7 +819,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Gets the resource usage measures for the current process. </p>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classuvw_1_1Resource.html" title="Common class for almost all the resources available in uvw. ">Resource</a> usage measures, zeroes-filled object in case of errors. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00918">918</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00933">933</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
 
 </div>
 </div>
@@ -856,7 +891,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Cross-platform implementation of <a href="https://linux.die.net/man/2/gettimeofday"><code>gettimeofday</code></a> </p>
 <dl class="section return"><dt>Returns</dt><dd>The current time. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00968">968</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00983">983</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
 
 </div>
 </div>
@@ -916,7 +951,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Gets the current system uptime. </p>
 <dl class="section return"><dt>Returns</dt><dd>The current system uptime or 0 in case of errors. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00904">904</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l00919">919</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
 
 </div>
 </div>

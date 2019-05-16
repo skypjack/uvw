@@ -15,6 +15,7 @@ var searchData=
   ['code',['code',['../structuvw_1_1ErrorEvent.html#a47e65776ce0488f87665c00d5bc1241d',1,'uvw::ErrorEvent']]],
   ['configure',['configure',['../classuvw_1_1Loop.html#ad0fac96934f7ea2a19d16bc6502aeec9',1,'uvw::Loop']]],
   ['connect',['connect',['../classuvw_1_1PipeHandle.html#ac6bcb3f96b852f0ff40a5e899981fe46',1,'uvw::PipeHandle::connect()'],['../classuvw_1_1TCPHandle.html#ab6d3dc1999fb93d9fd6f7cc59e0946ef',1,'uvw::TCPHandle::connect(const sockaddr &amp;addr)'],['../classuvw_1_1TCPHandle.html#ab249951eb36140348399828d7cb96776',1,'uvw::TCPHandle::connect(std::string ip, unsigned int port)'],['../classuvw_1_1TCPHandle.html#ad686cdcb361f426c60788c6f6fa48d44',1,'uvw::TCPHandle::connect(Addr addr)'],['../classuvw_1_1UDPHandle.html#abf587231065893625a14597eb8ab3a21',1,'uvw::UDPHandle::connect(const sockaddr &amp;addr)'],['../classuvw_1_1UDPHandle.html#a34f636096987eb3fcbe1872f3868c13e',1,'uvw::UDPHandle::connect(std::string ip, unsigned int port)'],['../classuvw_1_1UDPHandle.html#a439c6e0f4eaa49db4ddd71a3c326f07a',1,'uvw::UDPHandle::connect(Addr addr)']]],
+  ['constrainedmemory',['constrainedMemory',['../structuvw_1_1Utilities.html#a7ac9418167cafe920c1cac353216d47c',1,'uvw::Utilities']]],
   ['copyfile',['copyfile',['../classuvw_1_1FsReq.html#a438fa29b48973093b2d08854f09faab3',1,'uvw::FsReq']]],
   ['copyfilesync',['copyfileSync',['../classuvw_1_1FsReq.html#ae092009fbd3ea78675be886ed282b8da',1,'uvw::FsReq']]],
   ['cpuinfo',['cpuInfo',['../structuvw_1_1Utilities.html#a9fc20cb272b9302a631535034e6b2999',1,'uvw::Utilities']]],
