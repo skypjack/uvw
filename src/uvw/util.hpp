@@ -898,6 +898,21 @@ struct Utilities {
     }
 
     /**
+     * @brief Gets the amount of memory available to the process (in bytes).
+     *
+     * Gets the amount of memory available to the process based on limits
+     * imposed by the OS. If there is no such constraint, or the constraint is
+     * unknown, `0` is returned.<br/>
+     * Note that it is not unusual for this value to be less than or greater
+     * than `totalMemory`.
+     *
+     * @return Amount of memory available to the process.
+     */
+    static uint64_t constrainedMemory() noexcept {
+        return uv_get_constrained_memory();
+    }
+
+    /**
      * @brief Gets the current system uptime.
      * @return The current system uptime or 0 in case of errors.
      */
