@@ -23,14 +23,14 @@ please **consider becoming a patron**:
 
 # Introduction
 
-`uvw` is a header-only, event based, tiny and easy to use *libuv* wrapper in
-modern C++.<br/>
-The basic idea is to hide completely the *C-ish* interface of *libuv* behind a
+`uvw` is a header-only, event based, tiny and easy to use
+[`libuv`](https://github.com/libuv/libuv) wrapper in modern C++.<br/>
+The basic idea is to hide completely the *C-ish* interface of `libuv` behind a
 graceful C++ API. Currently, no `uv_*_t` data structure is actually exposed by
 the library.<br/>
-Note that `uvw` stays true to the API of *libuv* and it doesn't add anything to
+Note that `uvw` stays true to the API of `libuv` and it doesn't add anything to
 its interface. For the same reasons, users of the library must follow the same
-rules who are used to follow with *libuv*.<br/>
+rules who are used to follow with `libuv`.<br/>
 As an example, a *handle* should be initialized before any other operation and
 closed once it is no longer in use.
 
@@ -82,7 +82,7 @@ int main() {
 ## Motivation
 
 The main reason for which `uvw` has been written is the fact that it does not
-exist a valid *libuv* wrapper in C++. That's all.
+exist a valid `libuv` wrapper in C++. That's all.
 
 # Build Instructions
 
@@ -117,7 +117,7 @@ It's a matter of adding the following line at the top of a file:
 Then pass the proper `-I` argument to the compiler to add the `src` directory to
 the include paths.<br/>
 Note that users are demanded to correctly setup include directories and
-libraries search paths for *libuv*.
+libraries search paths for `libuv`.
 
 ## Versioning
 
@@ -173,7 +173,7 @@ project, I suggest you to take a look at
 
 ## Tests
 
-To compile and run the tests, `uvw` requires *libuv* and *googletest*.<br/>
+To compile and run the tests, `uvw` requires `libuv` and `googletest`.<br/>
 `cmake` will download and compile both the libraries before to compile anything
 else.
 
@@ -245,7 +245,7 @@ loop->run<uvw::Loop::Mode::DEFAULT>();
 ```
 
 Available modes are: `DEFAULT`, `ONCE`, `NOWAIT`. Please refer to the
-documentation of *libuv* for further details.
+documentation of `libuv` for further details.
 
 In order to create a resource and to bind it to the given loop, just do the
 following:
