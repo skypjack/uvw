@@ -17,6 +17,9 @@ please **consider becoming a patron**:
 
 [![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/bePatron?c=1772573)
 
+[Many thanks](https://skypjack.github.io/patreon/) to those who supported me and
+still support me today.
+
 <!--
 @endcond TURN_OFF_DOXYGEN
 -->
