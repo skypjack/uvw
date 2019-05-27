@@ -70,7 +70,7 @@ TEST(TCP, SockPeer) {
     server->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
     client->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
-    server->once<uvw::ListenEvent>([&address](const uvw::ListenEvent &, uvw::TCPHandle &handle) {
+    server->once<uvw::ListenEvent>([&address, port](const uvw::ListenEvent &, uvw::TCPHandle &handle) {
         std::shared_ptr<uvw::TCPHandle> socket = handle.loop().resource<uvw::TCPHandle>();
 
         socket->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { FAIL(); });
