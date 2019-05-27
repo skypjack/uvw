@@ -279,7 +279,7 @@ public:
      */
     void close() {
         auto err = uv_loop_close(loop.get());
-        if(err) { publish(ErrorEvent{err}); }
+        return err ? publish(ErrorEvent{err}) : loop.reset();
     }
 
     /**
