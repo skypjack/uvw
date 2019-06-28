@@ -16,7 +16,7 @@ endif()
 # Project configuration
 #
 
-project(uvw VERSION 1.17.1)
+project(uvw VERSION 1.18.0)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
