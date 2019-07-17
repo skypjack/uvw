@@ -27,20 +27,20 @@ protected:
         else { ptr->publish(E{}); }
     }
 
-    template<typename F, typename... Args>
-    auto invoke(F &&f, Args&&... args)
-    -> std::enable_if_t<not std::is_void<std::result_of_t<F(Args...)>>::value> {
-        auto err = std::forward<F>(f)(std::forward<Args>(args)...);
-        if(err) { Emitter<T>::publish(ErrorEvent{err}); }
-        else { this->leak(); }
-    }
+	template<typename F, typename... Args>
+	auto invoke(F &&f, Args&&... args)
+		-> std::enable_if_t<not std::is_void<std::invoke_result_t<F, Args...>>::value> {
+		auto err = std::forward<F>(f)(std::forward<Args>(args)...);
+		if (err) { Emitter<T>::publish(ErrorEvent{ err }); }
+		else { this->leak(); }
+	}
 
-    template<typename F, typename... Args>
-    auto invoke(F &&f, Args&&... args)
-    -> std::enable_if_t<std::is_void<std::result_of_t<F(Args...)>>::value> {
-        std::forward<F>(f)(std::forward<Args>(args)...);
-        this->leak();
-    }
+	template<typename F, typename... Args>
+	auto invoke(F &&f, Args&&... args)
+		-> std::enable_if_t<std::is_void<std::invoke_result_t<F, Args...>>::value> {
+		std::forward<F>(f)(std::forward<Args>(args)...);
+		this->leak();
+	}
 
 public:
     using Resource<T, U>::Resource;
