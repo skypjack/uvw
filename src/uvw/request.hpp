@@ -27,20 +27,49 @@ protected:
         else { ptr->publish(E{}); }
     }
 
-	template<typename F, typename... Args>
-	auto invoke(F &&f, Args&&... args)
-		-> std::enable_if_t<not std::is_void<std::invoke_result_t<F, Args...>>::value> {
-		auto err = std::forward<F>(f)(std::forward<Args>(args)...);
-		if (err) { Emitter<T>::publish(ErrorEvent{ err }); }
-		else { this->leak(); }
-	}
+#define RESULT_OF_T(F, Args) std::result_of_t<F(Args...)>
+#define	INVOKE_RESULT_T(F, Args) std::invoke_result_t<F, Args...>
 
-	template<typename F, typename... Args>
-	auto invoke(F &&f, Args&&... args)
-		-> std::enable_if_t<std::is_void<std::invoke_result_t<F, Args...>>::value> {
-		std::forward<F>(f)(std::forward<Args>(args)...);
-		this->leak();
-	}
+#if defined(__GNUC__)
+    #if defined(__GNUC__) && (__GNUC__ > 7 || (__GNUC__ == 7 && __GNUC_MINOR__ >= 1))
+        // this is gcc 7.1 or greater
+        #define INVOKE(F, Args) INVOKE_RESULT_T(F, Args)
+    #else
+        #define INVOKE(F, Args) RESULT_OF_T(F, Args)
+    #endif
+#elif defined(_MSC_VER)
+    #if defined(_MSVC_LANG) && (_MSVC_LANG > 201702L || (_MSVC_LANG == 201702L && _MSVC_LANG >= 1))
+        // this is MSVC std:c++17 or greater
+        #define INVOKE(F, Args) INVOKE_RESULT_T(F, Args)
+    #else
+        #define INVOKE(F, Args) RESULT_OF_T(F, Args)
+    #endif
+#elif defined(__clang__)
+    #if defined(__clang_version__) && (__clang_version__ > 5 || (__clang_version__ == 5 && __clang_minor__ >= 1))
+        // this is clang 5.0 or greater
+        #define INVOKE(F, Args) INVOKE_RESULT_T(F, Args)
+    #else
+        #define INVOKE(F, Args) RESULT_OF_T(F, Args)
+    #endif
+#else
+    // defualt std:c++14
+    #define INVOKE(F, Args) RESULT_OF_T(F, Args)
+#endif
+
+    template<typename F, typename... Args>
+    auto invoke(F &&f, Args&&... args)
+        -> std::enable_if_t<not std::is_void<INVOKE(F, Args)>::value> {
+        auto err = std::forward<F>(f)(std::forward<Args>(args)...);
+        if (err) { Emitter<T>::publish(ErrorEvent{ err }); }
+        else { this->leak(); }
+    }
+    
+    template<typename F, typename... Args>
+    auto invoke(F &&f, Args&&... args)
+        -> std::enable_if_t<std::is_void<INVOKE(F, Args)>::value> {
+        std::forward<F>(f)(std::forward<Args>(args)...);
+        this->leak();
+    }
 
 public:
     using Resource<T, U>::Resource;
