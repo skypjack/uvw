@@ -48,7 +48,7 @@ public:
      */
     template<typename F>
     F * sym(std::string name) {
-        static_assert(std::is_function<F>::value, "!");
+        static_assert(std::is_function_v<F>);
         F *func;
         auto err = uv_dlsym(get(), name.data(), reinterpret_cast<void**>(&func));
         if(err) { func = nullptr; }

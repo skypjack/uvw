@@ -21,7 +21,7 @@ namespace uvw {
  * Custom wrapper around error constants of `libuv`.
  */
 struct ErrorEvent {
-    template<typename U, typename = std::enable_if_t<std::is_integral<U>::value>>
+    template<typename U, typename = std::enable_if_t<std::is_integral_v<U>>>
     explicit ErrorEvent(U val) noexcept
         : ec{static_cast<int>(val)}
     {}
@@ -218,7 +218,7 @@ public:
     };
 
     virtual ~Emitter() noexcept {
-        static_assert(std::is_base_of<Emitter<T>, T>::value, "!");
+        static_assert(std::is_base_of_v<Emitter<T>, T>);
     }
 
     /**

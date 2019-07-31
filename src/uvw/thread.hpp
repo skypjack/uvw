@@ -192,7 +192,7 @@ public:
     template<typename F>
     static void once(F &&f) noexcept {
         using CallbackType = void(*)(void);
-        static_assert(std::is_convertible<F, CallbackType>::value, "!");
+        static_assert(std::is_convertible_v<F, CallbackType>);
         CallbackType cb = f;
         uv_once(guard(), cb);
     }

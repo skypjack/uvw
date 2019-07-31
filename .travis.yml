@@ -9,23 +9,21 @@ matrix:
   include:
   - os: linux
     compiler: gcc
-    language: cpp
     addons:
       apt:
         sources: ['ubuntu-toolchain-r-test']
-        packages: ['g++-6']
-    env: COMPILER=g++-6
+        packages: ['g++-7']
+    env: COMPILER=g++-7
   - os: linux
     compiler: clang
     addons:
       apt:
-        sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
-        packages: ['clang-4.0', 'libstdc++-4.9-dev']
-    env: COMPILER=clang++-4.0
+        sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+        packages: ['clang-6.0', 'g++-7']
+    env: COMPILER=clang++-6.0
   - os: osx
-    osx_image: xcode8.3
+    osx_image: xcode10
     compiler: clang
-    language: cpp
     env: COMPILER=clang++
   - os: linux
     compiler: gcc
@@ -33,15 +31,15 @@ matrix:
     addons:
       apt:
         sources: ['ubuntu-toolchain-r-test']
-        packages: ['g++-6']
+        packages: ['g++-7']
     env:
-      - C_COMPILER=gcc-6
-      - COMPILER=g++-6
+      - C_COMPILER=gcc-7
+      - COMPILER=g++-7
       - CXXFLAGS="-O0 --coverage -fno-inline -fno-inline-small-functions -fno-default-inline"
     before_script:
       - pip install --user cpp-coveralls
     after_success:
-      - coveralls --gcov gcov-6 --gcov-options '\-lp' --root ${TRAVIS_BUILD_DIR} --build-root ${TRAVIS_BUILD_DIR}/build --extension cpp --extension hpp --exclude deps --include src
+      - coveralls --gcov gcov-7 --gcov-options '\-lp' --root ${TRAVIS_BUILD_DIR} --build-root ${TRAVIS_BUILD_DIR}/build --extension cpp --extension hpp --exclude deps --include src
   - os: linux
     dist: xenial
     sudo: true
@@ -75,5 +73,5 @@ install:
 
 script:
   - mkdir -p build && cd build
-  - cmake .. -DBUILD_TESTING=ON && make -j4
+  - cmake .. -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF && make -j4
   - CTEST_OUTPUT_ON_FAILURE=1 ctest -j4 -R uvw

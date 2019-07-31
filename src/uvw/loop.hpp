@@ -236,7 +236,7 @@ public:
     }
 
     /**
-     * @brief Creates resources of handles' types.
+     * @brief Creates resources of any type.
      *
      * This should be used as a default method to create resources.<br/>
      * The arguments are the ones required for the specific resource.
@@ -246,27 +246,14 @@ public:
      * @return A pointer to the newly created resource.
      */
     template<typename R, typename... Args>
-    std::enable_if_t<std::is_base_of<BaseHandle, R>::value, std::shared_ptr<R>>
-    resource(Args&&... args) {
-        auto ptr = R::create(shared_from_this(), std::forward<Args>(args)...);
-        ptr = ptr->init() ? ptr : nullptr;
-        return ptr;
-    }
-
-    /**
-     * @brief Creates resources of types other than handles' ones.
-     *
-     * This should be used as a default method to create resources.<br/>
-     * The arguments are the ones required for the specific resource.
-     *
-     * Use it as `loop->resource<uvw::WorkReq>()`.
-     *
-     * @return A pointer to the newly created resource.
-     */
-    template<typename R, typename... Args>
-    std::enable_if_t<not std::is_base_of<BaseHandle, R>::value, std::shared_ptr<R>>
-    resource(Args&&... args) {
-        return R::create(shared_from_this(), std::forward<Args>(args)...);
+    std::shared_ptr<R> resource(Args&&... args) {
+        if constexpr(std::is_base_of_v<BaseHandle, R>) {
+            auto ptr = R::create(shared_from_this(), std::forward<Args>(args)...);
+            ptr = ptr->init() ? ptr : nullptr;
+            return ptr;
+        } else {
+            return R::create(shared_from_this(), std::forward<Args>(args)...);
+        }
     }
 
     /**

@@ -10,11 +10,11 @@ platform:
   - Win32
 
 configuration:
-  - Release
+  - Debug
 
 before_build:
   - cd %BUILD_DIR%
-  - cmake .. -DBUILD_TESTING=ON -G"Visual Studio 15 2017"
+  - cmake .. -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF -G"Visual Studio 15 2017"
 
 build:
   parallel: true

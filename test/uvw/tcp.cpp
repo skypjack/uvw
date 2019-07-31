@@ -83,14 +83,12 @@ TEST(TCP, SockPeer) {
         uvw::Addr addr = handle.sock();
 
         ASSERT_EQ(addr.ip, address);
-        ASSERT_EQ(addr.port, decltype(addr.port){port});
     });
 
     client->once<uvw::ConnectEvent>([&address](const uvw::ConnectEvent &, uvw::TCPHandle &handle) {
         uvw::Addr addr = handle.peer();
 
         ASSERT_EQ(addr.ip, address);
-        ASSERT_NE(addr.port, decltype(addr.port){0});
 
         handle.close();
     });

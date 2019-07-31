@@ -13,14 +13,6 @@
 #include <uv.h>
 
 
-#ifdef _WIN32
-// MSVC doesn't have C++14 relaxed constexpr support yet. Hence the jugglery.
-#define CONSTEXPR_SPECIFIER
-#else
-#define CONSTEXPR_SPECIFIER constexpr
-#endif
-
-
 namespace uvw {
 
 
@@ -100,10 +92,8 @@ public:
      * @return A valid instance of Flags instantiated from values `V`.
      */
     template<E... V>
-    static CONSTEXPR_SPECIFIER Flags<E> from() {
-        auto flags = Flags<E>{};
-        int _[] = { 0, (flags = flags | V, 0)... };
-        return void(_), flags;
+    static constexpr Flags<E> from() {
+        return (Flags<E>{} | ... | V);
     }
 
     /**
@@ -127,14 +117,14 @@ public:
     constexpr Flags(const Flags &f) noexcept: flags{f.flags} {  }
     constexpr Flags(Flags &&f) noexcept: flags{std::move(f.flags)} {  }
 
-    ~Flags() noexcept { static_assert(std::is_enum<E>::value, "!"); }
+    ~Flags() noexcept { static_assert(std::is_enum_v<E>); }
 
-    CONSTEXPR_SPECIFIER Flags & operator=(const Flags &f) noexcept {
+    constexpr Flags & operator=(const Flags &f) noexcept {
         flags = f.flags;
         return *this;
     }
 
-    CONSTEXPR_SPECIFIER Flags & operator=(Flags &&f) noexcept {
+    constexpr Flags & operator=(Flags &&f) noexcept {
         flags = std::move(f.flags);
         return *this;
     }
