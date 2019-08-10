@@ -1,4 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classuvw_1_1UnderlyingType.html" title="uvw::UnderlyingType\l\&lt; Condition, uv_cond_t \&gt;" alt="" coords="5,5,175,47"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Condition.html" title="The Condition wrapper. " alt="" coords="223,13,332,39"/>
+<area shape="rect" id="node1" href="$classuvw_1_1UnderlyingType.html" title="uvw::UnderlyingType\l\&lt; Barrier, uv_barrier_t \&gt;" alt="" coords="5,5,165,47"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Barrier.html" title="The Barrier wrapper. " alt="" coords="213,13,305,39"/>
 </map>

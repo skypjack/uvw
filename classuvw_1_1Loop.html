@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">1.18.0</span>
+   &#160;<span id="projectnumber">2.0.0</span>
    </div>
   </td>
  </tr>
@@ -99,14 +99,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad0fac96934f7ea2a19d16bc6502aeec9"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classuvw_1_1Loop.html#ad0fac96934f7ea2a19d16bc6502aeec9">configure</a> (Configure flag, Args &amp;&amp;... args)</td></tr>
 <tr class="memdesc:ad0fac96934f7ea2a19d16bc6502aeec9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets additional loop options.  <a href="#ad0fac96934f7ea2a19d16bc6502aeec9">More...</a><br /></td></tr>
 <tr class="separator:ad0fac96934f7ea2a19d16bc6502aeec9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3898884e2019aa052235377dcd03c0f3"><td class="memTemplParams" colspan="2">template&lt;typename R , typename... Args&gt; </td></tr>
-<tr class="memitem:a3898884e2019aa052235377dcd03c0f3"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; std::is_base_of&lt; <a class="el" href="structuvw_1_1BaseHandle.html">BaseHandle</a>, R &gt;::value, std::shared_ptr&lt; R &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classuvw_1_1Loop.html#a3898884e2019aa052235377dcd03c0f3">resource</a> (Args &amp;&amp;... args)</td></tr>
-<tr class="memdesc:a3898884e2019aa052235377dcd03c0f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates resources of handles' types.  <a href="#a3898884e2019aa052235377dcd03c0f3">More...</a><br /></td></tr>
-<tr class="separator:a3898884e2019aa052235377dcd03c0f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6c6796643be1a5bdfad719591b0f1a55"><td class="memTemplParams" colspan="2">template&lt;typename R , typename... Args&gt; </td></tr>
-<tr class="memitem:a6c6796643be1a5bdfad719591b0f1a55"><td class="memTemplItemLeft" align="right" valign="top">std::enable_if_t&lt; not std::is_base_of&lt; <a class="el" href="structuvw_1_1BaseHandle.html">BaseHandle</a>, R &gt;::value, std::shared_ptr&lt; R &gt; &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classuvw_1_1Loop.html#a6c6796643be1a5bdfad719591b0f1a55">resource</a> (Args &amp;&amp;... args)</td></tr>
-<tr class="memdesc:a6c6796643be1a5bdfad719591b0f1a55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates resources of types other than handles' ones.  <a href="#a6c6796643be1a5bdfad719591b0f1a55">More...</a><br /></td></tr>
-<tr class="separator:a6c6796643be1a5bdfad719591b0f1a55"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7044486c90abcaa665b67e5d9f284dcd"><td class="memTemplParams" colspan="2">template&lt;typename R , typename... Args&gt; </td></tr>
+<tr class="memitem:a7044486c90abcaa665b67e5d9f284dcd"><td class="memTemplItemLeft" align="right" valign="top">std::shared_ptr&lt; R &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classuvw_1_1Loop.html#a7044486c90abcaa665b67e5d9f284dcd">resource</a> (Args &amp;&amp;... args)</td></tr>
+<tr class="memdesc:a7044486c90abcaa665b67e5d9f284dcd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Creates resources of any type.  <a href="#a7044486c90abcaa665b67e5d9f284dcd">More...</a><br /></td></tr>
+<tr class="separator:a7044486c90abcaa665b67e5d9f284dcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0dbd76098075f5a187256834df568c3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1Loop.html#ae0dbd76098075f5a187256834df568c3">close</a> ()</td></tr>
 <tr class="memdesc:ae0dbd76098075f5a187256834df568c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Releases all internal loop resources.  <a href="#ae0dbd76098075f5a187256834df568c3">More...</a><br /></td></tr>
 <tr class="separator:ae0dbd76098075f5a187256834df568c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -218,7 +214,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Checks if there are active resources. </p>
 <dl class="section return"><dt>Returns</dt><dd>True if there are active resources in the loop. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00314">314</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00301">301</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -249,7 +245,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Call this function only when the loop has finished executing and all open handles and requests have been closed, or the loop will emit an error.</p>
 <p>An <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> will be emitted in case of errors. </p>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00280">280</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00267">267</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -360,7 +356,7 @@ template&lt;typename R  = void&gt; </div>
 <p>Gets user-defined data. <code>uvw</code> won't use this field in any case. </p>
 <dl class="section return"><dt>Returns</dt><dd>User-defined data if any, an invalid pointer otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00440">440</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00427">427</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -396,7 +392,7 @@ template&lt;typename R  = void&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00448">448</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00435">435</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -428,7 +424,7 @@ template&lt;typename R  = void&gt; </div>
  This can be used in conjunction with <code>run&lt;Loop::Mode::NOWAIT&gt;()</code> to poll in one thread and run the event loop’s callbacks in another.</p>
 <dl class="section return"><dt>Returns</dt><dd>The backend file descriptor. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00339">339</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00326">326</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -464,7 +460,7 @@ template&lt;typename R  = void&gt; </div>
 <p>An <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> will be emitted in case of errors.</p>
 <p>See the official <a href="http://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_fork">documentation</a> for further details. </p>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00430">430</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00417">417</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -530,7 +526,7 @@ template&lt;typename R  = void&gt; </div>
  Don’t make assumptions about the starting point, you will only get disappointed.</p>
 <dl class="section return"><dt>Returns</dt><dd>The current timestamp in milliseconds (actual type is <code>std::chrono::duration&lt;uint64_t, std::milli&gt;</code>). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00366">366</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00353">353</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -563,7 +559,7 @@ template&lt;typename R  = void&gt; </div>
 <dl class="section warning"><dt>Warning</dt><dd>Use this function at your own risk, but do not expect any support in case of bugs.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>The underlying raw data structure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00467">467</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00454">454</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -596,12 +592,12 @@ template&lt;typename R  = void&gt; </div>
 <dl class="section warning"><dt>Warning</dt><dd>Use this function at your own risk, but do not expect any support in case of bugs.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>The underlying raw data structure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00486">486</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00473">473</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
-<a id="a3898884e2019aa052235377dcd03c0f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3898884e2019aa052235377dcd03c0f3">&#9670;&nbsp;</a></span>resource() <span class="overload">[1/2]</span></h2>
+<a id="a7044486c90abcaa665b67e5d9f284dcd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7044486c90abcaa665b67e5d9f284dcd">&#9670;&nbsp;</a></span>resource()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -612,7 +608,7 @@ template&lt;typename R , typename... Args&gt; </div>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::enable_if_t&lt;std::is_base_of&lt;<a class="el" href="structuvw_1_1BaseHandle.html">BaseHandle</a>, R&gt;::value, std::shared_ptr&lt;R&gt; &gt; uvw::Loop::resource </td>
+          <td class="memname">std::shared_ptr&lt;R&gt; uvw::Loop::resource </td>
           <td>(</td>
           <td class="paramtype">Args &amp;&amp;...&#160;</td>
           <td class="paramname"><em>args</em></td><td>)</td>
@@ -626,49 +622,13 @@ template&lt;typename R , typename... Args&gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p>Creates resources of handles' types. </p>
+<p>Creates resources of any type. </p>
 <p>This should be used as a default method to create resources.<br />
  The arguments are the ones required for the specific resource.</p>
 <p>Use it as <code>loop-&gt;resource&lt;<a class="el" href="classuvw_1_1TimerHandle.html" title="The TimerHandle handle. ">uvw::TimerHandle</a>&gt;()</code>.</p>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the newly created resource. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00250">250</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a6c6796643be1a5bdfad719591b0f1a55"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6c6796643be1a5bdfad719591b0f1a55">&#9670;&nbsp;</a></span>resource() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename R , typename... Args&gt; </div>
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::enable_if_t&lt;not std::is_base_of&lt;<a class="el" href="structuvw_1_1BaseHandle.html">BaseHandle</a>, R&gt;::value, std::shared_ptr&lt;R&gt; &gt; uvw::Loop::resource </td>
-          <td>(</td>
-          <td class="paramtype">Args &amp;&amp;...&#160;</td>
-          <td class="paramname"><em>args</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Creates resources of types other than handles' ones. </p>
-<p>This should be used as a default method to create resources.<br />
- The arguments are the ones required for the specific resource.</p>
-<p>Use it as <code>loop-&gt;resource&lt;<a class="el" href="classuvw_1_1WorkReq.html" title="The WorkReq request. ">uvw::WorkReq</a>&gt;()</code>.</p>
-<dl class="section return"><dt>Returns</dt><dd>A pointer to the newly created resource. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00268">268</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00249">249</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -707,7 +667,7 @@ template&lt;Mode mode = Mode::DEFAULT&gt; </div>
 <p>See the official <a href="http://docs.libuv.org/en/v1.x/loop.html#c.uv_run">documentation</a> for further details.</p>
 <dl class="section return"><dt>Returns</dt><dd>True when done, false in all other cases. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00304">304</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00291">291</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -739,7 +699,7 @@ template&lt;Mode mode = Mode::DEFAULT&gt; </div>
  This will happen not sooner than the next loop iteration.<br />
  If this function was called before blocking for I/O, the loop won’t block for I/O on this iteration. </p>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00326">326</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00313">313</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -773,7 +733,7 @@ template&lt;Mode mode = Mode::DEFAULT&gt; </div>
 </ul>
 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00349">349</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00336">336</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -804,7 +764,7 @@ template&lt;Mode mode = Mode::DEFAULT&gt; </div>
 <p>The current time is cached at the start of the event loop tick in order to reduce the number of time-related system calls.<br />
  You won’t normally need to call this function unless you have callbacks that block the event loop for longer periods of time, where <em>longer</em> is somewhat subjective but probably on the order of a millisecond or more. </p>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00379">379</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00366">366</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -841,7 +801,7 @@ template&lt;Mode mode = Mode::DEFAULT&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00390">390</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00377">377</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>

@@ -14,6 +14,7 @@ var searchData=
   ['fsevent_3c_20details_3a_3auvfstype_3a_3ascandir_20_3e',['FsEvent&lt; details::UVFsType::SCANDIR &gt;',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1SCANDIR_01_4.html',1,'uvw']]],
   ['fsevent_3c_20details_3a_3auvfstype_3a_3asendfile_20_3e',['FsEvent&lt; details::UVFsType::SENDFILE &gt;',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1SENDFILE_01_4.html',1,'uvw']]],
   ['fsevent_3c_20details_3a_3auvfstype_3a_3astat_20_3e',['FsEvent&lt; details::UVFsType::STAT &gt;',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1STAT_01_4.html',1,'uvw']]],
+  ['fsevent_3c_20details_3a_3auvfstype_3a_3astatfs_20_3e',['FsEvent&lt; details::UVFsType::STATFS &gt;',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1STATFS_01_4.html',1,'uvw']]],
   ['fsevent_3c_20details_3a_3auvfstype_3a_3awrite_20_3e',['FsEvent&lt; details::UVFsType::WRITE &gt;',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1WRITE_01_4.html',1,'uvw']]],
   ['fseventevent',['FsEventEvent',['../structuvw_1_1FsEventEvent.html',1,'uvw']]],
   ['fseventhandle',['FsEventHandle',['../classuvw_1_1FsEventHandle.html',1,'uvw']]],

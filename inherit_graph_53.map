@@ -1,5 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classuvw_1_1Emitter.html" title="uvw::Emitter\&lt; FsReq \&gt;" alt="" coords="5,5,164,32"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title="uvw::Resource\&lt; FsReq,\l uv_fs_t \&gt;" alt="" coords="212,27,377,69"/>
-<area shape="rect" id="node3" href="$classuvw_1_1UnderlyingType.html" title="uvw::UnderlyingType\l\&lt; FsReq, uv_fs_t \&gt;" alt="" coords="12,57,157,98"/>
+<area shape="rect" id="node1" href="$classuvw_1_1Emitter.html" title="uvw::Emitter\&lt; FileReq \&gt;" alt="" coords="5,5,171,32"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title="uvw::Resource\&lt; FileReq,\l uv_fs_t \&gt;" alt="" coords="219,27,389,69"/>
+<area shape="rect" id="node3" href="$classuvw_1_1UnderlyingType.html" title="uvw::UnderlyingType\l\&lt; FileReq, uv_fs_t \&gt;" alt="" coords="15,57,161,98"/>
 </map>

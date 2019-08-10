@@ -23,7 +23,7 @@ var searchData=
   ['repeat',['repeat',['../classuvw_1_1TimerHandle.html#a1775eedcc2a75f04a5b4bba61584a881',1,'uvw::TimerHandle::repeat(Time repeat)'],['../classuvw_1_1TimerHandle.html#acfaaf46d6fe0009df9dd45f70abe314f',1,'uvw::TimerHandle::repeat()']]],
   ['replaceallocator',['replaceAllocator',['../structuvw_1_1Utilities.html#a602f623c81e84e8d947187a8815956a4',1,'uvw::Utilities']]],
   ['reset',['reset',['../classuvw_1_1TTYHandle.html#af1aad21eb7c7b71c94c622e9c5f45df2',1,'uvw::TTYHandle']]],
-  ['resource',['resource',['../classuvw_1_1Loop.html#a3898884e2019aa052235377dcd03c0f3',1,'uvw::Loop::resource(Args &amp;&amp;... args)'],['../classuvw_1_1Loop.html#a6c6796643be1a5bdfad719591b0f1a55',1,'uvw::Loop::resource(Args &amp;&amp;... args)']]],
+  ['resource',['resource',['../classuvw_1_1Loop.html#a7044486c90abcaa665b67e5d9f284dcd',1,'uvw::Loop']]],
   ['rmdir',['rmdir',['../classuvw_1_1FsReq.html#aab396c17423fb9a4e235bccd3bbe4ca7',1,'uvw::FsReq']]],
   ['rmdirsync',['rmdirSync',['../classuvw_1_1FsReq.html#a00a7b04ee79f86789567a6f5c638cc7b',1,'uvw::FsReq']]],
   ['run',['run',['../classuvw_1_1Loop.html#aa86d06ae9f91d8b48d1d5358040f2547',1,'uvw::Loop::run()'],['../classuvw_1_1Thread.html#aa2d9ff80741e0c724c30b7b2260182b6',1,'uvw::Thread::run() noexcept'],['../classuvw_1_1Thread.html#af2733e7b2ce1e4503c32f658a5555aa2',1,'uvw::Thread::run(Flags&lt; Options &gt; opts, std::size_t stack={}) noexcept']]],

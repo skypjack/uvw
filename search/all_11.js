@@ -23,7 +23,7 @@ var searchData=
   ['repeat',['repeat',['../classuvw_1_1TimerHandle.html#a1775eedcc2a75f04a5b4bba61584a881',1,'uvw::TimerHandle::repeat(Time repeat)'],['../classuvw_1_1TimerHandle.html#acfaaf46d6fe0009df9dd45f70abe314f',1,'uvw::TimerHandle::repeat()']]],
   ['replaceallocator',['replaceAllocator',['../structuvw_1_1Utilities.html#a602f623c81e84e8d947187a8815956a4',1,'uvw::Utilities']]],
   ['reset',['reset',['../classuvw_1_1TTYHandle.html#af1aad21eb7c7b71c94c622e9c5f45df2',1,'uvw::TTYHandle']]],
-  ['resource',['Resource',['../classuvw_1_1Resource.html',1,'uvw::Resource&lt; T, U &gt;'],['../classuvw_1_1Loop.html#a3898884e2019aa052235377dcd03c0f3',1,'uvw::Loop::resource(Args &amp;&amp;... args)'],['../classuvw_1_1Loop.html#a6c6796643be1a5bdfad719591b0f1a55',1,'uvw::Loop::resource(Args &amp;&amp;... args)']]],
+  ['resource',['Resource',['../classuvw_1_1Resource.html',1,'uvw::Resource&lt; T, U &gt;'],['../classuvw_1_1Loop.html#a7044486c90abcaa665b67e5d9f284dcd',1,'uvw::Loop::resource()']]],
   ['resource_3c_20asynchandle_2c_20uv_5fasync_5ft_20_3e',['Resource&lt; AsyncHandle, uv_async_t &gt;',['../classuvw_1_1Resource.html',1,'uvw']]],
   ['resource_3c_20checkhandle_2c_20uv_5fcheck_5ft_20_3e',['Resource&lt; CheckHandle, uv_check_t &gt;',['../classuvw_1_1Resource.html',1,'uvw']]],
   ['resource_3c_20connectreq_2c_20uv_5fconnect_5ft_20_3e',['Resource&lt; ConnectReq, uv_connect_t &gt;',['../classuvw_1_1Resource.html',1,'uvw']]],
