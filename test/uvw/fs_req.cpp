@@ -100,18 +100,6 @@ TEST(FsReq, MkdtempAndRmdirSync) {
 }
 
 
-/*
-TEST(FsReq, Scandir) {
-    // TODO
-}
-
-
-TEST(FsReq, ScandirSync) {
-    // TODO
-}
-*/
-
-
 TEST(FsReq, Stat) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
 
@@ -264,16 +252,6 @@ TEST(FsReq, RenameSync) {
     ASSERT_TRUE(fsReq->renameSync(filename, rename));
 
     loop->run();
-}
-
-
-TEST(FsReq, CopyFile) {
-    // TODO
-}
-
-
-TEST(FsReq, CopyFileSync) {
-    // TODO
 }
 
 

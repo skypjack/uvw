@@ -119,13 +119,3 @@ TEST(Pipe, Shutdown) {
 
     loop->run();
 }
-
-
-TEST(Pipe, TODO) {
-    auto loop = uvw::Loop::getDefault();
-    auto handle = uvw::PipeHandle::create(loop);
-
-    handle = nullptr;
-
-    // TODO
-}

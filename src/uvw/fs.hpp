@@ -52,7 +52,8 @@ enum class UVFsType: std::underlying_type_t<uv_fs_type> {
     LCHOWN = UV_FS_LCHOWN,
     OPENDIR = UV_FS_OPENDIR,
     READDIR = UV_FS_READDIR,
-    CLOSEDIR = UV_FS_CLOSEDIR
+    CLOSEDIR = UV_FS_CLOSEDIR,
+    STATFS = UV_FS_STATFS
 };
 
 
@@ -76,6 +77,7 @@ enum class UVFileOpenFlags: int {
     DSYNC = UV_FS_O_DSYNC,
     EXCL = UV_FS_O_EXCL,
     EXLOCK = UV_FS_O_EXLOCK,
+    FILEMAP = UV_FS_O_FILEMAP,
     NOATIME = UV_FS_O_NOATIME,
     NOCTTY = UV_FS_O_NOCTTY,
     NOFOLLOW = UV_FS_O_NOFOLLOW,
@@ -149,6 +151,7 @@ enum class UVSymLinkFlags: int {
  * * `FsRequest::Type::OPENDIR`
  * * `FsRequest::Type::READDIR`
  * * `FsRequest::Type::CLOSEDIR`
+ * * `FsRequest::Type::STATFS`
  *
  * It will be emitted by FsReq and/or FileReq according with their
  * functionalities.
@@ -269,6 +272,23 @@ struct FsEvent<details::UVFsType::LSTAT> {
 
 
 /**
+ * @brief FsEvent event specialization for `FsRequest::Type::STATFS`.
+ *
+ * It will be emitted by FsReq and/or FileReq according with their
+ * functionalities.
+ */
+template<>
+struct FsEvent<details::UVFsType::STATFS> {
+    FsEvent(const char *pathname, Statfs curr) noexcept
+        : path{pathname}, statfs{std::move(curr)}
+    {}
+
+    const char * path; /*!< The path affecting the request. */
+    Statfs statfs; /*!< An initialized instance of Statfs. */
+};
+
+
+/**
  * @brief FsEvent event specialization for `FsRequest::Type::SCANDIR`.
  *
  * It will be emitted by FsReq and/or FileReq according with their
@@ -350,6 +370,12 @@ protected:
         auto ptr = Request<T, uv_fs_t>::reserve(req);
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<e>{req->path, req->statbuf}); }
+    }
+
+    static void fsStatfsCallback(uv_fs_t *req) {
+        auto ptr = Request<T, uv_fs_t>::reserve(req);
+        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
+        else { ptr->publish(FsEvent<Type::STATFS>{req->path, *static_cast<Statfs *>(req->ptr)}); }
     }
 
     template<typename... Args>
@@ -461,6 +487,7 @@ public:
      * * `FileReq::FileOpen::DSYNC`
      * * `FileReq::FileOpen::EXCL`
      * * `FileReq::FileOpen::EXLOCK`
+     * * `FileReq::FileOpen::FILEMAP`
      * * `FileReq::FileOpen::NOATIME`
      * * `FileReq::FileOpen::NOCTTY`
      * * `FileReq::FileOpen::NOFOLLOW`
@@ -500,6 +527,7 @@ public:
      * * `FileReq::FileOpen::DSYNC`
      * * `FileReq::FileOpen::EXCL`
      * * `FileReq::FileOpen::EXLOCK`
+     * * `FileReq::FileOpen::FILEMAP`
      * * `FileReq::FileOpen::NOATIME`
      * * `FileReq::FileOpen::NOCTTY`
      * * `FileReq::FileOpen::NOFOLLOW`
@@ -1104,6 +1132,39 @@ public:
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_lstat, parent(), req, path.data());
         return std::make_pair(!(req->result < 0), req->statbuf);
+    }
+
+    /**
+     * @brief Async [statfs](http://linux.die.net/man/2/statfs).
+     *
+     * Emit a `FsEvent<FsReq::Type::STATFS>` event when completed.<br/>
+     * Emit an ErrorEvent event in case of errors.
+     *
+     * Any fields in the resulting object that are not supported by the
+     * underlying operating system are set to zero.
+     *
+     * @param path Path, as described in the official documentation.
+     */
+    void stasfs(std::string path) {
+        cleanupAndInvoke(&uv_fs_statfs, parent(), get(), path.data(), &fsStatfsCallback);
+    }
+
+    /**
+     * @brief Sync [statfs](http://linux.die.net/man/2/statfs).
+     *
+     * Any fields in the resulting object that are not supported by the
+     * underlying operating system are set to zero.
+     *
+     * @param path Path, as described in the official documentation.
+     *
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * An initialized instance of Statfs.
+     */
+    std::pair<bool, Statfs> statfsSync(std::string path) {
+        auto req = get();
+        cleanupAndInvokeSync(&uv_fs_statfs, parent(), req, path.data());
+        return std::make_pair(!(req->result < 0), *static_cast<uv_statfs_t *>(req->ptr));
     }
 
     /**

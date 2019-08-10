@@ -197,6 +197,7 @@ constexpr FileHandle StdERR{2}; /*!< Placeholder for stderr descriptor. */
 
 using TimeSpec = uv_timespec_t; /*!< Library equivalent for uv_timespec_t. */
 using Stat = uv_stat_t; /*!< Library equivalent for uv_stat_t. */
+using Statfs = uv_statfs_t; /*!< Library equivalent for uv_statfs_t. */
 using Uid = uv_uid_t; /*!< Library equivalent for uv_uid_t. */
 using Gid = uv_gid_t; /*!< Library equivalent for uv_gid_t. */
 

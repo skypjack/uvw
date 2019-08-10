@@ -198,7 +198,6 @@ TEST(FileReq, RWSync) {
 }
 
 
-
 TEST(FileReq, Stat) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
@@ -226,7 +225,6 @@ TEST(FileReq, Stat) {
 
     ASSERT_TRUE(checkFileStatEvent);
 }
-
 
 
 TEST(FileReq, StatSync) {

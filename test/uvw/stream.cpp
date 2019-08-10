@@ -11,14 +11,3 @@ struct FakeStreamHandle: uvw::StreamHandle<FakeStreamHandle, fake_stream_t> {
     template<typename... Args>
     bool init(Args&&...) { return true; }
 };
-
-
-TEST(Stream, TODO) {
-    auto loop = uvw::Loop::getDefault();
-    auto handle = FakeStreamHandle::create(loop);
-
-    handle = nullptr;
-
-    // TODO
-
-}

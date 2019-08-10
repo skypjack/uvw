@@ -93,7 +93,7 @@ exist a valid `libuv` wrapper in C++. That's all.
 
 To be able to use `uvw`, users must provide the following system-wide tools:
 
-* A full-featured compiler that supports at least C++14.
+* A full-featured compiler that supports at least C++17.
 * `libuv` (which version depends on the tag of `uvw` in use).
 
 The requirements below are mandatory to compile the tests and to extract the
@@ -169,10 +169,7 @@ for the latest version.
 
 The documentation is mostly inspired by the official
 [libuv API documentation](http://docs.libuv.org/en/v1.x/) for obvious
-reasons.<br/>
-If you are mainly interested in the way `uvw` imports `libuv` in a `cmake` based
-project, I suggest you to take a look at
-[this](https://github.com/skypjack/libuv_cmake) repository instead.
+reasons.
 
 ## Tests
 
