@@ -201,6 +201,35 @@ public:
         return loop;
     }
 
+    /**
+     * @brief Wrap an existing loop libuv pointer.
+     *
+     * It may return an empty pointer in case of failure.<br>
+     * This function is a way to use external libraries that expose their own
+     * loop, such as luv.
+     *
+     * @param raw_loop The raw libuv loop pointer.
+     *
+     * @return The wrapped loop.
+     */
+    static std::shared_ptr<Loop> fromRaw(uv_loop_t* raw_loop) {
+        static std::weak_ptr<Loop> ref;
+        std::shared_ptr<Loop> loop;
+
+        if(ref.expired()) {
+            if(raw_loop) {
+                auto ptr = std::unique_ptr<uv_loop_t, Deleter>(raw_loop, [](uv_loop_t *){});
+                loop = std::shared_ptr<Loop>{new Loop{std::move(ptr)}};
+            }
+
+            ref = loop;
+        } else {
+            loop = ref.lock();
+        }
+
+        return loop;
+    }
+
     Loop(const Loop &) = delete;
     Loop(Loop &&other) = delete;
     Loop & operator=(const Loop &) = delete;
