@@ -170,6 +170,21 @@ public:
     }
 
     /**
+     * @brief Initializes a new Loop instance from an existing resource.
+     *
+     * The lifetime of the resource must exceed that of the instance to which
+     * it's associated. Management of the memory associated with the resource is
+     * in charge of the user.
+     *
+     * @param loop A valid pointer to a correctly initialized resource.
+     * @return A pointer to the newly created loop.
+     */
+    static std::shared_ptr<Loop> create(uv_loop_t *loop) {
+        auto ptr = std::unique_ptr<uv_loop_t, Deleter>{loop, [](uv_loop_t *){}};
+        return std::shared_ptr<Loop>{new Loop{std::move(ptr)}};
+    }
+
+    /**
      * @brief Gets the initialized default loop.
      *
      * It may return an empty pointer in case of failure.<br>
