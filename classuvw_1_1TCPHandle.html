@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.1.0</span>
    </div>
   </td>
  </tr>
@@ -149,6 +149,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad686cdcb361f426c60788c6f6fa48d44"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classuvw_1_1TCPHandle.html#ad686cdcb361f426c60788c6f6fa48d44">connect</a> (<a class="el" href="structuvw_1_1Addr.html">Addr</a> addr)</td></tr>
 <tr class="memdesc:ad686cdcb361f426c60788c6f6fa48d44"><td class="mdescLeft">&#160;</td><td class="mdescRight">Establishes an <a class="el" href="structuvw_1_1IPv4.html" title="The IPv4 tag. ">IPv4</a> or <a class="el" href="structuvw_1_1IPv6.html" title="The IPv6 tag. ">IPv6</a> TCP connection.  <a href="#ad686cdcb361f426c60788c6f6fa48d44">More...</a><br /></td></tr>
 <tr class="separator:ad686cdcb361f426c60788c6f6fa48d44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f9f427c131fd74d716036b04883926d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1TCPHandle.html#a2f9f427c131fd74d716036b04883926d">closeReset</a> ()</td></tr>
+<tr class="memdesc:a2f9f427c131fd74d716036b04883926d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Resets a TCP connection by sending a RST packet.  <a href="#a2f9f427c131fd74d716036b04883926d">More...</a><br /></td></tr>
+<tr class="separator:a2f9f427c131fd74d716036b04883926d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classuvw_1_1StreamHandle"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classuvw_1_1StreamHandle')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classuvw_1_1StreamHandle.html">uvw::StreamHandle&lt; TCPHandle, uv_tcp_t &gt;</a></td></tr>
 <tr class="memitem:a3c1a1ddd951b0087c14e951610593653 inherit pub_methods_classuvw_1_1StreamHandle"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1StreamHandle.html#a3c1a1ddd951b0087c14e951610593653">shutdown</a> ()</td></tr>
 <tr class="memdesc:a3c1a1ddd951b0087c14e951610593653 inherit pub_methods_classuvw_1_1StreamHandle"><td class="mdescLeft">&#160;</td><td class="mdescRight">Shutdowns the outgoing (write) side of a duplex stream.  <a href="classuvw_1_1StreamHandle.html#a3c1a1ddd951b0087c14e951610593653">More...</a><br /></td></tr>
@@ -459,6 +462,39 @@ template&lt;typename I  = IPv4&gt; </div>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00177">177</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a2f9f427c131fd74d716036b04883926d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f9f427c131fd74d716036b04883926d">&#9670;&nbsp;</a></span>closeReset()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void uvw::TCPHandle::closeReset </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Resets a TCP connection by sending a RST packet. </p>
+<p>This is accomplished by setting the <code>SO_LINGER</code> socket option with a linger interval of zero and then calling <code>close</code>.<br />
+ Due to some platform inconsistencies, mixing of <code>shutdown</code> and <code>closeReset</code> calls is not allowed.</p>
+<p>A <a class="el" href="structuvw_1_1CloseEvent.html" title="CloseEvent event. ">CloseEvent</a> event is emitted when the connection has been reset.<br />
+ An <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> event is emitted in case of errors. </p>
+
+<p class="definition">Definition at line <a class="el" href="tcp_8hpp_source.html#l00265">265</a> of file <a class="el" href="tcp_8hpp_source.html">tcp.hpp</a>.</p>
 
 </div>
 </div>

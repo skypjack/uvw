@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">2.0.0</span>
+   &#160;<span id="projectnumber">2.1.0</span>
    </div>
   </td>
  </tr>
@@ -177,6 +177,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:ae2a1f36aafb919444d933e4a43e78d8f"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr&lt; <a class="el" href="classuvw_1_1Loop.html">Loop</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1Loop.html#ae2a1f36aafb919444d933e4a43e78d8f">create</a> ()</td></tr>
 <tr class="memdesc:ae2a1f36aafb919444d933e4a43e78d8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new <a class="el" href="classuvw_1_1Loop.html" title="The Loop class. ">Loop</a> instance.  <a href="#ae2a1f36aafb919444d933e4a43e78d8f">More...</a><br /></td></tr>
 <tr class="separator:ae2a1f36aafb919444d933e4a43e78d8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a807bb8d8736201fa9cd479fb7470a630"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr&lt; <a class="el" href="classuvw_1_1Loop.html">Loop</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1Loop.html#a807bb8d8736201fa9cd479fb7470a630">create</a> (uv_loop_t *loop)</td></tr>
+<tr class="memdesc:a807bb8d8736201fa9cd479fb7470a630"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initializes a new <a class="el" href="classuvw_1_1Loop.html" title="The Loop class. ">Loop</a> instance from an existing resource.  <a href="#a807bb8d8736201fa9cd479fb7470a630">More...</a><br /></td></tr>
+<tr class="separator:a807bb8d8736201fa9cd479fb7470a630"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a284450b3ef37c62bd7a984c73552d7b8"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr&lt; <a class="el" href="classuvw_1_1Loop.html">Loop</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1Loop.html#a284450b3ef37c62bd7a984c73552d7b8">getDefault</a> ()</td></tr>
 <tr class="memdesc:a284450b3ef37c62bd7a984c73552d7b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the initialized default loop.  <a href="#a284450b3ef37c62bd7a984c73552d7b8">More...</a><br /></td></tr>
 <tr class="separator:a284450b3ef37c62bd7a984c73552d7b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -214,7 +217,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Checks if there are active resources. </p>
 <dl class="section return"><dt>Returns</dt><dd>True if there are active resources in the loop. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00301">301</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00316">316</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -245,7 +248,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Call this function only when the loop has finished executing and all open handles and requests have been closed, or the loop will emit an error.</p>
 <p>An <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> will be emitted in case of errors. </p>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00267">267</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00282">282</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -294,12 +297,12 @@ template&lt;typename... Args&gt; </div>
 <p>An <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> will be emitted in case of errors.</p>
 <p>See the official <a href="http://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_configure">documentation</a> for further details. </p>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00232">232</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00247">247</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
 <a id="ae2a1f36aafb919444d933e4a43e78d8f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae2a1f36aafb919444d933e4a43e78d8f">&#9670;&nbsp;</a></span>create()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae2a1f36aafb919444d933e4a43e78d8f">&#9670;&nbsp;</a></span>create() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -325,6 +328,44 @@ template&lt;typename... Args&gt; </div>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the newly created loop. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00161">161</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a807bb8d8736201fa9cd479fb7470a630"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a807bb8d8736201fa9cd479fb7470a630">&#9670;&nbsp;</a></span>create() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::shared_ptr&lt;<a class="el" href="classuvw_1_1Loop.html">Loop</a>&gt; uvw::Loop::create </td>
+          <td>(</td>
+          <td class="paramtype">uv_loop_t *&#160;</td>
+          <td class="paramname"><em>loop</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Initializes a new <a class="el" href="classuvw_1_1Loop.html" title="The Loop class. ">Loop</a> instance from an existing resource. </p>
+<p>The lifetime of the resource must exceed that of the instance to which it's associated. Management of the memory associated with the resource is in charge of the user.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">loop</td><td>A valid pointer to a correctly initialized resource. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A pointer to the newly created loop. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00182">182</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -356,7 +397,7 @@ template&lt;typename R  = void&gt; </div>
 <p>Gets user-defined data. <code>uvw</code> won't use this field in any case. </p>
 <dl class="section return"><dt>Returns</dt><dd>User-defined data if any, an invalid pointer otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00427">427</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00442">442</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -392,7 +433,7 @@ template&lt;typename R  = void&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00435">435</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00450">450</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -424,7 +465,7 @@ template&lt;typename R  = void&gt; </div>
  This can be used in conjunction with <code>run&lt;Loop::Mode::NOWAIT&gt;()</code> to poll in one thread and run the event loop’s callbacks in another.</p>
 <dl class="section return"><dt>Returns</dt><dd>The backend file descriptor. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00326">326</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00341">341</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -460,7 +501,7 @@ template&lt;typename R  = void&gt; </div>
 <p>An <a class="el" href="structuvw_1_1ErrorEvent.html" title="The ErrorEvent event. ">ErrorEvent</a> will be emitted in case of errors.</p>
 <p>See the official <a href="http://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_fork">documentation</a> for further details. </p>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00417">417</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00432">432</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -493,7 +534,7 @@ template&lt;typename R  = void&gt; </div>
  As such, the default loop can be closed with <code><a class="el" href="classuvw_1_1Loop.html#ae0dbd76098075f5a187256834df568c3" title="Releases all internal loop resources. ">close()</a></code> so the resources associated with it are freed (even if it is not strictly necessary).</p>
 <dl class="section return"><dt>Returns</dt><dd>The initialized default loop. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00184">184</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00199">199</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -526,7 +567,7 @@ template&lt;typename R  = void&gt; </div>
  Don’t make assumptions about the starting point, you will only get disappointed.</p>
 <dl class="section return"><dt>Returns</dt><dd>The current timestamp in milliseconds (actual type is <code>std::chrono::duration&lt;uint64_t, std::milli&gt;</code>). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00353">353</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00368">368</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -559,7 +600,7 @@ template&lt;typename R  = void&gt; </div>
 <dl class="section warning"><dt>Warning</dt><dd>Use this function at your own risk, but do not expect any support in case of bugs.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>The underlying raw data structure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00454">454</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00469">469</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -592,7 +633,7 @@ template&lt;typename R  = void&gt; </div>
 <dl class="section warning"><dt>Warning</dt><dd>Use this function at your own risk, but do not expect any support in case of bugs.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>The underlying raw data structure. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00473">473</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00488">488</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -628,7 +669,7 @@ template&lt;typename R , typename... Args&gt; </div>
 <p>Use it as <code>loop-&gt;resource&lt;<a class="el" href="classuvw_1_1TimerHandle.html" title="The TimerHandle handle. ">uvw::TimerHandle</a>&gt;()</code>.</p>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the newly created resource. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00249">249</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00264">264</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -667,7 +708,7 @@ template&lt;Mode mode = Mode::DEFAULT&gt; </div>
 <p>See the official <a href="http://docs.libuv.org/en/v1.x/loop.html#c.uv_run">documentation</a> for further details.</p>
 <dl class="section return"><dt>Returns</dt><dd>True when done, false in all other cases. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00291">291</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00306">306</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -699,7 +740,7 @@ template&lt;Mode mode = Mode::DEFAULT&gt; </div>
  This will happen not sooner than the next loop iteration.<br />
  If this function was called before blocking for I/O, the loop won’t block for I/O on this iteration. </p>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00313">313</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00328">328</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -733,7 +774,7 @@ template&lt;Mode mode = Mode::DEFAULT&gt; </div>
 </ul>
 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00336">336</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00351">351</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -764,7 +805,7 @@ template&lt;Mode mode = Mode::DEFAULT&gt; </div>
 <p>The current time is cached at the start of the event loop tick in order to reduce the number of time-related system calls.<br />
  You won’t normally need to call this function unless you have callbacks that block the event loop for longer periods of time, where <em>longer</em> is somewhat subjective but probably on the order of a millisecond or more. </p>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00366">366</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00381">381</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>
@@ -801,7 +842,7 @@ template&lt;Mode mode = Mode::DEFAULT&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00377">377</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8hpp_source.html#l00392">392</a> of file <a class="el" href="loop_8hpp_source.html">loop.hpp</a>.</p>
 
 </div>
 </div>

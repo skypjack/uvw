@@ -13,6 +13,7 @@ var searchData=
   ['closedir',['closedir',['../classuvw_1_1FsReq.html#a45148f322e9a9056af6b907221fae94c',1,'uvw::FsReq']]],
   ['closedirsync',['closedirSync',['../classuvw_1_1FsReq.html#a01a0518613d3625ae3eba6a70d88f124',1,'uvw::FsReq']]],
   ['closeevent',['CloseEvent',['../structuvw_1_1CloseEvent.html',1,'uvw']]],
+  ['closereset',['closeReset',['../classuvw_1_1TCPHandle.html#a2f9f427c131fd74d716036b04883926d',1,'uvw::TCPHandle']]],
   ['closesync',['closeSync',['../classuvw_1_1FileReq.html#a6a7a53cc446b7da0210bf38f1bbd64bf',1,'uvw::FileReq']]],
   ['closing',['closing',['../classuvw_1_1Handle.html#a94b17026726b0999d1dc20c82b84ef0e',1,'uvw::Handle::closing()'],['../structuvw_1_1BaseHandle.html#af52ea3d010c19fa5fa3effe2e0d14e0b',1,'uvw::BaseHandle::closing()']]],
   ['code',['code',['../structuvw_1_1ErrorEvent.html#a47e65776ce0488f87665c00d5bc1241d',1,'uvw::ErrorEvent']]],
@@ -25,7 +26,7 @@ var searchData=
   ['copyfile',['copyfile',['../classuvw_1_1FsReq.html#a438fa29b48973093b2d08854f09faab3',1,'uvw::FsReq']]],
   ['copyfilesync',['copyfileSync',['../classuvw_1_1FsReq.html#ae092009fbd3ea78675be886ed282b8da',1,'uvw::FsReq']]],
   ['cpuinfo',['CPUInfo',['../structuvw_1_1CPUInfo.html',1,'uvw::CPUInfo'],['../structuvw_1_1Utilities.html#a9fc20cb272b9302a631535034e6b2999',1,'uvw::Utilities::cpuInfo()']]],
-  ['create',['create',['../classuvw_1_1Loop.html#ae2a1f36aafb919444d933e4a43e78d8f',1,'uvw::Loop::create()'],['../classuvw_1_1UnderlyingType.html#aa711faff7e88895f769f66e8245bda73',1,'uvw::UnderlyingType::create()']]],
+  ['create',['create',['../classuvw_1_1Loop.html#ae2a1f36aafb919444d933e4a43e78d8f',1,'uvw::Loop::create()'],['../classuvw_1_1Loop.html#a807bb8d8736201fa9cd479fb7470a630',1,'uvw::Loop::create(uv_loop_t *loop)'],['../classuvw_1_1UnderlyingType.html#aa711faff7e88895f769f66e8245bda73',1,'uvw::UnderlyingType::create()']]],
   ['curr',['curr',['../structuvw_1_1FsPollEvent.html#a9a9e5143e042c9d5a16fe7b120610fb8',1,'uvw::FsPollEvent']]],
   ['cwd',['cwd',['../classuvw_1_1ProcessHandle.html#a29dca1723733e51edf063f93046f52b1',1,'uvw::ProcessHandle::cwd()'],['../structuvw_1_1Utilities.html#ac0f1805b8adf93066a8c4df190f5c6a2',1,'uvw::Utilities::cwd()']]]
 ];
