@@ -251,6 +251,21 @@ public:
         connect<I>(std::move(addr.ip), addr.port);
     }
 
+    /**
+     * @brief Resets a TCP connection by sending a RST packet.
+     *
+     * This is accomplished by setting the `SO_LINGER` socket option with a
+     * linger interval of zero and then calling `close`.<br/>
+     * Due to some platform inconsistencies, mixing of `shutdown` and
+     * `closeReset` calls is not allowed.
+     *
+     * A CloseEvent event is emitted when the connection has been reset.<br/>
+     * An ErrorEvent event is emitted in case of errors.
+     */
+    void closeReset() {
+        invoke(&uv_tcp_close_reset, get(), &this->closeCallback);
+    }
+
 private:
     enum { DEFAULT, FLAGS } tag;
     unsigned int flags;
