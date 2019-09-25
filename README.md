@@ -3,9 +3,8 @@
 <!--
 @cond TURN_OFF_DOXYGEN
 -->
-[![Build Status](https://travis-ci.org/skypjack/uvw.svg?branch=master)](https://travis-ci.org/skypjack/uvw)
-[![Build status](https://ci.appveyor.com/api/projects/status/m5ndm8gnu8isg2to?svg=true)](https://ci.appveyor.com/project/skypjack/uvw)
-[![Coverage Status](https://coveralls.io/repos/github/skypjack/uvw/badge.svg?branch=master)](https://coveralls.io/github/skypjack/uvw?branch=master)
+[![Build Status](https://github.com/skypjack/uvw/workflows/build/badge.svg)](https://github.com/skypjack/uvw/actions)
+[![Coverage](https://codecov.io/gh/skypjack/uvw/branch/master/graph/badge.svg)](https://codecov.io/gh/skypjack/uvw)
 [![Download](https://api.bintray.com/packages/skypjack/conan/uvw%3Askypjack/images/download.svg)](https://bintray.com/skypjack/conan/uvw%3Askypjack/_latestVersion)
 [![Gitter chat](https://badges.gitter.im/skypjack/uvw.png)](https://gitter.im/skypjack/uvw)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/skypjack)

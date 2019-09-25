@@ -141,13 +141,15 @@ install(
 # AOB
 #
 
+FILE(GLOB GH_WORKFLOWS .github/workflows/*.yml)
+
 add_custom_target(
     uvw_aob
     SOURCES
+        ${GH_WORKFLOWS}
+        .github/FUNDING.yml
         cmake/in/deps.in
-        appveyor.yml
         AUTHORS
         LICENSE
         README.md
-        .travis.yml
 )
