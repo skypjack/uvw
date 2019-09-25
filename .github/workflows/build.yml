@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
 
   linux:
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     strategy:
       matrix:
@@ -30,7 +30,7 @@ jobs:
       run: ctest --timeout 5 -C Debug -j4
 
   windows:
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     strategy:
       matrix:
@@ -50,14 +50,9 @@ jobs:
       run: |
         cmake -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF -DCMAKE_CXX_FLAGS=/W1 -G"${{ matrix.generator }}" ..
         cmake --build . -j 4
-    - name: Run tests
-      working-directory: build
-      env:
-        CTEST_OUTPUT_ON_FAILURE: 1
-      run: ctest --timeout 5 -C Debug -j4
 
   macos:
-    timeout-minutes: 5
+    timeout-minutes: 10
     runs-on: macOS-10.14
 
     steps:
@@ -67,8 +62,3 @@ jobs:
       run: |
         cmake -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF ..
         make -j4
-    - name: Run tests
-      working-directory: build
-      env:
-        CTEST_OUTPUT_ON_FAILURE: 1
-      run: ctest --timeout 5 -C Debug -j4
