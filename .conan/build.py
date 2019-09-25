@@ -13,7 +13,9 @@ def get_version():
         match = re.search(r'project\(uvw VERSION (.*)\)', content)
         if match:
             return match.group(1)
-        return os.getenv("TRAVIS_BRANCH", "master")
+        tag_version = os.getenv("GITHUB_REF")
+        package_version = tag_version.replace("refs/tags/v", "")
+        return package_version
 
 def get_username():
     return os.getenv("CONAN_USERNAME", "skypjack")
@@ -28,7 +30,7 @@ def get_reference():
 def get_upload():
     username = get_username()
     url = "https://api.bintray.com/conan/{}/conan".format(username)
-    default_upload = url if os.getenv("TRAVIS_TAG") else False
+    default_upload = url if os.getenv("GITHUB_REF") else False
     return os.getenv("CONAN_UPLOAD", default_upload)
 
 

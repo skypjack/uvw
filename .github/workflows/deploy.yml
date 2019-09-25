@@ -1,0 +1,32 @@
+name: deploy
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+
+  conan:
+    timeout-minutes: 5
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: docker://conanio/gcc8
+    - uses: actions/checkout@v1
+    - name: Setup Python
+      uses: actions/setup-python@master
+      with:
+        version: 3.7
+    - name: Install
+      run: |
+        pip install --upgrade wheel
+        pip install conan_package_tools
+    - name: Deploy
+      env:
+        CONAN_LOGIN_USERNAME: ${{ secrets.CONAN_LOGIN_USERNAME }}
+        CONAN_PASSWORD: ${{ secrets.CONAN_PASSWORD }}
+        CONAN_UPLOAD: ${{ secrets.CONAN_UPLOAD }}
+        CONAN_GCC_VERSIONS: 8
+      run: |
+        python .conan/build.py
