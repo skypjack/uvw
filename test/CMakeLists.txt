@@ -46,10 +46,11 @@ endmacro()
 
 # List of available targets
 
+option(BUILD_DNS_TEST "Build DNS test." OFF)
+
 ADD_UVW_TEST(main main.cpp)
 ADD_UVW_TEST(async uvw/async.cpp)
 ADD_UVW_TEST(check uvw/check.cpp)
-ADD_UVW_TEST(dns uvw/dns.cpp)
 ADD_UVW_TEST(emitter uvw/emitter.cpp)
 ADD_UVW_DIR_TEST(file_req uvw/file_req.cpp)
 ADD_UVW_DIR_TEST(fs_event uvw/fs_event.cpp)
@@ -73,3 +74,7 @@ ADD_UVW_TEST(udp uvw/udp.cpp)
 ADD_UVW_TEST(underlying_type uvw/underlying_type.cpp)
 ADD_UVW_TEST(util uvw/util.cpp)
 ADD_UVW_TEST(work uvw/work.cpp)
+
+if(BUILD_DNS_TEST)
+    ADD_UVW_TEST(dns uvw/dns.cpp)
+endif()
