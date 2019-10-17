@@ -1,6 +1,7 @@
 #pragma once
 
 
+#include <string_view>
 #include <type_traits>
 #include <algorithm>
 #include <stdexcept>
@@ -552,6 +553,38 @@ struct Utilities {
          */
         static bool env(const std::string &name, const std::string &value) noexcept {
             return (0 == (value.empty() ? uv_os_unsetenv(name.c_str()) : uv_os_setenv(name.c_str(), value.c_str())));
+        }
+
+        /**
+         * @brief Retrieves all environment variables and iterates them.
+         *
+         * Environment variables are passed one at a time to the callback in the
+         * form of `std::string_view`s.<br/>
+         * The signature of the function call operator must be such that it
+         * accepts two parameters, the name and the value of the i-th variable.
+         *
+         * @tparam Func Type of a function object to which to pass environment
+         * variables.
+         * @param func A function object to which to pass environment variables.
+         * @return True in case of success, false otherwise.
+         */
+        template<typename Func>
+        static std::enable_if_t<std::is_invocable_v<Func, std::string_view, std::string_view>, bool>
+        env(Func func) noexcept {
+            uv_env_item_t *items = nullptr;
+            int count{};
+
+            const bool ret = (uv_os_environ(&items, &count) == 0);
+
+            if(ret) {
+                for(int pos = 0; pos < count; ++pos) {
+                    func(std::string_view{items[pos].name}, std::string_view{items[pos].value});
+                }
+
+                uv_os_free_environ(items, count);
+            }
+
+            return ret;
         }
 
         /**
