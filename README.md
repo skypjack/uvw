@@ -31,7 +31,7 @@ graceful C++ API. Currently, no `uv_*_t` data structure is actually exposed by
 the library.<br/>
 Note that `uvw` stays true to the API of `libuv` and it doesn't add anything to
 its interface. For the same reasons, users of the library must follow the same
-rules who are used to follow with `libuv`.<br/>
+rules which are used with `libuv`.<br/>
 As an example, a *handle* should be initialized before any other operation and
 closed once it is no longer in use.
 
@@ -82,7 +82,7 @@ int main() {
 
 ## Motivation
 
-The main reason for which `uvw` has been written is the fact that it does not
+The main reason for which `uvw` has been written is the fact that there does not
 exist a valid `libuv` wrapper in C++. That's all.
 
 # Build Instructions
@@ -102,7 +102,7 @@ documentation:
 
 Note that `libuv` is part of the dependencies of the project and it will be
 cloned by `cmake` (see below for further details).<br/>
-Because of that, users have not to install it to compile and execute the tests.
+Because of that, users don't have to install it to compile and execute the tests.
 
 ## Library
 
@@ -117,7 +117,7 @@ It's a matter of adding the following line at the top of a file:
 
 Then pass the proper `-I` argument to the compiler to add the `src` directory to
 the include paths.<br/>
-Note that users are demanded to correctly setup include directories and
+Note that users are required to correctly setup the include directories and
 libraries search paths for `libuv`.
 
 ## Versioning
@@ -172,7 +172,7 @@ reasons.
 ## Tests
 
 To compile and run the tests, `uvw` requires `libuv` and `googletest`.<br/>
-`cmake` will download and compile both the libraries before to compile anything
+`cmake` will download and compile both the libraries before compiling anything
 else.
 
 To build the tests:
@@ -207,7 +207,7 @@ For more details, please refer to the
 Initialization is usually performed under the hood and can be even passed over,
 as far as handles are created using the `Loop::resource` member function.<br/>
 On the other side, handles keep themselves alive until one explicitly closes
-them. Because of that, memory usage will grow up if users simply forget about a
+them. Because of that, memory usage will grow if users simply forget about a
 handle.<br/>
 Therefore the rule quickly becomes *always close your handles*. It's as simple
 as calling the `close` member function on them.
@@ -218,8 +218,8 @@ Usually initializing a request object is not required. Anyway, the recommended
 way to create a request is still through the `Loop::resource` member
 function.<br/>
 Requests will keep themselves alive as long as they are bound to unfinished
-underlying activities. This means that users have not to discard explicitly a
-request.<br/>
+underlying activities. This means that users don't have to discard a
+request explicitly .<br/>
 Therefore the rule quickly becomes *feel free to make a request and forget about
 it*. It's as simple as calling a member function on them.
 
@@ -232,8 +232,8 @@ is enough, it's easy as doing this:
 auto loop = uvw::Loop::getDefault();
 ```
 
-Note that loop objects don't require to be closed explicitly, even if they offer
-the `close` member function in case an user wants to do that.<br/>
+Note that loop objects don't require being closed explicitly, even if they offer
+the `close` member function in case a user wants to do that.<br/>
 Loops can be started using the `run` member function. The two calls below are
 equivalent:
 
@@ -304,11 +304,11 @@ loop.walk([](uvw::BaseHandle &h){ h.close(); });
 
 No need to keep track of them.
 
-To know what are the available resources' types, please refer the API reference.
+To know what are the available resources' types, please refer to the API reference.
 
 ## The event-based approach
 
-For `uvw` offers an event-based approach, resources are small event emitters
+`uvw` offers an event-based approach, so resources are small event emitters
 to which listeners can be attached.<br/>
 Attaching a listener to a resource is the recommended way to be notified about
 changes.<br/>
@@ -341,7 +341,7 @@ A connection object can be used later as an argument to the `erase` member
 function of the resource to remove the listener.<br/>
 There exists also the `clear` member function to drop all the listeners at once.
 
-Almost all the resources use to emit `ErrorEvent` events in case of errors.<br/>
+Almost all the resources emit `ErrorEvent` in case of errors.<br/>
 All the other events are specific for the given resource and documented in the
 API reference.
 
@@ -367,7 +367,7 @@ tcp->listen();
 
 Note also that `uvw::TCPHandle` already supports _IPv6_ out-of-the-box. The
 statement above is equivalent to `tcp->bind<uvw::IPv4>("127.0.0.1", 4242)`.<br/>
-It's suffice to explicitly specify `uvw::IPv6` as the underlying protocol to use
+It's sufficient to explicitly specify `uvw::IPv6` as the underlying protocol to use
 it.
 
 The API reference is the recommended documentation for further details about
@@ -381,7 +381,7 @@ reasons, almost all the classes in `uvw` give direct access to them.<br/>
 Please, note that this functions should not be used directly unless users know
 exactly what they are doing and what are the risks. Going raw is dangerous,
 mainly because the lifetime management of a loop, a handle or a request is
-completely in charge to the library and working around it could quickly break
+completely controlled by the library and working around it could quickly break
 things.
 
 That being said, _going raw_ is a matter of using the `raw` member functions:
