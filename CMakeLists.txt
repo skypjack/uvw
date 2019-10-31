@@ -62,7 +62,8 @@ find_package(Doxygen 1.8)
 # Referenced directories and targets
 #
 
-if(DOXYGEN_FOUND)
+option(BUILD_DOC "Build documentation" ON)
+if(BUILD_DOC AND DOXYGEN_FOUND)
     add_subdirectory(docs)
 endif()
 
