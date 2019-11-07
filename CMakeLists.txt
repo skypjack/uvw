@@ -56,14 +56,19 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
 set(THREADS_PREFER_PTHREAD_FLAG ON)
 
 include(FindThreads)
-find_package(Doxygen 1.8)
 
 #
 # Referenced directories and targets
 #
 
-if(DOXYGEN_FOUND)
-    add_subdirectory(docs)
+option(BUILD_DOC "Build documentation" ON)
+
+if(BUILD_DOCS)
+    find_package(Doxygen 1.8)
+
+    if(DOXYGEN_FOUND)
+        add_subdirectory(docs)
+    endif()
 endif()
 
 if(BUILD_TESTING)
