@@ -1004,10 +1004,18 @@ struct Utilities {
      * [`gettimeofday`](https://linux.die.net/man/2/gettimeofday)
      * @return The current time.
      */
-    static TimeVal64 timeOfDay() {
+    static TimeVal64 timeOfDay() noexcept {
         uv_timeval64_t ret;
         uv_gettimeofday(&ret);
         return ret;
+    }
+
+    /**
+     * @brief Causes the calling thread to sleep for a while.
+     * @param msec Number of milliseconds to sleep.
+     */
+    static void sleep(unsigned int msec) noexcept {
+        uv_sleep(msec);
     }
 };
 

@@ -53,7 +53,8 @@ enum class UVFsType: std::underlying_type_t<uv_fs_type> {
     OPENDIR = UV_FS_OPENDIR,
     READDIR = UV_FS_READDIR,
     CLOSEDIR = UV_FS_CLOSEDIR,
-    STATFS = UV_FS_STATFS
+    STATFS = UV_FS_STATFS,
+    MKSTEMP = UV_FS_MKSTEMP
 };
 
 
@@ -152,6 +153,7 @@ enum class UVSymLinkFlags: int {
  * * `FsRequest::Type::READDIR`
  * * `FsRequest::Type::CLOSEDIR`
  * * `FsRequest::Type::STATFS`
+ * * `FsRequest::Type::MKSTEMP`
  *
  * It will be emitted by FsReq and/or FileReq according with their
  * functionalities.
@@ -285,6 +287,23 @@ struct FsEvent<details::UVFsType::STATFS> {
 
     const char * path; /*!< The path affecting the request. */
     Statfs statfs; /*!< An initialized instance of Statfs. */
+};
+
+
+/**
+ * @brief FsEvent event specialization for `FsRequest::Type::MKSTEMP`.
+ *
+ * It will be emitted by FsReq and/or FileReq according with their
+ * functionalities.
+ */
+template<>
+struct FsEvent<details::UVFsType::MKSTEMP> {
+    FsEvent(const char *pathname, std::size_t desc) noexcept
+        : path{pathname}, descriptor{desc}
+    {}
+
+    const char * path; /*!< The created file path. */
+    std::size_t descriptor; /*!< The file descriptor as an integer. */
 };
 
 
@@ -974,12 +993,58 @@ public:
      *
      * @return A `std::pair` composed as it follows:
      * * A boolean value that is true in case of success, false otherwise.
-     * * The actual path of the newly created directoy.
+     * * The actual path of the newly created directory.
      */
     std::pair<bool, const char *> mkdtempSync(std::string tpl) {
         auto req = get();
         cleanupAndInvokeSync(&uv_fs_mkdtemp, parent(), req, tpl.data());
         return std::make_pair(!(req->result < 0), req->path);
+    }
+
+    /**
+     * @brief Async [mkstemp](https://linux.die.net/man/3/mkstemp).
+     *
+     * Emit a `FsEvent<FsReq::Type::MKSTEMP>` event when completed.<br/>
+     * Emit an ErrorEvent event in case of errors.
+     *
+     * @param tpl Template, as described in the official documentation.
+     */
+    void mkstemp(std::string tpl) {
+        cleanupAndInvoke(&uv_fs_mkstemp, parent(), get(), tpl.data(), &fsResultCallback<Type::MKSTEMP>);
+    }
+
+    /**
+     * @brief Sync [mkstemp](https://linux.die.net/man/3/mkstemp).
+     *
+     * Returns a composed value where:
+     *
+     * * The first parameter indicates the created file path.
+     * * The second parameter is the file descriptor as an integer.
+     *
+     * See the official
+     * [documentation](http://docs.libuv.org/en/v1.x/fs.html#c.uv_fs_mkstemp)
+     * for further details.
+     *
+     * @param tpl Template, as described in the official documentation.
+     *
+     * @return A pair where:
+
+     * * The first parameter is a boolean value that is true in case of success,
+     * false otherwise.
+     * * The second parameter is a composed value (see above).
+     */
+    std::pair<bool, std::pair<std::string, std::size_t>> mkstempSync(std::string tpl) {
+        std::pair<bool, std::pair<std::string, std::size_t>> ret{false, {}};
+        auto req = get();
+        cleanupAndInvokeSync(&uv_fs_mkdtemp, parent(), req, tpl.data());
+        ret.first = !(req->result < 0);
+
+        if(ret.first) {
+            ret.second.first = req->path;
+            ret.second.second = static_cast<std::size_t>(req->result);
+        }
+
+        return ret;
     }
 
     /**
