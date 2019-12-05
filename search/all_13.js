@@ -4,7 +4,7 @@ var searchData=
   ['thread',['Thread',['../classuvw_1_1Thread.html',1,'uvw']]],
   ['threadlocalstorage',['ThreadLocalStorage',['../classuvw_1_1ThreadLocalStorage.html',1,'uvw']]],
   ['timedwait',['timedWait',['../classuvw_1_1Condition.html#afea23c026793301fadc8defc5d1990c5',1,'uvw::Condition']]],
-  ['timeofday',['timeOfDay',['../structuvw_1_1Utilities.html#aefd44f39ca8343cecb5e9331fb89ddb8',1,'uvw::Utilities']]],
+  ['timeofday',['timeOfDay',['../structuvw_1_1Utilities.html#adbc40acfd4792dde69e3bcf1469224f0',1,'uvw::Utilities']]],
   ['timeout',['timeout',['../classuvw_1_1Loop.html#aa815a8db94b2beb2d23448fe81cf648c',1,'uvw::Loop']]],
   ['timerevent',['TimerEvent',['../structuvw_1_1TimerEvent.html',1,'uvw']]],
   ['timerhandle',['TimerHandle',['../classuvw_1_1TimerHandle.html',1,'uvw']]],

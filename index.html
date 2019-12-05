@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">2.2.0</span>
+   &#160;<span id="projectnumber">2.3.0</span>
    </div>
   </td>
  </tr>
@@ -69,11 +69,11 @@ $(function() {
 <h1>Introduction</h1>
 <p><code>uvw</code> is a header-only, event based, tiny and easy to use <a href="https://github.com/libuv/libuv"><code>libuv</code></a> wrapper in modern C++.<br />
  The basic idea is to hide completely the <em>C-ish</em> interface of <code>libuv</code> behind a graceful C++ API. Currently, no <code>uv_*_t</code> data structure is actually exposed by the library.<br />
- Note that <code>uvw</code> stays true to the API of <code>libuv</code> and it doesn't add anything to its interface. For the same reasons, users of the library must follow the same rules who are used to follow with <code>libuv</code>.<br />
+ Note that <code>uvw</code> stays true to the API of <code>libuv</code> and it doesn't add anything to its interface. For the same reasons, users of the library must follow the same rules which are used with <code>libuv</code>.<br />
  As an example, a <em>handle</em> should be initialized before any other operation and closed once it is no longer in use.</p>
 <h2>Code Example</h2>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;uvw.hpp&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;memory&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">void</span> listen(<a class="code" href="classuvw_1_1Loop.html">uvw::Loop</a> &amp;loop) {</div><div class="line">    std::shared_ptr&lt;uvw::TCPHandle&gt; tcp = loop.<a class="code" href="classuvw_1_1Loop.html#a7044486c90abcaa665b67e5d9f284dcd">resource</a>&lt;<a class="code" href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a>&gt;();</div><div class="line"></div><div class="line">    tcp-&gt;<a class="code" href="classuvw_1_1Emitter.html#a79e4ed59b5bb5cdc5ee4b0dd71a38472">once</a>&lt;<a class="code" href="structuvw_1_1ListenEvent.html">uvw::ListenEvent</a>&gt;([](<span class="keyword">const</span> <a class="code" href="structuvw_1_1ListenEvent.html">uvw::ListenEvent</a> &amp;, <a class="code" href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a> &amp;srv) {</div><div class="line">        std::shared_ptr&lt;uvw::TCPHandle&gt; client = srv.loop().resource&lt;<a class="code" href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a>&gt;();</div><div class="line"></div><div class="line">        client-&gt;<a class="code" href="classuvw_1_1Emitter.html#af6ba3eecb542efbef8d62ae905d8a8cd">on</a>&lt;<a class="code" href="structuvw_1_1CloseEvent.html">uvw::CloseEvent</a>&gt;([ptr = srv.shared_from_this()](<span class="keyword">const</span> <a class="code" href="structuvw_1_1CloseEvent.html">uvw::CloseEvent</a> &amp;, <a class="code" href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a> &amp;) { ptr-&gt;close(); });</div><div class="line">        client-&gt;on&lt;<a class="code" href="structuvw_1_1EndEvent.html">uvw::EndEvent</a>&gt;([](<span class="keyword">const</span> <a class="code" href="structuvw_1_1EndEvent.html">uvw::EndEvent</a> &amp;, <a class="code" href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a> &amp;client) { client.close(); });</div><div class="line"></div><div class="line">        srv.accept(*client);</div><div class="line">        client-&gt;read();</div><div class="line">    });</div><div class="line"></div><div class="line">    tcp-&gt;bind(<span class="stringliteral">&quot;127.0.0.1&quot;</span>, 4242);</div><div class="line">    tcp-&gt;listen();</div><div class="line">}</div><div class="line"></div><div class="line"><span class="keywordtype">void</span> conn(<a class="code" href="classuvw_1_1Loop.html">uvw::Loop</a> &amp;loop) {</div><div class="line">    <span class="keyword">auto</span> tcp = loop.<a class="code" href="classuvw_1_1Loop.html#a7044486c90abcaa665b67e5d9f284dcd">resource</a>&lt;<a class="code" href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a>&gt;();</div><div class="line"></div><div class="line">    tcp-&gt;<a class="code" href="classuvw_1_1Emitter.html#af6ba3eecb542efbef8d62ae905d8a8cd">on</a>&lt;<a class="code" href="structuvw_1_1ErrorEvent.html">uvw::ErrorEvent</a>&gt;([](<span class="keyword">const</span> <a class="code" href="structuvw_1_1ErrorEvent.html">uvw::ErrorEvent</a> &amp;, <a class="code" href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a> &amp;) { <span class="comment">/* handle errors */</span> });</div><div class="line"></div><div class="line">    tcp-&gt;once&lt;<a class="code" href="structuvw_1_1ConnectEvent.html">uvw::ConnectEvent</a>&gt;([](<span class="keyword">const</span> <a class="code" href="structuvw_1_1ConnectEvent.html">uvw::ConnectEvent</a> &amp;, <a class="code" href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a> &amp;tcp) {</div><div class="line">        <span class="keyword">auto</span> dataWrite = std::unique_ptr&lt;char[]&gt;(<span class="keyword">new</span> <span class="keywordtype">char</span>[2]{ <span class="charliteral">&#39;b&#39;</span>, <span class="charliteral">&#39;c&#39;</span> });</div><div class="line">        tcp.write(std::move(dataWrite), 2);</div><div class="line">        tcp.close();</div><div class="line">    });</div><div class="line"></div><div class="line">    tcp-&gt;connect(std::string{<span class="stringliteral">&quot;127.0.0.1&quot;</span>}, 4242);</div><div class="line">}</div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main() {</div><div class="line">    <span class="keyword">auto</span> loop = <a class="code" href="classuvw_1_1Loop.html#a284450b3ef37c62bd7a984c73552d7b8">uvw::Loop::getDefault</a>();</div><div class="line">    listen(*loop);</div><div class="line">    conn(*loop);</div><div class="line">    loop-&gt;<a class="code" href="classuvw_1_1Loop.html#aa86d06ae9f91d8b48d1d5358040f2547">run</a>();</div><div class="line">}</div></div><!-- fragment --><h2>Motivation</h2>
-<p>The main reason for which <code>uvw</code> has been written is the fact that it does not exist a valid <code>libuv</code> wrapper in C++. That's all.</p>
+<p>The main reason for which <code>uvw</code> has been written is the fact that there does not exist a valid <code>libuv</code> wrapper in C++. That's all.</p>
 <h1>Build Instructions</h1>
 <h2>Requirements</h2>
 <p>To be able to use <code>uvw</code>, users must provide the following system-wide tools:</p>
@@ -87,13 +87,13 @@ $(function() {
 <li>Doxygen version 1.8 or later.</li>
 </ul>
 <p>Note that <code>libuv</code> is part of the dependencies of the project and it will be cloned by <code>cmake</code> (see below for further details).<br />
- Because of that, users have not to install it to compile and execute the tests.</p>
+ Because of that, users don't have to install it to compile and execute the tests.</p>
 <h2>Library</h2>
 <p><code>uvw</code> is a header-only library.<br />
  This means that including the <code><a class="el" href="uvw_8hpp_source.html">uvw.hpp</a></code> header or one of the other <code>uvw/*.hpp</code> headers is enough to use it.<br />
  It's a matter of adding the following line at the top of a file:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;uvw.hpp&gt;</span></div></div><!-- fragment --><p>Then pass the proper <code>-I</code> argument to the compiler to add the <code>src</code> directory to the include paths.<br />
- Note that users are demanded to correctly setup include directories and libraries search paths for <code>libuv</code>.</p>
+ Note that users are required to correctly setup the include directories and libraries search paths for <code>libuv</code>.</p>
 <h2>Versioning</h2>
 <p>Starting with tag <em>v1.12.0</em> of <code>libuv</code>, <code>uvw</code> follows the <a href="http://semver.org/">semantic versioning</a> scheme.<br />
  The problem is that any version of <code>uvw</code> also requires to track explicitly the version of <code>libuv</code> to which it is bound.<br />
@@ -124,7 +124,7 @@ $(function() {
 <p>The documentation is mostly inspired by the official <a href="http://docs.libuv.org/en/v1.x/">libuv API documentation</a> for obvious reasons.</p>
 <h2>Tests</h2>
 <p>To compile and run the tests, <code>uvw</code> requires <code>libuv</code> and <code>googletest</code>.<br />
- <code>cmake</code> will download and compile both the libraries before to compile anything else.</p>
+ <code>cmake</code> will download and compile both the libraries before compiling anything else.</p>
 <p>To build the tests:</p>
 <ul>
 <li><code>$ cd build</code></li>
@@ -143,15 +143,15 @@ $(function() {
  For more details, please refer to the <a href="https://skypjack.github.io/uvw/">online documentation</a>.</p>
 <h2>Handles</h2>
 <p>Initialization is usually performed under the hood and can be even passed over, as far as handles are created using the <code>Loop::resource</code> member function.<br />
- On the other side, handles keep themselves alive until one explicitly closes them. Because of that, memory usage will grow up if users simply forget about a handle.<br />
+ On the other side, handles keep themselves alive until one explicitly closes them. Because of that, memory usage will grow if users simply forget about a handle.<br />
  Therefore the rule quickly becomes <em>always close your handles</em>. It's as simple as calling the <code>close</code> member function on them.</p>
 <h2>Requests</h2>
 <p>Usually initializing a request object is not required. Anyway, the recommended way to create a request is still through the <code>Loop::resource</code> member function.<br />
- Requests will keep themselves alive as long as they are bound to unfinished underlying activities. This means that users have not to discard explicitly a request.<br />
+ Requests will keep themselves alive as long as they are bound to unfinished underlying activities. This means that users don't have to discard a request explicitly .<br />
  Therefore the rule quickly becomes <em>feel free to make a request and forget about it</em>. It's as simple as calling a member function on them.</p>
 <h2>The Loop and the Resource</h2>
 <p>The first thing to do to use <code>uvw</code> is to create a loop. In case the default one is enough, it's easy as doing this:</p>
-<div class="fragment"><div class="line"><span class="keyword">auto</span> loop = <a class="code" href="classuvw_1_1Loop.html#a284450b3ef37c62bd7a984c73552d7b8">uvw::Loop::getDefault</a>();</div></div><!-- fragment --><p>Note that loop objects don't require to be closed explicitly, even if they offer the <code>close</code> member function in case an user wants to do that.<br />
+<div class="fragment"><div class="line"><span class="keyword">auto</span> loop = <a class="code" href="classuvw_1_1Loop.html#a284450b3ef37c62bd7a984c73552d7b8">uvw::Loop::getDefault</a>();</div></div><!-- fragment --><p>Note that loop objects don't require being closed explicitly, even if they offer the <code>close</code> member function in case a user wants to do that.<br />
  Loops can be started using the <code>run</code> member function. The two calls below are equivalent:</p>
 <div class="fragment"><div class="line">loop-&gt;<a class="code" href="classuvw_1_1Loop.html#aa86d06ae9f91d8b48d1d5358040f2547">run</a>();</div><div class="line">loop-&gt;<a class="code" href="classuvw_1_1Loop.html#aa86d06ae9f91d8b48d1d5358040f2547">run</a>&lt;uvw::Loop::Mode::DEFAULT&gt;();</div></div><!-- fragment --><p>Available modes are: <code>DEFAULT</code>, <code>ONCE</code>, <code>NOWAIT</code>. Please refer to the documentation of <code>libuv</code> for further details.</p>
 <p>In order to create a resource and to bind it to the given loop, just do the following:</p>
@@ -168,9 +168,9 @@ $(function() {
 <div class="fragment"><div class="line">loop.<a class="code" href="classuvw_1_1Loop.html#a699f41c1c1d31a65c5d12adacdbb94e1">walk</a>([](<a class="code" href="structuvw_1_1BaseHandle.html">uvw::BaseHandle</a> &amp;){ <span class="comment">/* application code here */</span> });</div></div><!-- fragment --><p><code>BaseHandle</code> exposes a few methods and cannot be promoted to the original type of the handle (even though <code>type</code> and <code>category</code> member functions fill the gap somehow).<br />
  Anyway, it can be used to close the handle that originated from it. As an example, all the pending handles can be closed easily as it follows:</p>
 <div class="fragment"><div class="line">loop.<a class="code" href="classuvw_1_1Loop.html#a699f41c1c1d31a65c5d12adacdbb94e1">walk</a>([](<a class="code" href="structuvw_1_1BaseHandle.html">uvw::BaseHandle</a> &amp;h){ h.<a class="code" href="structuvw_1_1BaseHandle.html#a83b88fc17d491e48e4c519c9551ab0b4">close</a>(); });</div></div><!-- fragment --><p>No need to keep track of them.</p>
-<p>To know what are the available resources' types, please refer the API reference.</p>
+<p>To know what are the available resources' types, please refer to the API reference.</p>
 <h2>The event-based approach</h2>
-<p>For <code>uvw</code> offers an event-based approach, resources are small event emitters to which listeners can be attached.<br />
+<p><code>uvw</code> offers an event-based approach, so resources are small event emitters to which listeners can be attached.<br />
  Attaching a listener to a resource is the recommended way to be notified about changes.<br />
  Listeners must be callable objects of type <code>void(EventType &amp;, ResourceType &amp;)</code>, where:</p>
 <ul>
@@ -193,15 +193,15 @@ $(function() {
 <p>Both of them return an object of type <code>ResourceType::Connection</code> (as an example, <code>TCPHandle::Connection</code>).<br />
  A connection object can be used later as an argument to the <code>erase</code> member function of the resource to remove the listener.<br />
  There exists also the <code>clear</code> member function to drop all the listeners at once.</p>
-<p>Almost all the resources use to emit <code>ErrorEvent</code> events in case of errors.<br />
+<p>Almost all the resources emit <code>ErrorEvent</code> in case of errors.<br />
  All the other events are specific for the given resource and documented in the API reference.</p>
 <p>The code below shows how to create a simple tcp server using <code>uvw</code>:</p>
 <div class="fragment"><div class="line"><span class="keyword">auto</span> loop = <a class="code" href="classuvw_1_1Loop.html#a284450b3ef37c62bd7a984c73552d7b8">uvw::Loop::getDefault</a>();</div><div class="line"><span class="keyword">auto</span> tcp = loop.<a class="code" href="classuvw_1_1Loop.html#a7044486c90abcaa665b67e5d9f284dcd">resource</a>&lt;<a class="code" href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a>&gt;();</div><div class="line"></div><div class="line">tcp-&gt;<a class="code" href="classuvw_1_1Emitter.html#af6ba3eecb542efbef8d62ae905d8a8cd">on</a>&lt;uvw::ErrorEvent&gt;([](<span class="keyword">const</span> uvw::ErrorEvent &amp;, <a class="code" href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a> &amp;) { <span class="comment">/* something went wrong */</span> });</div><div class="line"></div><div class="line">tcp-&gt;on&lt;uvw::ListenEvent&gt;([](<span class="keyword">const</span> uvw::ListenEvent &amp;, <a class="code" href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a> &amp;srv) {</div><div class="line">    std::shared_ptr&lt;uvw::TCPHandle&gt; client = srv.loop().resource&lt;<a class="code" href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a>&gt;();</div><div class="line">    client-&gt;<a class="code" href="classuvw_1_1Emitter.html#a79e4ed59b5bb5cdc5ee4b0dd71a38472">once</a>&lt;uvw::EndEvent&gt;([](<span class="keyword">const</span> uvw::EndEvent &amp;, <a class="code" href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a> &amp;client) { client.close(); });</div><div class="line">    client-&gt;on&lt;<a class="code" href="structuvw_1_1DataEvent.html">uvw::DataEvent</a>&gt;([](<span class="keyword">const</span> <a class="code" href="structuvw_1_1DataEvent.html">uvw::DataEvent</a> &amp;, <a class="code" href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a> &amp;) { <span class="comment">/* data received */</span> });</div><div class="line">    srv.accept(*client);</div><div class="line">    client-&gt;read();</div><div class="line">});</div><div class="line"></div><div class="line">tcp-&gt;bind(<span class="stringliteral">&quot;127.0.0.1&quot;</span>, 4242);</div><div class="line">tcp-&gt;listen();</div></div><!-- fragment --><p>Note also that <code><a class="el" href="classuvw_1_1TCPHandle.html" title="The TCPHandle handle. ">uvw::TCPHandle</a></code> already supports <em>IPv6</em> out-of-the-box. The statement above is equivalent to <code>tcp-&gt;bind&lt;<a class="el" href="structuvw_1_1IPv4.html" title="The IPv4 tag. ">uvw::IPv4</a>&gt;("127.0.0.1", 4242)</code>.<br />
- It's suffice to explicitly specify <code><a class="el" href="structuvw_1_1IPv6.html" title="The IPv6 tag. ">uvw::IPv6</a></code> as the underlying protocol to use it.</p>
+ It's sufficient to explicitly specify <code><a class="el" href="structuvw_1_1IPv6.html" title="The IPv6 tag. ">uvw::IPv6</a></code> as the underlying protocol to use it.</p>
 <p>The API reference is the recommended documentation for further details about resources and their methods.</p>
 <h2>Going raw</h2>
 <p>In case users need to use functionalities not wrapped yet by <code>uvw</code> or if they want to get the underlying data structures as defined by <code>libuv</code> for some other reasons, almost all the classes in <code>uvw</code> give direct access to them.<br />
- Please, note that this functions should not be used directly unless users know exactly what they are doing and what are the risks. Going raw is dangerous, mainly because the lifetime management of a loop, a handle or a request is completely in charge to the library and working around it could quickly break things.</p>
+ Please, note that this functions should not be used directly unless users know exactly what they are doing and what are the risks. Going raw is dangerous, mainly because the lifetime management of a loop, a handle or a request is completely controlled by the library and working around it could quickly break things.</p>
 <p>That being said, <em>going raw</em> is a matter of using the <code>raw</code> member functions:</p>
 <div class="fragment"><div class="line"><span class="keyword">auto</span> loop = <a class="code" href="classuvw_1_1Loop.html#a284450b3ef37c62bd7a984c73552d7b8">uvw::Loop::getDefault</a>();</div><div class="line"><span class="keyword">auto</span> tcp = loop.<a class="code" href="classuvw_1_1Loop.html#a7044486c90abcaa665b67e5d9f284dcd">resource</a>&lt;<a class="code" href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a>&gt;();</div><div class="line"></div><div class="line">uv_loop_t *raw = loop-&gt;<a class="code" href="classuvw_1_1Loop.html#ac33b64667ba24e94456ed4ec172372c6">raw</a>();</div><div class="line">uv_tcp_t *handle = tcp-&gt;raw();</div></div><!-- fragment --><p>Go the raw way at your own risk, but do not expect any support in case of bugs.</p>
 <h1>Contributors</h1>

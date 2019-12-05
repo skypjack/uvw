@@ -1,4 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classuvw_1_1UnderlyingType.html" title="uvw::UnderlyingType\l\&lt; Thread, uv_thread_t \&gt;" alt="" coords="5,5,168,47"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Thread.html" title="The Thread wrapper. " alt="" coords="216,13,311,39"/>
+<area shape="rect" id="node1" href="$classuvw_1_1Emitter.html" title="uvw::Emitter\&lt; ShutdownReq \&gt;" alt="" coords="16,5,219,32"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title="uvw::Resource\&lt; ShutdownReq,\l uv_shutdown_t \&gt;" alt="" coords="277,27,485,69"/>
+<area shape="rect" id="node3" href="$classuvw_1_1UnderlyingType.html" title="uvw::UnderlyingType\l\&lt; ShutdownReq, uv_shutdown_t \&gt;" alt="" coords="5,57,229,98"/>
 </map>

@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">2.2.0</span>
+   &#160;<span id="projectnumber">2.3.0</span>
    </div>
   </td>
  </tr>
@@ -148,9 +148,12 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a1fabc7507a23df71a3baf0894be8ee65"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1Utilities.html#a1fabc7507a23df71a3baf0894be8ee65">chdir</a> (const std::string &amp;dir) noexcept</td></tr>
 <tr class="memdesc:a1fabc7507a23df71a3baf0894be8ee65"><td class="mdescLeft">&#160;</td><td class="mdescRight">Changes the current working directory.  <a href="#a1fabc7507a23df71a3baf0894be8ee65">More...</a><br /></td></tr>
 <tr class="separator:a1fabc7507a23df71a3baf0894be8ee65"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aefd44f39ca8343cecb5e9331fb89ddb8"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespaceuvw.html#ae7c2e4a87f2213a9509f99e3149c3e65">TimeVal64</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1Utilities.html#aefd44f39ca8343cecb5e9331fb89ddb8">timeOfDay</a> ()</td></tr>
-<tr class="memdesc:aefd44f39ca8343cecb5e9331fb89ddb8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cross-platform implementation of <a href="https://linux.die.net/man/2/gettimeofday"><code>gettimeofday</code></a>  <a href="#aefd44f39ca8343cecb5e9331fb89ddb8">More...</a><br /></td></tr>
-<tr class="separator:aefd44f39ca8343cecb5e9331fb89ddb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adbc40acfd4792dde69e3bcf1469224f0"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespaceuvw.html#ae7c2e4a87f2213a9509f99e3149c3e65">TimeVal64</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1Utilities.html#adbc40acfd4792dde69e3bcf1469224f0">timeOfDay</a> () noexcept</td></tr>
+<tr class="memdesc:adbc40acfd4792dde69e3bcf1469224f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cross-platform implementation of <a href="https://linux.die.net/man/2/gettimeofday"><code>gettimeofday</code></a>  <a href="#adbc40acfd4792dde69e3bcf1469224f0">More...</a><br /></td></tr>
+<tr class="separator:adbc40acfd4792dde69e3bcf1469224f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1350ba6a8e8bbea124003281d96ffb6c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1Utilities.html#a1350ba6a8e8bbea124003281d96ffb6c">sleep</a> (unsigned int msec) noexcept</td></tr>
+<tr class="memdesc:a1350ba6a8e8bbea124003281d96ffb6c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Causes the calling thread to sleep for a while.  <a href="#a1350ba6a8e8bbea124003281d96ffb6c">More...</a><br /></td></tr>
+<tr class="separator:a1350ba6a8e8bbea124003281d96ffb6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Miscellaneous utilities. </p>
@@ -865,8 +868,44 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aefd44f39ca8343cecb5e9331fb89ddb8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aefd44f39ca8343cecb5e9331fb89ddb8">&#9670;&nbsp;</a></span>timeOfDay()</h2>
+<a id="a1350ba6a8e8bbea124003281d96ffb6c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1350ba6a8e8bbea124003281d96ffb6c">&#9670;&nbsp;</a></span>sleep()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void uvw::Utilities::sleep </td>
+          <td>(</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>msec</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Causes the calling thread to sleep for a while. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">msec</td><td>Number of milliseconds to sleep. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="util_8hpp_source.html#l01017">1017</a> of file <a class="el" href="util_8hpp_source.html">util.hpp</a>.</p>
+
+</div>
+</div>
+<a id="adbc40acfd4792dde69e3bcf1469224f0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adbc40acfd4792dde69e3bcf1469224f0">&#9670;&nbsp;</a></span>timeOfDay()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -883,7 +922,7 @@ Static Public Member Functions</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span><span class="mlabel">noexcept</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
