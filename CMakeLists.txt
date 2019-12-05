@@ -61,7 +61,7 @@ include(FindThreads)
 # Referenced directories and targets
 #
 
-option(BUILD_DOC "Build documentation" ON)
+option(BUILD_DOCS "Build documentation" ON)
 
 if(BUILD_DOCS)
     find_package(Doxygen 1.8)
