@@ -328,7 +328,7 @@ public:
 
         req->template once<ErrorEvent>(listener);
         req->template once<WriteEvent>(listener);
-        req->write(this->template get<uv_stream_t>(), send.template get<uv_stream_t>());
+        req->write(this->template get<uv_stream_t>(), this->template get<uv_stream_t>(send));
     }
 
     /**
@@ -363,7 +363,7 @@ public:
 
         req->template once<ErrorEvent>(listener);
         req->template once<WriteEvent>(listener);
-        req->write(this->template get<uv_stream_t>(), send.template get<uv_stream_t>());
+        req->write(this->template get<uv_stream_t>(), this->template get<uv_stream_t>(send));
     }
 
     /**
