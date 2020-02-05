@@ -71,6 +71,10 @@ if(BUILD_DOCS)
     endif()
 endif()
 
+file(GLOB SOURCES src/uvw/*.cpp)
+add_library(uvw_a STATIC ${SOURCES})
+target_link_libraries(uvw_a PRIVATE uv_a)
+
 if(BUILD_TESTING)
     set(BUILD_TESTING OFF)
 

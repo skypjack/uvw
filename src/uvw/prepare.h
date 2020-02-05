@@ -5,7 +5,7 @@
 #include <memory>
 #include <uv.h>
 #include "handle.hpp"
-#include "loop.hpp"
+#include "loop.h"
 
 
 namespace uvw {
@@ -28,10 +28,7 @@ struct PrepareEvent {};
  * To create a `PrepareHandle` through a `Loop`, no arguments are required.
  */
 class PrepareHandle final: public Handle<PrepareHandle, uv_prepare_t> {
-    static void startCallback(uv_prepare_t *handle) {
-        PrepareHandle &prepare = *(static_cast<PrepareHandle*>(handle->data));
-        prepare.publish(PrepareEvent{});
-    }
+    static void startCallback(uv_prepare_t *handle);
 
 public:
     using Handle::Handle;
@@ -40,9 +37,7 @@ public:
      * @brief Initializes the handle.
      * @return True in case of success, false otherwise.
      */
-    bool init() {
-        return initialize(&uv_prepare_init);
-    }
+    bool init();
 
     /**
      * @brief Starts the handle.
@@ -52,16 +47,12 @@ public:
      *
      * The handle will start emitting PrepareEvent when needed.
      */
-    void start() {
-        invoke(&uv_prepare_start, get(), &startCallback);
-    }
+    void start();
 
     /**
      * @brief Stops the handle.
      */
-    void stop() {
-        invoke(&uv_prepare_stop, get());
-    }
+    void stop();
 };
 
 

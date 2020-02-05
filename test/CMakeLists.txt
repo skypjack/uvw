@@ -14,7 +14,7 @@ set(
     COMMON_LINK_LIBS
     gtest_main
     ${LIBRT}
-    uv_a
+    uvw_a
     Threads::Threads
     ${WINSOCK2}
 )

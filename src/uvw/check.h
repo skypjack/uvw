@@ -5,7 +5,7 @@
 #include <memory>
 #include <uv.h>
 #include "handle.hpp"
-#include "loop.hpp"
+#include "loop.h"
 
 
 namespace uvw {
@@ -28,10 +28,7 @@ struct CheckEvent {};
  * To create a `CheckHandle` through a `Loop`, no arguments are required.
  */
 class CheckHandle final: public Handle<CheckHandle, uv_check_t> {
-    static void startCallback(uv_check_t *handle) {
-        CheckHandle &check = *(static_cast<CheckHandle*>(handle->data));
-        check.publish(CheckEvent{});
-    }
+    static void startCallback(uv_check_t *handle);
 
 public:
     using Handle::Handle;
@@ -40,9 +37,7 @@ public:
      * @brief Initializes the handle.
      * @return True in case of success, false otherwise.
      */
-    bool init() {
-        return initialize(&uv_check_init);
-    }
+    bool init();
 
     /**
      * @brief Starts the handle.
@@ -50,16 +45,12 @@ public:
      * A CheckEvent event will be emitted once per loop iteration, right after
      * polling for I/O.
      */
-    void start() {
-        invoke(&uv_check_start, get(), &startCallback);
-    }
+    void start();
 
     /**
      * @brief Stops the handle.
      */
-    void stop() {
-        invoke(&uv_check_stop, get());
-    }
+    void stop();
 };
 
 

@@ -158,16 +158,7 @@ public:
      * @brief Initializes a new Loop instance.
      * @return A pointer to the newly created loop.
      */
-    static std::shared_ptr<Loop> create() {
-        auto ptr = std::unique_ptr<uv_loop_t, Deleter>{new uv_loop_t, [](uv_loop_t *l){ delete l; }};
-        auto loop = std::shared_ptr<Loop>{new Loop{std::move(ptr)}};
-
-        if(uv_loop_init(loop->loop.get())) {
-            loop = nullptr;
-        }
-
-        return loop;
-    }
+    static std::shared_ptr<Loop> create();
 
     /**
      * @brief Initializes a new Loop instance from an existing resource.
@@ -179,10 +170,7 @@ public:
      * @param loop A valid pointer to a correctly initialized resource.
      * @return A pointer to the newly created loop.
      */
-    static std::shared_ptr<Loop> create(uv_loop_t *loop) {
-        auto ptr = std::unique_ptr<uv_loop_t, Deleter>{loop, [](uv_loop_t *){}};
-        return std::shared_ptr<Loop>{new Loop{std::move(ptr)}};
-    }
+    static std::shared_ptr<Loop> create(uv_loop_t *loop);
 
     /**
      * @brief Gets the initialized default loop.
@@ -196,25 +184,7 @@ public:
      *
      * @return The initialized default loop.
      */
-    static std::shared_ptr<Loop> getDefault() {
-        static std::weak_ptr<Loop> ref;
-        std::shared_ptr<Loop> loop;
-
-        if(ref.expired()) {
-            auto def = uv_default_loop();
-
-            if(def) {
-                auto ptr = std::unique_ptr<uv_loop_t, Deleter>(def, [](uv_loop_t *){});
-                loop = std::shared_ptr<Loop>{new Loop{std::move(ptr)}};
-            }
-
-            ref = loop;
-        } else {
-            loop = ref.lock();
-        }
-
-        return loop;
-    }
+    static std::shared_ptr<Loop> getDefault();
 
     Loop(const Loop &) = delete;
     Loop(Loop &&other) = delete;
@@ -279,10 +249,7 @@ public:
      *
      * An ErrorEvent will be emitted in case of errors.
      */
-    void close() {
-        auto err = uv_loop_close(loop.get());
-        return err ? publish(ErrorEvent{err}) : loop.reset();
-    }
+    void close();
 
     /**
      * @brief Runs the event loop.
@@ -313,9 +280,7 @@ public:
      * @brief Checks if there are active resources.
      * @return True if there are active resources in the loop.
      */
-    bool alive() const noexcept {
-        return !(uv_loop_alive(loop.get()) == 0);
-    }
+    bool alive() const noexcept;
 
     /**
      * @brief Stops the event loop.
@@ -325,9 +290,7 @@ public:
      * If this function was called before blocking for I/O, the loop won’t block
      * for I/O on this iteration.
      */
-    void stop() noexcept {
-        uv_stop(loop.get());
-    }
+    void stop() noexcept;
 
     /**
      * @brief Get backend file descriptor.
@@ -338,9 +301,7 @@ public:
      *
      * @return The backend file descriptor.
      */
-    int descriptor() const noexcept {
-        return uv_backend_fd(loop.get());
-    }
+    int descriptor() const noexcept;
 
     /**
      * @brief Gets the poll timeout.
@@ -348,10 +309,7 @@ public:
      * * A boolean value that is true in case of valid timeout, false otherwise.
      * * Milliseconds (`std::chrono::duration<uint64_t, std::milli>`).
      */
-    std::pair<bool, Time> timeout() const noexcept {
-        auto to = uv_backend_timeout(loop.get());
-        return std::make_pair(to == -1, Time{to});
-    }
+    std::pair<bool, Time> timeout() const noexcept;
 
     /**
      * @brief Returns the current timestamp in milliseconds.
@@ -365,9 +323,7 @@ public:
      * @return The current timestamp in milliseconds (actual type is
      * `std::chrono::duration<uint64_t, std::milli>`).
      */
-    Time now() const noexcept {
-        return Time{uv_now(loop.get())};
-    }
+    Time now() const noexcept;
 
     /**
      * @brief Updates the event loop’s concept of _now_.
@@ -378,9 +334,7 @@ public:
      * that block the event loop for longer periods of time, where _longer_ is
      * somewhat subjective but probably on the order of a millisecond or more.
      */
-    void update() const noexcept {
-        return uv_update_time(loop.get());
-    }
+    void update() const noexcept;
 
     /**
      * @brief Walks the list of handles.
@@ -389,15 +343,7 @@ public:
      *
      * @param callback A function to be invoked once for each active handle.
      */
-    void walk(std::function<void(BaseHandle &)> callback) {
-        // remember: non-capturing lambdas decay to pointers to functions
-        uv_walk(loop.get(), [](uv_handle_t *handle, void *func) {
-            BaseHandle &ref = *static_cast<BaseHandle*>(handle->data);
-            std::function<void(BaseHandle &)> &f =
-                    *static_cast<std::function<void(BaseHandle &)>*>(func);
-            f(ref);
-        }, &callback);
-    }
+    void walk(std::function<void(BaseHandle &)> callback);
 
     /**
      * @brief Reinitialize any kernel state necessary in the child process after
@@ -429,10 +375,7 @@ public:
      * [documentation](http://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_fork)
      * for further details.
      */
-    void fork() noexcept {
-        auto err = uv_loop_fork(loop.get());
-        if(err) { publish(ErrorEvent{err}); }
-    }
+    void fork() noexcept;
 
     /**
      * @brief Gets user-defined data. `uvw` won't use this field in any case.
@@ -447,9 +390,7 @@ public:
      * @brief Sets arbitrary data. `uvw` won't use this field in any case.
      * @param uData User-defined arbitrary data.
      */
-    void data(std::shared_ptr<void> uData) {
-        userData = std::move(uData);
-    }
+    void data(std::shared_ptr<void> uData);
 
     /**
      * @brief Gets the underlying raw data structure.
@@ -466,9 +407,7 @@ public:
      *
      * @return The underlying raw data structure.
      */
-    const uv_loop_t * raw() const noexcept {
-        return loop.get();
-    }
+    const uv_loop_t * raw() const noexcept;
 
     /**
      * @brief Gets the underlying raw data structure.
@@ -485,9 +424,7 @@ public:
      *
      * @return The underlying raw data structure.
      */
-    uv_loop_t * raw() noexcept {
-        return const_cast<uv_loop_t *>(const_cast<const Loop *>(this)->raw());
-    }
+    uv_loop_t * raw() noexcept;
 
 private:
     std::unique_ptr<uv_loop_t, Deleter> loop;

@@ -67,9 +67,7 @@ public:
           buf{uv_buf_init(data.get(), len)}
     {}
 
-    void send(uv_udp_t *handle, const struct sockaddr* addr) {
-        invoke(&uv_udp_send, get(), handle, &buf, 1, addr, &defaultCallback<SendEvent>);
-    }
+    void send(uv_udp_t *handle, const struct sockaddr* addr);
 
 private:
     std::unique_ptr<char[], Deleter> data;
@@ -135,11 +133,7 @@ public:
      * @brief Initializes the handle. The actual socket is created lazily.
      * @return True in case of success, false otherwise.
      */
-    bool init() {
-        return (tag == FLAGS)
-                ? initialize(&uv_udp_init_ex, flags)
-                : initialize(&uv_udp_init);
-    }
+    bool init();
 
     /**
      * @brief Opens an existing file descriptor or SOCKET as a UDP handle.
@@ -153,9 +147,7 @@ public:
      *
      * @param socket A valid socket handle (either a file descriptor or a SOCKET).
      */
-    void open(OSSocketHandle socket) {
-        invoke(&uv_udp_open, get(), socket);
-    }
+    void open(OSSocketHandle socket);
 
     /**
      * @brief Binds the UDP handle to an IP address and port.
@@ -172,9 +164,7 @@ public:
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @param opts Optional additional flags.
      */
-    void bind(const sockaddr &addr, Flags<Bind> opts = Flags<Bind>{}) {
-        invoke(&uv_udp_bind, get(), &addr, opts);
-    }
+    void bind(const sockaddr &addr, Flags<Bind> opts = Flags<Bind>{});
 
     /**
      * @brief Associates the handle to a remote address and port (either IPv4 or
@@ -189,9 +179,7 @@ public:
      *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      */
-    void connect(const sockaddr &addr) {
-        invoke(&uv_udp_connect, get(), &addr);
-    }
+    void connect(const sockaddr &addr);
 
     /**
      * @brief Associates the handle to a remote address and port (either IPv4 or
@@ -239,9 +227,7 @@ public:
      *
      * An ErrorEvent event is emitted in case of errors.
      */
-    void disconnect() {
-        invoke(&uv_udp_connect, get(), nullptr);
-    }
+    void disconnect();
 
     /**
      * @brief Gets the remote address to which the handle is connected, if any.
@@ -330,18 +316,14 @@ public:
      * @param enable True to enable multicast loop, false otherwise.
      * @return True in case of success, false otherwise.
      */
-    bool multicastLoop(bool enable = true) {
-        return (0 == uv_udp_set_multicast_loop(get(), enable));
-    }
+    bool multicastLoop(bool enable = true);
 
     /**
      * @brief Sets the multicast ttl.
      * @param val A value in the range `[1, 255]`.
      * @return True in case of success, false otherwise.
      */
-    bool multicastTtl(int val) {
-        return (0 == uv_udp_set_multicast_ttl(get(), val > 255 ? 255 : val));
-    }
+    bool multicastTtl(int val);
 
     /**
      * @brief Sets the multicast interface to send or receive data on.
@@ -358,18 +340,14 @@ public:
      * @param enable True to set broadcast on, false otherwise.
      * @return True in case of success, false otherwise.
      */
-    bool broadcast(bool enable = false) {
-        return (0 == uv_udp_set_broadcast(get(), enable));
-    }
+    bool broadcast(bool enable = false);
 
     /**
      * @brief Sets the time to live.
      * @param val A value in the range `[1, 255]`.
      * @return True in case of success, false otherwise.
      */
-    bool ttl(int val) {
-        return (0 == uv_udp_set_ttl(get(), val > 255 ? 255 : val));
-    }
+    bool ttl(int val);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -388,20 +366,7 @@ public:
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
      */
-    void send(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len) {
-        auto req = loop().resource<details::SendReq>(
-                    std::unique_ptr<char[], details::SendReq::Deleter>{
-                        data.release(), [](char *ptr) { delete[] ptr; }
-                    }, len);
-
-        auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
-            ptr->publish(event);
-        };
-
-        req->once<ErrorEvent>(listener);
-        req->once<SendEvent>(listener);
-        req->send(get(), &addr);
-    }
+    void send(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -467,20 +432,7 @@ public:
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
      */
-    void send(const sockaddr &addr, char *data, unsigned int len) {
-        auto req = loop().resource<details::SendReq>(
-                    std::unique_ptr<char[], details::SendReq::Deleter>{
-                        data, [](char *) {}
-                    }, len);
-
-        auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
-            ptr->publish(event);
-        };
-
-        req->once<ErrorEvent>(listener);
-        req->once<SendEvent>(listener);
-        req->send(get(), &addr);
-    }
+    void send(const sockaddr &addr, char *data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -665,9 +617,7 @@ public:
     /**
      * @brief Stops listening for incoming datagrams.
      */
-    void stop() {
-        invoke(&uv_udp_recv_stop, get());
-    }
+    void stop();
 
     /**
      * @brief Gets the number of bytes queued for sending.
@@ -676,17 +626,13 @@ public:
      *
      * @return Number of bytes queued for sending.
      */
-    size_t sendQueueSize() const noexcept {
-        return uv_udp_get_send_queue_size(get());
-    }
+    size_t sendQueueSize() const noexcept;
 
     /**
      * @brief Number of send requests currently in the queue awaiting to be processed.
      * @return Number of send requests currently in the queue.
      */
-    size_t sendQueueCount() const noexcept {
-        return uv_udp_get_send_queue_count(get());
-    }
+    size_t sendQueueCount() const noexcept;
 
 private:
     enum { DEFAULT, FLAGS } tag{DEFAULT};

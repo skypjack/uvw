@@ -5,7 +5,7 @@
 #include <memory>
 #include <uv.h>
 #include "handle.hpp"
-#include "loop.hpp"
+#include "loop.h"
 
 
 namespace uvw {
@@ -28,10 +28,7 @@ struct AsyncEvent {};
  * To create an `AsyncHandle` through a `Loop`, no arguments are required.
  */
 class AsyncHandle final: public Handle<AsyncHandle, uv_async_t> {
-    static void sendCallback(uv_async_t *handle) {
-        AsyncHandle &async = *(static_cast<AsyncHandle*>(handle->data));
-        async.publish(AsyncEvent{});
-    }
+    static void sendCallback(uv_async_t *handle);
 
 public:
     using Handle::Handle;
@@ -44,9 +41,7 @@ public:
      *
      * @return True in case of success, false otherwise.
      */
-    bool init() {
-        return initialize(&uv_async_init, &sendCallback);
-    }
+    bool init();
 
     /**
      * @brief Wakeups the event loop and emits the AsyncEvent event.
@@ -58,9 +53,7 @@ public:
      * [documentation](http://docs.libuv.org/en/v1.x/async.html#c.uv_async_send)
      * for further details.
      */
-    void send() {
-        invoke(&uv_async_send, get());
-    }
+    void send();
 };
 
 

@@ -9,7 +9,7 @@
 #include <uv.h>
 #include "request.hpp"
 #include "handle.hpp"
-#include "loop.hpp"
+#include "loop.h"
 
 
 namespace uvw {
@@ -86,9 +86,7 @@ struct ConnectReq final: public Request<ConnectReq, uv_connect_t> {
 struct ShutdownReq final: public Request<ShutdownReq, uv_shutdown_t> {
     using Request::Request;
 
-    void shutdown(uv_stream_t *handle) {
-        invoke(&uv_shutdown, get(), handle, &defaultCallback<ShutdownEvent>);
-    }
+    void shutdown(uv_stream_t *handle);
 };
 
 
@@ -102,13 +100,9 @@ public:
           buf{uv_buf_init(data.get(), len)}
     {}
 
-    void write(uv_stream_t *handle) {
-        invoke(&uv_write, get(), handle, &buf, 1, &defaultCallback<WriteEvent>);
-    }
+    void write(uv_stream_t *handle);
 
-    void write(uv_stream_t *handle, uv_stream_t *send) {
-        invoke(&uv_write2, get(), handle, &buf, 1, send, &defaultCallback<WriteEvent>);
-    }
+    void write(uv_stream_t *handle, uv_stream_t *send);
 
 private:
     std::unique_ptr<char[], Deleter> data;

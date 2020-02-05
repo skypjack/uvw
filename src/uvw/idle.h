@@ -5,7 +5,7 @@
 #include <memory>
 #include <uv.h>
 #include "handle.hpp"
-#include "loop.hpp"
+#include "loop.h"
 
 
 namespace uvw {
@@ -36,10 +36,7 @@ struct IdleEvent {};
  * To create an `IdleHandle` through a `Loop`, no arguments are required.
  */
 class IdleHandle final: public Handle<IdleHandle, uv_idle_t> {
-    static void startCallback(uv_idle_t *handle) {
-        IdleHandle &idle = *(static_cast<IdleHandle*>(handle->data));
-        idle.publish(IdleEvent{});
-    }
+    static void startCallback(uv_idle_t *handle);
 
 public:
     using Handle::Handle;
@@ -48,9 +45,7 @@ public:
      * @brief Initializes the handle.
      * @return True in case of success, false otherwise.
      */
-    bool init() {
-        return initialize(&uv_idle_init);
-    }
+    bool init();
 
     /**
      * @brief Starts the handle.
@@ -58,16 +53,12 @@ public:
      * A IdleEvent event will be emitted once per loop iteration, right before
      * polling the PrepareHandle handles.
      */
-    void start() {
-        invoke(&uv_idle_start, get(), &startCallback);
-    }
+    void start();
 
     /**
      * @brief Stops the handle.
      */
-    void stop() {
-        invoke(&uv_idle_stop, get());
-    }
+    void stop();
 };
 
 

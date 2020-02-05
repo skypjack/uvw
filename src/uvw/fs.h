@@ -8,7 +8,7 @@
 #include <uv.h>
 #include "request.hpp"
 #include "util.hpp"
-#include "loop.hpp"
+#include "loop.h"
 
 
 namespace uvw {
@@ -433,42 +433,18 @@ public:
 class FileReq final: public FsRequest<FileReq> {
     static constexpr uv_file BAD_FD = -1;
 
-    static void fsOpenCallback(uv_fs_t *req) {
-        auto ptr = reserve(req);
+    static void fsOpenCallback(uv_fs_t *req);
 
-        if(req->result < 0) {
-            ptr->publish(ErrorEvent{req->result});
-        } else {
-            ptr->file = static_cast<uv_file>(req->result);
-            ptr->publish(FsEvent<Type::OPEN>{req->path});
-        }
-    }
+    static void fsCloseCallback(uv_fs_t *req);
 
-    static void fsCloseCallback(uv_fs_t *req) {
-        auto ptr = reserve(req);
-
-        if(req->result < 0) {
-            ptr->publish(ErrorEvent{req->result});
-        } else {
-            ptr->file = BAD_FD;
-            ptr->publish(FsEvent<Type::CLOSE>{req->path});
-        }
-    }
-
-    static void fsReadCallback(uv_fs_t *req) {
-        auto ptr = reserve(req);
-        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
-        else { ptr->publish(FsEvent<Type::READ>{req->path, std::move(ptr->current), static_cast<std::size_t>(req->result)}); }
-    }
+    static void fsReadCallback(uv_fs_t *req);
 
 public:
     using FileOpen = details::UVFileOpenFlags;
 
     using FsRequest::FsRequest;
 
-    ~FileReq() noexcept {
-        uv_fs_req_cleanup(get());
-    }
+    ~FileReq() noexcept;
 
     /**
      * @brief Async [close](http://linux.die.net/man/2/close).
@@ -476,20 +452,13 @@ public:
      * Emit a `FsEvent<FileReq::Type::CLOSE>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      */
-    void close() {
-        cleanupAndInvoke(&uv_fs_close, parent(), get(), file, &fsCloseCallback);
-    }
+    void close();
 
     /**
      * @brief Sync [close](http://linux.die.net/man/2/close).
      * @return True in case of success, false otherwise.
      */
-    bool closeSync() {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_close, parent(), req, file);
-        if(req->result >= 0) { file = BAD_FD; }
-        return !(req->result < 0);
-    }
+    bool closeSync();
 
     /**
      * @brief Async [open](http://linux.die.net/man/2/open).
@@ -530,9 +499,7 @@ public:
      * @param flags Flags made out of underlying constants.
      * @param mode Mode, as described in the official documentation.
      */
-    void open(std::string path, Flags<FileOpen> flags, int mode) {
-        cleanupAndInvoke(&uv_fs_open, parent(), get(), path.data(), flags, mode, &fsOpenCallback);
-    }
+    void open(std::string path, Flags<FileOpen> flags, int mode);
 
     /**
      * @brief Sync [open](http://linux.die.net/man/2/open).
@@ -571,12 +538,7 @@ public:
      * @param mode Mode, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool openSync(std::string path, Flags<FileOpen> flags, int mode) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_open, parent(), req, path.data(), flags, mode);
-        if(req->result >= 0) { file = static_cast<uv_file>(req->result); }
-        return !(req->result < 0);
-    }
+    bool openSync(std::string path, Flags<FileOpen> flags, int mode);
 
     /**
      * @brief Async [read](http://linux.die.net/man/2/preadv).
@@ -587,12 +549,7 @@ public:
      * @param offset Offset, as described in the official documentation.
      * @param len Length, as described in the official documentation.
      */
-    void read(int64_t offset, unsigned int len) {
-        current = std::unique_ptr<char[]>{new char[len]};
-        buffer = uv_buf_init(current.get(), len);
-        uv_buf_t bufs[] = { buffer };
-        cleanupAndInvoke(&uv_fs_read, parent(), get(), file, bufs, 1, offset, &fsReadCallback);
-    }
+    void read(int64_t offset, unsigned int len);
 
     /**
      * @brief Sync [read](http://linux.die.net/man/2/preadv).
@@ -607,15 +564,7 @@ public:
      *   * The amount of data read from the given path.
      */
     std::pair<bool, std::pair<std::unique_ptr<const char[]>, std::size_t>>
-    readSync(int64_t offset, unsigned int len) {
-        current = std::unique_ptr<char[]>{new char[len]};
-        buffer = uv_buf_init(current.get(), len);
-        uv_buf_t bufs[] = { buffer };
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_read, parent(), req, file, bufs, 1, offset);
-        bool err = req->result < 0;
-        return std::make_pair(!err, std::make_pair(std::move(current), err ? 0 : std::size_t(req->result)));
-    }
+    readSync(int64_t offset, unsigned int len);
 
     /**
      * @brief Async [write](http://linux.die.net/man/2/pwritev).
@@ -630,11 +579,7 @@ public:
      * @param len The lenght of the submitted data.
      * @param offset Offset, as described in the official documentation.
      */
-    void write(std::unique_ptr<char[]> buf, unsigned int len, int64_t offset) {
-        current = std::move(buf);
-        uv_buf_t bufs[] = { uv_buf_init(current.get(), len) };
-        cleanupAndInvoke(&uv_fs_write, parent(), get(), file, bufs, 1, offset, &fsResultCallback<Type::WRITE>);
-    }
+    void write(std::unique_ptr<char[]> buf, unsigned int len, int64_t offset);
 
     /**
      * @brief Async [write](http://linux.die.net/man/2/pwritev).
@@ -649,10 +594,7 @@ public:
      * @param len The lenght of the submitted data.
      * @param offset Offset, as described in the official documentation.
      */
-    void write(char *buf, unsigned int len, int64_t offset) {
-        uv_buf_t bufs[] = { uv_buf_init(buf, len) };
-        cleanupAndInvoke(&uv_fs_write, parent(), get(), file, bufs, 1, offset, &fsResultCallback<Type::WRITE>);
-    }
+    void write(char *buf, unsigned int len, int64_t offset);
 
     /**
      * @brief Sync [write](http://linux.die.net/man/2/pwritev).
@@ -665,14 +607,8 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The amount of data written to the given path.
      */
-    std::pair<bool, std::size_t> writeSync(std::unique_ptr<char[]> buf, unsigned int len, int64_t offset) {
-        current = std::move(buf);
-        uv_buf_t bufs[] = { uv_buf_init(current.get(), len) };
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_write, parent(), req, file, bufs, 1, offset);
-        bool err = req->result < 0;
-        return std::make_pair(!err, err ? 0 : std::size_t(req->result));
-    }
+    std::pair<bool, std::size_t>
+    writeSync(std::unique_ptr<char[]> buf, unsigned int len, int64_t offset);
 
     /**
      * @brief Async [fstat](http://linux.die.net/man/2/fstat).
@@ -680,9 +616,7 @@ public:
      * Emit a `FsEvent<FileReq::Type::FSTAT>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      */
-    void stat() {
-        cleanupAndInvoke(&uv_fs_fstat, parent(), get(), file, &fsStatCallback<Type::FSTAT>);
-    }
+    void stat();
 
     /**
      * @brief Sync [fstat](http://linux.die.net/man/2/fstat).
@@ -691,11 +625,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * An initialized instance of Stat.
      */
-    std::pair<bool, Stat> statSync() {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_fstat, parent(), req, file);
-        return std::make_pair(!(req->result < 0), req->statbuf);
-    }
+    std::pair<bool, Stat> statSync();
 
     /**
      * @brief Async [fsync](http://linux.die.net/man/2/fsync).
@@ -703,19 +633,13 @@ public:
      * Emit a `FsEvent<FileReq::Type::FSYNC>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      */
-    void sync() {
-        cleanupAndInvoke(&uv_fs_fsync, parent(), get(), file, &fsGenericCallback<Type::FSYNC>);
-    }
+    void sync();
 
     /**
      * @brief Sync [fsync](http://linux.die.net/man/2/fsync).
      * @return True in case of success, false otherwise.
      */
-    bool syncSync() {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_fsync, parent(), req, file);
-        return !(req->result < 0);
-    }
+    bool syncSync();
 
     /**
      * @brief Async [fdatasync](http://linux.die.net/man/2/fdatasync).
@@ -723,19 +647,13 @@ public:
      * Emit a `FsEvent<FileReq::Type::FDATASYNC>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
      */
-    void datasync() {
-        cleanupAndInvoke(&uv_fs_fdatasync, parent(), get(), file, &fsGenericCallback<Type::FDATASYNC>);
-    }
+    void datasync();
 
     /**
      * @brief Sync [fdatasync](http://linux.die.net/man/2/fdatasync).
      * @return True in case of success, false otherwise.
      */
-    bool datasyncSync() {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_fdatasync, parent(), req, file);
-        return !(req->result < 0);
-    }
+    bool datasyncSync();
 
     /**
      * @brief Async [ftruncate](http://linux.die.net/man/2/ftruncate).
@@ -745,20 +663,14 @@ public:
      *
      * @param offset Offset, as described in the official documentation.
      */
-    void truncate(int64_t offset) {
-        cleanupAndInvoke(&uv_fs_ftruncate, parent(), get(), file, offset, &fsGenericCallback<Type::FTRUNCATE>);
-    }
+    void truncate(int64_t offset);
 
     /**
      * @brief Sync [ftruncate](http://linux.die.net/man/2/ftruncate).
      * @param offset Offset, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool truncateSync(int64_t offset) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_ftruncate, parent(), req, file, offset);
-        return !(req->result < 0);
-    }
+    bool truncateSync(int64_t offset);
 
     /**
      * @brief Async [sendfile](http://linux.die.net/man/2/sendfile).
@@ -770,9 +682,7 @@ public:
      * @param offset Offset, as described in the official documentation.
      * @param length Length, as described in the official documentation.
      */
-    void sendfile(FileHandle out, int64_t offset, std::size_t length) {
-        cleanupAndInvoke(&uv_fs_sendfile, parent(), get(), out, file, offset, length, &fsResultCallback<Type::SENDFILE>);
-    }
+    void sendfile(FileHandle out, int64_t offset, std::size_t length);
 
     /**
      * @brief Sync [sendfile](http://linux.die.net/man/2/sendfile).
@@ -785,12 +695,8 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The amount of data transferred.
      */
-    std::pair<bool, std::size_t> sendfileSync(FileHandle out, int64_t offset, std::size_t length) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_sendfile, parent(), req, out, file, offset, length);
-        bool err = req->result < 0;
-        return std::make_pair(!err, err ? 0 : std::size_t(req->result));
-    }
+    std::pair<bool, std::size_t>
+    sendfileSync(FileHandle out, int64_t offset, std::size_t length);
 
     /**
      * @brief Async [fchmod](http://linux.die.net/man/2/fchmod).
@@ -800,20 +706,14 @@ public:
      *
      * @param mode Mode, as described in the official documentation.
      */
-    void chmod(int mode) {
-        cleanupAndInvoke(&uv_fs_fchmod, parent(), get(), file, mode, &fsGenericCallback<Type::FCHMOD>);
-    }
+    void chmod(int mode);
 
     /**
      * @brief Sync [fchmod](http://linux.die.net/man/2/fchmod).
      * @param mode Mode, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool chmodSync(int mode) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_fchmod, parent(), req, file, mode);
-        return !(req->result < 0);
-    }
+    bool chmodSync(int mode);
 
     /**
      * @brief Async [futime](http://linux.die.net/man/2/futime).
@@ -826,9 +726,7 @@ public:
      * @param mtime `std::chrono::duration<double>`, having the same meaning as
      * described in the official documentation.
      */
-    void utime(Time atime, Time mtime) {
-        cleanupAndInvoke(&uv_fs_futime, parent(), get(), file, atime.count(), mtime.count(), &fsGenericCallback<Type::FUTIME>);
-    }
+    void utime(Time atime, Time mtime);
 
     /**
      * @brief Sync [futime](http://linux.die.net/man/2/futime).
@@ -838,11 +736,7 @@ public:
      * described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool utimeSync(Time atime, Time mtime) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_futime, parent(), req, file, atime.count(), mtime.count());
-        return !(req->result < 0);
-    }
+    bool utimeSync(Time atime, Time mtime);
 
     /**
      * @brief Async [fchown](http://linux.die.net/man/2/fchown).
@@ -853,9 +747,7 @@ public:
      * @param uid UID, as described in the official documentation.
      * @param gid GID, as described in the official documentation.
      */
-    void chown(Uid uid, Gid gid) {
-        cleanupAndInvoke(&uv_fs_fchown, parent(), get(), file, uid, gid, &fsGenericCallback<Type::FCHOWN>);
-    }
+    void chown(Uid uid, Gid gid);
 
     /**
      * @brief Sync [fchown](http://linux.die.net/man/2/fchown).
@@ -863,11 +755,7 @@ public:
      * @param gid GID, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool chownSync(Uid uid, Gid gid) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_fchown, parent(), req, file, uid, gid);
-        return !(req->result < 0);
-    }
+    bool chownSync(Uid uid, Gid gid);
 
     /**
      * @brief Cast operator to FileHandle.
@@ -877,7 +765,7 @@ public:
      *
      * @return A valid instance of FileHandle (the descriptor can be invalid).
      */
-    operator FileHandle() const noexcept { return file; }
+    operator FileHandle() const noexcept;
 
 private:
     std::unique_ptr<char[]> current{nullptr};
@@ -899,22 +787,9 @@ private:
  * for further details.
  */
 class FsReq final: public FsRequest<FsReq> {
-    static void fsReadlinkCallback(uv_fs_t *req) {
-        auto ptr = reserve(req);
-        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
-        else { ptr->publish(FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr), static_cast<std::size_t>(req->result)}); }
-    }
+    static void fsReadlinkCallback(uv_fs_t *req);
 
-    static void fsReaddirCallback(uv_fs_t *req) {
-        auto ptr = reserve(req);
-
-        if(req->result < 0) {
-            ptr->publish(ErrorEvent{req->result});
-        } else {
-            auto *dir = static_cast<uv_dir_t *>(req->ptr);
-            ptr->publish(FsEvent<Type::READDIR>{dir->dirents[0].name, static_cast<EntryType>(dir->dirents[0].type), !req->result});
-        }
-    }
+    static void fsReaddirCallback(uv_fs_t *req);
 
 public:
     using CopyFile = details::UVCopyFileFlags;
@@ -922,9 +797,7 @@ public:
 
     using FsRequest::FsRequest;
 
-    ~FsReq() noexcept {
-        uv_fs_req_cleanup(get());
-    }
+    ~FsReq() noexcept;
 
     /**
      * @brief Async [unlink](http://linux.die.net/man/2/unlink).
@@ -934,20 +807,14 @@ public:
      *
      * @param path Path, as described in the official documentation.
      */
-    void unlink(std::string path) {
-        cleanupAndInvoke(&uv_fs_unlink, parent(), get(), path.data(), &fsGenericCallback<Type::UNLINK>);
-    }
+    void unlink(std::string path);
 
     /**
      * @brief Sync [unlink](http://linux.die.net/man/2/unlink).
      * @param path Path, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool unlinkSync(std::string path) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_unlink, parent(), req, path.data());
-        return !(req->result < 0);
-    }
+    bool unlinkSync(std::string path);
 
     /**
      * @brief Async [mkdir](http://linux.die.net/man/2/mkdir).
@@ -958,9 +825,7 @@ public:
      * @param path Path, as described in the official documentation.
      * @param mode Mode, as described in the official documentation.
      */
-    void mkdir(std::string path, int mode) {
-        cleanupAndInvoke(&uv_fs_mkdir, parent(), get(), path.data(), mode, &fsGenericCallback<Type::MKDIR>);
-    }
+    void mkdir(std::string path, int mode);
 
     /**
      * @brief Sync [mkdir](http://linux.die.net/man/2/mkdir).
@@ -968,11 +833,7 @@ public:
      * @param mode Mode, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool mkdirSync(std::string path, int mode) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_mkdir, parent(), req, path.data(), mode);
-        return !(req->result < 0);
-    }
+    bool mkdirSync(std::string path, int mode);
 
     /**
      * @brief Async [mktemp](http://linux.die.net/man/3/mkdtemp).
@@ -982,9 +843,7 @@ public:
      *
      * @param tpl Template, as described in the official documentation.
      */
-    void mkdtemp(std::string tpl) {
-        cleanupAndInvoke(&uv_fs_mkdtemp, parent(), get(), tpl.data(), &fsGenericCallback<Type::MKDTEMP>);
-    }
+    void mkdtemp(std::string tpl);
 
     /**
      * @brief Sync [mktemp](http://linux.die.net/man/3/mkdtemp).
@@ -995,11 +854,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The actual path of the newly created directory.
      */
-    std::pair<bool, const char *> mkdtempSync(std::string tpl) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_mkdtemp, parent(), req, tpl.data());
-        return std::make_pair(!(req->result < 0), req->path);
-    }
+    std::pair<bool, const char *> mkdtempSync(std::string tpl);
 
     /**
      * @brief Async [mkstemp](https://linux.die.net/man/3/mkstemp).
@@ -1009,9 +864,7 @@ public:
      *
      * @param tpl Template, as described in the official documentation.
      */
-    void mkstemp(std::string tpl) {
-        cleanupAndInvoke(&uv_fs_mkstemp, parent(), get(), tpl.data(), &fsResultCallback<Type::MKSTEMP>);
-    }
+    void mkstemp(std::string tpl);
 
     /**
      * @brief Sync [mkstemp](https://linux.die.net/man/3/mkstemp).
@@ -1033,19 +886,7 @@ public:
      * false otherwise.
      * * The second parameter is a composed value (see above).
      */
-    std::pair<bool, std::pair<std::string, std::size_t>> mkstempSync(std::string tpl) {
-        std::pair<bool, std::pair<std::string, std::size_t>> ret{false, {}};
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_mkdtemp, parent(), req, tpl.data());
-        ret.first = !(req->result < 0);
-
-        if(ret.first) {
-            ret.second.first = req->path;
-            ret.second.second = static_cast<std::size_t>(req->result);
-        }
-
-        return ret;
-    }
+    std::pair<bool, std::pair<std::string, std::size_t>> mkstempSync(std::string tpl);
 
     /**
      * @brief Async [rmdir](http://linux.die.net/man/2/rmdir).
@@ -1055,20 +896,14 @@ public:
      *
      * @param path Path, as described in the official documentation.
      */
-    void rmdir(std::string path) {
-        cleanupAndInvoke(&uv_fs_rmdir, parent(), get(), path.data(), &fsGenericCallback<Type::RMDIR>);
-    }
+    void rmdir(std::string path);
 
     /**
      * @brief Sync [rmdir](http://linux.die.net/man/2/rmdir).
      * @param path Path, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool rmdirSync(std::string path) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_rmdir, parent(), req, path.data());
-        return !(req->result < 0);
-    }
+    bool rmdirSync(std::string path);
 
     /**
      * @brief Async [scandir](http://linux.die.net/man/3/scandir).
@@ -1079,9 +914,7 @@ public:
      * @param path Path, as described in the official documentation.
      * @param flags Flags, as described in the official documentation.
      */
-    void scandir(std::string path, int flags) {
-        cleanupAndInvoke(&uv_fs_scandir, parent(), get(), path.data(), flags, &fsResultCallback<Type::SCANDIR>);
-    }
+    void scandir(std::string path, int flags);
 
     /**
      * @brief Sync [scandir](http://linux.die.net/man/3/scandir).
@@ -1093,12 +926,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The number of directory entries selected.
      */
-    std::pair<bool, std::size_t> scandirSync(std::string path, int flags) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_scandir, parent(), req, path.data(), flags);
-        bool err = req->result < 0;
-        return std::make_pair(!err, err ? 0 : std::size_t(req->result));
-    }
+    std::pair<bool, std::size_t> scandirSync(std::string path, int flags);
 
     /**
      * @brief Gets entries populated with the next directory entry data.
@@ -1153,9 +981,7 @@ public:
      *
      * @param path Path, as described in the official documentation.
      */
-    void stat(std::string path) {
-        cleanupAndInvoke(&uv_fs_stat, parent(), get(), path.data(), &fsStatCallback<Type::STAT>);
-    }
+    void stat(std::string path);
 
     /**
      * @brief Sync [stat](http://linux.die.net/man/2/stat).
@@ -1166,11 +992,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * An initialized instance of Stat.
      */
-    std::pair<bool, Stat> statSync(std::string path) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_stat, parent(), req, path.data());
-        return std::make_pair(!(req->result < 0), req->statbuf);
-    }
+    std::pair<bool, Stat> statSync(std::string path);
 
     /**
      * @brief Async [lstat](http://linux.die.net/man/2/lstat).
@@ -1180,9 +1002,7 @@ public:
      *
      * @param path Path, as described in the official documentation.
      */
-    void lstat(std::string path) {
-        cleanupAndInvoke(&uv_fs_lstat, parent(), get(), path.data(), &fsStatCallback<Type::LSTAT>);
-    }
+    void lstat(std::string path);
 
     /**
      * @brief Sync [lstat](http://linux.die.net/man/2/lstat).
@@ -1193,11 +1013,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * An initialized instance of Stat.
      */
-    std::pair<bool, Stat> lstatSync(std::string path) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_lstat, parent(), req, path.data());
-        return std::make_pair(!(req->result < 0), req->statbuf);
-    }
+    std::pair<bool, Stat> lstatSync(std::string path);
 
     /**
      * @brief Async [statfs](http://linux.die.net/man/2/statfs).
@@ -1210,9 +1026,7 @@ public:
      *
      * @param path Path, as described in the official documentation.
      */
-    void stasfs(std::string path) {
-        cleanupAndInvoke(&uv_fs_statfs, parent(), get(), path.data(), &fsStatfsCallback);
-    }
+    void stasfs(std::string path);
 
     /**
      * @brief Sync [statfs](http://linux.die.net/man/2/statfs).
@@ -1226,11 +1040,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * An initialized instance of Statfs.
      */
-    std::pair<bool, Statfs> statfsSync(std::string path) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_statfs, parent(), req, path.data());
-        return std::make_pair(!(req->result < 0), *static_cast<uv_statfs_t *>(req->ptr));
-    }
+    std::pair<bool, Statfs> statfsSync(std::string path);
 
     /**
      * @brief Async [rename](http://linux.die.net/man/2/rename).
@@ -1241,9 +1051,7 @@ public:
      * @param old Old path, as described in the official documentation.
      * @param path New path, as described in the official documentation.
      */
-    void rename(std::string old, std::string path) {
-        cleanupAndInvoke(&uv_fs_rename, parent(), get(), old.data(), path.data(), &fsGenericCallback<Type::RENAME>);
-    }
+    void rename(std::string old, std::string path);
 
     /**
      * @brief Sync [rename](http://linux.die.net/man/2/rename).
@@ -1251,11 +1059,7 @@ public:
      * @param path New path, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool renameSync(std::string old, std::string path) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_rename, parent(), req, old.data(), path.data());
-        return !(req->result < 0);
-    }
+    bool renameSync(std::string old, std::string path);
 
     /**
      * @brief Copies a file asynchronously from a path to a new one.
@@ -1286,9 +1090,7 @@ public:
      * @param path New path, as described in the official documentation.
      * @param flags Optional additional flags.
      */
-    void copyfile(std::string old, std::string path, Flags<CopyFile> flags = Flags<CopyFile>{}) {
-        cleanupAndInvoke(&uv_fs_copyfile, parent(), get(), old.data(), path.data(), flags, &fsGenericCallback<Type::COPYFILE>);
-    }
+    void copyfile(std::string old, std::string path, Flags<CopyFile> flags = Flags<CopyFile>{});
 
     /**
      * @brief Copies a file synchronously from a path to a new one.
@@ -1309,11 +1111,7 @@ public:
      * @param flags Optional additional flags.
      * @return True in case of success, false otherwise.
      */
-    bool copyfileSync(std::string old, std::string path, Flags<CopyFile> flags = Flags<CopyFile>{}) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_copyfile, parent(), get(), old.data(), path.data(), flags);
-        return !(req->result < 0);
-    }
+    bool copyfileSync(std::string old, std::string path, Flags<CopyFile> flags = Flags<CopyFile>{});
 
     /**
      * @brief Async [access](http://linux.die.net/man/2/access).
@@ -1324,9 +1122,7 @@ public:
      * @param path Path, as described in the official documentation.
      * @param mode Mode, as described in the official documentation.
      */
-    void access(std::string path, int mode) {
-        cleanupAndInvoke(&uv_fs_access, parent(), get(), path.data(), mode, &fsGenericCallback<Type::ACCESS>);
-    }
+    void access(std::string path, int mode);
 
     /**
      * @brief Sync [access](http://linux.die.net/man/2/access).
@@ -1334,11 +1130,7 @@ public:
      * @param mode Mode, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool accessSync(std::string path, int mode) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_access, parent(), req, path.data(), mode);
-        return !(req->result < 0);
-    }
+    bool accessSync(std::string path, int mode);
 
     /**
      * @brief Async [chmod](http://linux.die.net/man/2/chmod).
@@ -1349,9 +1141,7 @@ public:
      * @param path Path, as described in the official documentation.
      * @param mode Mode, as described in the official documentation.
      */
-    void chmod(std::string path, int mode) {
-        cleanupAndInvoke(&uv_fs_chmod, parent(), get(), path.data(), mode, &fsGenericCallback<Type::CHMOD>);
-    }
+    void chmod(std::string path, int mode);
 
     /**
      * @brief Sync [chmod](http://linux.die.net/man/2/chmod).
@@ -1359,11 +1149,7 @@ public:
      * @param mode Mode, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool chmodSync(std::string path, int mode) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_chmod, parent(), req, path.data(), mode);
-        return !(req->result < 0);
-    }
+    bool chmodSync(std::string path, int mode);
 
     /**
      * @brief Async [utime](http://linux.die.net/man/2/utime).
@@ -1377,9 +1163,7 @@ public:
      * @param mtime `std::chrono::duration<double>`, having the same meaning as
      * described in the official documentation.
      */
-    void utime(std::string path, Time atime, Time mtime) {
-        cleanupAndInvoke(&uv_fs_utime, parent(), get(), path.data(), atime.count(), mtime.count(), &fsGenericCallback<Type::UTIME>);
-    }
+    void utime(std::string path, Time atime, Time mtime);
 
     /**
      * @brief Sync [utime](http://linux.die.net/man/2/utime).
@@ -1390,11 +1174,7 @@ public:
      * described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool utimeSync(std::string path, Time atime, Time mtime) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_utime, parent(), req, path.data(), atime.count(), mtime.count());
-        return !(req->result < 0);
-    }
+    bool utimeSync(std::string path, Time atime, Time mtime);
 
     /**
      * @brief Async [link](http://linux.die.net/man/2/link).
@@ -1405,9 +1185,7 @@ public:
      * @param old Old path, as described in the official documentation.
      * @param path New path, as described in the official documentation.
      */
-    void link(std::string old, std::string path) {
-        cleanupAndInvoke(&uv_fs_link, parent(), get(), old.data(), path.data(), &fsGenericCallback<Type::LINK>);
-    }
+    void link(std::string old, std::string path);
 
     /**
      * @brief Sync [link](http://linux.die.net/man/2/link).
@@ -1415,11 +1193,7 @@ public:
      * @param path New path, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool linkSync(std::string old, std::string path) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_link, parent(), req, old.data(), path.data());
-        return !(req->result < 0);
-    }
+    bool linkSync(std::string old, std::string path);
 
     /**
      * @brief Async [symlink](http://linux.die.net/man/2/symlink).
@@ -1438,9 +1212,7 @@ public:
      * @param path New path, as described in the official documentation.
      * @param flags Optional additional flags.
      */
-    void symlink(std::string old, std::string path, Flags<SymLink> flags = Flags<SymLink>{}) {
-        cleanupAndInvoke(&uv_fs_symlink, parent(), get(), old.data(), path.data(), flags, &fsGenericCallback<Type::SYMLINK>);
-    }
+    void symlink(std::string old, std::string path, Flags<SymLink> flags = Flags<SymLink>{});
 
     /**
      * @brief Sync [symlink](http://linux.die.net/man/2/symlink).
@@ -1457,11 +1229,7 @@ public:
      * @param flags Flags, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool symlinkSync(std::string old, std::string path, Flags<SymLink> flags = Flags<SymLink>{}) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_symlink, parent(), req, old.data(), path.data(), flags);
-        return !(req->result < 0);
-    }
+    bool symlinkSync(std::string old, std::string path, Flags<SymLink> flags = Flags<SymLink>{});
 
     /**
      * @brief Async [readlink](http://linux.die.net/man/2/readlink).
@@ -1471,9 +1239,7 @@ public:
      *
      * @param path Path, as described in the official documentation.
      */
-    void readlink(std::string path) {
-        cleanupAndInvoke(&uv_fs_readlink, parent(), get(), path.data(), &fsReadlinkCallback);
-    }
+    void readlink(std::string path);
 
     /**
      * @brief Sync [readlink](http://linux.die.net/man/2/readlink).
@@ -1487,12 +1253,7 @@ public:
      *   * The amount of data read from the given path.
      */
     std::pair<bool, std::pair<const char *, std::size_t>>
-    readlinkSync(std::string path) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_readlink, parent(), req, path.data());
-        bool err = req->result < 0;
-        return std::make_pair(!err, std::make_pair(static_cast<char *>(req->ptr), err ? 0 : std::size_t(req->result)));
-    }
+    readlinkSync(std::string path);
 
     /**
      * @brief Async [realpath](http://linux.die.net/man/3/realpath).
@@ -1502,9 +1263,7 @@ public:
      *
      * @param path Path, as described in the official documentation.
      */
-    void realpath(std::string path) {
-        cleanupAndInvoke(&uv_fs_realpath, parent(), get(), path.data(), &fsGenericCallback<Type::REALPATH>);
-    }
+    void realpath(std::string path);
 
     /**
      * @brief Sync [realpath](http://linux.die.net/man/3/realpath).
@@ -1515,11 +1274,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The canonicalized absolute pathname.
      */
-    std::pair<bool, const char *> realpathSync(std::string path) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_realpath, parent(), req, path.data());
-        return std::make_pair(!(req->result < 0), req->path);
-    }
+    std::pair<bool, const char *> realpathSync(std::string path);
 
     /**
      * @brief Async [chown](http://linux.die.net/man/2/chown).
@@ -1531,9 +1286,7 @@ public:
      * @param uid UID, as described in the official documentation.
      * @param gid GID, as described in the official documentation.
      */
-    void chown(std::string path, Uid uid, Gid gid) {
-        cleanupAndInvoke(&uv_fs_chown, parent(), get(), path.data(), uid, gid, &fsGenericCallback<Type::CHOWN>);
-    }
+    void chown(std::string path, Uid uid, Gid gid);
 
     /**
      * @brief Sync [chown](http://linux.die.net/man/2/chown).
@@ -1542,11 +1295,7 @@ public:
      * @param gid GID, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool chownSync(std::string path, Uid uid, Gid gid) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_chown, parent(), req, path.data(), uid, gid);
-        return !(req->result < 0);
-    }
+    bool chownSync(std::string path, Uid uid, Gid gid);
 
     /**
      * @brief Async [lchown](https://linux.die.net/man/2/lchown).
@@ -1558,9 +1307,7 @@ public:
      * @param uid UID, as described in the official documentation.
      * @param gid GID, as described in the official documentation.
      */
-    void lchown(std::string path, Uid uid, Gid gid) {
-        cleanupAndInvoke(&uv_fs_lchown, parent(), get(), path.data(), uid, gid, &fsGenericCallback<Type::LCHOWN>);
-    }
+    void lchown(std::string path, Uid uid, Gid gid);
 
     /**
      * @brief Sync [lchown](https://linux.die.net/man/2/lchown).
@@ -1569,11 +1316,7 @@ public:
      * @param gid GID, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool lchownSync(std::string path, Uid uid, Gid gid) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_lchown, parent(), req, path.data(), uid, gid);
-        return !(req->result < 0);
-    }
+    bool lchownSync(std::string path, Uid uid, Gid gid);
 
     /**
      * @brief Opens a path asynchronously as a directory stream.
@@ -1587,9 +1330,7 @@ public:
      *
      * @param path The path to open as a directory stream.
      */
-    void opendir(std::string path) {
-        cleanupAndInvoke(&uv_fs_opendir, parent(), get(), path.data(), &fsGenericCallback<Type::OPENDIR>);
-    }
+    void opendir(std::string path);
 
     /**
      * @brief Opens a path synchronously as a directory stream.
@@ -1601,11 +1342,7 @@ public:
      * @param path The path to open as a directory stream.
      * @return True in case of success, false otherwise.
      */
-    bool opendirSync(std::string path) {
-        auto req = get();
-        cleanupAndInvokeSync(&uv_fs_opendir, parent(), req, path.data());
-        return !(req->result < 0);
-    }
+    bool opendirSync(std::string path);
 
     /**
      * @brief Closes asynchronously a directory stream.
@@ -1616,11 +1353,7 @@ public:
      * It frees also the memory allocated internally when a path has been opened
      * as a directory stream.
      */
-    void closedir() {
-        auto req = get();
-        auto *dir = static_cast<uv_dir_t *>(req->ptr);
-        cleanupAndInvoke(&uv_fs_closedir, parent(), req, dir, &fsGenericCallback<Type::CLOSEDIR>);
-    }
+    void closedir();
 
     /**
      * @brief Closes synchronously a directory stream.
@@ -1630,12 +1363,7 @@ public:
      *
      * @return True in case of success, false otherwise.
      */
-    bool closedirSync() {
-        auto req = get();
-        auto *dir = static_cast<uv_dir_t *>(req->ptr);
-        cleanupAndInvokeSync(&uv_fs_closedir, parent(), req, dir);
-        return !(req->result < 0);
-    }
+    bool closedirSync();
 
     /**
      * @brief Iterates asynchronously over a directory stream one entry at a
@@ -1647,13 +1375,7 @@ public:
      * This function isn't thread safe. Moreover, it doesn't return the `.` and
      * `..` entries.
      */
-    void readdir() {
-        auto req = get();
-        auto *dir = static_cast<uv_dir_t *>(req->ptr);
-        dir->dirents = dirents;
-        dir->nentries = 1;
-        cleanupAndInvoke(&uv_fs_readdir, parent(), req, dir, &fsReaddirCallback);
-    }
+    void readdir();
 
     /**
      * @brief Iterates synchronously over a directory stream one entry at a
@@ -1714,9 +1436,7 @@ struct FsHelper {
      * to close it or to use it after closing the file descriptor may lead to
      * malfunction.
      */
-    static OSFileDescriptor handle(FileHandle file) noexcept {
-        return uv_get_osfhandle(file);
-    }
+    static OSFileDescriptor handle(FileHandle file) noexcept;
 
     /**
      * @brief Gets the file descriptor.
@@ -1728,9 +1448,7 @@ struct FsHelper {
      * to close it or to use it after closing the handle may lead to
      * malfunction.
      */
-    static FileHandle open(OSFileDescriptor descriptor) noexcept {
-        return uv_open_osfhandle(descriptor);
-    }
+    static FileHandle open(OSFileDescriptor descriptor) noexcept;
 };
 
 

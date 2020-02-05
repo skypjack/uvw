@@ -7,7 +7,7 @@
 #include <uv.h>
 #include "handle.hpp"
 #include "util.hpp"
-#include "loop.hpp"
+#include "loop.h"
 
 
 namespace uvw {
@@ -76,11 +76,7 @@ struct FsEventEvent {
  * for further details.
  */
 class FsEventHandle final: public Handle<FsEventHandle, uv_fs_event_t> {
-    static void startCallback(uv_fs_event_t *handle, const char *filename, int events, int status) {
-        FsEventHandle &fsEvent = *(static_cast<FsEventHandle*>(handle->data));
-        if(status) { fsEvent.publish(ErrorEvent{status}); }
-        else { fsEvent.publish(FsEventEvent{filename, static_cast<std::underlying_type_t<details::UVFsEvent>>(events)}); }
-    }
+    static void startCallback(uv_fs_event_t *handle, const char *filename, int events, int status);
 
 public:
     using Watch = details::UVFsEvent;
@@ -92,9 +88,7 @@ public:
      * @brief Initializes the handle.
      * @return True in case of success, false otherwise.
      */
-    bool init() {
-        return initialize(&uv_fs_event_init);
-    }
+    bool init();
 
     /**
      * @brief Starts watching the specified path.
@@ -113,9 +107,7 @@ public:
      * @param path The file or directory to be monitored.
      * @param flags Additional flags to control the behavior.
      */
-    void start(std::string path, Flags<Event> flags = Flags<Event>{}) {
-        invoke(&uv_fs_event_start, get(), &startCallback, path.data(), flags);
-    }
+    void start(std::string path, Flags<Event> flags = Flags<Event>{});
 
     /**
      * @brief Starts watching the specified path.
@@ -134,24 +126,18 @@ public:
      * @param path The file or directory to be monitored.
      * @param flag Additional flag to control the behavior.
      */
-    void start(std::string path, Event flag) {
-        start(std::move(path), Flags<Event>{flag});
-    }
+    void start(std::string path, Event flag);
 
     /**
      * @brief Stops polling the file descriptor.
      */
-    void stop() {
-        invoke(&uv_fs_event_stop, get());
-    }
+    void stop();
 
     /**
      * @brief Gets the path being monitored.
      * @return The path being monitored, an empty string in case of errors.
      */
-    std::string path() noexcept {
-        return details::tryRead(&uv_fs_event_getpath, get());
-    }
+    std::string path() noexcept;
 };
 
 

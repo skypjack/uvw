@@ -4,7 +4,7 @@
 #include <utility>
 #include <memory>
 #include <uv.h>
-#include "stream.hpp"
+#include "stream.h"
 #include "util.hpp"
 
 
@@ -56,12 +56,13 @@ enum class UVTTYVTermStateT: std::underlying_type_t<uv_tty_vtermstate_t> {
  * for further details.
  */
 class TTYHandle final: public StreamHandle<TTYHandle, uv_tty_t> {
-    static auto resetModeMemo() {
+    static auto resetModeMemo()
+    {
         static std::weak_ptr<details::ResetModeMemo> weak;
         auto shared = weak.lock();
         if(!shared) { weak = shared = std::make_shared<details::ResetModeMemo>(); }
         return shared;
-    }
+    };
 
 public:
     using Mode = details::UVTTYModeT;
@@ -78,9 +79,7 @@ public:
      * @brief Initializes the handle.
      * @return True in case of success, false otherwise.
      */
-    bool init() {
-        return initialize(&uv_tty_init, fd, rw);
-    }
+    bool init();
 
     /**
      * @brief Sets the TTY using the specified terminal mode.
@@ -98,32 +97,19 @@ public:
      * @param m The mode to be set.
      * @return True in case of success, false otherwise.
      */
-    bool mode(Mode m) {
-        return (0 == uv_tty_set_mode(get(), static_cast<std::underlying_type_t<Mode>>(m)));
-    }
+    bool mode(Mode m);
 
     /**
      * @brief Resets TTY settings to default values.
      * @return True in case of success, false otherwise.
      */
-    bool reset() noexcept {
-        return (0 == uv_tty_reset_mode());
-    }
+    bool reset() noexcept;
 
     /**
      * @brief Gets the current Window size.
      * @return The current Window size or `{-1, -1}` in case of errors.
      */
-    WinSize getWinSize() {
-        WinSize size;
-
-        if(0 != uv_tty_get_winsize(get(), &size.width, &size.height)) {
-            size.width = -1;
-            size.height = -1;
-        }
-
-        return size;
-    }
+    WinSize getWinSize();
 
     /**
      * @brief Controls whether console virtual terminal sequences are processed
@@ -143,16 +129,7 @@ public:
      *
      * @param s The state to be set.
      */
-    void vtermState(VTermState s) const noexcept {
-        switch(s) {
-        case VTermState::SUPPORTED:
-            uv_tty_set_vterm_state(uv_tty_vtermstate_t::UV_TTY_SUPPORTED);
-            break;
-        case VTermState::UNSUPPORTED:
-            uv_tty_set_vterm_state(uv_tty_vtermstate_t::UV_TTY_UNSUPPORTED);
-            break;
-        }
-    }
+    void vtermState(VTermState s) const noexcept;
 
     /**
      * @brief Gets the current state of whether console virtual terminal
@@ -171,11 +148,7 @@ public:
      *
      * @return The current state.
      */
-    VTermState vtermState() const noexcept {
-        uv_tty_vtermstate_t state;
-        uv_tty_get_vterm_state(&state);
-        return VTermState{state};
-    }
+    VTermState vtermState() const noexcept;
 
 private:
     std::shared_ptr<details::ResetModeMemo> memo;

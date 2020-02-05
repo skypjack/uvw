@@ -7,9 +7,9 @@
 #include <string>
 #include <uv.h>
 #include "request.hpp"
-#include "stream.hpp"
+#include "stream.h"
 #include "util.hpp"
-#include "loop.hpp"
+#include "loop.h"
 
 
 namespace uvw {
@@ -50,9 +50,7 @@ public:
      * @brief Initializes the handle.
      * @return True in case of success, false otherwise.
      */
-    bool init() {
-        return initialize(&uv_pipe_init, ipc);
-    }
+    bool init();
 
     /**
      * @brief Opens an existing file descriptor or HANDLE as a pipe.
@@ -63,9 +61,7 @@ public:
      *
      * @param file A valid file handle (either a file descriptor or a HANDLE).
      */
-    void open(FileHandle file) {
-        invoke(&uv_pipe_open, get(), file);
-    }
+    void open(FileHandle file);
 
     /**
      * @brief bind Binds the pipe to a file path (Unix) or a name (Windows).
@@ -75,9 +71,7 @@ public:
      *
      * @param name A valid file path.
      */
-    void bind(std::string name) {
-        invoke(&uv_pipe_bind, get(), name.data());
-    }
+    void bind(std::string name);
 
     /**
      * @brief Connects to the Unix domain socket or the named pipe.
@@ -89,25 +83,14 @@ public:
      *
      * @param name A valid domain socket or named pipe.
      */
-    void connect(std::string name) {
-        auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
-            ptr->publish(event);
-        };
-
-        auto connect = loop().resource<details::ConnectReq>();
-        connect->once<ErrorEvent>(listener);
-        connect->once<ConnectEvent>(listener);
-        connect->connect(&uv_pipe_connect, get(), name.data());
-    }
+    void connect(std::string name);
 
     /**
      * @brief Gets the name of the Unix domain socket or the named pipe.
      * @return The name of the Unix domain socket or the named pipe, an empty
      * string in case of errors.
      */
-    std::string sock() const noexcept {
-        return details::tryRead(&uv_pipe_getsockname, get());
-    }
+    std::string sock() const noexcept;
 
     /**
      * @brief Gets the name of the Unix domain socket or the named pipe to which
@@ -115,9 +98,7 @@ public:
      * @return The name of the Unix domain socket or the named pipe to which
      * the handle is connected, an empty string in case of errors.
      */
-    std::string peer() const noexcept {
-        return details::tryRead(&uv_pipe_getpeername, get());
-    }
+    std::string peer() const noexcept;
 
     /**
      * @brief Sets the number of pending pipe this instance can handle.
@@ -128,17 +109,13 @@ public:
      *
      * @param count The number of accepted pending pipe.
      */
-    void pending(int count) noexcept {
-        uv_pipe_pending_instances(get(), count);
-    }
+    void pending(int count) noexcept;
 
     /**
      * @brief Gets the number of pending pipe this instance can handle.
      * @return The number of pending pipe this instance can handle.
      */
-    int pending() noexcept {
-        return uv_pipe_pending_count(get());
-    }
+    int pending() noexcept;
 
     /**
      * @brief Used to receive handles over IPC pipes.
@@ -156,10 +133,7 @@ public:
      * * `HandleType::UDP`
      * * `HandleType::UNKNOWN`
      */
-    HandleType receive() noexcept {
-        HandleCategory category = uv_pipe_pending_type(get());
-        return Utilities::guessHandle(category);
-    }
+    HandleType receive() noexcept;
 
     /**
      * @brief Alters pipe permissions.
@@ -178,9 +152,7 @@ public:
      * @param flags A valid set of flags.
      * @return True in case of success, false otherwise.
      */
-    bool chmod(Flags<Chmod> flags) noexcept {
-        return (0 == uv_pipe_chmod(get(), flags));
-    }
+    bool chmod(Flags<Chmod> flags) noexcept;
 
 private:
     bool ipc;
