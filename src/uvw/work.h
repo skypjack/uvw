@@ -61,3 +61,7 @@ private:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "work.cpp"
+#endif //UVW_BUILD_STATIC_LIB

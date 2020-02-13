@@ -158,3 +158,7 @@ private:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "tty.cpp"
+#endif //UVW_BUILD_STATIC_LIB

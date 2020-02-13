@@ -362,3 +362,7 @@ public:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "thread.cpp"
+#endif //UVW_BUILD_STATIC_LIB

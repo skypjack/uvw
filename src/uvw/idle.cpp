@@ -1,21 +1,24 @@
+#ifdef UVW_BUILD_STATIC_LIB
 #include "idle.h"
+#endif //UVW_BUILD_STATIC_LIB
+#include "defines.h"
 
 namespace uvw {
 
-    void IdleHandle::startCallback(uv_idle_t *handle) {
-        IdleHandle &idle = *(static_cast<IdleHandle*>(handle->data));
+    UVW_INLINE_SPECIFIER void IdleHandle::startCallback(uv_idle_t *handle) {
+        IdleHandle &idle = *(static_cast<IdleHandle *>(handle->data));
         idle.publish(IdleEvent{});
     }
 
-    bool IdleHandle::init() {
+    UVW_INLINE_SPECIFIER bool IdleHandle::init() {
         return initialize(&uv_idle_init);
     }
 
-    void IdleHandle::start() {
+    UVW_INLINE_SPECIFIER void IdleHandle::start() {
         invoke(&uv_idle_start, get(), &startCallback);
     }
 
-    void IdleHandle::stop() {
+    UVW_INLINE_SPECIFIER void IdleHandle::stop() {
         invoke(&uv_idle_stop, get());
     }
 }

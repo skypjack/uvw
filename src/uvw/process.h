@@ -249,3 +249,7 @@ private:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "process.cpp"
+#endif //UVW_BUILD_STATIC_LIB

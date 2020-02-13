@@ -431,5 +431,8 @@ private:
     std::shared_ptr<void> userData{nullptr};
 };
 
-
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "loop.cpp"
+#endif //UVW_BUILD_STATIC_LIB

@@ -99,3 +99,7 @@ public:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "timer.cpp"
+#endif //UVW_BUILD_STATIC_LIB

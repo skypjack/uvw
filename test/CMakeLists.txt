@@ -10,20 +10,26 @@ elseif(NOT APPLE)
     find_library(LIBRT rt)
 endif()
 
+if(BUILD_STATIC_LIB)
+    set(STATIC_LIB_IF_ANY uvw_a)
+else()
+    set(STATIC_LIB_IF_ANY uv_a)
+    add_library(odr OBJECT odr.cpp)
+    target_include_directories(odr PRIVATE ${UVW_SRC_DIR})
+    set(TARGET_OBJECTS_odr "$<TARGET_OBJECTS:odr>")
+endif(BUILD_STATIC_LIB)
+
 set(
     COMMON_LINK_LIBS
     gtest_main
     ${LIBRT}
-    uvw_a
+    ${STATIC_LIB_IF_ANY}
     Threads::Threads
     ${WINSOCK2}
 )
 
-add_library(odr OBJECT odr.cpp)
-target_include_directories(odr PRIVATE ${UVW_SRC_DIR})
-
 macro(ADD_UVW_TEST TEST_NAME TEST_SOURCE)
-    add_executable(${TEST_NAME} $<TARGET_OBJECTS:odr> ${TEST_SOURCE})
+    add_executable(${TEST_NAME} ${TARGET_OBJECTS_odr} ${TEST_SOURCE})
     target_include_directories(${TEST_NAME} PRIVATE ${UVW_SRC_DIR})
     target_link_libraries(${TEST_NAME} PRIVATE ${COMMON_LINK_LIBS})
     add_test(NAME uvw_${TEST_NAME} COMMAND $<TARGET_FILE:${TEST_NAME}>)

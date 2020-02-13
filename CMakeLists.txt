@@ -71,9 +71,15 @@ if(BUILD_DOCS)
     endif()
 endif()
 
-file(GLOB SOURCES src/uvw/*.cpp)
-add_library(uvw_a STATIC ${SOURCES})
-target_link_libraries(uvw_a PRIVATE uv_a)
+option(UVW_BUILD_STATIC_LIB "Build static uvw_a" OFF)
+
+if(BUILD_STATIC_LIB)
+    file(GLOB SOURCES src/uvw/*.cpp)
+    add_library(uvw_a STATIC ${SOURCES})
+    target_link_libraries(uvw_a PRIVATE uv_a)
+    set_target_properties(uvw_a PROPERTIES LINKER_LANGUAGE CXX)
+    add_definitions(-DUVW_BUILD_STATIC_LIB)
+endif(BUILD_STATIC_LIB)
 
 if(BUILD_TESTING)
     set(BUILD_TESTING OFF)

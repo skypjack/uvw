@@ -58,3 +58,7 @@ public:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "async.cpp"
+#endif //UVW_BUILD_STATIC_LIB

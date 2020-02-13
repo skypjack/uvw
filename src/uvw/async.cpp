@@ -1,17 +1,20 @@
+#ifdef UVW_BUILD_STATIC_LIB
 #include "async.h"
+#endif //UVW_BUILD_STATIC_LIB
+#include "defines.h"
 
 namespace uvw {
 
-    void AsyncHandle::sendCallback(uv_async_t *handle) {
-        AsyncHandle &async = *(static_cast<AsyncHandle*>(handle->data));
+    UVW_INLINE_SPECIFIER void AsyncHandle::sendCallback(uv_async_t *handle) {
+        AsyncHandle &async = *(static_cast<AsyncHandle *>(handle->data));
         async.publish(AsyncEvent{});
     }
 
-    bool AsyncHandle::init() {
+    UVW_INLINE_SPECIFIER bool AsyncHandle::init() {
         return initialize(&uv_async_init, &sendCallback);
     }
 
-    void AsyncHandle::send() {
+    UVW_INLINE_SPECIFIER void AsyncHandle::send() {
         invoke(&uv_async_send, get());
     }
 }

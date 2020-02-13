@@ -254,3 +254,7 @@ public:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "dns.cpp"
+#endif //UVW_BUILD_STATIC_LIB

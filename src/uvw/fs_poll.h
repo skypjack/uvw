@@ -77,3 +77,7 @@ public:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "fs_poll.cpp"
+#endif //UVW_BUILD_STATIC_LIB

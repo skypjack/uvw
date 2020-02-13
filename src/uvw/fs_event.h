@@ -142,3 +142,7 @@ public:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "fs_event.cpp"
+#endif //UVW_BUILD_STATIC_LIB

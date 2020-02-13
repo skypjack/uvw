@@ -55,3 +55,7 @@ public:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "check.cpp"
+#endif //UVW_BUILD_STATIC_LIB

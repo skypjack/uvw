@@ -641,3 +641,7 @@ private:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "udp.cpp"
+#endif //UVW_BUILD_STATIC_LIB

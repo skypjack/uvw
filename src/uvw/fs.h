@@ -1453,3 +1453,7 @@ struct FsHelper {
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "fs.cpp"
+#endif //UVW_BUILD_STATIC_LIB

@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include <utility>
 #include <memory>
 #include <uv.h>
@@ -63,3 +62,7 @@ public:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "idle.cpp"
+#endif //UVW_BUILD_STATIC_LIB

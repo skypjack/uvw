@@ -143,3 +143,7 @@ private:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "poll.cpp"
+#endif //UVW_BUILD_STATIC_LIB

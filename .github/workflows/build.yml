@@ -28,6 +28,30 @@ jobs:
         CTEST_OUTPUT_ON_FAILURE: 1
       run: ctest --timeout 5 -C Debug -j4
 
+  linux-static:
+    timeout-minutes: 10
+
+    strategy:
+      matrix:
+        compiler: [g++, clang++]
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Compile tests (static building)
+        working-directory: build
+        env:
+          CXX: ${{ matrix.compiler }}
+        run: |
+          cmake -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF -DBUILD_STATIC_LIB=ON ..
+          make -j4
+      - name: Run tests
+        working-directory: build
+        env:
+          CTEST_OUTPUT_ON_FAILURE: 1
+        run: ctest --timeout 5 -C Debug -j4
+
   windows:
     timeout-minutes: 10
 
@@ -45,6 +69,23 @@ jobs:
         cmake -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF -DCMAKE_CXX_FLAGS=/W1 -G"${{ matrix.generator }}" ..
         cmake --build . -j 4
 
+  windows-static:
+    timeout-minutes: 10
+
+    strategy:
+      matrix:
+        generator: [Visual Studio 16 2019]
+
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Compile tests (static building)
+        working-directory: build
+        run: |
+          cmake -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF -DBUILD_STATIC_LIB=ON -DCMAKE_CXX_FLAGS=/W1 -G"${{ matrix.generator }}" ..
+          cmake --build . -j 4
+
   macos:
     timeout-minutes: 10
     runs-on: macOS-latest
@@ -56,3 +97,15 @@ jobs:
       run: |
         cmake -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF ..
         make -j4
+
+  macos-static:
+    timeout-minutes: 10
+    runs-on: macOS-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Compile tests (static building)
+        working-directory: build
+        run: |
+          cmake -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF ..
+          make -j4

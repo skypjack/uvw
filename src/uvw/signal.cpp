@@ -1,29 +1,32 @@
+#ifdef UVW_BUILD_STATIC_LIB
 #include "signal.h"
+#endif //UVW_BUILD_STATIC_LIB
+#include "defines.h"
 
 namespace uvw {
 
-    void SignalHandle::startCallback(uv_signal_t *handle, int signum) {
-        SignalHandle &signal = *(static_cast<SignalHandle*>(handle->data));
+    UVW_INLINE_SPECIFIER void SignalHandle::startCallback(uv_signal_t *handle, int signum) {
+        SignalHandle &signal = *(static_cast<SignalHandle *>(handle->data));
         signal.publish(SignalEvent{signum});
     }
 
-    bool SignalHandle::init() {
+    UVW_INLINE_SPECIFIER bool SignalHandle::init() {
         return initialize(&uv_signal_init);
     }
 
-    void SignalHandle::start(int signum) {
+    UVW_INLINE_SPECIFIER void SignalHandle::start(int signum) {
         invoke(&uv_signal_start, get(), &startCallback, signum);
     }
 
-    void SignalHandle::oneShot(int signum) {
+    UVW_INLINE_SPECIFIER void SignalHandle::oneShot(int signum) {
         invoke(&uv_signal_start_oneshot, get(), &startCallback, signum);
     }
 
-    void SignalHandle::stop() {
+    UVW_INLINE_SPECIFIER void SignalHandle::stop() {
         invoke(&uv_signal_stop, get());
     }
 
-    int SignalHandle::signal() const noexcept {
+    UVW_INLINE_SPECIFIER int SignalHandle::signal() const noexcept {
         return get()->signum;
     }
 

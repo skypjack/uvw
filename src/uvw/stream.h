@@ -452,3 +452,7 @@ public:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "stream.cpp"
+#endif //UVW_BUILD_STATIC_LIB

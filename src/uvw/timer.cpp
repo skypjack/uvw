@@ -1,33 +1,36 @@
+#ifdef UVW_BUILD_STATIC_LIB
 #include "timer.h"
+#endif //UVW_BUILD_STATIC_LIB
+#include "defines.h"
 
 namespace uvw {
 
-    void TimerHandle::startCallback(uv_timer_t *handle) {
-        TimerHandle &timer = *(static_cast<TimerHandle*>(handle->data));
+    UVW_INLINE_SPECIFIER void TimerHandle::startCallback(uv_timer_t *handle) {
+        TimerHandle &timer = *(static_cast<TimerHandle *>(handle->data));
         timer.publish(TimerEvent{});
     }
 
-    bool TimerHandle::init() {
+    UVW_INLINE_SPECIFIER bool TimerHandle::init() {
         return initialize(&uv_timer_init);
     }
 
-    void TimerHandle::start(TimerHandle::Time timeout, TimerHandle::Time repeat) {
+    UVW_INLINE_SPECIFIER void TimerHandle::start(TimerHandle::Time timeout, TimerHandle::Time repeat) {
         invoke(&uv_timer_start, get(), &startCallback, timeout.count(), repeat.count());
     }
 
-    void TimerHandle::stop() {
+    UVW_INLINE_SPECIFIER void TimerHandle::stop() {
         invoke(&uv_timer_stop, get());
     }
 
-    void TimerHandle::again() {
+    UVW_INLINE_SPECIFIER void TimerHandle::again() {
         invoke(&uv_timer_again, get());
     }
 
-    void TimerHandle::repeat(TimerHandle::Time repeat) {
+    UVW_INLINE_SPECIFIER void TimerHandle::repeat(TimerHandle::Time repeat) {
         uv_timer_set_repeat(get(), repeat.count());
     }
 
-    TimerHandle::Time TimerHandle::repeat() {
+    UVW_INLINE_SPECIFIER TimerHandle::Time TimerHandle::repeat() {
         return Time{uv_timer_get_repeat(get())};
     }
 }

@@ -160,3 +160,7 @@ private:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "pipe.cpp"
+#endif //UVW_BUILD_STATIC_LIB

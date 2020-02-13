@@ -248,3 +248,7 @@ private:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "tcp.cpp"
+#endif //UVW_BUILD_STATIC_LIB
