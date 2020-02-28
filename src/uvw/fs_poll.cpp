@@ -1,6 +1,4 @@
-#ifdef UVW_BUILD_STATIC_LIB
 #include "fs_poll.h"
-#endif //UVW_BUILD_STATIC_LIB
 #include "defines.h"
 
 namespace uvw {

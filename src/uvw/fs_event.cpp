@@ -1,6 +1,4 @@
-#ifdef UVW_BUILD_STATIC_LIB
 #include "fs_event.h"
-#endif //UVW_BUILD_STATIC_LIB
 #include "defines.h"
 
 

@@ -1,6 +1,4 @@
-#ifdef UVW_BUILD_STATIC_LIB
 #include "process.h"
-#endif //UVW_BUILD_STATIC_LIB
 #include "defines.h"
 
 namespace uvw {
