@@ -2,7 +2,36 @@
 # Tests configuration
 #
 
-set(UVW_SRC_DIR ${PROJECT_SRC_DIR})
+include(FetchContent)
+
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
+
+if(FIND_GTEST_PACKAGE)
+    find_package(GTest REQUIRED)
+else()
+    FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG master
+        GIT_SHALLOW 1
+    )
+
+    FetchContent_GetProperties(googletest)
+
+    if(NOT googletest_POPULATED)
+        FetchContent_Populate(googletest)
+        set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+        add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
+    endif()
+
+    add_library(GTest::Main ALIAS gtest_main)
+
+    target_compile_features(gtest PUBLIC cxx_std_17)
+    target_compile_features(gtest_main PUBLIC cxx_std_17)
+    target_compile_features(gmock PUBLIC cxx_std_17)
+    target_compile_features(gmock_main PUBLIC cxx_std_17)
+endif()
 
 if(WIN32)
     set(WINSOCK2 ws2_32)
@@ -10,45 +39,38 @@ elseif(NOT APPLE)
     find_library(LIBRT rt)
 endif()
 
-if(BUILD_STATIC_LIB)
-    set(STATIC_LIB_IF_ANY uvw_a)
-else()
-    set(STATIC_LIB_IF_ANY uv_a)
-    add_library(odr OBJECT odr.cpp)
-    target_include_directories(odr PRIVATE ${UVW_SRC_DIR})
-    set(TARGET_OBJECTS_odr "$<TARGET_OBJECTS:odr>")
-endif(BUILD_STATIC_LIB)
+function(ADD_UVW_TEST TEST_NAME TEST_SOURCE)
+    add_executable(${TEST_NAME} ${TEST_SOURCE})
 
-set(
-    COMMON_LINK_LIBS
-    gtest_main
-    ${LIBRT}
-    ${STATIC_LIB_IF_ANY}
-    Threads::Threads
-    ${WINSOCK2}
-)
+    target_link_libraries(
+        ${TEST_NAME}
+        PRIVATE
+            $<$<TARGET_EXISTS:uvw::uvw>:uvw::uvw>
+            $<$<TARGET_EXISTS:uvw::uvw>:uv::uv-static>
+            $<$<TARGET_EXISTS:uvw::uvw-static>:uvw::uvw-static>
+            GTest::Main
+            Threads::Threads
+            ${LIBRT}
+            ${WINSOCK2}
+        )
 
-macro(ADD_UVW_TEST TEST_NAME TEST_SOURCE)
-    add_executable(${TEST_NAME} ${TARGET_OBJECTS_odr} ${TEST_SOURCE})
-    target_include_directories(${TEST_NAME} PRIVATE ${UVW_SRC_DIR})
-    target_link_libraries(${TEST_NAME} PRIVATE ${COMMON_LINK_LIBS})
+    target_compile_definitions(${TEST_NAME} PRIVATE $<$<NOT:$<TARGET_EXISTS:uvw::uvw>>:UVW_AS_LIB>)
     add_test(NAME uvw_${TEST_NAME} COMMAND $<TARGET_FILE:${TEST_NAME}>)
-endmacro()
+endfunction()
 
-macro(ADD_UVW_DIR_TEST TEST_NAME TEST_SOURCE)
+function(ADD_UVW_DIR_TEST TEST_NAME TEST_SOURCE)
     ADD_UVW_TEST(${TEST_NAME} ${TEST_SOURCE})
     string(TOUPPER "${TEST_NAME}" TEST_NAME_UPPER)
     set(TEST_DIR_VAR "TARGET_${TEST_NAME_UPPER}_DIR")
-    set(TEST_DIR ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME})
-    file(MAKE_DIRECTORY ${TEST_DIR})
-    target_compile_definitions(${TEST_NAME} PRIVATE ${TEST_DIR_VAR}="${TEST_DIR}")
-endmacro()
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME}_data)
+    target_compile_definitions(${TEST_NAME} PRIVATE ${TEST_DIR_VAR}="${TEST_NAME}_data")
+endfunction()
 
-macro(ADD_UVW_LIB_TEST TEST_NAME TEST_SOURCE)
+function(ADD_UVW_LIB_TEST TEST_NAME TEST_SOURCE)
     ADD_UVW_TEST(${TEST_NAME} ${TEST_SOURCE})
     target_link_libraries(${TEST_NAME} PRIVATE ${CMAKE_DL_LIBS})
     target_compile_definitions(${TEST_NAME} PRIVATE TARGET_LIB_SO="$<TARGET_FILE:uv>")
-endmacro()
+endfunction()
 
 # List of available targets
 

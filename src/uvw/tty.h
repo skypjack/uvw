@@ -56,13 +56,7 @@ enum class UVTTYVTermStateT: std::underlying_type_t<uv_tty_vtermstate_t> {
  * for further details.
  */
 class TTYHandle final: public StreamHandle<TTYHandle, uv_tty_t> {
-    static auto resetModeMemo()
-    {
-        static std::weak_ptr<details::ResetModeMemo> weak;
-        auto shared = weak.lock();
-        if(!shared) { weak = shared = std::make_shared<details::ResetModeMemo>(); }
-        return shared;
-    };
+    static std::shared_ptr<details::ResetModeMemo> resetModeMemo();
 
 public:
     using Mode = details::UVTTYModeT;
@@ -159,6 +153,7 @@ private:
 
 }
 
-#ifndef UVW_BUILD_STATIC_LIB
+
+#ifndef UVW_AS_LIB
 #include "tty.cpp"
-#endif //UVW_BUILD_STATIC_LIB
+#endif

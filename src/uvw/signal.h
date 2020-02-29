@@ -82,6 +82,7 @@ public:
 
 }
 
-#ifndef UVW_BUILD_STATIC_LIB
+
+#ifndef UVW_AS_LIB
 #include "signal.cpp"
-#endif //UVW_BUILD_STATIC_LIB
+#endif

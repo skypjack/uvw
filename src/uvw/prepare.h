@@ -58,6 +58,7 @@ public:
 
 }
 
-#ifndef UVW_BUILD_STATIC_LIB
+
+#ifndef UVW_AS_LIB
 #include "prepare.cpp"
-#endif //UVW_BUILD_STATIC_LIB
+#endif

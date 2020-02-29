@@ -563,8 +563,7 @@ public:
      *   * A bunch of data read from the given path.
      *   * The amount of data read from the given path.
      */
-    std::pair<bool, std::pair<std::unique_ptr<const char[]>, std::size_t>>
-    readSync(int64_t offset, unsigned int len);
+    std::pair<bool, std::pair<std::unique_ptr<const char[]>, std::size_t>> readSync(int64_t offset, unsigned int len);
 
     /**
      * @brief Async [write](http://linux.die.net/man/2/pwritev).
@@ -607,8 +606,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The amount of data written to the given path.
      */
-    std::pair<bool, std::size_t>
-    writeSync(std::unique_ptr<char[]> buf, unsigned int len, int64_t offset);
+    std::pair<bool, std::size_t> writeSync(std::unique_ptr<char[]> buf, unsigned int len, int64_t offset);
 
     /**
      * @brief Async [fstat](http://linux.die.net/man/2/fstat).
@@ -695,8 +693,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The amount of data transferred.
      */
-    std::pair<bool, std::size_t>
-    sendfileSync(FileHandle out, int64_t offset, std::size_t length);
+    std::pair<bool, std::size_t> sendfileSync(FileHandle out, int64_t offset, std::size_t length);
 
     /**
      * @brief Async [fchmod](http://linux.die.net/man/2/fchmod).
@@ -957,21 +954,7 @@ public:
      * entry is still valid.
      * * The second parameter is a composed value (see above).
      */
-    std::pair<bool, std::pair<EntryType, const char *>> scandirNext() {
-        std::pair<bool, std::pair<EntryType, const char *>> ret{false, { EntryType::UNKNOWN, nullptr }};
-
-        // we cannot use cleanupAndInvokeSync because of the return value of uv_fs_scandir_next
-        uv_fs_req_cleanup(get());
-        auto res = uv_fs_scandir_next(get(), dirents);
-
-        if(UV_EOF != res) {
-            ret.second.first = static_cast<EntryType>(dirents[0].type);
-            ret.second.second = dirents[0].name;
-            ret.first = true;
-        }
-
-        return ret;
-    }
+    std::pair<bool, std::pair<EntryType, const char *>> scandirNext();
 
     /**
      * @brief Async [stat](http://linux.die.net/man/2/stat).
@@ -1252,8 +1235,7 @@ public:
      *   * A bunch of data read from the given path.
      *   * The amount of data read from the given path.
      */
-    std::pair<bool, std::pair<const char *, std::size_t>>
-    readlinkSync(std::string path);
+    std::pair<bool, std::pair<const char *, std::size_t>> readlinkSync(std::string path);
 
     /**
      * @brief Async [realpath](http://linux.die.net/man/3/realpath).
@@ -1410,14 +1392,7 @@ public:
      * entry is still valid.
      * * The second parameter is a composed value (see above).
      */
-    std::pair<bool, std::pair<EntryType, const char *>> readdirSync() {
-        auto req = get();
-        auto *dir = static_cast<uv_dir_t *>(req->ptr);
-        dir->dirents = dirents;
-        dir->nentries = 1;
-        cleanupAndInvokeSync(&uv_fs_readdir, parent(), req, dir);
-        return {req->result != 0, { static_cast<EntryType>(dirents[0].type), dirents[0].name }};
-    }
+    std::pair<bool, std::pair<EntryType, const char *>> readdirSync();
 
 private:
     uv_dirent_t dirents[1];
@@ -1454,6 +1429,7 @@ struct FsHelper {
 
 }
 
-#ifndef UVW_BUILD_STATIC_LIB
+
+#ifndef UVW_AS_LIB
 #include "fs.cpp"
-#endif //UVW_BUILD_STATIC_LIB
+#endif
