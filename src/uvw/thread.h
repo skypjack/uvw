@@ -7,7 +7,7 @@
 #include <type_traits>
 #include <utility>
 #include <uv.h>
-#include "loop.hpp"
+#include "loop.h"
 #include "underlying_type.hpp"
 
 
@@ -48,10 +48,7 @@ class Barrier;
 class Thread final: public UnderlyingType<Thread, uv_thread_t> {
     using InternalTask = std::function<void(std::shared_ptr<void>)>;
 
-    static void createCallback(void *arg) {
-        Thread &thread = *(static_cast<Thread*>(arg));
-        thread.task(thread.data);
-    }
+    static void createCallback(void *arg);
 
 public:
     using Options = details::UVThreadCreateFlags;
@@ -66,9 +63,7 @@ public:
      * @brief Obtains the identifier of the calling thread.
      * @return The identifier of the calling thread.
      */
-    static Type self() noexcept {
-        return uv_thread_self();
-    }
+    static Type self() noexcept;
 
     /**
      * @brief Compares thread by means of their identifiers.
@@ -76,21 +71,15 @@ public:
      * @param tr A valid instance of a thread.
      * @return True if the two threads are the same thread, false otherwise.
      */
-    static bool equal(const Thread &tl, const Thread &tr) noexcept {
-        return !(0 == uv_thread_equal(tl.get(), tr.get()));
-    }
+    static bool equal(const Thread &tl, const Thread &tr) noexcept;
 
-    ~Thread() noexcept {
-        join();
-    }
+    ~Thread() noexcept;
 
     /**
      * @brief Creates a new thread.
      * @return True in case of success, false otherwise.
      */
-    bool run() noexcept {
-        return (0 == uv_thread_create(get(), &createCallback, this));
-    }
+    bool run() noexcept;
 
     /**
      * @brief Creates a new thread.
@@ -105,18 +94,13 @@ public:
      *
      * @return True in case of success, false otherwise.
      */
-    bool run(Flags<Options> opts, std::size_t stack = {}) noexcept {
-        uv_thread_options_t params{opts, stack};
-        return (0 == uv_thread_create_ex(get(), &params, &createCallback, this));
-    }
+    bool run(Flags<Options> opts, std::size_t stack = {}) noexcept;
 
     /**
      * @brief Joins with a terminated thread.
      * @return True in case of success, false otherwise.
      */
-    bool join() noexcept {
-        return (0 == uv_thread_join(get()));
-    }
+    bool join() noexcept;
 
 private:
     std::shared_ptr<void> data;
@@ -133,15 +117,9 @@ private:
  */
 class ThreadLocalStorage final: public UnderlyingType<ThreadLocalStorage, uv_key_t> {
 public:
-    explicit ThreadLocalStorage(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept
-        : UnderlyingType{ca, std::move(ref)}
-    {
-        uv_key_create(UnderlyingType::get());
-    }
+    explicit ThreadLocalStorage(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept;
 
-    ~ThreadLocalStorage() noexcept {
-        uv_key_delete(UnderlyingType::get());
-    }
+    ~ThreadLocalStorage() noexcept;
 
     /**
      * @brief Gets the value of a given variable.
@@ -172,10 +150,7 @@ public:
  * callers except one (it’s unspecified which one).
  */
 class Once final: public UnderlyingType<Once, uv_once_t> {
-    static uv_once_t* guard() noexcept {
-        static uv_once_t once = UV_ONCE_INIT;
-        return &once;
-    }
+    static uv_once_t* guard() noexcept;
 
 public:
     using UnderlyingType::UnderlyingType;
@@ -211,41 +186,25 @@ class Mutex final: public UnderlyingType<Mutex, uv_mutex_t> {
     friend class Condition;
 
 public:
-    explicit Mutex(ConstructorAccess ca, std::shared_ptr<Loop> ref, bool recursive = false) noexcept
-        : UnderlyingType{ca, std::move(ref)}
-    {
-        if(recursive) {
-            uv_mutex_init_recursive(get());
-        } else {
-            uv_mutex_init(get());
-        }
-    }
+    explicit Mutex(ConstructorAccess ca, std::shared_ptr<Loop> ref, bool recursive = false) noexcept;
 
-    ~Mutex() noexcept {
-        uv_mutex_destroy(get());
-    }
+    ~Mutex() noexcept;
 
     /**
      * @brief Locks the mutex.
      */
-    void lock() noexcept {
-        uv_mutex_lock(get());
-    }
+    void lock() noexcept;
 
     /**
      * @brief Tries to lock the mutex.
      * @return True in case of success, false otherwise.
      */
-    bool tryLock() noexcept {
-        return (0 == uv_mutex_trylock(get()));
-    }
+    bool tryLock() noexcept;
 
     /**
      * @brief Unlocks the mutex.
      */
-    void unlock() noexcept {
-        uv_mutex_unlock(get());
-    }
+    void unlock() noexcept;
 };
 
 
@@ -254,59 +213,41 @@ public:
  */
 class RWLock final: public UnderlyingType<RWLock, uv_rwlock_t> {
 public:
-    explicit RWLock(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept
-        : UnderlyingType{ca, std::move(ref)}
-    {
-        uv_rwlock_init(get());
-    }
+    explicit RWLock(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept;
 
-    ~RWLock() noexcept {
-        uv_rwlock_destroy(get());
-    }
+    ~RWLock() noexcept;
 
     /**
      * @brief Locks a read-write lock object for reading.
      */
-    void rdLock() noexcept {
-        uv_rwlock_rdlock(get());
-    }
+    void rdLock() noexcept;
 
     /**
      * @brief Tries to lock a read-write lock object for reading.
      * @return True in case of success, false otherwise.
      */
-    bool tryRdLock() noexcept {
-        return (0 == uv_rwlock_tryrdlock(get()));
-    }
+    bool tryRdLock() noexcept;
 
     /**
      * @brief Unlocks a read-write lock object previously locked for reading.
      */
-    void rdUnlock() noexcept {
-        uv_rwlock_rdunlock(get());
-    }
+    void rdUnlock() noexcept;
 
     /**
      * @brief Locks a read-write lock object for writing.
      */
-    void wrLock() noexcept {
-        uv_rwlock_wrlock(get());
-    }
+    void wrLock() noexcept;
 
     /**
      * @brief Tries to lock a read-write lock object for writing.
      * @return True in case of success, false otherwise.
      */
-    bool tryWrLock() noexcept {
-        return (0 == uv_rwlock_trywrlock(get()));
-    }
+    bool tryWrLock() noexcept;
 
     /**
      * @brief Unlocks a read-write lock object previously locked for writing.
      */
-    void wrUnlock() noexcept {
-        uv_rwlock_wrunlock(get());
-    }
+    void wrUnlock() noexcept;
 };
 
 
@@ -319,11 +260,7 @@ public:
  */
 class Semaphore final: public UnderlyingType<Semaphore, uv_sem_t> {
 public:
-    explicit Semaphore(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int value) noexcept
-        : UnderlyingType{ca, std::move(ref)}
-    {
-        uv_sem_init(get(), value);
-    }
+    explicit Semaphore(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int value) noexcept;
 
     ~Semaphore() noexcept {
         uv_sem_destroy(get());
@@ -332,24 +269,18 @@ public:
     /**
      * @brief Unlocks a semaphore.
      */
-    void post() noexcept {
-        uv_sem_post(get());
-    }
+    void post() noexcept;
 
     /**
      * @brief Locks a semaphore.
      */
-    void wait() noexcept {
-        uv_sem_wait(get());
-    }
+    void wait() noexcept;
 
     /**
      * @brief Tries to lock a semaphore.
      * @return True in case of success, false otherwise.
      */
-    bool tryWait() noexcept {
-        return (0 == uv_sem_trywait(get()));
-    }
+    bool tryWait() noexcept;
 };
 
 
@@ -358,15 +289,9 @@ public:
  */
 class Condition final: public UnderlyingType<Condition, uv_cond_t> {
 public:
-    explicit Condition(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept
-        : UnderlyingType{ca, std::move(ref)}
-    {
-        uv_cond_init(get());
-    }
+    explicit Condition(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept;
 
-    ~Condition() noexcept {
-        uv_cond_destroy(get());
-    }
+    ~Condition() noexcept;
 
     /**
      * @brief Signals a condition.
@@ -374,18 +299,14 @@ public:
      * This function shall unblock at least one of the threads that are blocked
      * on the specified condition variable (if any threads are blocked on it).
      */
-    void signal() noexcept {
-        uv_cond_signal(get());
-    }
+    void signal() noexcept;
 
     /**
      * @brief Broadcasts a condition.
      *
      * This function shall unblock threads blocked on a condition variable.
      */
-    void broadcast() noexcept {
-        uv_cond_broadcast(get());
-    }
+    void broadcast() noexcept;
 
     /**
      * @brief Waits on a condition.
@@ -396,9 +317,7 @@ public:
      * @param mutex A mutex locked by the calling thread, otherwise expect
      * undefined behavior.
      */
-    void wait(Mutex &mutex) noexcept {
-        uv_cond_wait(get(), mutex.get());
-    }
+    void wait(Mutex &mutex) noexcept;
 
     /**
      * @brief Waits on a condition.
@@ -415,9 +334,7 @@ public:
      * @param timeout The maximum time to wait before to return.
      * @return True in case of success, false otherwise.
      */
-    bool timedWait(Mutex &mutex, uint64_t timeout) noexcept {
-        return (0 == uv_cond_timedwait(get(), mutex.get(), timeout));
-    }
+    bool timedWait(Mutex &mutex, uint64_t timeout) noexcept;
 };
 
 
@@ -432,24 +349,20 @@ public:
  */
 class Barrier final: public UnderlyingType<Barrier, uv_barrier_t> {
 public:
-    explicit Barrier(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int count) noexcept
-        : UnderlyingType{ca, std::move(ref)}
-    {
-        uv_barrier_init(get(), count);
-    }
+    explicit Barrier(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int count) noexcept;
 
-    ~Barrier() noexcept {
-        uv_barrier_destroy(get());
-    }
+    ~Barrier() noexcept;
 
     /**
      * @brief Synchronizes at a barrier.
      * @return True in case of success, false otherwise.
      */
-    bool wait() noexcept {
-        return (0 == uv_barrier_wait(get()));
-    }
+    bool wait() noexcept;
 };
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "thread.cpp"
+#endif //UVW_BUILD_STATIC_LIB

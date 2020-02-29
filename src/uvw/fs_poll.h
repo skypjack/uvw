@@ -8,7 +8,7 @@
 #include <uv.h>
 #include "handle.hpp"
 #include "util.hpp"
-#include "loop.hpp"
+#include "loop.h"
 
 
 namespace uvw {
@@ -39,11 +39,7 @@ struct FsPollEvent {
  * To create a `FsPollHandle` through a `Loop`, no arguments are required.
  */
 class FsPollHandle final: public Handle<FsPollHandle, uv_fs_poll_t> {
-    static void startCallback(uv_fs_poll_t *handle, int status, const uv_stat_t *prev, const uv_stat_t *curr) {
-        FsPollHandle &fsPoll = *(static_cast<FsPollHandle*>(handle->data));
-        if(status) { fsPoll.publish(ErrorEvent{status}); }
-        else { fsPoll.publish(FsPollEvent{ *prev, *curr }); }
-    }
+    static void startCallback(uv_fs_poll_t *handle, int status, const uv_stat_t *prev, const uv_stat_t *curr);
 
 public:
     using Time = std::chrono::duration<unsigned int, std::milli>;
@@ -54,9 +50,7 @@ public:
      * @brief Initializes the handle.
      * @return True in case of success, false otherwise.
      */
-    bool init() {
-        return initialize(&uv_fs_poll_init);
-    }
+    bool init();
 
     /**
      * @brief Starts the handle.
@@ -66,26 +60,24 @@ public:
      * @param file The path to the file to be checked.
      * @param interval Milliseconds between successive checks.
      */
-    void start(std::string file, Time interval) {
-        invoke(&uv_fs_poll_start, get(), &startCallback, file.data(), interval.count());
-    }
+    void start(std::string file, Time interval);
 
     /**
      * @brief Stops the handle.
      */
-    void stop() {
-        invoke(&uv_fs_poll_stop, get());
-    }
+    void stop();
 
     /**
      * @brief Gets the path being monitored by the handle.
      * @return The path being monitored by the handle, an empty string in case
      * of errors.
      */
-    std::string path() noexcept {
-        return details::tryRead(&uv_fs_poll_getpath, get());
-    }
+    std::string path() noexcept;
 };
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "fs_poll.cpp"
+#endif //UVW_BUILD_STATIC_LIB

@@ -6,7 +6,7 @@
 #include <type_traits>
 #include <utility>
 #include <uv.h>
-#include "loop.hpp"
+#include "loop.h"
 #include "underlying_type.hpp"
 
 
@@ -21,21 +21,15 @@ namespace uvw {
  */
 class SharedLib final: public UnderlyingType<SharedLib, uv_lib_t> {
 public:
-    explicit SharedLib(ConstructorAccess ca, std::shared_ptr<Loop> ref, std::string filename) noexcept
-        : UnderlyingType{ca, std::move(ref)}
-    {
-        opened = (0 == uv_dlopen(filename.data(), get()));
-    }
+    explicit SharedLib(ConstructorAccess ca, std::shared_ptr<Loop> ref, std::string filename) noexcept;
 
-    ~SharedLib() noexcept {
-        uv_dlclose(get());
-    }
+    ~SharedLib() noexcept;
 
     /**
      * @brief Checks if the library has been correctly opened.
      * @return True if the library is opened, false otherwise.
      */
-    explicit operator bool() const noexcept { return opened; }
+    explicit operator bool() const noexcept;
 
     /**
      * @brief Retrieves a data pointer from a dynamic library.
@@ -59,9 +53,7 @@ public:
      * @brief Returns the last error message, if any.
      * @return The last error message, if any.
      */
-    const char * error() const noexcept {
-        return uv_dlerror(get());
-    }
+    const char * error() const noexcept;
 
 private:
     bool opened;
@@ -69,3 +61,7 @@ private:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "lib.cpp"
+#endif //UVW_BUILD_STATIC_LIB

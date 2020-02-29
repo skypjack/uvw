@@ -6,7 +6,7 @@
 #include <memory>
 #include <uv.h>
 #include "request.hpp"
-#include "loop.hpp"
+#include "loop.h"
 
 
 namespace uvw {
@@ -37,9 +37,7 @@ struct WorkEvent {};
 class WorkReq final: public Request<WorkReq, uv_work_t> {
     using InternalTask = std::function<void(void)>;
 
-    static void workCallback(uv_work_t *req) {
-        static_cast<WorkReq*>(req->data)->task();
-    }
+    static void workCallback(uv_work_t *req);
 
 public:
     using Task = InternalTask;
@@ -55,9 +53,7 @@ public:
      * finished.<br/>
      * This request can be cancelled with `cancel()`.
      */
-    void queue() {
-        invoke(&uv_queue_work, parent(), get(), &workCallback, &defaultCallback<WorkEvent>);
-    }
+    void queue();
 
 private:
     Task task{};
@@ -65,3 +61,7 @@ private:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "work.cpp"
+#endif //UVW_BUILD_STATIC_LIB

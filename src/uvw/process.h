@@ -8,9 +8,9 @@
 #include <vector>
 #include <uv.h>
 #include "handle.hpp"
-#include "stream.hpp"
+#include "stream.h"
 #include "util.hpp"
-#include "loop.hpp"
+#include "loop.h"
 
 
 namespace uvw {
@@ -65,10 +65,7 @@ struct ExitEvent {
  * establish communication channels with it using streams.
  */
 class ProcessHandle final: public Handle<ProcessHandle, uv_process_t> {
-    static void exitCallback(uv_process_t *handle, int64_t exitStatus, int termSignal) {
-        ProcessHandle &process = *(static_cast<ProcessHandle*>(handle->data));
-        process.publish(ExitEvent{exitStatus, termSignal});
-    }
+    static void exitCallback(uv_process_t *handle, int64_t exitStatus, int termSignal);
 
 public:
     using Process = details::UVProcessFlags;
@@ -92,9 +89,7 @@ public:
      * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_disable_stdio_inheritance)
      * for further details.
      */
-    static void disableStdIOInheritance() noexcept {
-        uv_disable_stdio_inheritance();
-    }
+    static void disableStdIOInheritance() noexcept;
 
     /**
      * @brief kill Sends the specified signal to the given PID.
@@ -102,19 +97,13 @@ public:
      * @param signum A valid signal identifier.
      * @return True in case of success, false otherwise.
      */
-    static bool kill(int pid, int signum) noexcept {
-        return (0 == uv_kill(pid, signum));
-    }
+    static bool kill(int pid, int signum) noexcept;
 
     /**
      * @brief Initializes the handle.
      * @return True in case of success, false otherwise.
      */
-    bool init() {
-        // deferred initialization: libuv initializes process handles only when
-        // uv_spawn is invoked and uvw stays true to the underlying library
-        return true;
-    }
+    bool init();
 
     /**
      * @brief spawn Starts the process.
@@ -130,40 +119,13 @@ public:
      * @param args Command line arguments.
      * @param env Optional environment for the new process.
      */
-    void spawn(const char *file, char **args, char **env = nullptr) {
-        uv_process_options_t po;
-
-        po.exit_cb = &exitCallback;
-        po.file = file;
-        po.args = args;
-        po.env = env;
-        po.cwd = poCwd.empty() ? nullptr : poCwd.data();
-        po.flags = poFlags;
-        po.uid = poUid;
-        po.gid = poGid;
-
-        std::vector<uv_stdio_container_t> poStdio;
-        poStdio.reserve(poFdStdio.size() + poStreamStdio.size());
-        poStdio.insert(poStdio.begin(), poFdStdio.cbegin(), poFdStdio.cend());
-        poStdio.insert(poStdio.end(), poStreamStdio.cbegin(), poStreamStdio.cend());
-
-        po.stdio_count = static_cast<decltype(po.stdio_count)>(poStdio.size());
-        po.stdio = poStdio.data();
-
-        // fake initialization so as to have leak invoked
-        // see init member function for more details
-        initialize([](auto...){ return 0; });
-
-        invoke(&uv_spawn, parent(), get(), &po);
-    }
+    void spawn(const char *file, char **args, char **env = nullptr);
 
     /**
      * @brief Sends the specified signal to the internal process handle.
      * @param signum A valid signal identifier.
      */
-    void kill(int signum) {
-        invoke(&uv_process_kill, get(), signum);
-    }
+    void kill(int signum);
 
     /**
      * @brief Gets the PID of the spawned process.
@@ -172,19 +134,14 @@ public:
      *
      * @return The PID of the spawned process.
      */
-    int pid() noexcept {
-        return get()->pid;
-    }
+    int pid() noexcept;
 
     /**
      * @brief Sets the current working directory for the subprocess.
      * @param path The working directory to be used when `spawn()` is invoked.
      * @return A reference to this process handle.
      */
-    ProcessHandle & cwd(std::string path) noexcept {
-        poCwd = path;
-        return *this;
-    }
+    ProcessHandle & cwd(std::string path) noexcept;
 
     /**
      * @brief Sets flags that control how `spawn()` behaves.
@@ -206,10 +163,7 @@ public:
      * @param flags A valid set of flags.
      * @return A reference to this process handle.
      */
-    ProcessHandle & flags(Flags<Process> flags) noexcept {
-        poFlags = flags;
-        return *this;
-    }
+    ProcessHandle & flags(Flags<Process> flags) noexcept;
 
     /**
      * @brief Makes a `stdio` handle available to the child process.
@@ -268,47 +222,21 @@ public:
      * @param flags A valid set of flags.
      * @return A reference to this process handle.
      */
-    ProcessHandle & stdio(FileHandle fd, Flags<StdIO> flags) {
-        auto fgs = static_cast<uv_stdio_flags>(Flags<StdIO>::Type{flags});
-
-        auto actual = FileHandle::Type{fd};
-
-        auto it = std::find_if(poFdStdio.begin(), poFdStdio.end(), [actual](auto &&container){
-            return container.data.fd == actual;
-        });
-
-        if(it == poFdStdio.cend()) {
-            uv_stdio_container_t container;
-            container.flags = fgs;
-            container.data.fd = actual;
-            poFdStdio.push_back(std::move(container));
-        } else {
-            it->flags = fgs;
-            it->data.fd = actual;
-        }
-
-        return *this;
-    }
+    ProcessHandle & stdio(FileHandle fd, Flags<StdIO> flags);
 
     /**
      * @brief Sets the child process' user id.
      * @param id A valid user id to be used.
      * @return A reference to this process handle.
      */
-    ProcessHandle & uid(Uid id) {
-        poUid = id;
-        return *this;
-    }
+    ProcessHandle & uid(Uid id);
 
     /**
      * @brief Sets the child process' group id.
      * @param id A valid group id to be used.
      * @return A reference to this process handle.
      */
-    ProcessHandle & gid(Gid id) {
-        poGid = id;
-        return *this;
-    }
+    ProcessHandle & gid(Gid id);
 
 private:
     std::string poCwd;
@@ -321,3 +249,7 @@ private:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "process.cpp"
+#endif //UVW_BUILD_STATIC_LIB

@@ -7,7 +7,7 @@
 #include <uv.h>
 #include "request.hpp"
 #include "util.hpp"
-#include "loop.hpp"
+#include "loop.h"
 
 
 namespace uvw {
@@ -72,29 +72,11 @@ struct NameInfoEvent {
  * To create a `GetAddrInfoReq` through a `Loop`, no arguments are required.
  */
 class GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
-    static void addrInfoCallback(uv_getaddrinfo_t *req, int status, addrinfo *res) {
-        auto ptr = reserve(req);
+    static void addrInfoCallback(uv_getaddrinfo_t *req, int status, addrinfo *res);
 
-        if(status) {
-            ptr->publish(ErrorEvent{status});
-        } else {
-            auto data = std::unique_ptr<addrinfo, void(*)(addrinfo *)>{
-                res, [](addrinfo *addr){ uv_freeaddrinfo(addr); }};
+    void nodeAddrInfo(const char *node, const char *service, addrinfo *hints = nullptr);
 
-            ptr->publish(AddrInfoEvent{std::move(data)});
-        }
-    }
-
-    void nodeAddrInfo(const char *node, const char *service, addrinfo *hints = nullptr) {
-        invoke(&uv_getaddrinfo, parent(), get(), &addrInfoCallback, node, service, hints);
-    }
-
-    auto nodeAddrInfoSync(const char *node, const char *service, addrinfo *hints = nullptr) {
-        auto req = get();
-        auto err = uv_getaddrinfo(parent(), req, nullptr, node, service, hints);
-        auto data = std::unique_ptr<addrinfo, void(*)(addrinfo *)>{req->addrinfo, [](addrinfo *addr){ uv_freeaddrinfo(addr); }};
-        return std::make_pair(!err, std::move(data));
-    }
+    auto nodeAddrInfoSync(const char *node, const char *service, addrinfo *hints = nullptr);
 
 public:
     using Deleter = void(*)(addrinfo *);
@@ -107,9 +89,7 @@ public:
      * @param hints Optional `addrinfo` data structure with additional address
      * type constraints.
      */
-    void nodeAddrInfo(std::string node, addrinfo *hints = nullptr) {
-        nodeAddrInfo(node.data(), nullptr, hints);
-    }
+    void nodeAddrInfo(std::string node, addrinfo *hints = nullptr);
 
     /**
      * @brief Sync [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
@@ -123,9 +103,7 @@ public:
      * * A `std::unique_ptr<addrinfo, Deleter>` containing the data requested.
      */
     std::pair<bool, std::unique_ptr<addrinfo, Deleter>>
-    nodeAddrInfoSync(std::string node, addrinfo *hints = nullptr) {
-        return nodeAddrInfoSync(node.data(), nullptr, hints);
-    }
+    nodeAddrInfoSync(std::string node, addrinfo *hints = nullptr);
 
     /**
      * @brief Async [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
@@ -133,9 +111,7 @@ public:
      * @param hints Optional `addrinfo` data structure with additional address
      * type constraints.
      */
-    void serviceAddrInfo(std::string service, addrinfo *hints = nullptr) {
-        nodeAddrInfo(nullptr, service.data(), hints);
-    }
+    void serviceAddrInfo(std::string service, addrinfo *hints = nullptr);
 
     /**
      * @brief Sync [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
@@ -149,9 +125,7 @@ public:
      * * A `std::unique_ptr<addrinfo, Deleter>` containing the data requested.
      */
     std::pair<bool, std::unique_ptr<addrinfo, Deleter>>
-    serviceAddrInfoSync(std::string service, addrinfo *hints = nullptr) {
-        return nodeAddrInfoSync(nullptr, service.data(), hints);
-    }
+    serviceAddrInfoSync(std::string service, addrinfo *hints = nullptr);
 
     /**
      * @brief Async [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
@@ -160,9 +134,7 @@ public:
      * @param hints Optional `addrinfo` data structure with additional address
      * type constraints.
      */
-    void addrInfo(std::string node, std::string service, addrinfo *hints = nullptr) {
-        nodeAddrInfo(node.data(), service.data(), hints);
-    }
+    void addrInfo(std::string node, std::string service, addrinfo *hints = nullptr);
 
     /**
      * @brief Sync [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
@@ -177,9 +149,7 @@ public:
      * * A `std::unique_ptr<addrinfo, Deleter>` containing the data requested.
      */
     std::pair<bool, std::unique_ptr<addrinfo, Deleter>>
-    addrInfoSync(std::string node, std::string service, addrinfo *hints = nullptr) {
-        return nodeAddrInfoSync(node.data(), service.data(), hints);
-    }
+    addrInfoSync(std::string node, std::string service, addrinfo *hints = nullptr);
 };
 
 
@@ -192,11 +162,7 @@ public:
  * To create a `GetNameInfoReq` through a `Loop`, no arguments are required.
  */
 class GetNameInfoReq final: public Request<GetNameInfoReq, uv_getnameinfo_t> {
-    static void nameInfoCallback(uv_getnameinfo_t *req, int status, const char *hostname, const char *service) {
-        auto ptr = reserve(req);
-        if(status) { ptr->publish(ErrorEvent{status}); }
-        else { ptr->publish(NameInfoEvent{hostname, service}); }
-    }
+    static void nameInfoCallback(uv_getnameinfo_t *req, int status, const char *hostname, const char *service);
 
 public:
     using Request::Request;
@@ -206,9 +172,7 @@ public:
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @param flags Optional flags that modify the behavior of `getnameinfo`.
      */
-    void nameInfo(const sockaddr &addr, int flags = 0) {
-        invoke(&uv_getnameinfo, parent(), get(), &nameInfoCallback, &addr, flags);
-    }
+    void nameInfo(const sockaddr &addr, int flags = 0);
 
     /**
      * @brief Async [getnameinfo](http://linux.die.net/man/3/getnameinfo).
@@ -246,11 +210,7 @@ public:
      *   * A `const char *` containing a valid service name.
      */
     std::pair<bool, std::pair<const char *, const char *>>
-    nameInfoSync(const sockaddr &addr, int flags = 0) {
-        auto req = get();
-        auto err = uv_getnameinfo(parent(), req, nullptr, &addr, flags);
-        return std::make_pair(!err, std::make_pair(req->host, req->service));
-    }
+    nameInfoSync(const sockaddr &addr, int flags = 0);
 
     /**
      * @brief Sync [getnameinfo](http://linux.die.net/man/3/getnameinfo).
@@ -294,3 +254,7 @@ public:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "dns.cpp"
+#endif //UVW_BUILD_STATIC_LIB

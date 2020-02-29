@@ -6,7 +6,7 @@
 #include <chrono>
 #include <uv.h>
 #include "handle.hpp"
-#include "loop.hpp"
+#include "loop.h"
 
 
 namespace uvw {
@@ -28,10 +28,7 @@ struct TimerEvent {};
  * To create a `TimerHandle` through a `Loop`, no arguments are required.
  */
 class TimerHandle final: public Handle<TimerHandle, uv_timer_t> {
-    static void startCallback(uv_timer_t *handle) {
-        TimerHandle &timer = *(static_cast<TimerHandle*>(handle->data));
-        timer.publish(TimerEvent{});
-    }
+    static void startCallback(uv_timer_t *handle);
 
 public:
     using Time = std::chrono::duration<uint64_t, std::milli>;
@@ -42,9 +39,7 @@ public:
      * @brief Initializes the handle.
      * @return True in case of success, false otherwise.
      */
-    bool init() {
-        return initialize(&uv_timer_init);
-    }
+    bool init();
 
     /**
      * @brief Starts the timer.
@@ -58,16 +53,12 @@ public:
      * @param repeat Milliseconds between successive events (use
      * `std::chrono::duration<uint64_t, std::milli>`).
      */
-    void start(Time timeout, Time repeat) {
-        invoke(&uv_timer_start, get(), &startCallback, timeout.count(), repeat.count());
-    }
+    void start(Time timeout, Time repeat);
 
     /**
      * @brief Stops the handle.
      */
-    void stop() {
-        invoke(&uv_timer_stop, get());
-    }
+    void stop();
 
     /**
      * @brief Stops the timer and restarts it if it was repeating.
@@ -76,9 +67,7 @@ public:
      * as the timeout.<br/>
      * If the timer has never been started before it emits an ErrorEvent event.
      */
-    void again() {
-        invoke(&uv_timer_again, get());
-    }
+    void again();
 
     /**
      * @brief Sets the repeat interval value.
@@ -98,19 +87,19 @@ public:
      * @param repeat Repeat interval in milliseconds (use
      * `std::chrono::duration<uint64_t, std::milli>`).
      */
-    void repeat(Time repeat) {
-        uv_timer_set_repeat(get(), repeat.count());
-    }
+    void repeat(Time repeat);
 
     /**
      * @brief Gets the timer repeat value.
      * @return Timer repeat value in milliseconds (as a
      * `std::chrono::duration<uint64_t, std::milli>`).
      */
-    Time repeat() {
-        return Time{uv_timer_get_repeat(get())};
-    }
+    Time repeat();
 };
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "timer.cpp"
+#endif //UVW_BUILD_STATIC_LIB

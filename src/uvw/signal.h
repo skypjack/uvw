@@ -5,7 +5,7 @@
 #include <memory>
 #include <uv.h>
 #include "handle.hpp"
-#include "loop.hpp"
+#include "loop.h"
 
 
 namespace uvw {
@@ -37,10 +37,7 @@ struct SignalEvent {
  * for further details.
  */
 class SignalHandle final: public Handle<SignalHandle, uv_signal_t> {
-    static void startCallback(uv_signal_t *handle, int signum) {
-        SignalHandle &signal = *(static_cast<SignalHandle*>(handle->data));
-        signal.publish(SignalEvent{signum});
-    }
+    static void startCallback(uv_signal_t *handle, int signum);
 
 public:
     using Handle::Handle;
@@ -49,9 +46,7 @@ public:
      * @brief Initializes the handle.
      * @return True in case of success, false otherwise.
      */
-    bool init() {
-        return initialize(&uv_signal_init);
-    }
+    bool init();
 
     /**
      * @brief Starts the handle.
@@ -60,9 +55,7 @@ public:
      *
      * @param signum The signal to be monitored.
      */
-    void start(int signum) {
-        invoke(&uv_signal_start, get(), &startCallback, signum);
-    }
+    void start(int signum);
 
     /**
      * @brief Starts the handle.
@@ -72,25 +65,23 @@ public:
      *
      * @param signum
      */
-    void oneShot(int signum) {
-        invoke(&uv_signal_start_oneshot, get(), &startCallback, signum);
-    }
+    void oneShot(int signum);
 
     /**
      * @brief Stops the handle.
      */
-    void stop() {
-        invoke(&uv_signal_stop, get());
-    }
+    void stop();
 
     /**
      * @brief Gets the signal being monitored.
      * @return The signal being monitored.
      */
-    int signal() const noexcept {
-        return get()->signum;
-    }
+    int signal() const noexcept;
 };
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "signal.cpp"
+#endif //UVW_BUILD_STATIC_LIB

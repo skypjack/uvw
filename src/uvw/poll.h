@@ -67,11 +67,7 @@ struct PollEvent {
  * for further details.
  */
 class PollHandle final: public Handle<PollHandle, uv_poll_t> {
-    static void startCallback(uv_poll_t *handle, int status, int events) {
-        PollHandle &poll = *(static_cast<PollHandle*>(handle->data));
-        if(status) { poll.publish(ErrorEvent{status}); }
-        else { poll.publish(PollEvent{static_cast<std::underlying_type_t<Event>>(events)}); }
-    }
+    static void startCallback(uv_poll_t *handle, int status, int events);
 
 public:
     using Event = details::UVPollEvent;
@@ -88,11 +84,7 @@ public:
      * @brief Initializes the handle.
      * @return True in case of success, false otherwise.
      */
-    bool init() {
-        return (tag == SOCKET)
-                ? initialize(&uv_poll_init_socket, socket)
-                : initialize(&uv_poll_init, fd);
-    }
+    bool init();
 
     /**
      * @brief Starts polling the file descriptor.
@@ -113,9 +105,7 @@ public:
      *
      * @param flags The events to which the caller is interested.
      */
-    void start(Flags<Event> flags) {
-        invoke(&uv_poll_start, get(), flags, &startCallback);
-    }
+    void start(Flags<Event> flags);
 
     /**
      * @brief Starts polling the file descriptor.
@@ -136,16 +126,12 @@ public:
      *
      * @param event The event to which the caller is interested.
      */
-    void start(Event event) {
-        start(Flags<Event>{event});
-    }
+    void start(Event event);
 
     /**
      * @brief Stops polling the file descriptor.
      */
-    void stop() {
-        invoke(&uv_poll_stop, get());
-    }
+    void stop();
 
 private:
     enum { FD, SOCKET } tag;
@@ -157,3 +143,7 @@ private:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "poll.cpp"
+#endif //UVW_BUILD_STATIC_LIB

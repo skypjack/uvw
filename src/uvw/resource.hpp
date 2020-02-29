@@ -67,5 +67,4 @@ private:
     std::shared_ptr<void> sPtr{nullptr};
 };
 
-
 }

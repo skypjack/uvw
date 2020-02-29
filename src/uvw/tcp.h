@@ -8,7 +8,7 @@
 #include <chrono>
 #include <uv.h>
 #include "request.hpp"
-#include "stream.hpp"
+#include "stream.h"
 #include "util.hpp"
 
 
@@ -57,11 +57,7 @@ public:
      * @brief Initializes the handle. No socket is created as of yet.
      * @return True in case of success, false otherwise.
      */
-    bool init() {
-        return (tag == FLAGS)
-                ? initialize(&uv_tcp_init_ex, flags)
-                : initialize(&uv_tcp_init);
-    }
+    bool init();
 
     /**
      * @brief Opens an existing file descriptor or SOCKET as a TCP handle.
@@ -71,18 +67,14 @@ public:
      *
      * @param socket A valid socket handle (either a file descriptor or a SOCKET).
      */
-    void open(OSSocketHandle socket) {
-        invoke(&uv_tcp_open, get(), socket);
-    }
+    void open(OSSocketHandle socket);
 
     /**
      * @brief Enables/Disables Nagle’s algorithm.
      * @param value True to enable it, false otherwise.
      * @return True in case of success, false otherwise.
      */
-    bool noDelay(bool value = false) {
-        return (0 == uv_tcp_nodelay(get(), value));
-    }
+    bool noDelay(bool value = false);
 
     /**
      * @brief Enables/Disables TCP keep-alive.
@@ -91,9 +83,7 @@ public:
      * `std::chrono::duration<unsigned int>`).
      * @return True in case of success, false otherwise.
      */
-    bool keepAlive(bool enable = false, Time time = Time{0}) {
-        return (0 == uv_tcp_keepalive(get(), enable, time.count()));
-    }
+    bool keepAlive(bool enable = false, Time time = Time{0});
 
     /**
      * @brief Enables/Disables simultaneous asynchronous accept requests.
@@ -109,9 +99,7 @@ public:
      * @param enable True to enable it, false otherwise.
      * @return True in case of success, false otherwise.
      */
-    bool simultaneousAccepts(bool enable = true) {
-        return (0 == uv_tcp_simultaneous_accepts(get(), enable));
-    }
+    bool simultaneousAccepts(bool enable = true);
 
     /**
      * @brief Binds the handle to an address and port.
@@ -129,9 +117,7 @@ public:
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @param opts Optional additional flags.
      */
-    void bind(const sockaddr &addr, Flags<Bind> opts = Flags<Bind>{}) {
-        invoke(&uv_tcp_bind, get(), &addr, opts);
-    }
+    void bind(const sockaddr &addr, Flags<Bind> opts = Flags<Bind>{});
 
     /**
      * @brief Binds the handle to an address and port.
@@ -209,16 +195,7 @@ public:
      *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      */
-    void connect(const sockaddr &addr) {
-        auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
-            ptr->publish(event);
-        };
-
-        auto req = loop().resource<details::ConnectReq>();
-        req->once<ErrorEvent>(listener);
-        req->once<ConnectEvent>(listener);
-        req->connect(&uv_tcp_connect, get(), &addr);
-    }
+    void connect(const sockaddr &addr);
 
     /**
      * @brief Establishes an IPv4 or IPv6 TCP connection.
@@ -262,9 +239,7 @@ public:
      * A CloseEvent event is emitted when the connection has been reset.<br/>
      * An ErrorEvent event is emitted in case of errors.
      */
-    void closeReset() {
-        invoke(&uv_tcp_close_reset, get(), &this->closeCallback);
-    }
+    void closeReset();
 
 private:
     enum { DEFAULT, FLAGS } tag;
@@ -273,3 +248,7 @@ private:
 
 
 }
+
+#ifndef UVW_BUILD_STATIC_LIB
+#include "tcp.cpp"
+#endif //UVW_BUILD_STATIC_LIB
