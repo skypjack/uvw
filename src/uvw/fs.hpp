@@ -1210,7 +1210,7 @@ public:
      *
      * @param path Path, as described in the official documentation.
      */
-    void stasfs(std::string path) {
+    void statfs(std::string path) {
         cleanupAndInvoke(&uv_fs_statfs, parent(), get(), path.data(), &fsStatfsCallback);
     }
 
