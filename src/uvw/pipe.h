@@ -2,7 +2,6 @@
 
 
 #include <type_traits>
-#include <utility>
 #include <memory>
 #include <string>
 #include <uv.h>
@@ -42,9 +41,7 @@ class PipeHandle final: public StreamHandle<PipeHandle, uv_pipe_t> {
 public:
     using Chmod = details::UVChmodFlags;
 
-    explicit PipeHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, bool pass = false)
-        : StreamHandle{ca, std::move(ref)}, ipc{pass}
-    {}
+    explicit PipeHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, bool pass = false);
 
     /**
      * @brief Initializes the handle.

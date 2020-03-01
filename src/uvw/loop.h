@@ -145,9 +145,7 @@ class Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop
     template<typename, typename>
     friend class Resource;
 
-    Loop(std::unique_ptr<uv_loop_t, Deleter> ptr) noexcept
-        : loop{std::move(ptr)}
-    {}
+    Loop(std::unique_ptr<uv_loop_t, Deleter> ptr) noexcept;
 
 public:
     using Time = std::chrono::duration<uint64_t, std::milli>;
@@ -191,11 +189,7 @@ public:
     Loop & operator=(const Loop &) = delete;
     Loop & operator=(Loop &&other) = delete;
 
-    ~Loop() noexcept {
-        if(loop) {
-            close();
-        }
-    }
+    ~Loop() noexcept;
 
     /**
      * @brief Sets additional loop options.

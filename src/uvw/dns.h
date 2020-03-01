@@ -21,9 +21,7 @@ namespace uvw {
 struct AddrInfoEvent {
     using Deleter = void(*)(addrinfo *);
 
-    AddrInfoEvent(std::unique_ptr<addrinfo, Deleter> addr)
-        : data{std::move(addr)}
-    {}
+    AddrInfoEvent(std::unique_ptr<addrinfo, Deleter> addr);
 
     /**
      * @brief An initialized instance of `addrinfo`.
@@ -41,9 +39,7 @@ struct AddrInfoEvent {
  * It will be emitted by GetNameInfoReq according with its functionalities.
  */
 struct NameInfoEvent {
-    NameInfoEvent(const char *host, const char *serv)
-        : hostname{host}, service{serv}
-    {}
+    NameInfoEvent(const char *host, const char *serv);
 
     /**
      * @brief A valid hostname.
@@ -73,9 +69,7 @@ struct NameInfoEvent {
  */
 class GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
     static void addrInfoCallback(uv_getaddrinfo_t *req, int status, addrinfo *res);
-
     void nodeAddrInfo(const char *node, const char *service, addrinfo *hints = nullptr);
-
     auto nodeAddrInfoSync(const char *node, const char *service, addrinfo *hints = nullptr);
 
 public:
@@ -102,8 +96,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * A `std::unique_ptr<addrinfo, Deleter>` containing the data requested.
      */
-    std::pair<bool, std::unique_ptr<addrinfo, Deleter>>
-    nodeAddrInfoSync(std::string node, addrinfo *hints = nullptr);
+    std::pair<bool, std::unique_ptr<addrinfo, Deleter>> nodeAddrInfoSync(std::string node, addrinfo *hints = nullptr);
 
     /**
      * @brief Async [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
@@ -124,8 +117,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * A `std::unique_ptr<addrinfo, Deleter>` containing the data requested.
      */
-    std::pair<bool, std::unique_ptr<addrinfo, Deleter>>
-    serviceAddrInfoSync(std::string service, addrinfo *hints = nullptr);
+    std::pair<bool, std::unique_ptr<addrinfo, Deleter>> serviceAddrInfoSync(std::string service, addrinfo *hints = nullptr);
 
     /**
      * @brief Async [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
@@ -148,8 +140,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * A `std::unique_ptr<addrinfo, Deleter>` containing the data requested.
      */
-    std::pair<bool, std::unique_ptr<addrinfo, Deleter>>
-    addrInfoSync(std::string node, std::string service, addrinfo *hints = nullptr);
+    std::pair<bool, std::unique_ptr<addrinfo, Deleter>> addrInfoSync(std::string node, std::string service, addrinfo *hints = nullptr);
 };
 
 
@@ -209,8 +200,7 @@ public:
      *   * A `const char *` containing a valid hostname.
      *   * A `const char *` containing a valid service name.
      */
-    std::pair<bool, std::pair<const char *, const char *>>
-    nameInfoSync(const sockaddr &addr, int flags = 0);
+    std::pair<bool, std::pair<const char *, const char *>> nameInfoSync(const sockaddr &addr, int flags = 0);
 
     /**
      * @brief Sync [getnameinfo](http://linux.die.net/man/3/getnameinfo).
@@ -226,8 +216,7 @@ public:
      *   * A `const char *` containing a valid service name.
      */
     template<typename I = IPv4>
-    std::pair<bool, std::pair<const char *, const char *>>
-    nameInfoSync(std::string ip, unsigned int port, int flags = 0) {
+    std::pair<bool, std::pair<const char *, const char *>> nameInfoSync(std::string ip, unsigned int port, int flags = 0) {
         typename details::IpTraits<I>::Type addr;
         details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
         return nameInfoSync(reinterpret_cast<const sockaddr &>(addr), flags);
@@ -246,8 +235,7 @@ public:
      *   * A `const char *` containing a valid service name.
      */
     template<typename I = IPv4>
-    std::pair<bool, std::pair<const char *, const char *>>
-    nameInfoSync(Addr addr, int flags = 0) {
+    std::pair<bool, std::pair<const char *, const char *>> nameInfoSync(Addr addr, int flags = 0) {
         return nameInfoSync<I>(std::move(addr.ip), addr.port, flags);
     }
 };

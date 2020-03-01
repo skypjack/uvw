@@ -1,8 +1,24 @@
+#include <utility>
 #include "poll.h"
 #include "config.h"
 
 
 namespace uvw {
+
+
+PollEvent::PollEvent(Flags<details::UVPollEvent> events) noexcept
+    : flags{std::move(events)}
+{}
+
+
+PollHandle::PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, int desc)
+    : Handle{ca, std::move(ref)}, tag{FD}, fd{desc}
+{}
+
+
+PollHandle::PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, OSSocketHandle sock)
+    : Handle{ca, std::move(ref)}, tag{SOCKET}, socket{sock}
+{}
 
 
 UVW_INLINE void PollHandle::startCallback(uv_poll_t *handle, int status, int events) {

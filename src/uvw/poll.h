@@ -2,7 +2,6 @@
 
 
 #include <type_traits>
-#include <utility>
 #include <memory>
 #include <uv.h>
 #include "handle.hpp"
@@ -32,9 +31,7 @@ enum class UVPollEvent: std::underlying_type_t<uv_poll_event> {
  * It will be emitted by PollHandle according with its functionalities.
  */
 struct PollEvent {
-    explicit PollEvent(Flags<details::UVPollEvent> events) noexcept
-        : flags{std::move(events)}
-    {}
+    explicit PollEvent(Flags<details::UVPollEvent> events) noexcept;
 
     /**
      * @brief Detected events all in one.
@@ -72,13 +69,8 @@ class PollHandle final: public Handle<PollHandle, uv_poll_t> {
 public:
     using Event = details::UVPollEvent;
 
-    explicit PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, int desc)
-        : Handle{ca, std::move(ref)}, tag{FD}, fd{desc}
-    {}
-
-    explicit PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, OSSocketHandle sock)
-        : Handle{ca, std::move(ref)}, tag{SOCKET}, socket{sock}
-    {}
+    explicit PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, int desc);
+    explicit PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, OSSocketHandle sock);
 
     /**
      * @brief Initializes the handle.

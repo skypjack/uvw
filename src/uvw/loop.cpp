@@ -5,6 +5,11 @@
 namespace uvw {
 
 
+Loop::Loop(std::unique_ptr<uv_loop_t, Deleter> ptr) noexcept
+    : loop{std::move(ptr)}
+{}
+
+
 UVW_INLINE std::shared_ptr<Loop> Loop::create() {
     auto ptr = std::unique_ptr<uv_loop_t, Deleter>{new uv_loop_t, [](uv_loop_t *l) {
         delete l;
@@ -44,6 +49,13 @@ UVW_INLINE std::shared_ptr<Loop> Loop::getDefault() {
     }
 
     return loop;
+}
+
+
+Loop::~Loop() noexcept {
+    if(loop) {
+        close();
+    }
 }
 
 

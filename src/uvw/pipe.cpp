@@ -1,7 +1,13 @@
+#include <utility>
 #include "pipe.h"
 #include "config.h"
 
 namespace uvw {
+
+
+PipeHandle::PipeHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, bool pass)
+    : StreamHandle{ca, std::move(ref)}, ipc{pass}
+{}
 
 
 UVW_INLINE bool PipeHandle::init() {

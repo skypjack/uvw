@@ -5,9 +5,26 @@
 namespace uvw {
 
 
+UDPDataEvent::UDPDataEvent(Addr sndr, std::unique_ptr<const char[]> buf, std::size_t len, bool part) noexcept
+    : data{std::move(buf)}, length{len}, sender{std::move(sndr)}, partial{part}
+{}
+
+
+details::SendReq::SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len)
+    : Request<SendReq, uv_udp_send_t>{ca, std::move(loop)},
+      data{std::move(dt)},
+      buf{uv_buf_init(data.get(), len)}
+{}
+
+
 UVW_INLINE void details::SendReq::send(uv_udp_t *handle, const struct sockaddr *addr) {
     invoke(&uv_udp_send, get(), handle, &buf, 1, addr, &defaultCallback<SendEvent>);
 }
+
+
+UDPHandle::UDPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
+    : Handle{ca, std::move(ref)}, tag{FLAGS}, flags{f}
+{}
 
 
 UVW_INLINE bool UDPHandle::init() {

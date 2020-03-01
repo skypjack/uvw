@@ -49,9 +49,7 @@ public:
     using IPv4 = uvw::IPv4;
     using IPv6 = uvw::IPv6;
 
-    explicit TCPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f = {})
-        : StreamHandle{ca, std::move(ref)}, tag{f ? FLAGS : DEFAULT}, flags{f}
-    {}
+    explicit TCPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f = {});
 
     /**
      * @brief Initializes the handle. No socket is created as of yet.

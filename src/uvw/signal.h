@@ -1,8 +1,6 @@
 #pragma once
 
 
-#include <utility>
-#include <memory>
 #include <uv.h>
 #include "handle.hpp"
 #include "loop.h"
@@ -17,7 +15,7 @@ namespace uvw {
  * It will be emitted by SignalHandle according with its functionalities.
  */
 struct SignalEvent {
-    explicit SignalEvent(int sig) noexcept: signum{sig} {}
+    explicit SignalEvent(int sig) noexcept;
 
     int signum; /*!< The signal being monitored by this handle. */
 };

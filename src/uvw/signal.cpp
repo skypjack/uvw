@@ -5,6 +5,11 @@
 namespace uvw {
 
 
+SignalEvent::SignalEvent(int sig) noexcept
+    : signum{sig}
+{}
+
+
 UVW_INLINE void SignalHandle::startCallback(uv_signal_t *handle, int signum) {
     SignalHandle &signal = *(static_cast<SignalHandle *>(handle->data));
     signal.publish(SignalEvent{signum});

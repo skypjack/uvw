@@ -2,8 +2,6 @@
 
 
 #include <type_traits>
-#include <algorithm>
-#include <iterator>
 #include <utility>
 #include <cstddef>
 #include <memory>
@@ -31,9 +29,7 @@ struct SendEvent {};
  * It will be emitted by UDPHandle according with its functionalities.
  */
 struct UDPDataEvent {
-    explicit UDPDataEvent(Addr sndr, std::unique_ptr<const char[]> buf, std::size_t len, bool part) noexcept
-        : data{std::move(buf)}, length{len}, sender{std::move(sndr)}, partial{part}
-    {}
+    explicit UDPDataEvent(Addr sndr, std::unique_ptr<const char[]> buf, std::size_t len, bool part) noexcept;
 
     std::unique_ptr<const char[]> data; /*!< A bunch of data read on the stream. */
     std::size_t length;  /*!< The amount of data read on the stream. */
@@ -61,11 +57,7 @@ class SendReq final: public Request<SendReq, uv_udp_send_t> {
 public:
     using Deleter = void(*)(char *);
 
-    SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len)
-        : Request<SendReq, uv_udp_send_t>{ca, std::move(loop)},
-          data{std::move(dt)},
-          buf{uv_buf_init(data.get(), len)}
-    {}
+    SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len);
 
     void send(uv_udp_t *handle, const struct sockaddr* addr);
 
@@ -125,9 +117,7 @@ public:
 
     using Handle::Handle;
 
-    explicit UDPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
-        : Handle{ca, std::move(ref)}, tag{FLAGS}, flags{f}
-    {}
+    explicit UDPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f);
 
     /**
      * @brief Initializes the handle. The actual socket is created lazily.

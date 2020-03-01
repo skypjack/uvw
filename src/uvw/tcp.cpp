@@ -5,6 +5,11 @@
 namespace uvw {
 
 
+TCPHandle::TCPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
+    : StreamHandle{ca, std::move(ref)}, tag{f ? FLAGS : DEFAULT}, flags{f}
+{}
+
+
 UVW_INLINE bool TCPHandle::init() {
     return (tag == FLAGS) ? initialize(&uv_tcp_init_ex, flags) : initialize(&uv_tcp_init);
 }
