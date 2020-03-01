@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         compiler: [g++, clang++]
-        mode: [-DBUILD_UVW_LIBS, -DBUILD_UVW_HEADER_ONLY]
+        mode: [-DBUILD_UVW_LIBS=ON, -DBUILD_UVW_LIBS=OFF]
 
     steps:
     - uses: actions/checkout@v1
@@ -35,7 +35,7 @@ jobs:
     strategy:
       matrix:
         generator: [Visual Studio 16 2019]
-        mode: [-DBUILD_UVW_LIBS, -DBUILD_UVW_HEADER_ONLY]
+        mode: [-DBUILD_UVW_LIBS=ON, -DBUILD_UVW_LIBS=OFF]
 
     steps:
     - uses: actions/checkout@v1
@@ -51,7 +51,7 @@ jobs:
 
     strategy:
       matrix:
-        mode: [-DBUILD_UVW_LIBS, -DBUILD_UVW_HEADER_ONLY]
+        mode: [-DBUILD_UVW_LIBS=ON, -DBUILD_UVW_LIBS=OFF]
 
     steps:
     - uses: actions/checkout@v1
