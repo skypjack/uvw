@@ -16,12 +16,12 @@ UVW_INLINE std::string Passwd::username() const noexcept {
 }
 
 
-UVW_INLINE auto Passwd::uid() const noexcept {
+UVW_INLINE decltype(uv_passwd_t::uid) Passwd::uid() const noexcept {
     return (passwd ? passwd->uid : decltype(uv_passwd_t::uid){});
 }
 
 
-UVW_INLINE auto Passwd::gid() const noexcept {
+UVW_INLINE decltype(uv_passwd_t::gid) Passwd::gid() const noexcept {
     return (passwd ?  passwd->gid : decltype(uv_passwd_t::gid){});
 }
 

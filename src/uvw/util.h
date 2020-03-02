@@ -226,13 +226,13 @@ struct Passwd {
      * @brief Gets the uid.
      * @return The current effective uid (not the real uid).
      */
-    auto uid() const noexcept;
+    decltype(uv_passwd_t::uid) uid() const noexcept;
 
     /**
      * @brief Gets the gid.
      * @return The gid of the current effective uid (not the real uid).
      */
-    auto gid() const noexcept;
+    decltype(uv_passwd_t::gid) gid() const noexcept;
 
     /**
      * @brief Gets the shell.

@@ -114,7 +114,7 @@ else()
     endif()
 endif()
 
-### TODO export
+### Testing
 
 option(BUILD_TESTING "Enable testing with ctest." OFF)
 
