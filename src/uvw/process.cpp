@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "process.h"
 #include "config.h"
 
@@ -5,10 +6,20 @@
 namespace uvw {
 
 
+UVW_INLINE ExitEvent::ExitEvent(int64_t code, int sig) noexcept
+    : status{code}, signal{sig}
+{}
+
+
 UVW_INLINE void ProcessHandle::exitCallback(uv_process_t *handle, int64_t exitStatus, int termSignal) {
     ProcessHandle &process = *(static_cast<ProcessHandle *>(handle->data));
     process.publish(ExitEvent{exitStatus, termSignal});
 }
+
+
+UVW_INLINE ProcessHandle::ProcessHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref)
+    : Handle{ca, std::move(ref)}
+{}
 
 
 UVW_INLINE void ProcessHandle::disableStdIOInheritance() noexcept {

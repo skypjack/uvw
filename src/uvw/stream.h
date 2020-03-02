@@ -61,9 +61,7 @@ struct WriteEvent {};
  * It will be emitted by StreamHandle according with its functionalities.
  */
 struct DataEvent {
-    explicit DataEvent(std::unique_ptr<char[]> buf, std::size_t len) noexcept
-        : data{std::move(buf)}, length{len}
-    {}
+    explicit DataEvent(std::unique_ptr<char[]> buf, std::size_t len) noexcept;
 
     std::unique_ptr<char[]> data; /*!< A bunch of data read on the stream. */
     std::size_t length; /*!< The amount of data read on the stream. */
@@ -94,14 +92,9 @@ class WriteReq final: public Request<WriteReq, uv_write_t> {
 public:
     using Deleter = void(*)(char *);
 
-    WriteReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len)
-        : Request<WriteReq, uv_write_t>{ca, std::move(loop)},
-          data{std::move(dt)},
-          buf{uv_buf_init(data.get(), len)}
-    {}
+    WriteReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len);
 
     void write(uv_stream_t *handle);
-
     void write(uv_stream_t *handle, uv_stream_t *send);
 
 private:

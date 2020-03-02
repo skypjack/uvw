@@ -55,9 +55,7 @@ public:
     using Task = InternalTask;
     using Type = uv_thread_t;
 
-    explicit Thread(ConstructorAccess ca, std::shared_ptr<Loop> ref, Task t, std::shared_ptr<void> d = nullptr) noexcept
-        : UnderlyingType{ca, std::move(ref)}, data{std::move(d)}, task{std::move(t)}
-    {}
+    explicit Thread(ConstructorAccess ca, std::shared_ptr<Loop> ref, Task t, std::shared_ptr<void> d = nullptr) noexcept;
 
     /**
      * @brief Obtains the identifier of the calling thread.
@@ -262,9 +260,7 @@ class Semaphore final: public UnderlyingType<Semaphore, uv_sem_t> {
 public:
     explicit Semaphore(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int value) noexcept;
 
-    ~Semaphore() noexcept {
-        uv_sem_destroy(get());
-    }
+    ~Semaphore() noexcept;
 
     /**
      * @brief Unlocks a semaphore.

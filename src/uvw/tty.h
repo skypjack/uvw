@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include <utility>
+#include <type_traits>
 #include <memory>
 #include <uv.h>
 #include "stream.h"
@@ -15,9 +15,7 @@ namespace details {
 
 
 struct ResetModeMemo {
-    ~ResetModeMemo() {
-        uv_tty_reset_mode();
-    }
+    ~ResetModeMemo();
 };
 
 
@@ -62,12 +60,7 @@ public:
     using Mode = details::UVTTYModeT;
     using VTermState = details::UVTTYVTermStateT;
 
-    explicit TTYHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, FileHandle desc, bool readable)
-        : StreamHandle{ca, std::move(ref)},
-          memo{resetModeMemo()},
-          fd{desc},
-          rw{readable}
-    {}
+    explicit TTYHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, FileHandle desc, bool readable);
 
     /**
      * @brief Initializes the handle.

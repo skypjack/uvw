@@ -5,12 +5,12 @@
 namespace uvw {
 
 
-AddrInfoEvent::AddrInfoEvent(std::unique_ptr<addrinfo, Deleter> addr)
+UVW_INLINE AddrInfoEvent::AddrInfoEvent(std::unique_ptr<addrinfo, Deleter> addr)
     : data{std::move(addr)}
 {}
 
 
-NameInfoEvent::NameInfoEvent(const char *host, const char *serv)
+UVW_INLINE NameInfoEvent::NameInfoEvent(const char *host, const char *serv)
     : hostname{host}, service{serv}
 {}
 

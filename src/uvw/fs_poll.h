@@ -1,9 +1,7 @@
 #pragma once
 
 
-#include <utility>
 #include <string>
-#include <memory>
 #include <chrono>
 #include <uv.h>
 #include "handle.hpp"
@@ -20,9 +18,7 @@ namespace uvw {
  * It will be emitted by FsPollHandle according with its functionalities.
  */
 struct FsPollEvent {
-    explicit FsPollEvent(Stat previous, Stat current) noexcept
-        : prev{std::move(previous)}, curr{std::move(current)}
-    {}
+    explicit FsPollEvent(Stat previous, Stat current) noexcept;
 
     Stat prev; /*!< The old Stat struct. */
     Stat curr; /*!< The new Stat struct. */

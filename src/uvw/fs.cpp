@@ -334,7 +334,7 @@ UVW_INLINE std::pair<bool, std::size_t> FsReq::scandirSync(std::string path, int
 }
 
 
-std::pair<bool, std::pair<FsReq::EntryType, const char *>> FsReq::scandirNext() {
+UVW_INLINE std::pair<bool, std::pair<FsReq::EntryType, const char *>> FsReq::scandirNext() {
     std::pair<bool, std::pair<EntryType, const char *>> ret{false, { EntryType::UNKNOWN, nullptr }};
 
     // we cannot use cleanupAndInvokeSync because of the return value of uv_fs_scandir_next

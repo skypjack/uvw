@@ -5,7 +5,7 @@
 namespace uvw {
 
 
-Loop::Loop(std::unique_ptr<uv_loop_t, Deleter> ptr) noexcept
+UVW_INLINE Loop::Loop(std::unique_ptr<uv_loop_t, Deleter> ptr) noexcept
     : loop{std::move(ptr)}
 {}
 
@@ -52,7 +52,7 @@ UVW_INLINE std::shared_ptr<Loop> Loop::getDefault() {
 }
 
 
-Loop::~Loop() noexcept {
+UVW_INLINE Loop::~Loop() noexcept {
     if(loop) {
         close();
     }

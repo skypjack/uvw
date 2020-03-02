@@ -6,7 +6,7 @@
 namespace uvw {
 
 
-WorkReq::WorkReq(ConstructorAccess ca, std::shared_ptr<Loop> ref, InternalTask t)
+UVW_INLINE WorkReq::WorkReq(ConstructorAccess ca, std::shared_ptr<Loop> ref, InternalTask t)
     : Request{ca, std::move(ref)}, task{t}
 {}
 

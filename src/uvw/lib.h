@@ -4,7 +4,6 @@
 #include <memory>
 #include <string>
 #include <type_traits>
-#include <utility>
 #include <uv.h>
 #include "loop.h"
 #include "underlying_type.hpp"

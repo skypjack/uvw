@@ -9,6 +9,7 @@ function(add_uvw_library LIB_NAME)
             uvw/async.cpp
             uvw/check.cpp
             uvw/dns.cpp
+            uvw/emitter.cpp
             uvw/fs.cpp
             uvw/fs_event.cpp
             uvw/fs_poll.cpp

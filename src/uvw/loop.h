@@ -11,7 +11,7 @@
 #include <type_traits>
 #include <chrono>
 #include <uv.h>
-#include "emitter.hpp"
+#include "emitter.h"
 #include "util.hpp"
 
 

@@ -2,10 +2,11 @@
 #include "pipe.h"
 #include "config.h"
 
+
 namespace uvw {
 
 
-PipeHandle::PipeHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, bool pass)
+UVW_INLINE PipeHandle::PipeHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, bool pass)
     : StreamHandle{ca, std::move(ref)}, ipc{pass}
 {}
 

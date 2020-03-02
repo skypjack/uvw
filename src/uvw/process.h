@@ -1,7 +1,6 @@
 #pragma once
 
 
-#include <algorithm>
 #include <utility>
 #include <memory>
 #include <string>
@@ -50,9 +49,7 @@ enum class UVStdIOFlags: std::underlying_type_t<uv_stdio_flags> {
  * It will be emitted by ProcessHandle according with its functionalities.
  */
 struct ExitEvent {
-    explicit ExitEvent(int64_t code, int sig) noexcept
-        : status{code}, signal{sig}
-    {}
+    explicit ExitEvent(int64_t code, int sig) noexcept;
 
     int64_t status; /*!< The exit status. */
     int signal; /*!< The signal that caused the process to terminate, if any. */
@@ -71,9 +68,7 @@ public:
     using Process = details::UVProcessFlags;
     using StdIO = details::UVStdIOFlags;
 
-    ProcessHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref)
-        : Handle{ca, std::move(ref)}
-    {}
+    ProcessHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref);
 
     /**
      * @brief Disables inheritance for file descriptors/handles.

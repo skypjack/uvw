@@ -5,7 +5,7 @@
 namespace uvw {
 
 
-SignalEvent::SignalEvent(int sig) noexcept
+UVW_INLINE SignalEvent::SignalEvent(int sig) noexcept
     : signum{sig}
 {}
 

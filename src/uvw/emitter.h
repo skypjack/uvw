@@ -38,9 +38,7 @@ struct ErrorEvent {
      * @param sys A platform dependent error code.
      * @return The `libuv` error code equivalent to the given platform dependent error code.
      */
-    static int translate(int sys) noexcept {
-        return uv_translate_sys_error(sys);
-    }
+    static int translate(int sys) noexcept;
 
     /**
      * @brief Returns the error message for the given error code.
@@ -49,7 +47,7 @@ struct ErrorEvent {
      *
      * @return The error message for the given error code.
      */
-    const char * what() const noexcept { return uv_strerror(ec); }
+    const char * what() const noexcept;
 
     /**
      * @brief Returns the error name for the given error code.
@@ -58,19 +56,19 @@ struct ErrorEvent {
      *
      * @return The error name for the given error code.
      */
-    const char * name() const noexcept { return uv_err_name(ec); }
+    const char * name() const noexcept;
 
     /**
      * @brief Gets the underlying error code, that is an error constant of `libuv`.
      * @return The underlying error code.
      */
-    int code() const noexcept { return ec; }
+    int code() const noexcept;
 
     /**
      * @brief Checks if the event contains a valid error code.
      * @return True in case of success, false otherwise.
      */
-    explicit operator bool() const noexcept { return ec < 0; }
+    explicit operator bool() const noexcept;
 
 private:
     const int ec;

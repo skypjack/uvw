@@ -434,9 +434,7 @@ class FileReq final: public FsRequest<FileReq> {
     static constexpr uv_file BAD_FD = -1;
 
     static void fsOpenCallback(uv_fs_t *req);
-
     static void fsCloseCallback(uv_fs_t *req);
-
     static void fsReadCallback(uv_fs_t *req);
 
 public:
@@ -785,7 +783,6 @@ private:
  */
 class FsReq final: public FsRequest<FsReq> {
     static void fsReadlinkCallback(uv_fs_t *req);
-
     static void fsReaddirCallback(uv_fs_t *req);
 
 public:

@@ -5,6 +5,11 @@
 namespace uvw {
 
 
+UVW_INLINE Thread::Thread(ConstructorAccess ca, std::shared_ptr<Loop> ref, Task t, std::shared_ptr<void> d) noexcept
+    : UnderlyingType{ca, std::move(ref)}, data{std::move(d)}, task{std::move(t)}
+{}
+
+
 UVW_INLINE void Thread::createCallback(void *arg) {
     Thread &thread = *(static_cast<Thread *>(arg));
     thread.task(thread.data);
@@ -137,6 +142,11 @@ UVW_INLINE Semaphore::Semaphore(UnderlyingType<Semaphore, uv_sem_t>::Constructor
     : UnderlyingType{ca, std::move(ref)}
 {
     uv_sem_init(get(), value);
+}
+
+
+UVW_INLINE Semaphore::~Semaphore() noexcept {
+    uv_sem_destroy(get());
 }
 
 

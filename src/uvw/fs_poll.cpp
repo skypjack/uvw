@@ -1,8 +1,14 @@
+#include <utility>
 #include "fs_poll.h"
 #include "config.h"
 
 
 namespace uvw {
+
+
+UVW_INLINE FsPollEvent::FsPollEvent(Stat previous, Stat current) noexcept
+    : prev{std::move(previous)}, curr{std::move(current)}
+{}
 
 
 UVW_INLINE void FsPollHandle::startCallback(uv_fs_poll_t *handle, int status, const uv_stat_t *prev, const uv_stat_t *curr) {

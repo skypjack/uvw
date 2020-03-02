@@ -1,3 +1,4 @@
+#include <utility>
 #include "tty.h"
 #include "config.h"
 
@@ -5,7 +6,20 @@
 namespace uvw {
 
 
-std::shared_ptr<details::ResetModeMemo> TTYHandle::resetModeMemo() {
+UVW_INLINE details::ResetModeMemo::~ResetModeMemo() {
+    uv_tty_reset_mode();
+}
+
+
+UVW_INLINE TTYHandle::TTYHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, FileHandle desc, bool readable)
+    : StreamHandle{ca, std::move(ref)},
+      memo{resetModeMemo()},
+      fd{desc},
+      rw{readable}
+{}
+
+
+UVW_INLINE std::shared_ptr<details::ResetModeMemo> TTYHandle::resetModeMemo() {
     static std::weak_ptr<details::ResetModeMemo> weak;
     auto shared = weak.lock();
     if(!shared) { weak = shared = std::make_shared<details::ResetModeMemo>(); }

@@ -6,17 +6,17 @@
 namespace uvw {
 
 
-PollEvent::PollEvent(Flags<details::UVPollEvent> events) noexcept
+UVW_INLINE PollEvent::PollEvent(Flags<details::UVPollEvent> events) noexcept
     : flags{std::move(events)}
 {}
 
 
-PollHandle::PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, int desc)
+UVW_INLINE PollHandle::PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, int desc)
     : Handle{ca, std::move(ref)}, tag{FD}, fd{desc}
 {}
 
 
-PollHandle::PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, OSSocketHandle sock)
+UVW_INLINE PollHandle::PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, OSSocketHandle sock)
     : Handle{ca, std::move(ref)}, tag{SOCKET}, socket{sock}
 {}
 

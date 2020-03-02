@@ -1,8 +1,14 @@
+#include <utility>
 #include "fs_event.h"
 #include "config.h"
 
 
 namespace uvw {
+
+
+UVW_INLINE FsEventEvent::FsEventEvent(const char * pathname, Flags<details::UVFsEvent> events)
+    : filename{pathname}, flags{std::move(events)}
+{}
 
 
 UVW_INLINE void FsEventHandle::startCallback(uv_fs_event_t *handle, const char *filename, int events, int status) {

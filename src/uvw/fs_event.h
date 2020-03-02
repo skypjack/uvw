@@ -1,9 +1,8 @@
 #pragma once
 
 
-#include <utility>
+#include <type_traits>
 #include <string>
-#include <memory>
 #include <uv.h>
 #include "handle.hpp"
 #include "util.hpp"
@@ -38,9 +37,7 @@ enum class UVFsEvent: std::underlying_type_t<uv_fs_event> {
  * It will be emitted by FsEventHandle according with its functionalities.
  */
 struct FsEventEvent {
-    FsEventEvent(const char * pathname, Flags<details::UVFsEvent> events)
-        : filename{pathname}, flags{std::move(events)}
-    {}
+    FsEventEvent(const char * pathname, Flags<details::UVFsEvent> events);
 
     /**
      * @brief The path to the file being monitored.
