@@ -12,7 +12,7 @@
 #include <chrono>
 #include <uv.h>
 #include "emitter.h"
-#include "util.hpp"
+#include "util.h"
 
 
 namespace uvw {

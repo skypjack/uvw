@@ -314,3 +314,8 @@ private:
 
 
 }
+
+
+#ifndef UVW_AS_LIB
+#include "emitter.cpp"
+#endif

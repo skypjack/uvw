@@ -6,7 +6,7 @@
 #include <string>
 #include <uv.h>
 #include "request.hpp"
-#include "util.hpp"
+#include "util.h"
 #include "loop.h"
 
 

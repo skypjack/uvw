@@ -5,7 +5,7 @@
 #include <memory>
 #include <uv.h>
 #include "stream.h"
-#include "util.hpp"
+#include "util.h"
 
 
 namespace uvw {

@@ -9,7 +9,7 @@
 #include <uv.h>
 #include "request.hpp"
 #include "stream.h"
-#include "util.hpp"
+#include "util.h"
 
 
 namespace uvw {
