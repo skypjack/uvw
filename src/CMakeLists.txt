@@ -27,6 +27,7 @@ function(add_uvw_library LIB_NAME)
             uvw/timer.cpp
             uvw/tty.cpp
             uvw/udp.cpp
+            uvw/util.cpp
             uvw/work.cpp
     )
 

@@ -23,5 +23,5 @@
 #include "uvw/tty.h"
 #include "uvw/udp.h"
 #include "uvw/underlying_type.hpp"
-#include "uvw/util.hpp"
+#include "uvw/util.h"
 #include "uvw/work.h"
