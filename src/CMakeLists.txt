@@ -49,6 +49,8 @@ function(add_uvw_library LIB_NAME)
     if(HAS_LIBCPP)
         target_compile_options(${LIB_NAME} BEFORE PUBLIC -stdlib=libc++)
     endif()
+
+    set_target_properties(${LIB_NAME} PROPERTIES POSITION_INDEPENDENT_CODE 1)
 endfunction()
 
 #
@@ -60,7 +62,6 @@ add_library(uvw::uvw-static ALIAS uvw-static)
 target_link_libraries(uvw-static PUBLIC uv::uv-static)
 add_uvw_library(uvw-static)
 
-
 #
 # Shared library
 #
@@ -68,5 +69,27 @@ add_uvw_library(uvw-static)
 add_library(uvw-shared SHARED EXCLUDE_FROM_ALL)
 add_library(uvw::uvw-shared ALIAS uvw-shared)
 target_link_libraries(uvw-shared PUBLIC uv::uv-shared)
-set_target_properties(${LIB_NAME} PROPERTIES POSITION_INDEPENDENT_CODE 1)
 add_uvw_library(uvw-shared)
+
+#
+# Install targets
+#
+
+file(GLOB HEADERS uvw/*.h uvw/*.hpp)
+
+install(
+        FILES ${HEADERS}
+        COMPONENT ${PROJECT_NAME}
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/uvw
+        PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+)
+
+install(
+        FILES uvw.hpp
+        COMPONENT ${PROJECT_NAME}
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+        PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+)
+
+install(TARGETS uvw-shared LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS uvw-static ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
