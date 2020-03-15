@@ -90,8 +90,9 @@ endfunction()
 
 include(GNUInstallDirs)
 
+fetch_libuv()
+
 if(BUILD_UVW_LIBS)
-    fetch_libuv()
     add_subdirectory(src)
 else()
     add_library(uvw INTERFACE)
@@ -114,6 +115,26 @@ else()
     if(HAS_LIBCPP)
         target_compile_options(uvw BEFORE INTERFACE -stdlib=libc++)
     endif()
+
+    #
+    # Install targets
+    #
+
+    file(GLOB HEADERS src/uvw/*.h src/uvw/*.hpp src/uvw/*.cpp)
+
+    install(
+            FILES ${HEADERS}
+            COMPONENT ${PROJECT_NAME}
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/uvw
+            PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+    )
+
+    install(
+            FILES src/uvw.hpp
+            COMPONENT ${PROJECT_NAME}
+            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+            PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+    )
 endif()
 
 ### Testing
