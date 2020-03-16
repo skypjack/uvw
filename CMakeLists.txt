@@ -18,7 +18,7 @@ endif()
 
 project(
     uvw
-    VERSION 2.3.1
+    VERSION 2.4.0
     DESCRIPTION "Header-only, event based, tiny and easy to use libuv wrapper in modern C++"
     HOMEPAGE_URL "https://github.com/skypjack/uvw"
     LANGUAGES C CXX
