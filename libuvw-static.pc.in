@@ -1,0 +1,12 @@
+prefix=@prefix@
+exec_prefix=${prefix}
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libuvw
+Version: @PACKAGE_VERSION@
+Description: Header-only, event based, tiny and easy to use libuv wrapper in modern C++
+URL: https://github.com/skypjack/uvw
+
+Libs: -L${libdir} -luvw-static @LIBS@
+Cflags: -I${includedir}
