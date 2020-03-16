@@ -2,7 +2,7 @@
 # uvw
 #
 
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.15.3)
 
 #
 # Building in-tree is not allowed (we take care of your craziness).
@@ -16,52 +16,144 @@ endif()
 # Project configuration
 #
 
-project(uvw VERSION 2.3.1)
+project(
+    uvw
+    VERSION 2.3.1
+    DESCRIPTION "Header-only, event based, tiny and easy to use libuv wrapper in modern C++"
+    HOMEPAGE_URL "https://github.com/skypjack/uvw"
+    LANGUAGES C CXX
+)
 
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
-set(PROJECT_AUTHOR "Michele Caini")
-set(PROJECT_AUTHOR_EMAIL "michele.caini@gmail.com")
-
 message("*")
 message("* ${PROJECT_NAME} v${PROJECT_VERSION} (${CMAKE_BUILD_TYPE})")
-message("* Copyright (c) 2016-2020 ${PROJECT_AUTHOR} <${PROJECT_AUTHOR_EMAIL}>")
+message("* Copyright (c) 2016-2020 Michele Caini <michele.caini@gmail.com>")
 message("*")
 
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+option(USE_LIBCPP "Use libc++ by adding -stdlib=libc++ flag if availbale." ON)
+option(USE_ASAN "Use address sanitizer by adding -fsanitize=address -fno-omit-frame-pointer flags" OFF)
+option(BUILD_UVW_LIBS "Prepare targets for static and shared libraries rather than for a header-only library." OFF)
 
-if(NOT MSVC)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -g -DDEBUG")
-    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Os -DRELEASE")
+#
+# Compiler stuff
+#
+
+if(NOT WIN32 AND USE_LIBCPP)
+    include(CheckCXXSourceCompiles)
+    include(CMakePushCheckState)
+
+    cmake_push_check_state()
+
+    set(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} -stdlib=libc++")
+
+    check_cxx_source_compiles("
+        #include<type_traits>
+        int main() { return std::is_same_v<int, char>; }
+    " HAS_LIBCPP)
+
+    if(NOT HAS_LIBCPP)
+        message(WARNING "The option USE_LIBCPP is set (by default) but libc++ is not available. The flag will not be added to the target.")
+    endif()
+
+    cmake_pop_check_state()
+endif()
+
+function(fetch_libuv)
+    include(FetchContent)
+
+    FetchContent_Declare(
+        libuv
+        GIT_REPOSITORY https://github.com/libuv/libuv.git
+        GIT_TAG v1.34.1
+        GIT_SHALLOW 1
+    )
+
+    FetchContent_GetProperties(libuv)
+
+    if(NOT libuv_POPULATED)
+        FetchContent_Populate(libuv)
+        add_subdirectory(${libuv_SOURCE_DIR} ${libuv_BINARY_DIR})
+    endif()
+
+    add_library(uv::uv-static ALIAS uv_a)
+    set_target_properties(uv_a PROPERTIES POSITION_INDEPENDENT_CODE 1)
+
+    add_library(uv::uv-shared ALIAS uv)
+    set_target_properties(uv PROPERTIES POSITION_INDEPENDENT_CODE 1)
+endfunction()
+
+#
+# Add uvw target
+#
+
+include(GNUInstallDirs)
+
+if(BUILD_UVW_LIBS)
+    fetch_libuv()
+    add_subdirectory(src)
+else()
+    add_library(uvw INTERFACE)
+    add_library(uvw::uvw ALIAS uvw)
+
+    target_compile_features(uvw INTERFACE cxx_std_17)
+
+    target_include_directories(
+        uvw
+        INTERFACE
+            $<BUILD_INTERFACE:${uvw_SOURCE_DIR}/src>
+            $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
+    )
+
+    if(USE_ASAN)
+        target_compile_options(uvw INTERFACE $<$<CONFIG:Debug>:-fsanitize=address -fno-omit-frame-pointer>)
+        target_link_libraries(uvw INTERFACE $<$<CONFIG:Debug>:-fsanitize=address -fno-omit-frame-pointer>)
+    endif()
+
+    if(HAS_LIBCPP)
+        target_compile_options(uvw BEFORE INTERFACE -stdlib=libc++)
+    endif()
 endif()
 
 #
-# CMake configuration
+# Install targets
 #
 
-set(PROJECT_CMAKE_IN ${uvw_SOURCE_DIR}/cmake/in)
-set(PROJECT_DEPS_DIR ${uvw_SOURCE_DIR}/deps)
-set(PROJECT_SRC_DIR ${uvw_SOURCE_DIR}/src)
+file(GLOB HEADERS src/uvw/*.h src/uvw/*.hpp src/uvw/*.cpp)
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)
+install(
+    FILES ${HEADERS}
+    COMPONENT ${PROJECT_NAME}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/uvw
+    PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+)
+
+install(
+    FILES src/uvw.hpp
+    COMPONENT ${PROJECT_NAME}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+)
+
+### Testing
+
+option(BUILD_TESTING "Enable testing with ctest." OFF)
+
+if(BUILD_TESTING)
+    option(FIND_GTEST_PACKAGE "Enable finding gtest package." OFF)
+
+    fetch_libuv()
+    enable_testing()
+    add_subdirectory(test)
+endif()
 
 #
-# Referenced packages
+# Documentation
 #
 
-set(THREADS_PREFER_PTHREAD_FLAG ON)
-
-include(FindThreads)
-
-#
-# Referenced directories and targets
-#
-
-option(BUILD_DOCS "Build documentation" ON)
+option(BUILD_DOCS "Enable building with documentation." OFF)
 
 if(BUILD_DOCS)
     find_package(Doxygen 1.8)
@@ -71,89 +163,17 @@ if(BUILD_DOCS)
     endif()
 endif()
 
-if(BUILD_TESTING)
-    set(BUILD_TESTING OFF)
-
-    set(GOOGLETEST_DEPS_DIR ${PROJECT_DEPS_DIR}/googletest)
-    set(LIBUV_DEPS_DIR ${PROJECT_DEPS_DIR}/libuv)
-
-    configure_file(${PROJECT_CMAKE_IN}/deps.in ${PROJECT_DEPS_DIR}/CMakeLists.txt)
-    execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" . WORKING_DIRECTORY ${PROJECT_DEPS_DIR})
-    execute_process(COMMAND ${CMAKE_COMMAND} --build . WORKING_DIRECTORY ${PROJECT_DEPS_DIR})
-
-    # gtest, gtest_main, gmock and gmock_main targets are available from now on
-    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-    add_subdirectory(${GOOGLETEST_DEPS_DIR})
-
-    # uv and uv_a targets are available from now on
-    add_subdirectory(${LIBUV_DEPS_DIR})
-    include_directories(${LIBUV_DEPS_DIR}/include)
-
-    set(BUILD_TESTING ON)
-    enable_testing()
-
-    add_subdirectory(test)
-endif()
-
-#
-# Keep your stuff and go further away, foolish.
-#
-
-set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
-set(CPACK_PACKAGE_VENDOR ${PROJECT_AUTHOR})
-set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
-set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
-set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
-set(CPACK_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${PROJECT_NAME})
-set(CPACK_PACKAGE_FILE_NAME ${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION})
-set(CPACK_SOURCE_PACKAGE_FILE_NAME ${CPACK_PACKAGE_FILE_NAME}-src)
-set(CPACK_RESOURCE_FILE_LICENSE ${uvw_SOURCE_DIR}/LICENSE)
-set(CPACK_RESOURCE_FILE_README ${uvw_SOURCE_DIR}/README.md)
-set(CPACK_GENERATOR TGZ)
-set(CPACK_SOURCE_GENERATOR TGZ)
-set(CPACK_PACKAGING_INSTALL_DIRECTORY "uvw-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}")
-
-include(CPack)
-
-#
-# Install headers
-#
-
-INCLUDE(GNUInstallDirs)
-
-IF(NOT DEFINED INCLUDE_INSTALL_DIR)
-    SET(INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR}")
-ENDIF()
-
-file(GLOB HEADERS src/uvw/*.hpp)
-
-install(
-    FILES ${HEADERS}
-    COMPONENT ${PROJECT_NAME}
-    DESTINATION ${INCLUDE_INSTALL_DIR}/uvw
-    PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
-)
-
-install(
-    FILES src/uvw.hpp
-    COMPONENT ${PROJECT_NAME}
-    DESTINATION ${INCLUDE_INSTALL_DIR}
-    PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
-)
-
 #
 # AOB
 #
 
-FILE(GLOB GH_WORKFLOWS .github/workflows/*.yml)
-
 add_custom_target(
     uvw_aob
     SOURCES
-        ${GH_WORKFLOWS}
+        .github/workflows/build.yml
+        .github/workflows/coverage.yml
+        .github/workflows/deploy.yml
         .github/FUNDING.yml
-        cmake/in/deps.in
         AUTHORS
         LICENSE
         README.md

@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <utility>
-#include "emitter.hpp"
+#include "emitter.h"
 #include "underlying_type.hpp"
 
 
@@ -66,6 +66,5 @@ private:
     std::shared_ptr<void> userData{nullptr};
     std::shared_ptr<void> sPtr{nullptr};
 };
-
 
 }

@@ -1,6 +1,6 @@
 #include <type_traits>
 #include <gtest/gtest.h>
-#include <uvw/emitter.hpp>
+#include <uvw/emitter.h>
 
 
 struct FakeEvent { };

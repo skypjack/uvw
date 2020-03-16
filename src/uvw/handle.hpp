@@ -6,7 +6,7 @@
 #include <memory>
 #include <uv.h>
 #include "resource.hpp"
-#include "util.hpp"
+#include "util.h"
 
 
 namespace uvw {
