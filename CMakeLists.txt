@@ -67,7 +67,7 @@ function(fetch_libuv)
     FetchContent_Declare(
         libuv
         GIT_REPOSITORY https://github.com/libuv/libuv.git
-        GIT_TAG v1.34.1
+        GIT_TAG v1.35.0
         GIT_SHALLOW 1
     )
 

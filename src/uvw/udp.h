@@ -43,7 +43,9 @@ namespace details {
 
 enum class UVUDPFlags: std::underlying_type_t<uv_udp_flags> {
     IPV6ONLY = UV_UDP_IPV6ONLY,
-    REUSEADDR = UV_UDP_REUSEADDR
+    UDP_PARTIAL = UV_UDP_PARTIAL,
+    REUSEADDR = UV_UDP_REUSEADDR,
+    UDP_MMSG_CHUNK = UV_UDP_MMSG_CHUNK
 };
 
 
@@ -145,7 +147,9 @@ public:
      * Available flags are:
      *
      * * `UDPHandle::Bind::IPV6ONLY`
+     * * `UDPHandle::Bind::UDP_PARTIAL`
      * * `UDPHandle::Bind::REUSEADDR`
+     * * `UDPHandle::Bind::UDP_MMSG_CHUNK`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
@@ -234,7 +238,9 @@ public:
      * Available flags are:
      *
      * * `UDPHandle::Bind::IPV6ONLY`
+     * * `UDPHandle::Bind::UDP_PARTIAL`
      * * `UDPHandle::Bind::REUSEADDR`
+     * * `UDPHandle::Bind::UDP_MMSG_CHUNK`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
@@ -257,7 +263,9 @@ public:
      * Available flags are:
      *
      * * `UDPHandle::Bind::IPV6ONLY`
+     * * `UDPHandle::Bind::UDP_PARTIAL`
      * * `UDPHandle::Bind::REUSEADDR`
+     * * `UDPHandle::Bind::UDP_MMSG_CHUNK`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
