@@ -137,6 +137,22 @@ install(
     PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )
 
+#
+# Pkg-Config
+#
+
+if(UNIX)
+    set(includedir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR})
+    set(libdir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+    set(prefix ${CMAKE_INSTALL_PREFIX})
+    configure_file(libuvw-static.pc.in ${CMAKE_CURRENT_BINARY_DIR}/libuvw-static.pc @ONLY)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libuvw-static.pc
+            DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+    configure_file(libuvw-shared.pc.in ${CMAKE_CURRENT_BINARY_DIR}/libuvw-shared.pc @ONLY)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libuvw-shared.pc
+            DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+endif()
+
 ### Testing
 
 option(BUILD_TESTING "Enable testing with ctest." OFF)
