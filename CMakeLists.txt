@@ -15,10 +15,12 @@ endif()
 #
 # Project configuration
 #
-
+set(UVW_VERSION_MAJOR 2)
+set(UVW_VERSION_MINOR 4)
+set(UVW_VERSION_REVISION 0)
 project(
     uvw
-    VERSION 2.4.0
+    VERSION ${UVW_VERSION_MAJOR}.${UVW_VERSION_MINOR}.${UVW_VERSION_REVISION}
     DESCRIPTION "Header-only, event based, tiny and easy to use libuv wrapper in modern C++"
     HOMEPAGE_URL "https://github.com/skypjack/uvw"
     LANGUAGES C CXX
