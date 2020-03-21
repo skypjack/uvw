@@ -5,7 +5,7 @@
 function(add_uvw_library LIB_NAME)
     target_sources(
         ${LIB_NAME}
-        PUBLIC
+        PRIVATE
             uvw/async.cpp
             uvw/check.cpp
             uvw/dns.cpp
@@ -68,11 +68,15 @@ add_uvw_library(uvw-static)
 add_library(uvw-shared SHARED EXCLUDE_FROM_ALL)
 add_library(uvw::uvw-shared ALIAS uvw-shared)
 target_link_libraries(uvw-shared PUBLIC uv::uv-shared)
+set_target_properties(uvw-shared PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${UVW_VERSION_MAJOR})
 add_uvw_library(uvw-shared)
 
 #
 # Install targets
 #
 
-install(TARGETS uvw-shared LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(TARGETS uvw-static ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(EXPORT uvw NAMESPACE uvw:: DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS uvw-static EXPORT uvw ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS uvw-shared EXPORT uvw LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS uv_a EXPORT uvw ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS uv EXPORT uvw LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
