@@ -88,14 +88,24 @@ struct ShutdownReq final: public Request<ShutdownReq, uv_shutdown_t> {
 };
 
 
-class WriteReq final: public Request<WriteReq, uv_write_t> {
+template<typename Deleter>
+class WriteReq final: public Request<WriteReq<Deleter>, uv_write_t> {
+    using ConstructorAccess = typename Request<WriteReq<Deleter>, uv_write_t>::ConstructorAccess;
+
 public:
-    using Deleter = void(*)(char *);
+    WriteReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len)
+        : Request<WriteReq<Deleter>, uv_write_t>{ca, std::move(loop)},
+          data{std::move(dt)},
+          buf{uv_buf_init(data.get(), len)}
+    {}
 
-    WriteReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len);
+    void write(uv_stream_t *handle) {
+        this->invoke(&uv_write, this->get(), handle, &buf, 1, &this->template defaultCallback<WriteEvent>);
+    }
 
-    void write(uv_stream_t *handle);
-    void write(uv_stream_t *handle, uv_stream_t *send);
+    void write(uv_stream_t *handle, uv_stream_t *send) {
+        this->invoke(&uv_write2, this->get(), handle, &buf, 1, send, &this->template defaultCallback<WriteEvent>);
+    }
 
 private:
     std::unique_ptr<char[], Deleter> data;
@@ -241,12 +251,9 @@ public:
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
      */
-    void write(std::unique_ptr<char[]> data, unsigned int len) {
-        auto req = this->loop().template resource<details::WriteReq>(
-                    std::unique_ptr<char[], details::WriteReq::Deleter>{
-                        data.release(), [](char *ptr) { delete[] ptr; }
-                    }, len);
-
+    template<typename Deleter>
+    void write(std::unique_ptr<char[], Deleter> data, unsigned int len) {
+        auto req = this->loop().template resource<details::WriteReq<Deleter>>(std::move(data), len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
@@ -269,11 +276,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     void write(char *data, unsigned int len) {
-        auto req = this->loop().template resource<details::WriteReq>(
-                    std::unique_ptr<char[], details::WriteReq::Deleter>{
-                        data, [](char *) {}
-                    }, len);
-
+        auto req = this->loop().template resource<details::WriteReq<void(*)(char *)>>(std::unique_ptr<char[], void(*)(char *)>{data, [](char *) {}}, len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
@@ -302,13 +305,9 @@ public:
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
      */
-    template<typename S>
-    void write(S &send, std::unique_ptr<char[]> data, unsigned int len) {
-        auto req = this->loop().template resource<details::WriteReq>(
-                    std::unique_ptr<char[], details::WriteReq::Deleter>{
-                        data.release(), [](char *ptr) { delete[] ptr; }
-                    }, len);
-
+    template<typename S, typename Deleter>
+    void write(S &send, std::unique_ptr<char[], Deleter> data, unsigned int len) {
+        auto req = this->loop().template resource<details::WriteReq<Deleter>>(std::move(data), len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
@@ -339,11 +338,7 @@ public:
      */
     template<typename S>
     void write(S &send, char *data, unsigned int len) {
-        auto req = this->loop().template resource<details::WriteReq>(
-                    std::unique_ptr<char[], details::WriteReq::Deleter>{
-                        data, [](char *) {}
-                    }, len);
-
+        auto req = this->loop().template resource<details::WriteReq<void(*)(char *)>>(std::unique_ptr<char[], void(*)(char *)>{data, [](char *) {}}, len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
