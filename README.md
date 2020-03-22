@@ -24,8 +24,11 @@ and still support me today.
 
 # Introduction
 
-`uvw` is a header-only, event based, tiny and easy to use
-[`libuv`](https://github.com/libuv/libuv) wrapper in modern C++.<br/>
+`uvw` started as a header-only, event based, tiny and easy to use wrapper for
+[`libuv`](https://github.com/libuv/libuv) written in modern C++.<br/>
+Now it's finally available also as a compilable library, either static or
+shared.
+
 The basic idea is to hide completely the *C-ish* interface of `libuv` behind a
 graceful C++ API. Currently, no `uv_*_t` data structure is actually exposed by
 the library.<br/>
@@ -107,9 +110,15 @@ tests.
 
 ## Library
 
-`uvw` is a header-only library.<br/>
-This means that including the `uvw.hpp` header or one of the other `uvw/*.hpp`
-headers is enough to use it.<br/>
+`uvw` is a dual-mode library. It can be used in its header-only form or as a
+compiled library, either shared or static.<br/>
+The following sections describe what to do in both cases to get `uvw` up and
+runningin your own project.
+
+### Header-only
+
+To use `uvw` as a header-only library, all is needed is to include the `uvw.hpp`
+header or one of the other `uvw/*.hpp` files.<br/>
 It's a matter of adding the following line at the top of a file:
 
 ```cpp
@@ -120,6 +129,21 @@ Then pass the proper `-I` argument to the compiler to add the `src` directory to
 the include paths.<br/>
 Note that users are required to correctly setup the include directories and
 libraries search paths for `libuv`.
+
+When used through `CMake`, the `uvw::uvw` target is exported for convenience.
+
+### Static/Shared
+
+To use `uvw` as a compiled library, set the `BUILD_UVW_LIBS` options in cmake
+before including the project.<br/>
+This option triggers the generation of two targets named respectively
+`uvw::uvw-static` and `uvw::uvw-shared`. The matching version of `libuv` is also
+compiled and exported as `uv::uv-static` and `uv::uv-shared` for convenience.
+
+In case you don't use or don't want to use `CMake`, you can still compile all
+`.cpp` files and include all `.h` files to get the job done. In this case, users
+are required to correctly setup the include directories and libraries search
+paths for `libuv`.
 
 ## Versioning
 
