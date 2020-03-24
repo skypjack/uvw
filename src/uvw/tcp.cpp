@@ -57,4 +57,25 @@ UVW_INLINE void TCPHandle::closeReset() {
 }
 
 
+// explicit instantiation definitions
+
+template void TCPHandle::bind<IPv4>(std::string, unsigned int, Flags<Bind>);
+template void TCPHandle::bind<IPv6>(std::string, unsigned int, Flags<Bind>);
+
+template void TCPHandle::bind<IPv4>(Addr, Flags<Bind>);
+template void TCPHandle::bind<IPv6>(Addr, Flags<Bind>);
+
+template Addr TCPHandle::sock<IPv4>() const noexcept;
+template Addr TCPHandle::sock<IPv6>() const noexcept;
+
+template Addr TCPHandle::peer<IPv4>() const noexcept;
+template Addr TCPHandle::peer<IPv6>() const noexcept;
+
+template void TCPHandle::connect<IPv4>(std::string, unsigned int);
+template void TCPHandle::connect<IPv6>(std::string, unsigned int);
+
+template void TCPHandle::connect<IPv4>(Addr addr);
+template void TCPHandle::connect<IPv6>(Addr addr);
+
+
 }

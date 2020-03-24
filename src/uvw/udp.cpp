@@ -118,4 +118,64 @@ UVW_INLINE size_t UDPHandle::sendQueueCount() const noexcept {
 }
 
 
+// explicit instantiation definitions
+
+template void UDPHandle::connect<IPv4>(std::string, unsigned int);
+template void UDPHandle::connect<IPv6>(std::string, unsigned int);
+
+template void UDPHandle::connect<IPv4>(Addr);
+template void UDPHandle::connect<IPv6>(Addr);
+
+template Addr UDPHandle::peer<IPv4>() const noexcept;
+template Addr UDPHandle::peer<IPv6>() const noexcept;
+
+template void UDPHandle::bind<IPv4>(std::string, unsigned int, Flags<Bind>);
+template void UDPHandle::bind<IPv6>(std::string, unsigned int, Flags<Bind>);
+
+template void UDPHandle::bind<IPv4>(Addr, Flags<Bind>);
+template void UDPHandle::bind<IPv6>(Addr, Flags<Bind>);
+
+template Addr UDPHandle::sock<IPv4>() const noexcept;
+template Addr UDPHandle::sock<IPv6>() const noexcept;
+
+template bool UDPHandle::multicastMembership<IPv4>(std::string, std::string, Membership);
+template bool UDPHandle::multicastMembership<IPv6>(std::string, std::string, Membership);
+
+template bool UDPHandle::multicastInterface<IPv4>(std::string);
+template bool UDPHandle::multicastInterface<IPv6>(std::string);
+
+template void UDPHandle::send<IPv4>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
+template void UDPHandle::send<IPv6>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
+
+template void UDPHandle::send<IPv4>(Addr, std::unique_ptr<char[]>, unsigned int);
+template void UDPHandle::send<IPv6>(Addr, std::unique_ptr<char[]>, unsigned int);
+
+template void UDPHandle::send<IPv4>(std::string, unsigned int, char *, unsigned int);
+template void UDPHandle::send<IPv6>(std::string, unsigned int, char *, unsigned int);
+
+template void UDPHandle::send<IPv4>(Addr, char *, unsigned int);
+template void UDPHandle::send<IPv6>(Addr, char *, unsigned int);
+
+template int UDPHandle::trySend<IPv4>(const sockaddr &, std::unique_ptr<char[]>, unsigned int);
+template int UDPHandle::trySend<IPv6>(const sockaddr &, std::unique_ptr<char[]>, unsigned int);
+
+template int UDPHandle::trySend<IPv4>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
+template int UDPHandle::trySend<IPv6>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
+
+template int UDPHandle::trySend<IPv4>(Addr, std::unique_ptr<char[]>, unsigned int);
+template int UDPHandle::trySend<IPv6>(Addr, std::unique_ptr<char[]>, unsigned int);
+
+template int UDPHandle::trySend<IPv4>(const sockaddr &, char *, unsigned int);
+template int UDPHandle::trySend<IPv6>(const sockaddr &, char *, unsigned int);
+
+template int UDPHandle::trySend<IPv4>(std::string, unsigned int, char *, unsigned int);
+template int UDPHandle::trySend<IPv6>(std::string, unsigned int, char *, unsigned int);
+
+template int UDPHandle::trySend<IPv4>(Addr, char *, unsigned int);
+template int UDPHandle::trySend<IPv6>(Addr, char *, unsigned int);
+
+template void UDPHandle::recv<IPv4>();
+template void UDPHandle::recv<IPv6>();
+
+
 }
