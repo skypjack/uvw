@@ -802,3 +802,19 @@ TEST(FsReq, ReadDir) {
     ASSERT_TRUE(checkFsReadDirEvent);
     ASSERT_TRUE(checkFsOpenDirEvent);
 }
+
+TEST(FsReq, ReadDirSync) {
+    const std::string dir_name = std::string{TARGET_FS_REQ_DIR};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+    ASSERT_TRUE(fsReq->opendirSync(dir_name));
+    auto res = fsReq->readdirSync();
+    while(res.first) {
+        res = fsReq->readdirSync();
+    }
+    ASSERT_TRUE(fsReq->closedirSync());
+
+    loop->run();
+}
