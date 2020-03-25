@@ -783,10 +783,14 @@ TEST(FsReq, ReadDir) {
         checkFsCloseDirEvent = true;
     });
 
-    fsReq->on<uvw::FsEvent<uvw::FsReq::Type::READDIR>>([&checkFsReadDirEvent](const auto &, auto &hndl) {
+    fsReq->on<uvw::FsEvent<uvw::FsReq::Type::READDIR>>([&checkFsReadDirEvent](const auto &event, auto &hndl) {
         ASSERT_FALSE(checkFsReadDirEvent);
-        checkFsReadDirEvent = true;
-        hndl.closedir();
+        if (!event.eos) {
+            hndl.readdir();
+        } else {
+            checkFsReadDirEvent = true;
+            hndl.closedir();
+        }
     });
 
     fsReq->on<uvw::FsEvent<uvw::FsReq::Type::OPENDIR>>([&checkFsOpenDirEvent](const auto &, auto &hndl) {
