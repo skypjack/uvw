@@ -765,3 +765,40 @@ TEST(FsReq, LchownSync) {
 
     loop->run();
 }
+
+TEST(FsReq, ReadDir) {
+    const std::string dir_name = std::string{TARGET_FS_REQ_DIR};
+
+    auto loop = uvw::Loop::getDefault();
+    auto fsReq = loop->resource<uvw::FsReq>();
+
+    bool checkFsReadDirEvent = false;
+    bool checkFsOpenDirEvent = false;
+    bool checkFsCloseDirEvent = false;
+
+    fsReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+
+    fsReq->on<uvw::FsEvent<uvw::FsReq::Type::CLOSEDIR>>([&checkFsCloseDirEvent](const auto &, auto &) {
+        ASSERT_FALSE(checkFsCloseDirEvent);
+        checkFsCloseDirEvent = true;
+    });
+
+    fsReq->on<uvw::FsEvent<uvw::FsReq::Type::READDIR>>([&checkFsReadDirEvent](const auto &, auto &hndl) {
+        ASSERT_FALSE(checkFsReadDirEvent);
+        checkFsReadDirEvent = true;
+        hndl.closedir();
+    });
+
+    fsReq->on<uvw::FsEvent<uvw::FsReq::Type::OPENDIR>>([&checkFsOpenDirEvent](const auto &, auto &hndl) {
+        ASSERT_FALSE(checkFsOpenDirEvent);
+        checkFsOpenDirEvent = true;
+        hndl.readdir();
+    });
+
+    fsReq->opendir(dir_name);
+    loop->run();
+
+    ASSERT_TRUE(checkFsCloseDirEvent);
+    ASSERT_TRUE(checkFsReadDirEvent);
+    ASSERT_TRUE(checkFsOpenDirEvent);
+}
