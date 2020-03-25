@@ -100,7 +100,7 @@ To be able to use `uvw`, users must provide the following system-wide tools:
 The requirements below are mandatory to compile the tests and to extract the
 documentation:
 
-* CMake version 3.2 or later.
+* CMake version 3.15 or later.
 * Doxygen version 1.8 or later.
 
 Note that `libuv` is part of the dependencies of the project and it will be
