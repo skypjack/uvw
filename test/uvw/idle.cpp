@@ -8,7 +8,7 @@ TEST(Idle, StartAndStop) {
 
     bool checkIdleEvent = false;
 
-    handle->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    handle->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
 
     handle->on<uvw::IdleEvent>([&checkIdleEvent](const auto &, auto &hndl) {
         ASSERT_FALSE(checkIdleEvent);
@@ -33,9 +33,8 @@ TEST(Idle, Fake) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::IdleHandle>();
 
-    auto l = [](const auto &, auto &) { FAIL(); };
-    handle->on<uvw::ErrorEvent>(l);
-    handle->on<uvw::IdleEvent>(l);
+    handle->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
+    handle->on<uvw::IdleEvent>([](auto &&...) { FAIL(); });
 
     handle->start();
     handle->close();

@@ -8,7 +8,7 @@ TEST(Check, StartAndStop) {
 
     bool checkCheckEvent = false;
 
-    handle->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    handle->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
 
     handle->on<uvw::CheckEvent>([&checkCheckEvent](const auto &, auto &hndl) {
         ASSERT_FALSE(checkCheckEvent);
@@ -33,9 +33,8 @@ TEST(Check, Fake) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::CheckHandle>();
 
-    auto l = [](const auto &, auto &) { FAIL(); };
-    handle->on<uvw::ErrorEvent>(l);
-    handle->on<uvw::CheckEvent>(l);
+    handle->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
+    handle->on<uvw::CheckEvent>([](auto &&...) { FAIL(); });
 
     handle->start();
     handle->close();

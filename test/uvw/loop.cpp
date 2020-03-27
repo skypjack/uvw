@@ -21,11 +21,9 @@ TEST(Loop, Functionalities) {
     auto handle = loop->resource<uvw::PrepareHandle>();
     auto req = loop->resource<uvw::WorkReq>([]{});
 
-    auto err = [](const auto &, auto &) { FAIL(); };
-
-    loop->on<uvw::ErrorEvent>(err);
-    req->on<uvw::ErrorEvent>(err);
-    handle->on<uvw::ErrorEvent>(err);
+    loop->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
+    req->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
+    handle->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
 
     ASSERT_TRUE(static_cast<bool>(handle));
     ASSERT_TRUE(static_cast<bool>(req));
