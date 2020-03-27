@@ -56,19 +56,20 @@ endfunction()
 # Static library
 #
 
-add_library(uvw-static STATIC EXCLUDE_FROM_ALL)
+add_library(uvw-static STATIC)
 add_library(uvw::uvw-static ALIAS uvw-static)
 target_link_libraries(uvw-static PUBLIC uv::uv-static)
+set_target_properties(uvw-static PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
 add_uvw_library(uvw-static)
 
 #
 # Shared library
 #
 
-add_library(uvw-shared SHARED EXCLUDE_FROM_ALL)
+add_library(uvw-shared SHARED)
 add_library(uvw::uvw-shared ALIAS uvw-shared)
 target_link_libraries(uvw-shared PUBLIC uv::uv-shared)
-set_target_properties(uvw-shared PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${UVW_VERSION_MAJOR})
+set_target_properties(uvw-shared PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${UVW_VERSION_MAJOR} EXCLUDE_FROM_DEFAULT_BUILD 1)
 add_uvw_library(uvw-shared)
 
 #

@@ -22,7 +22,7 @@ else()
     if(NOT googletest_POPULATED)
         FetchContent_Populate(googletest)
         set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-        add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
+        add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR} EXCLUDE_FROM_ALL)
     endif()
 
     add_library(GTest::Main ALIAS gtest_main)
@@ -56,6 +56,9 @@ function(ADD_UVW_TEST TEST_NAME TEST_SOURCE)
 
     target_compile_definitions(${TEST_NAME} PRIVATE $<$<NOT:$<TARGET_EXISTS:uvw::uvw>>:UVW_AS_LIB>)
     add_test(NAME uvw_${TEST_NAME} COMMAND $<TARGET_FILE:${TEST_NAME}>)
+    if(NOT BUILD_TESTING)
+        set_target_properties(${TEST_NAME} PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
+    endif()
 endfunction()
 
 function(ADD_UVW_DIR_TEST TEST_NAME TEST_SOURCE)
