@@ -42,3 +42,18 @@ TEST(Mutex, LockUnlock) {
 
     loop->run();
 }
+
+TEST(Mutex, RecursiveLockUnlock) {
+    auto loop = uvw::Loop::getDefault();
+    auto recursive_mtx = loop->resource<uvw::Mutex>(true);
+
+    recursive_mtx->lock();
+    recursive_mtx->unlock();
+
+    recursive_mtx->lock();
+    ASSERT_TRUE(recursive_mtx->tryLock());
+    recursive_mtx->unlock();
+    recursive_mtx->unlock();
+
+    loop->run();
+}
