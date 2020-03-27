@@ -25,4 +25,20 @@ TEST(ThreadLocalStorage, SetGet) {
 
     localStorage->set<bool>(&flag);
     ASSERT_TRUE(localStorage->get<bool>());
+
+    loop->run();
+}
+
+TEST(Mutex, LockUnlock) {
+    auto loop = uvw::Loop::getDefault();
+    auto mtx = loop->resource<uvw::Mutex>();
+
+    mtx->lock();
+    ASSERT_FALSE(mtx->tryLock());
+    mtx->unlock();
+    ASSERT_TRUE(mtx->tryLock());
+    ASSERT_FALSE(mtx->tryLock());
+    mtx->unlock();
+
+    loop->run();
 }
