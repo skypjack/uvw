@@ -56,9 +56,6 @@ function(ADD_UVW_TEST TEST_NAME TEST_SOURCE)
 
     target_compile_definitions(${TEST_NAME} PRIVATE $<$<NOT:$<TARGET_EXISTS:uvw::uvw>>:UVW_AS_LIB>)
     add_test(NAME uvw_${TEST_NAME} COMMAND $<TARGET_FILE:${TEST_NAME}>)
-    if(NOT BUILD_TESTING)
-        set_target_properties(${TEST_NAME} PROPERTIES EXCLUDE_FROM_ALL 1 EXCLUDE_FROM_DEFAULT_BUILD 1)
-    endif()
 endfunction()
 
 function(ADD_UVW_DIR_TEST TEST_NAME TEST_SOURCE)
