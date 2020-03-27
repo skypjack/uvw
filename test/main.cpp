@@ -7,19 +7,13 @@
 
 void listen(uvw::Loop &loop) {
     std::shared_ptr<uvw::TCPHandle> tcp = loop.resource<uvw::TCPHandle>();
-
-    tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) {
-        std::cout << "error " << std::endl;
-    });
+    tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { assert(false); });
 
     tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TCPHandle &srv) {
         std::cout << "listen" << std::endl;
 
         std::shared_ptr<uvw::TCPHandle> client = srv.loop().resource<uvw::TCPHandle>();
-
-        client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) {
-            std::cout << "error " << std::endl;
-        });
+        client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { assert(false); });
 
         client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::TCPHandle &) {
             std::cout << "close" << std::endl;
@@ -61,10 +55,7 @@ void listen(uvw::Loop &loop) {
 
 void conn(uvw::Loop &loop) {
     auto tcp = loop.resource<uvw::TCPHandle>();
-
-    tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) {
-        std::cout << "error " << std::endl;
-    });
+    tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { assert(false); });
 
     tcp->once<uvw::WriteEvent>([](const uvw::WriteEvent &, uvw::TCPHandle &handle) {
         std::cout << "write" << std::endl;
