@@ -274,7 +274,7 @@ In order to create a resource and to bind it to the given loop, just do the
 following:
 
 ```cpp
-auto tcp = loop.resource<uvw::TCPHandle>();
+auto tcp = loop->resource<uvw::TCPHandle>();
 ```
 
 The line above will create and initialize a tcp handle, then a shared pointer to
@@ -314,7 +314,7 @@ To know what are the handles that are still alive and bound to a given loop,
 just do the following:
 
 ```cpp
-loop.walk([](uvw::BaseHandle &){ /* application code here */ });
+loop->walk([](uvw::BaseHandle &){ /* application code here */ });
 ```
 
 `BaseHandle` exposes a few methods and cannot be promoted to the original type
@@ -324,7 +324,7 @@ Anyway, it can be used to close the handle that originated from it. As an
 example, all the pending handles can be closed easily as it follows:
 
 ```cpp
-loop.walk([](uvw::BaseHandle &h){ h.close(); });
+loop->walk([](uvw::BaseHandle &h){ h.close(); });
 ```
 
 No need to keep track of them.
@@ -375,7 +375,7 @@ The code below shows how to create a simple tcp server using `uvw`:
 
 ```cpp
 auto loop = uvw::Loop::getDefault();
-auto tcp = loop.resource<uvw::TCPHandle>();
+auto tcp = loop->resource<uvw::TCPHandle>();
 
 tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { /* something went wrong */ });
 
@@ -414,7 +414,7 @@ That being said, _going raw_ is a matter of using the `raw` member functions:
 
 ```cpp
 auto loop = uvw::Loop::getDefault();
-auto tcp = loop.resource<uvw::TCPHandle>();
+auto tcp = loop->resource<uvw::TCPHandle>();
 
 uv_loop_t *raw = loop->raw();
 uv_tcp_t *handle = tcp->raw();
