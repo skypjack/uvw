@@ -103,10 +103,10 @@ documentation:
 * CMake version 3.15 or later.
 * Doxygen version 1.8 or later.
 
-Note that `libuv` is part of the dependencies of the project and it will be
-cloned by `cmake` (see below for further details).<br/>
-Because of that, users don't have to install it to compile and execute the
-tests.
+Note that `libuv` is part of the dependencies of the project and may be cloned
+by `CMake` in some cases (see below for further details).<br/>
+Because of that, users don't have to install it to run the tests or when `uvw`
+libraries are compiled through `CMake`.
 
 ## Library
 
@@ -128,7 +128,7 @@ It's a matter of adding the following line at the top of a file:
 Then pass the proper `-I` argument to the compiler to add the `src` directory to
 the include paths.<br/>
 Note that users are required to correctly setup the include directories and
-libraries search paths for `libuv`.
+libraries search paths for `libuv` in this case.
 
 When used through `CMake`, the `uvw::uvw` target is exported for convenience.
 
@@ -197,7 +197,7 @@ reasons.
 ## Tests
 
 To compile and run the tests, `uvw` requires `libuv` and `googletest`.<br/>
-`cmake` will download and compile both the libraries before compiling anything
+`CMake` will download and compile both the libraries before compiling anything
 else.
 
 To build the tests:
@@ -355,7 +355,7 @@ Once more, please note that there is no need to keep around references to the
 resources: they will pass themselves as an argument whenever an event is
 published.
 
-There exist two methods to attach an event to a resource:
+There exist two methods to attach a listener to a resource:
 
 * `resource.once<EventType>(listener)`: the listener will be automatically
   removed after the first event of the given type.
