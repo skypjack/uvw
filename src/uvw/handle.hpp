@@ -26,7 +26,7 @@ struct CloseEvent {};
  * Base type for all `uvw` handle types.
  */
 template<typename T, typename U>
-class Handle: public BaseHandle, public Resource<T, U> {
+class Handle: public Resource<T, U>, public BaseHandle {
 protected:
     static void closeCallback(uv_handle_t *handle) {
         Handle<T, U> &ref = *(static_cast<T*>(handle->data));

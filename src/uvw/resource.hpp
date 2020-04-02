@@ -42,7 +42,7 @@ public:
           Emitter<T>{},
           std::enable_shared_from_this<T>{}
     {
-        this->get()->data = static_cast<T*>(this);
+        this->get()->data = this;
     }
 
     /**
