@@ -98,6 +98,8 @@ include(GNUInstallDirs)
 if(BUILD_UVW_LIBS)
     fetch_libuv()
     add_subdirectory(src)
+
+    file(GLOB HEADERS src/uvw/*.h src/uvw/*.hpp)
 else()
     add_library(uvw INTERFACE)
     add_library(uvw::uvw ALIAS uvw)
@@ -124,13 +126,13 @@ else()
     if(HAS_LIBCPP)
         target_compile_options(uvw BEFORE INTERFACE -stdlib=libc++)
     endif()
+
+    file(GLOB HEADERS src/uvw/*.h src/uvw/*.hpp src/uvw/*.cpp)
 endif()
 
 #
 # Install targets
 #
-
-file(GLOB HEADERS src/uvw/*.h src/uvw/*.hpp src/uvw/*.cpp)
 
 install(
     FILES ${HEADERS}
