@@ -65,6 +65,14 @@ UVW_INLINE void Loop::close() {
 }
 
 
+template<Loop::Mode mode>
+bool Loop::run() noexcept {
+    auto utm = static_cast<std::underlying_type_t<Mode>>(mode);
+    auto uvrm = static_cast<uv_run_mode>(utm);
+    return (uv_run(loop.get(), uvrm) == 0);
+}
+
+
 UVW_INLINE bool Loop::alive() const noexcept {
     return !(uv_loop_alive(loop.get()) == 0);
 }
@@ -128,6 +136,13 @@ UVW_INLINE const uv_loop_t *Loop::raw() const noexcept {
 UVW_INLINE uv_loop_t *Loop::raw() noexcept {
     return const_cast<uv_loop_t *>(const_cast<const Loop *>(this)->raw());
 }
+
+
+// explicit instantiation definitions
+
+template bool Loop::run<Loop::Mode::DEFAULT>() noexcept;
+template bool Loop::run<Loop::Mode::ONCE>() noexcept;
+template bool Loop::run<Loop::Mode::NOWAIT>() noexcept;
 
 
 }

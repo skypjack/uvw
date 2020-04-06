@@ -264,11 +264,7 @@ public:
      * @return True when done, false in all other cases.
      */
     template<Mode mode = Mode::DEFAULT>
-    bool run() noexcept {
-        auto utm = static_cast<std::underlying_type_t<Mode>>(mode);
-        auto uvrm = static_cast<uv_run_mode>(utm);
-        return (uv_run(loop.get(), uvrm) == 0);
-    }
+    bool run() noexcept;
 
     /**
      * @brief Checks if there are active resources.
