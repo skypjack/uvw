@@ -135,11 +135,7 @@ public:
      * @param opts Optional additional flags.
      */
     template<typename I = IPv4>
-    void bind(std::string ip, unsigned int port, Flags<Bind> opts = Flags<Bind>{}) {
-        typename details::IpTraits<I>::Type addr;
-        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        bind(reinterpret_cast<const sockaddr &>(addr), std::move(opts));
-    }
+    void bind(std::string ip, unsigned int port, Flags<Bind> opts = Flags<Bind>{});
 
     /**
      * @brief Binds the handle to an address and port.
@@ -158,27 +154,21 @@ public:
      * @param opts Optional additional flags.
      */
     template<typename I = IPv4>
-    void bind(Addr addr, Flags<Bind> opts = Flags<Bind>{}) {
-        bind<I>(std::move(addr.ip), addr.port, std::move(opts));
-    }
+    void bind(Addr addr, Flags<Bind> opts = Flags<Bind>{});
 
     /**
      * @brief Gets the current address to which the handle is bound.
      * @return A valid instance of Addr, an empty one in case of errors.
      */
     template<typename I = IPv4>
-    Addr sock() const noexcept {
-        return details::address<I>(&uv_tcp_getsockname, get());
-    }
+    Addr sock() const noexcept;
 
     /**
      * @brief Gets the address of the peer connected to the handle.
      * @return A valid instance of Addr, an empty one in case of errors.
      */
     template<typename I = IPv4>
-    Addr peer() const noexcept {
-        return details::address<I>(&uv_tcp_getpeername, get());
-    }
+    Addr peer() const noexcept;
 
     /**
      * @brief Establishes an IPv4 or IPv6 TCP connection.
@@ -206,11 +196,7 @@ public:
      * @param port The port to which to bind.
      */
     template<typename I = IPv4>
-    void connect(std::string ip, unsigned int port) {
-        typename details::IpTraits<I>::Type addr;
-        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        connect(reinterpret_cast<const sockaddr &>(addr));
-    }
+    void connect(std::string ip, unsigned int port);
 
     /**
      * @brief Establishes an IPv4 or IPv6 TCP connection.
@@ -222,9 +208,7 @@ public:
      * @param addr A valid instance of Addr.
      */
     template<typename I = IPv4>
-    void connect(Addr addr) {
-        connect<I>(std::move(addr.ip), addr.port);
-    }
+    void connect(Addr addr);
 
     /**
      * @brief Resets a TCP connection by sending a RST packet.

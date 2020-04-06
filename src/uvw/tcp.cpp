@@ -40,6 +40,47 @@ UVW_INLINE void TCPHandle::bind(const sockaddr &addr, Flags<Bind> opts) {
 }
 
 
+template<typename I>
+UVW_INLINE void TCPHandle::bind(std::string ip, unsigned int port, Flags<Bind> opts)
+{
+    typename details::IpTraits<I>::Type addr;
+    details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
+    bind(reinterpret_cast<const sockaddr &>(addr), std::move(opts));
+}
+
+
+template<typename I>
+UVW_INLINE void TCPHandle::bind(Addr addr, Flags<Bind> opts) {
+    bind<I>(std::move(addr.ip), addr.port, std::move(opts));
+}
+
+
+template<typename I>
+UVW_INLINE Addr TCPHandle::sock() const noexcept {
+    return details::address<I>(&uv_tcp_getsockname, get());
+}
+
+
+template<typename I>
+UVW_INLINE Addr TCPHandle::peer() const noexcept {
+    return details::address<I>(&uv_tcp_getpeername, get());
+}
+
+
+template<typename I>
+UVW_INLINE void TCPHandle::connect(std::string ip, unsigned int port) {
+    typename details::IpTraits<I>::Type addr;
+    details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
+    connect(reinterpret_cast<const sockaddr &>(addr));
+}
+
+
+template<typename I>
+UVW_INLINE void TCPHandle::connect(Addr addr) {
+    connect<I>(std::move(addr.ip), addr.port);
+}
+
+
 UVW_INLINE void TCPHandle::connect(const sockaddr &addr) {
     auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
         ptr->publish(event);
