@@ -172,11 +172,7 @@ public:
      * @param flags Optional flags that modify the behavior of `getnameinfo`.
      */
     template<typename I = IPv4>
-    void nameInfo(std::string ip, unsigned int port, int flags = 0) {
-        typename details::IpTraits<I>::Type addr;
-        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        nameInfo(reinterpret_cast<const sockaddr &>(addr), flags);
-    }
+    void nameInfo(std::string ip, unsigned int port, int flags = 0);
 
     /**
      * @brief Async [getnameinfo](http://linux.die.net/man/3/getnameinfo).
@@ -184,9 +180,7 @@ public:
      * @param flags Optional flags that modify the behavior of `getnameinfo`.
      */
     template<typename I = IPv4>
-    void nameInfo(Addr addr, int flags = 0) {
-        nameInfo<I>(std::move(addr.ip), addr.port, flags);
-    }
+    void nameInfo(Addr addr, int flags = 0);
 
     /**
      * @brief Sync [getnameinfo](http://linux.die.net/man/3/getnameinfo).
@@ -216,11 +210,7 @@ public:
      *   * A `const char *` containing a valid service name.
      */
     template<typename I = IPv4>
-    std::pair<bool, std::pair<const char *, const char *>> nameInfoSync(std::string ip, unsigned int port, int flags = 0) {
-        typename details::IpTraits<I>::Type addr;
-        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        return nameInfoSync(reinterpret_cast<const sockaddr &>(addr), flags);
-    }
+    std::pair<bool, std::pair<const char *, const char *>> nameInfoSync(std::string ip, unsigned int port, int flags = 0);
 
     /**
      * @brief Sync [getnameinfo](http://linux.die.net/man/3/getnameinfo).
@@ -235,9 +225,7 @@ public:
      *   * A `const char *` containing a valid service name.
      */
     template<typename I = IPv4>
-    std::pair<bool, std::pair<const char *, const char *>> nameInfoSync(Addr addr, int flags = 0) {
-        return nameInfoSync<I>(std::move(addr.ip), addr.port, flags);
-    }
+    std::pair<bool, std::pair<const char *, const char *>> nameInfoSync(Addr addr, int flags = 0);
 };
 
 

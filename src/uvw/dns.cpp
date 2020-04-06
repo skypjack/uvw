@@ -92,11 +92,52 @@ UVW_INLINE void GetNameInfoReq::nameInfo(const sockaddr &addr, int flags) {
 }
 
 
+template<typename I>
+UVW_INLINE void GetNameInfoReq::nameInfo(std::string ip, unsigned int port, int flags) {
+    typename details::IpTraits<I>::Type addr;
+    details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
+    nameInfo(reinterpret_cast<const sockaddr &>(addr), flags);
+}
+
+template<typename I>
+UVW_INLINE void GetNameInfoReq::nameInfo(Addr addr, int flags) {
+    nameInfo<I>(std::move(addr.ip), addr.port, flags);
+}
+
 UVW_INLINE std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync(const sockaddr &addr, int flags) {
     auto req = get();
     auto err = uv_getnameinfo(parent(), req, nullptr, &addr, flags);
     return std::make_pair(!err, std::make_pair(req->host, req->service));
 }
+
+
+template<typename I>
+UVW_INLINE std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync(std::string ip, unsigned int port, int flags) {
+    typename details::IpTraits<I>::Type addr;
+    details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
+    return nameInfoSync(reinterpret_cast<const sockaddr &>(addr), flags);
+}
+
+
+template<typename I>
+UVW_INLINE std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync(Addr addr, int flags) {
+    return nameInfoSync<I>(std::move(addr.ip), addr.port, flags);
+}
+
+
+// explicit instantiation definitions
+
+template void GetNameInfoReq::nameInfo<IPv4>(std::string ip, unsigned int port, int flags);
+template void GetNameInfoReq::nameInfo<IPv6>(std::string ip, unsigned int port, int flags);
+
+template void GetNameInfoReq::nameInfo<IPv4>(Addr addr, int flags);
+template void GetNameInfoReq::nameInfo<IPv6>(Addr addr, int flags);
+
+template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(std::string ip, unsigned int port, int flags);
+template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(std::string ip, unsigned int port, int flags);
+
+template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(Addr addr, int flags);
+template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(Addr addr, int flags);
 
 
 }
