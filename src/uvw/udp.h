@@ -190,11 +190,7 @@ public:
      * @param port The port to which to bind.
      */
     template<typename I = IPv4>
-    void connect(std::string ip, unsigned int port) {
-        typename details::IpTraits<I>::Type addr;
-        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        connect(reinterpret_cast<const sockaddr &>(addr));
-    }
+    void connect(std::string ip, unsigned int port);
 
     /**
      * @brief Associates the handle to a remote address and port (either IPv4 or
@@ -210,9 +206,7 @@ public:
      * @param addr A valid instance of Addr.
      */
     template<typename I = IPv4>
-    void connect(Addr addr) {
-        connect<I>(std::move(addr.ip), addr.port);
-    }
+    void connect(Addr addr);
 
     /**
      * @brief Disconnects the handle.
@@ -228,9 +222,7 @@ public:
      * @return A valid instance of Addr, an empty one in case of errors.
      */
     template<typename I = IPv4>
-    Addr peer() const noexcept {
-        return details::address<I>(&uv_udp_getpeername, get());
-    }
+    Addr peer() const noexcept;
 
     /**
      * @brief Binds the UDP handle to an IP address and port.
@@ -251,11 +243,7 @@ public:
      * @param opts Optional additional flags.
      */
     template<typename I = IPv4>
-    void bind(std::string ip, unsigned int port, Flags<Bind> opts = Flags<Bind>{}) {
-        typename details::IpTraits<I>::Type addr;
-        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        bind(reinterpret_cast<const sockaddr &>(addr), std::move(opts));
-    }
+    void bind(std::string ip, unsigned int port, Flags<Bind> opts = Flags<Bind>{});
 
     /**
      * @brief Binds the UDP handle to an IP address and port.
@@ -275,18 +263,14 @@ public:
      * @param opts Optional additional flags.
      */
     template<typename I = IPv4>
-    void bind(Addr addr, Flags<Bind> opts = Flags<Bind>{}) {
-        bind<I>(std::move(addr.ip), addr.port, std::move(opts));
-    }
+    void bind(Addr addr, Flags<Bind> opts = Flags<Bind>{});
 
     /**
      * @brief Get the local IP and port of the UDP handle.
      * @return A valid instance of Addr, an empty one in case of errors.
      */
     template<typename I = IPv4>
-    Addr sock() const noexcept {
-        return details::address<I>(&uv_udp_getsockname, get());
-    }
+    Addr sock() const noexcept;
 
     /**
      * @brief Sets membership for a multicast address.
@@ -302,9 +286,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     template<typename I = IPv4>
-    bool multicastMembership(std::string multicast, std::string iface, Membership membership) {
-        return (0 == uv_udp_set_membership(get(), multicast.data(), iface.data(), static_cast<uv_membership>(membership)));
-    }
+    bool multicastMembership(std::string multicast, std::string iface, Membership membership);
 
     /**
      * @brief Sets IP multicast loop flag.
@@ -329,9 +311,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     template<typename I = IPv4>
-    bool multicastInterface(std::string iface) {
-        return (0 == uv_udp_set_multicast_interface(get(), iface.data()));
-    }
+    bool multicastInterface(std::string iface);
 
     /**
      * @brief Sets broadcast on or off.
@@ -385,11 +365,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     template<typename I = IPv4>
-    void send(std::string ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len) {
-        typename details::IpTraits<I>::Type addr;
-        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        send(reinterpret_cast<const sockaddr &>(addr), std::move(data), len);
-    }
+    void send(std::string ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -409,9 +385,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     template<typename I = IPv4>
-    void send(Addr addr, std::unique_ptr<char[]> data, unsigned int len) {
-        send<I>(std::move(addr.ip), addr.port, std::move(data), len);
-    }
+    void send(Addr addr, std::unique_ptr<char[]> data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -451,11 +425,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     template<typename I = IPv4>
-    void send(std::string ip, unsigned int port, char *data, unsigned int len) {
-        typename details::IpTraits<I>::Type addr;
-        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        send(reinterpret_cast<const sockaddr &>(addr), data, len);
-    }
+    void send(std::string ip, unsigned int port, char *data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -475,9 +445,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     template<typename I = IPv4>
-    void send(Addr addr, char *data, unsigned int len) {
-        send<I>(std::move(addr.ip), addr.port, data, len);
-    }
+    void send(Addr addr, char *data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -491,17 +459,7 @@ public:
      * @return Number of bytes written.
      */
     template<typename I = IPv4>
-    int trySend(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len) {
-        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
-        auto bw = uv_udp_try_send(get(), bufs, 1, &addr);
-
-        if(bw < 0) {
-            publish(ErrorEvent{bw});
-            bw = 0;
-        }
-
-        return bw;
-    }
+    int trySend(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -516,11 +474,7 @@ public:
      * @return Number of bytes written.
      */
     template<typename I = IPv4>
-    int trySend(std::string ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len) {
-        typename details::IpTraits<I>::Type addr;
-        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        return trySend(reinterpret_cast<const sockaddr &>(addr), std::move(data), len);
-    }
+    int trySend(std::string ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -534,9 +488,7 @@ public:
      * @return Number of bytes written.
      */
     template<typename I = IPv4>
-    int trySend(Addr addr, std::unique_ptr<char[]> data, unsigned int len) {
-        return trySend<I>(std::move(addr.ip), addr.port, std::move(data), len);
-    }
+    int trySend(Addr addr, std::unique_ptr<char[]> data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -550,17 +502,7 @@ public:
      * @return Number of bytes written.
      */
     template<typename I = IPv4>
-    int trySend(const sockaddr &addr, char *data, unsigned int len) {
-        uv_buf_t bufs[] = { uv_buf_init(data, len) };
-        auto bw = uv_udp_try_send(get(), bufs, 1, &addr);
-
-        if(bw < 0) {
-            publish(ErrorEvent{bw});
-            bw = 0;
-        }
-
-        return bw;
-    }
+    int trySend(const sockaddr &addr, char *data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -575,11 +517,7 @@ public:
      * @return Number of bytes written.
      */
     template<typename I = IPv4>
-    int trySend(std::string ip, unsigned int port, char *data, unsigned int len) {
-        typename details::IpTraits<I>::Type addr;
-        details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-        return trySend(reinterpret_cast<const sockaddr &>(addr), data, len);
-    }
+    int trySend(std::string ip, unsigned int port, char *data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -593,9 +531,7 @@ public:
      * @return Number of bytes written.
      */
     template<typename I = IPv4>
-    int trySend(Addr addr, char *data, unsigned int len) {
-        return trySend<I>(std::move(addr.ip), addr.port, data, len);
-    }
+    int trySend(Addr addr, char *data, unsigned int len);
 
     /**
      * @brief Prepares for receiving data.
@@ -608,9 +544,7 @@ public:
      * An ErrorEvent event will be emitted in case of errors.
      */
     template<typename I = IPv4>
-    void recv() {
-        invoke(&uv_udp_recv_start, get(), &allocCallback, &recvCallback<I>);
-    }
+    void recv();
 
     /**
      * @brief Stops listening for incoming datagrams.
