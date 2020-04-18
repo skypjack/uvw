@@ -475,7 +475,7 @@ TEST(FileReq, ChmodSync) {
 }
 
 
-TEST(FileReq, Utime) {
+TEST(FileReq, Futime) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
@@ -495,7 +495,7 @@ TEST(FileReq, Utime) {
         auto now = std::chrono::system_clock::now();
         auto epoch = now.time_since_epoch();
         auto value = std::chrono::duration_cast<std::chrono::seconds>(epoch);
-        req.utime(value, value);
+        req.futime(value, value);
     });
 
     auto flags = uvw::Flags<uvw::FileReq::FileOpen>::from<uvw::FileReq::FileOpen::CREAT, uvw::FileReq::FileOpen::RDWR, uvw::FileReq::FileOpen::TRUNC>();
@@ -507,7 +507,7 @@ TEST(FileReq, Utime) {
 }
 
 
-TEST(FileReq, UtimeSync) {
+TEST(FileReq, FutimeSync) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
@@ -519,7 +519,7 @@ TEST(FileReq, UtimeSync) {
     auto epoch = now.time_since_epoch();
     auto value = std::chrono::duration_cast<std::chrono::seconds>(epoch);
 
-    ASSERT_TRUE(request->utimeSync(value, value));
+    ASSERT_TRUE(request->futimeSync(value, value));
     ASSERT_TRUE(request->truncateSync(0));
     ASSERT_TRUE(request->closeSync());
 

@@ -54,7 +54,8 @@ enum class UVFsType: std::underlying_type_t<uv_fs_type> {
     READDIR = UV_FS_READDIR,
     CLOSEDIR = UV_FS_CLOSEDIR,
     STATFS = UV_FS_STATFS,
-    MKSTEMP = UV_FS_MKSTEMP
+    MKSTEMP = UV_FS_MKSTEMP,
+    LUTIME = UV_FS_LUTIME
 };
 
 
@@ -154,6 +155,7 @@ enum class UVSymLinkFlags: int {
  * * `FsRequest::Type::CLOSEDIR`
  * * `FsRequest::Type::STATFS`
  * * `FsRequest::Type::MKSTEMP`
+ * * `FsRequest::Type::LUTIME`
  *
  * It will be emitted by FsReq and/or FileReq according with their
  * functionalities.
@@ -711,7 +713,7 @@ public:
     bool chmodSync(int mode);
 
     /**
-     * @brief Async [futime](http://linux.die.net/man/2/futime).
+     * @brief Async [futime](http://linux.die.net/man/3/futimes).
      *
      * Emit a `FsEvent<FileReq::Type::FUTIME>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
@@ -721,17 +723,17 @@ public:
      * @param mtime `std::chrono::duration<double>`, having the same meaning as
      * described in the official documentation.
      */
-    void utime(Time atime, Time mtime);
+    void futime(Time atime, Time mtime);
 
     /**
-     * @brief Sync [futime](http://linux.die.net/man/2/futime).
+     * @brief Sync [futime](http://linux.die.net/man/3/futimes).
      * @param atime `std::chrono::duration<double>`, having the same meaning as
      * described in the official documentation.
      * @param mtime `std::chrono::duration<double>`, having the same meaning as
      * described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool utimeSync(Time atime, Time mtime);
+    bool futimeSync(Time atime, Time mtime);
 
     /**
      * @brief Async [fchown](http://linux.die.net/man/2/fchown).
@@ -881,6 +883,31 @@ public:
      * * The second parameter is a composed value (see above).
      */
     std::pair<bool, std::pair<std::string, std::size_t>> mkstempSync(std::string tpl);
+
+    /**
+     * @brief Async [lutime](http://linux.die.net/man/3/lutimes).
+     *
+     * Emit a `FsEvent<FsReq::Type::UTIME>` event when completed.<br/>
+     * Emit an ErrorEvent event in case of errors.
+     *
+     * @param path Path, as described in the official documentation.
+     * @param atime `std::chrono::duration<double>`, having the same meaning as
+     * described in the official documentation.
+     * @param mtime `std::chrono::duration<double>`, having the same meaning as
+     * described in the official documentation.
+     */
+    void lutime(std::string path, Time atime, Time mtime);
+
+    /**
+     * @brief Sync [lutime](http://linux.die.net/man/3/lutimes).
+     * @param path Path, as described in the official documentation.
+     * @param atime `std::chrono::duration<double>`, having the same meaning as
+     * described in the official documentation.
+     * @param mtime `std::chrono::duration<double>`, having the same meaning as
+     * described in the official documentation.
+     * @return True in case of success, false otherwise.
+     */
+    bool lutimeSync(std::string path, Time atime, Time mtime);
 
     /**
      * @brief Async [rmdir](http://linux.die.net/man/2/rmdir).

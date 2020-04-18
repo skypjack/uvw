@@ -196,12 +196,12 @@ UVW_INLINE bool FileReq::chmodSync(int mode) {
 }
 
 
-UVW_INLINE void FileReq::utime(FsRequest::Time atime, FsRequest::Time mtime) {
+UVW_INLINE void FileReq::futime(FsRequest::Time atime, FsRequest::Time mtime) {
     cleanupAndInvoke(&uv_fs_futime, parent(), get(), file, atime.count(), mtime.count(), &fsGenericCallback<Type::FUTIME>);
 }
 
 
-UVW_INLINE bool FileReq::utimeSync(FsRequest::Time atime, FsRequest::Time mtime) {
+UVW_INLINE bool FileReq::futimeSync(FsRequest::Time atime, FsRequest::Time mtime) {
     auto req = get();
     cleanupAndInvokeSync(&uv_fs_futime, parent(), req, file, atime.count(), mtime.count());
     return !(req->result < 0);
@@ -306,6 +306,18 @@ UVW_INLINE std::pair<bool, std::pair<std::string, std::size_t>> FsReq::mkstempSy
     }
 
     return ret;
+}
+
+
+UVW_INLINE void FsReq::lutime(std::string path, Time atime, Time mtime) {
+    cleanupAndInvoke(&uv_fs_lutime, parent(), get(), path.data(), atime.count(), mtime.count(), &fsGenericCallback<Type::LUTIME>);
+}
+
+
+UVW_INLINE bool FsReq::lutimeSync(std::string path, Time atime, Time mtime) {
+    auto req = get();
+    cleanupAndInvokeSync(&uv_fs_lutime, parent(), req, path.data(), atime.count(), mtime.count());
+    return !(req->result < 0);
 }
 
 
