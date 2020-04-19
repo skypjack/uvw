@@ -229,6 +229,21 @@ public:
 };
 
 
+// (extern) explicit instantiations
+
+extern template void GetNameInfoReq::nameInfo<IPv4>(std::string ip, unsigned int port, int flags);
+extern template void GetNameInfoReq::nameInfo<IPv6>(std::string ip, unsigned int port, int flags);
+
+extern template void GetNameInfoReq::nameInfo<IPv4>(Addr addr, int flags);
+extern template void GetNameInfoReq::nameInfo<IPv6>(Addr addr, int flags);
+
+extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(std::string ip, unsigned int port, int flags);
+extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(std::string ip, unsigned int port, int flags);
+
+extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(Addr addr, int flags);
+extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(Addr addr, int flags);
+
+
 }
 
 

@@ -229,6 +229,27 @@ private:
 };
 
 
+// (extern) explicit instantiations
+
+extern template void TCPHandle::bind<IPv4>(std::string, unsigned int, Flags<Bind>);
+extern template void TCPHandle::bind<IPv6>(std::string, unsigned int, Flags<Bind>);
+
+extern template void TCPHandle::bind<IPv4>(Addr, Flags<Bind>);
+extern template void TCPHandle::bind<IPv6>(Addr, Flags<Bind>);
+
+extern template Addr TCPHandle::sock<IPv4>() const noexcept;
+extern template Addr TCPHandle::sock<IPv6>() const noexcept;
+
+extern template Addr TCPHandle::peer<IPv4>() const noexcept;
+extern template Addr TCPHandle::peer<IPv6>() const noexcept;
+
+extern template void TCPHandle::connect<IPv4>(std::string, unsigned int);
+extern template void TCPHandle::connect<IPv6>(std::string, unsigned int);
+
+extern template void TCPHandle::connect<IPv4>(Addr addr);
+extern template void TCPHandle::connect<IPv6>(Addr addr);
+
+
 }
 
 

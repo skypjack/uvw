@@ -263,7 +263,7 @@ UVW_INLINE size_t UDPHandle::sendQueueCount() const noexcept {
 }
 
 
-// explicit instantiation definitions
+// explicit instantiations
 
 template void UDPHandle::connect<IPv4>(std::string, unsigned int);
 template void UDPHandle::connect<IPv6>(std::string, unsigned int);

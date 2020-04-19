@@ -101,7 +101,7 @@ UVW_INLINE void TCPHandle::closeReset() {
 }
 
 
-// explicit instantiation definitions
+// explicit instantiations
 
 template void TCPHandle::bind<IPv4>(std::string, unsigned int, Flags<Bind>);
 template void TCPHandle::bind<IPv6>(std::string, unsigned int, Flags<Bind>);

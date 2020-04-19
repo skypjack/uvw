@@ -141,7 +141,7 @@ UVW_INLINE uv_loop_t *Loop::raw() noexcept {
 }
 
 
-// explicit instantiation definitions
+// explicit instantiations
 
 template bool Loop::run<Loop::Mode::DEFAULT>() noexcept;
 template bool Loop::run<Loop::Mode::ONCE>() noexcept;

@@ -572,6 +572,65 @@ private:
 };
 
 
+// (extern) explicit instantiations
+
+extern template void UDPHandle::connect<IPv4>(std::string, unsigned int);
+extern template void UDPHandle::connect<IPv6>(std::string, unsigned int);
+
+extern template void UDPHandle::connect<IPv4>(Addr);
+extern template void UDPHandle::connect<IPv6>(Addr);
+
+extern template Addr UDPHandle::peer<IPv4>() const noexcept;
+extern template Addr UDPHandle::peer<IPv6>() const noexcept;
+
+extern template void UDPHandle::bind<IPv4>(std::string, unsigned int, Flags<Bind>);
+extern template void UDPHandle::bind<IPv6>(std::string, unsigned int, Flags<Bind>);
+
+extern template void UDPHandle::bind<IPv4>(Addr, Flags<Bind>);
+extern template void UDPHandle::bind<IPv6>(Addr, Flags<Bind>);
+
+extern template Addr UDPHandle::sock<IPv4>() const noexcept;
+extern template Addr UDPHandle::sock<IPv6>() const noexcept;
+
+extern template bool UDPHandle::multicastMembership<IPv4>(std::string, std::string, Membership);
+extern template bool UDPHandle::multicastMembership<IPv6>(std::string, std::string, Membership);
+
+extern template bool UDPHandle::multicastInterface<IPv4>(std::string);
+extern template bool UDPHandle::multicastInterface<IPv6>(std::string);
+
+extern template void UDPHandle::send<IPv4>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
+extern template void UDPHandle::send<IPv6>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
+
+extern template void UDPHandle::send<IPv4>(Addr, std::unique_ptr<char[]>, unsigned int);
+extern template void UDPHandle::send<IPv6>(Addr, std::unique_ptr<char[]>, unsigned int);
+
+extern template void UDPHandle::send<IPv4>(std::string, unsigned int, char *, unsigned int);
+extern template void UDPHandle::send<IPv6>(std::string, unsigned int, char *, unsigned int);
+
+extern template void UDPHandle::send<IPv4>(Addr, char *, unsigned int);
+extern template void UDPHandle::send<IPv6>(Addr, char *, unsigned int);
+
+extern template int UDPHandle::trySend<IPv4>(const sockaddr &, std::unique_ptr<char[]>, unsigned int);
+extern template int UDPHandle::trySend<IPv6>(const sockaddr &, std::unique_ptr<char[]>, unsigned int);
+
+extern template int UDPHandle::trySend<IPv4>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
+extern template int UDPHandle::trySend<IPv6>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
+
+extern template int UDPHandle::trySend<IPv4>(Addr, std::unique_ptr<char[]>, unsigned int);
+extern template int UDPHandle::trySend<IPv6>(Addr, std::unique_ptr<char[]>, unsigned int);
+
+extern template int UDPHandle::trySend<IPv4>(const sockaddr &, char *, unsigned int);
+extern template int UDPHandle::trySend<IPv6>(const sockaddr &, char *, unsigned int);
+
+extern template int UDPHandle::trySend<IPv4>(std::string, unsigned int, char *, unsigned int);
+extern template int UDPHandle::trySend<IPv6>(std::string, unsigned int, char *, unsigned int);
+
+extern template int UDPHandle::trySend<IPv4>(Addr, char *, unsigned int);
+extern template int UDPHandle::trySend<IPv6>(Addr, char *, unsigned int);
+
+extern template void UDPHandle::recv<IPv4>();
+extern template void UDPHandle::recv<IPv6>();
+
 }
 
 

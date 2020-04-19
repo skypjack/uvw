@@ -422,6 +422,13 @@ private:
 };
 
 
+// (extern) explicit instantiations
+
+extern template bool Loop::run<Loop::Mode::DEFAULT>() noexcept;
+extern template bool Loop::run<Loop::Mode::ONCE>() noexcept;
+extern template bool Loop::run<Loop::Mode::NOWAIT>() noexcept;
+
+
 }
 
 
