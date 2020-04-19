@@ -1,5 +1,9 @@
-#include <algorithm>
+#ifdef UVW_AS_LIB
 #include "util.h"
+#endif
+
+#include <algorithm>
+
 #include "config.h"
 
 

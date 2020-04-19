@@ -1,4 +1,7 @@
+#ifdef UVW_AS_LIB
 #include "loop.h"
+#endif
+
 #include "config.h"
 
 

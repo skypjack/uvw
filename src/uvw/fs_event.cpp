@@ -1,5 +1,9 @@
-#include <utility>
+#ifdef UVW_AS_LIB
 #include "fs_event.h"
+#endif
+
+#include <utility>
+
 #include "config.h"
 
 

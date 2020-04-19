@@ -1,4 +1,7 @@
+#ifdef UVW_AS_LIB
 #include "check.h"
+#endif
+
 #include "config.h"
 
 

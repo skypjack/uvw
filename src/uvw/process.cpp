@@ -1,5 +1,8 @@
-#include <algorithm>
+#ifdef UVW_AS_LIB
 #include "process.h"
+#endif
+#include <algorithm>
+
 #include "config.h"
 
 

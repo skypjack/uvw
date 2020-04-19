@@ -1,5 +1,9 @@
-#include <utility>
+#ifdef UVW_AS_LIB
 #include "work.h"
+#endif
+
+#include <utility>
+
 #include "config.h"
 
 
@@ -22,3 +26,4 @@ UVW_INLINE void WorkReq::queue() {
 
 
 }
+
