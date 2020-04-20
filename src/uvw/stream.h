@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_STREAM_INCLUDE_H
+#define UVW_STREAM_INCLUDE_H
 
 
 #include <algorithm>
@@ -445,3 +446,5 @@ public:
 #ifndef UVW_AS_LIB
 #include "stream.cpp"
 #endif
+
+#endif // UVW_STREAM_INCLUDE_H

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_LOOP_INCLUDE_H
+#define UVW_LOOP_INCLUDE_H
 
 
 #ifdef _WIN32
@@ -435,3 +436,5 @@ extern template bool Loop::run<Loop::Mode::NOWAIT>() noexcept;
 #ifndef UVW_AS_LIB
 #include "loop.cpp"
 #endif
+
+#endif // UVW_LOOP_INCLUDE_H

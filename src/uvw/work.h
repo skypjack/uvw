@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_WORK_INCLUDE_H
+#define UVW_WORK_INCLUDE_H
 
 
 #include <functional>
@@ -63,3 +64,5 @@ private:
 #ifndef UVW_AS_LIB
 #include "work.cpp"
 #endif
+
+#endif // UVW_WORK_INCLUDE_H

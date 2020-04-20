@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_LIB_INCLUDE_H
+#define UVW_LIB_INCLUDE_H
 
 
 #include <memory>
@@ -65,3 +66,5 @@ private:
 #ifndef UVW_AS_LIB
 #include "lib.cpp"
 #endif
+
+#endif // UVW_LIB_INCLUDE_H

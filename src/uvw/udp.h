@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_UDP_INCLUDE_H
+#define UVW_UDP_INCLUDE_H
 
 
 #include <type_traits>
@@ -637,3 +638,5 @@ extern template void UDPHandle::recv<IPv6>();
 #ifndef UVW_AS_LIB
 #include "udp.cpp"
 #endif
+
+#endif // UVW_UDP_INCLUDE_H

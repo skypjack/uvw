@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_REQUEST_INCLUDE_H
+#define UVW_REQUEST_INCLUDE_H
 
 
 #include <type_traits>
@@ -70,3 +71,5 @@ public:
 
 
 }
+
+#endif // UVW_REQUEST_INCLUDE_H

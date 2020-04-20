@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_POLL_INCLUDE_H
+#define UVW_POLL_INCLUDE_H
 
 
 #include <type_traits>
@@ -140,3 +141,5 @@ private:
 #ifndef UVW_AS_LIB
 #include "poll.cpp"
 #endif
+
+#endif // UVW_POLL_INCLUDE_H

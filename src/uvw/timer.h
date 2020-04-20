@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_TIMER_INCLUDE_H
+#define UVW_TIMER_INCLUDE_H
 
 
 #include <chrono>
@@ -102,3 +103,5 @@ public:
 #ifndef UVW_AS_LIB
 #include "timer.cpp"
 #endif
+
+#endif // UVW_TIMER_INCLUDE_H

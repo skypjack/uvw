@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_HANDLE_INCLUDE_H
+#define UVW_HANDLE_INCLUDE_H
 
 
 #include <cstddef>
@@ -272,3 +273,5 @@ public:
 
 
 }
+
+#endif // UVW_HANDLE_INCLUDE_H

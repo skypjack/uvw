@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_UNDERLYING_TYPE_INCLUDE_H
+#define UVW_UNDERLYING_TYPE_INCLUDE_H
 
 
 #include <memory>
@@ -114,3 +115,5 @@ private:
 
 
 }
+
+#endif // UVW_UNDERLYING_TYPE_INCLUDE_H

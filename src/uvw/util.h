@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_UTIL_INCLUDE_H
+#define UVW_UTIL_INCLUDE_H
 
 
 #include <string_view>
@@ -827,3 +828,5 @@ struct Utilities {
 #ifndef UVW_AS_LIB
 #include "util.cpp"
 #endif
+
+#endif // UVW_UTIL_INCLUDE_H

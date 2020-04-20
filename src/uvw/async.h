@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_ASYNC_INCLUDE_H
+#define UVW_ASYNC_INCLUDE_H
 
 
 #include <uv.h>
@@ -61,3 +62,5 @@ public:
 #ifndef UVW_AS_LIB
 #include "async.cpp"
 #endif
+
+#endif // UVW_ASYNC_INCLUDE_H

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_TCP_INCLUDE_H
+#define UVW_TCP_INCLUDE_H
 
 
 #include <type_traits>
@@ -256,3 +257,5 @@ extern template void TCPHandle::connect<IPv6>(Addr addr);
 #ifndef UVW_AS_LIB
 #include "tcp.cpp"
 #endif
+
+#endif // UVW_TCP_INCLUDE_H

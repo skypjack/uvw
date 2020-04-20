@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_FS_POLL_INCLUDE_H
+#define UVW_FS_POLL_INCLUDE_H
 
 
 #include <string>
@@ -78,3 +79,5 @@ public:
 #ifndef UVW_AS_LIB
 #include "fs_poll.cpp"
 #endif
+
+#endif // UVW_FS_POLL_INCLUDE_H

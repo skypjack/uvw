@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_PROCESS_INCLUDE_H
+#define UVW_PROCESS_INCLUDE_H
 
 
 #include <utility>
@@ -249,3 +250,5 @@ private:
 #ifndef UVW_AS_LIB
 #include "process.cpp"
 #endif
+
+#endif // UVW_PROCESS_INCLUDE_H

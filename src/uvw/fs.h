@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_FS_INCLUDE_H
+#define UVW_FS_INCLUDE_H
 
 
 #include <utility>
@@ -1457,3 +1458,5 @@ struct FsHelper {
 #ifndef UVW_AS_LIB
 #include "fs.cpp"
 #endif
+
+#endif // UVW_FS_INCLUDE_H

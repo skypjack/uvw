@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_PREPARE_INCLUDE_H
+#define UVW_PREPARE_INCLUDE_H
 
 
 #include <uv.h>
@@ -60,3 +61,5 @@ public:
 #ifndef UVW_AS_LIB
 #include "prepare.cpp"
 #endif
+
+#endif // UVW_PREPARE_INCLUDE_H

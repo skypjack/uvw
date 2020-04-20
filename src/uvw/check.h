@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_CHECK_INCLUDE_H
+#define UVW_CHECK_INCLUDE_H
 
 
 #include <uv.h>
@@ -58,3 +59,5 @@ public:
 #ifndef UVW_AS_LIB
 #include "check.cpp"
 #endif
+
+#endif // UVW_CHECK_INCLUDE_H

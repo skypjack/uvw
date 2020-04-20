@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_THREAD_INCLUDE_H
+#define UVW_THREAD_INCLUDE_H
 
 
 #include <memory>
@@ -363,3 +364,5 @@ public:
 #ifndef UVW_AS_LIB
 #include "thread.cpp"
 #endif
+
+#endif // UVW_THREAD_INCLUDE_H

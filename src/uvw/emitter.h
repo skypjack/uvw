@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_EMITTER_INCLUDE_H
+#define UVW_EMITTER_INCLUDE_H
 
 
 #include <type_traits>
@@ -319,3 +320,5 @@ private:
 #ifndef UVW_AS_LIB
 #include "emitter.cpp"
 #endif
+
+#endif // UVW_EMITTER_INCLUDE_H

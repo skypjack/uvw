@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_SIGNAL_INCLUDE_H
+#define UVW_SIGNAL_INCLUDE_H
 
 
 #include <uv.h>
@@ -84,3 +85,5 @@ public:
 #ifndef UVW_AS_LIB
 #include "signal.cpp"
 #endif
+
+#endif // UVW_SIGNAL_INCLUDE_H

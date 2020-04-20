@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_RESOURCE_INCLUDE_H
+#define UVW_RESOURCE_INCLUDE_H
 
 
 #include <memory>
@@ -68,3 +69,5 @@ private:
 };
 
 }
+
+#endif // UVW_RESOURCE_INCLUDE_H

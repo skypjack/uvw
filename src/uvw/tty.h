@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_TTY_INCLUDE_H
+#define UVW_TTY_INCLUDE_H
 
 
 #include <type_traits>
@@ -150,3 +151,5 @@ private:
 #ifndef UVW_AS_LIB
 #include "tty.cpp"
 #endif
+
+#endif // UVW_TTY_INCLUDE_H

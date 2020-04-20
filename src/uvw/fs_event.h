@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_FS_EVENT_INCLUDE_H
+#define UVW_FS_EVENT_INCLUDE_H
 
 
 #include <type_traits>
@@ -144,3 +145,5 @@ public:
 #ifndef UVW_AS_LIB
 #include "fs_event.cpp"
 #endif
+
+#endif // UVW_FS_EVENT_INCLUDE_H

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_DNS_INCLUDE_H
+#define UVW_DNS_INCLUDE_H
 
 
 #include <utility>
@@ -250,3 +251,5 @@ extern template std::pair<bool, std::pair<const char *, const char *>> GetNameIn
 #ifndef UVW_AS_LIB
 #include "dns.cpp"
 #endif
+
+#endif // UVW_DNS_INCLUDE_H

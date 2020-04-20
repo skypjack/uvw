@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_PIPE_INCLUDE_H
+#define UVW_PIPE_INCLUDE_H
 
 
 #include <type_traits>
@@ -162,3 +163,5 @@ private:
 #ifndef UVW_AS_LIB
 #include "pipe.cpp"
 #endif
+
+#endif // UVW_PIPE_INCLUDE_H

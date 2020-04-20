@@ -1,4 +1,5 @@
-#pragma once
+#ifndef UVW_IDLE_INCLUDE_H
+#define UVW_IDLE_INCLUDE_H
 
 
 #include <uv.h>
@@ -66,3 +67,5 @@ public:
 #ifndef UVW_AS_LIB
 #include "idle.cpp"
 #endif
+
+#endif // UVW_IDLE_INCLUDE_H
