@@ -2,7 +2,7 @@
 # uvw
 #
 
-cmake_minimum_required(VERSION 3.15.3)
+cmake_minimum_required(VERSION 3.13)
 
 #
 # Building in-tree is not allowed (we take care of your craziness).
