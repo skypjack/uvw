@@ -8,7 +8,6 @@
 [![Download](https://api.bintray.com/packages/skypjack/conan/uvw%3Askypjack/images/download.svg)](https://bintray.com/skypjack/conan/uvw%3Askypjack/_latestVersion)
 [![Gitter chat](https://badges.gitter.im/skypjack/uvw.png)](https://gitter.im/skypjack/uvw)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/skypjack)
-[![Patreon](https://img.shields.io/badge/become-patron-red.svg)](https://www.patreon.com/bePatron?c=1772573)
 
 Do you have a **question** that doesn't require you to open an issue? Join the
 [gitter channel](https://gitter.im/skypjack/uvw).<br/>
