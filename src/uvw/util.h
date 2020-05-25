@@ -645,7 +645,6 @@ struct Utilities {
      */
     static HandleType guessHandle(FileHandle file) noexcept;
 
-
     /** @brief Gets information about the CPUs on the system.
      *
      * This function can be used to query the underlying system and get a set of
