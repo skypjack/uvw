@@ -28,7 +28,7 @@ struct UVW_EXTERN CheckEvent {};
  *
  * To create a `CheckHandle` through a `Loop`, no arguments are required.
  */
-class UVW_EXTERN CheckHandle final : public Handle<CheckHandle, uv_check_t> {
+class UVW_EXTERN CheckHandle final : public Handle<CheckHandle, uv_check_t, CheckEvent> {
     static void startCallback(uv_check_t *handle);
 
 public:

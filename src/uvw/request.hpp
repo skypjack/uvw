@@ -15,8 +15,8 @@ UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 namespace uvw {
 
 
-template<typename T, typename U>
-class Request: public Resource<T, U> {
+template<typename T, typename U, typename... Events>
+class Request: public Resource<T, U, ErrorEvent, Events...> {
 protected:
     static auto reserve(U *req) {
         auto ptr = static_cast<T*>(req->data)->shared_from_this();
@@ -38,13 +38,13 @@ protected:
             this->leak();
         } else {
             auto err = std::forward<F>(f)(std::forward<Args>(args)...);
-            if(err) { Emitter<T>::publish(ErrorEvent{err}); }
+            if(err) { Emitter<T, ErrorEvent, Events...>::publish(ErrorEvent{err}); }
             else { this->leak(); }
         }
     }
 
 public:
-    using Resource<T, U>::Resource;
+    using Resource<T, U, ErrorEvent, Events...>::Resource;
 
     /**
     * @brief Cancels a pending request.

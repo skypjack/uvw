@@ -29,7 +29,7 @@ struct UVW_EXTERN PrepareEvent {};
  *
  * To create a `PrepareHandle` through a `Loop`, no arguments are required.
  */
-class UVW_EXTERN PrepareHandle final: public Handle<PrepareHandle, uv_prepare_t> {
+class UVW_EXTERN PrepareHandle final: public Handle<PrepareHandle, uv_prepare_t, PrepareEvent> {
     static void startCallback(uv_prepare_t *handle);
 
 public:

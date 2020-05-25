@@ -71,7 +71,7 @@ struct UVW_EXTERN NameInfoEvent {
  *
  * To create a `GetAddrInfoReq` through a `Loop`, no arguments are required.
  */
-class UVW_EXTERN GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
+class UVW_EXTERN GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t, AddrInfoEvent> {
     static void addrInfoCallback(uv_getaddrinfo_t *req, int status, addrinfo *res);
     void nodeAddrInfo(const char *node, const char *service, addrinfo *hints = nullptr);
     auto nodeAddrInfoSync(const char *node, const char *service, addrinfo *hints = nullptr);
@@ -156,7 +156,7 @@ public:
  *
  * To create a `GetNameInfoReq` through a `Loop`, no arguments are required.
  */
-class UVW_EXTERN GetNameInfoReq final: public Request<GetNameInfoReq, uv_getnameinfo_t> {
+class UVW_EXTERN GetNameInfoReq final: public Request<GetNameInfoReq, uv_getnameinfo_t, NameInfoEvent> {
     static void nameInfoCallback(uv_getnameinfo_t *req, int status, const char *hostname, const char *service);
 
 public:

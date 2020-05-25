@@ -29,11 +29,11 @@ struct UVW_EXTERN CloseEvent {};
  *
  * Base type for all `uvw` handle types.
  */
-template<typename T, typename U>
-class Handle: public Resource<T, U>, public BaseHandle {
+template<typename T, typename U, typename... Events>
+class Handle: public Resource<T, U, ErrorEvent, CloseEvent, Events...>, public BaseHandle {
 protected:
     static void closeCallback(uv_handle_t *handle) {
-        Handle<T, U> &ref = *(static_cast<T*>(handle->data));
+        Handle &ref = *(static_cast<T*>(handle->data));
         auto ptr = ref.shared_from_this();
         (void)ptr;
         ref.reset();
@@ -63,11 +63,11 @@ protected:
     template<typename F, typename... Args>
     void invoke(F &&f, Args&&... args) {
         auto err = std::forward<F>(f)(std::forward<Args>(args)...);
-        if(err) { Emitter<T>::publish(ErrorEvent{err}); }
+        if(err) { Emitter<T, ErrorEvent, CloseEvent, Events...>::publish(ErrorEvent{err}); }
     }
 
 public:
-    using Resource<T, U>::Resource;
+    using Resource<T, U, ErrorEvent, CloseEvent, Events...>::Resource;
 
     /**
      * @brief Gets the category of the handle.
@@ -141,7 +141,7 @@ public:
      */
     void close() noexcept override {
         if(!closing()) {
-            uv_close(this->template get<uv_handle_t>(), &Handle<T, U>::closeCallback);
+            uv_close(this->template get<uv_handle_t>(), &Handle::closeCallback);
         }
     }
 

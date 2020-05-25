@@ -68,7 +68,7 @@ template class UVW_EXTERN Flags<details::UVPollEvent>;
  * [documentation](http://docs.libuv.org/en/v1.x/poll.html)
  * for further details.
  */
-class UVW_EXTERN PollHandle final: public Handle<PollHandle, uv_poll_t> {
+class UVW_EXTERN PollHandle final: public Handle<PollHandle, uv_poll_t, PollEvent> {
     static void startCallback(uv_poll_t *handle, int status, int events);
 
 public:

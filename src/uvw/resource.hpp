@@ -19,8 +19,8 @@ namespace uvw {
  *
  * This is the base class for handles and requests.
  */
-template<typename T, typename U>
-class Resource: public UnderlyingType<T, U>, public Emitter<T>, public std::enable_shared_from_this<T> {
+template<typename T, typename U, typename... Events>
+class Resource: public UnderlyingType<T, U>, public Emitter<T, Events...>, public std::enable_shared_from_this<T> {
 protected:
     using ConstructorAccess = typename UnderlyingType<T, U>::ConstructorAccess;
 
@@ -43,7 +43,7 @@ protected:
 public:
     explicit Resource(ConstructorAccess ca, std::shared_ptr<Loop> ref)
         : UnderlyingType<T, U>{ca, std::move(ref)},
-          Emitter<T>{},
+          Emitter<T, Events...>{},
           std::enable_shared_from_this<T>{}
     {
         this->get()->data = this;

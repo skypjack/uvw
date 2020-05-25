@@ -7,7 +7,7 @@
 #include <algorithm>
 #include <utility>
 #include <cstddef>
-#include <vector>
+#include <array>
 #include <memory>
 #include <list>
 #include <uv.h>
@@ -78,6 +78,19 @@ private:
     const int ec;
 };
 
+template <typename T, typename... Ts>
+struct Index {
+    template<typename U>
+    static constexpr bool dependend_false = false;
+    static_assert (dependend_false<T>, "No event T supported for this Emitter");
+};
+
+template <typename T, typename... Ts>
+struct Index<T, T, Ts...> : std::integral_constant<std::size_t, 0> {};
+
+template <typename T, typename U, typename... Ts>
+struct Index<T, U, Ts...> : std::integral_constant<std::size_t, 1 + Index<T, Ts...>::value> {};
+
 
 /**
  * @brief Event emitter base class.
@@ -85,7 +98,7 @@ private:
  * Almost everything in `uvw` is an event emitter.<br/>
  * This is the base class from which resources and loops inherit.
  */
-template<typename T>
+template<typename T, typename... Events>
 class Emitter {
     struct BaseHandler {
         virtual ~BaseHandler() noexcept = default;
@@ -160,24 +173,14 @@ class Emitter {
         ListenerList onL{};
     };
 
-    static std::size_t next_type() noexcept {
-        static std::size_t counter = 0;
-        return counter++;
-    }
-
-    template<typename>
-    static std::size_t event_type() noexcept {
-        static std::size_t value = next_type();
-        return value;
+    template<typename E>
+    static constexpr std::size_t event_type() noexcept {
+        return Index<E, Events...>::value;
     }
 
     template<typename E>
     Handler<E> & handler() noexcept {
         std::size_t type = event_type<E>();
-
-        if(!(type < handlers.size())) {
-            handlers.resize(type+1);
-        }
 
         if(!handlers[type]) {
            handlers[type] = std::make_unique<Handler<E>>();
@@ -213,7 +216,7 @@ public:
      */
     template<typename E>
     struct Connection: private Handler<E>::Connection {
-        template<typename> friend class Emitter;
+        template<typename, typename...> friend class Emitter;
 
         Connection() = default;
         Connection(const Connection &) = default;
@@ -228,7 +231,7 @@ public:
     };
 
     virtual ~Emitter() noexcept {
-        static_assert(std::is_base_of_v<Emitter<T>, T>);
+        static_assert(std::is_base_of_v<Emitter<T, Events...>, T>);
     }
 
     /**
@@ -305,8 +308,7 @@ public:
     bool empty() const noexcept {
         std::size_t type = event_type<E>();
 
-        return (!(type < handlers.size()) ||
-                !handlers[type] ||
+        return (!handlers[type] ||
                 static_cast<Handler<E>&>(*handlers[type]).empty());
     }
 
@@ -321,7 +323,7 @@ public:
     }
 
 private:
-    std::vector<std::unique_ptr<BaseHandler>> handlers{};
+    std::array<std::unique_ptr<BaseHandler>, sizeof...(Events)> handlers{};
 };
 
 

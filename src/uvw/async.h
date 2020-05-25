@@ -28,7 +28,7 @@ struct UVW_EXTERN AsyncEvent {};
  *
  * To create an `AsyncHandle` through a `Loop`, no arguments are required.
  */
-class UVW_EXTERN AsyncHandle final : public Handle<AsyncHandle, uv_async_t> {
+class UVW_EXTERN AsyncHandle final : public Handle<AsyncHandle, uv_async_t, AsyncEvent> {
     static void sendCallback(uv_async_t *handle);
 
 public:

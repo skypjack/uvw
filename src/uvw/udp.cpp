@@ -14,7 +14,7 @@ UVW_INLINE UDPDataEvent::UDPDataEvent(Addr sndr, std::unique_ptr<const char[]> b
 
 
 UVW_INLINE details::SendReq::SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len)
-    : Request<SendReq, uv_udp_send_t>{ca, std::move(loop)},
+    : Request<SendReq, uv_udp_send_t, SendEvent>{ca, std::move(loop)},
       data{std::move(dt)},
       buf{uv_buf_init(data.get(), len)}
 {}

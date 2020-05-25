@@ -37,7 +37,7 @@ struct UVW_EXTERN WorkEvent {};
  * [documentation](http://docs.libuv.org/en/v1.x/threadpool.html)
  * for further details.
  */
-class UVW_EXTERN WorkReq final: public Request<WorkReq, uv_work_t> {
+class UVW_EXTERN WorkReq final: public Request<WorkReq, uv_work_t, WorkEvent> {
     using InternalTask = std::function<void(void)>;
 
     static void workCallback(uv_work_t *req);

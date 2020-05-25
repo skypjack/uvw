@@ -38,7 +38,7 @@ struct UVW_EXTERN SignalEvent {
  * [documentation](http://docs.libuv.org/en/v1.x/signal.html)
  * for further details.
  */
-class UVW_EXTERN SignalHandle final: public Handle<SignalHandle, uv_signal_t> {
+class UVW_EXTERN SignalHandle final: public Handle<SignalHandle, uv_signal_t, SignalEvent> {
     static void startCallback(uv_signal_t *handle, int signum);
 
 public:

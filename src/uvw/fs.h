@@ -373,32 +373,35 @@ struct FsEvent<details::UVFsType::READDIR> {
  *
  * Not directly instantiable, should not be used by the users of the library.
  */
-template<typename T>
-class FsRequest: public Request<T, uv_fs_t> {
+template<typename T, typename... Events>
+class FsRequest: public Request<T, uv_fs_t,
+                                 FsEvent<details::UVFsType::STATFS>,
+                                 Events...> {
+    using BaseClass = Request<T, uv_fs_t, FsEvent<details::UVFsType::STATFS>, Events...>;
 protected:
     template<details::UVFsType e>
     static void fsGenericCallback(uv_fs_t *req) {
-        auto ptr = Request<T, uv_fs_t>::reserve(req);
+        auto ptr = BaseClass::reserve(req);
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<e>{req->path}); }
     }
 
     template<details::UVFsType e>
     static void fsResultCallback(uv_fs_t *req) {
-        auto ptr = Request<T, uv_fs_t>::reserve(req);
+        auto ptr = BaseClass::reserve(req);
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<e>{req->path, static_cast<std::size_t>(req->result)}); }
     }
 
     template<details::UVFsType e>
     static void fsStatCallback(uv_fs_t *req) {
-        auto ptr = Request<T, uv_fs_t>::reserve(req);
+        auto ptr = BaseClass::reserve(req);
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<e>{req->path, req->statbuf}); }
     }
 
     static void fsStatfsCallback(uv_fs_t *req) {
-        auto ptr = Request<T, uv_fs_t>::reserve(req);
+        auto ptr = BaseClass::reserve(req);
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<Type::STATFS>{req->path, *static_cast<Statfs *>(req->ptr)}); }
     }
@@ -420,7 +423,7 @@ public:
     using Type = details::UVFsType;
     using EntryType = details::UVDirentTypeT;
 
-    using Request<T, uv_fs_t>::Request;
+    using BaseClass::BaseClass;
 };
 
 
@@ -436,7 +439,19 @@ public:
  * [documentation](http://docs.libuv.org/en/v1.x/fs.html)
  * for further details.
  */
-class UVW_EXTERN FileReq final: public FsRequest<FileReq> {
+class UVW_EXTERN FileReq final: public FsRequest<FileReq,
+                                                 FsEvent<details::UVFsType::OPEN>,
+                                                 FsEvent<details::UVFsType::CLOSE>,
+                                                 FsEvent<details::UVFsType::READ>,
+                                                 FsEvent<details::UVFsType::WRITE>,
+                                                 FsEvent<details::UVFsType::FSTAT>,
+                                                 FsEvent<details::UVFsType::FSYNC>,
+                                                 FsEvent<details::UVFsType::FDATASYNC>,
+                                                 FsEvent<details::UVFsType::FTRUNCATE>,
+                                                 FsEvent<details::UVFsType::SENDFILE>,
+                                                 FsEvent<details::UVFsType::FCHMOD>,
+                                                 FsEvent<details::UVFsType::FUTIME>,
+                                                 FsEvent<details::UVFsType::FCHOWN>> {
     static constexpr uv_file BAD_FD = -1;
 
     static void fsOpenCallback(uv_fs_t *req);
@@ -787,7 +802,31 @@ private:
  * [documentation](http://docs.libuv.org/en/v1.x/fs.html)
  * for further details.
  */
-class UVW_EXTERN FsReq final: public FsRequest<FsReq> {
+class UVW_EXTERN FsReq final: public FsRequest<FsReq,
+                                               FsEvent<details::UVFsType::READLINK>,
+                                               FsEvent<details::UVFsType::READDIR>,
+                                               FsEvent<details::UVFsType::UNLINK>,
+                                               FsEvent<details::UVFsType::MKDIR>,
+                                               FsEvent<details::UVFsType::MKDTEMP>,
+                                               FsEvent<details::UVFsType::MKSTEMP>,
+                                               FsEvent<details::UVFsType::LUTIME>,
+                                               FsEvent<details::UVFsType::RMDIR>,
+                                               FsEvent<details::UVFsType::SCANDIR>,
+                                               FsEvent<details::UVFsType::UNKNOWN>,
+                                               FsEvent<details::UVFsType::STAT>,
+                                               FsEvent<details::UVFsType::LSTAT>,
+                                               FsEvent<details::UVFsType::RENAME>,
+                                               FsEvent<details::UVFsType::COPYFILE>,
+                                               FsEvent<details::UVFsType::ACCESS>,
+                                               FsEvent<details::UVFsType::CHMOD>,
+                                               FsEvent<details::UVFsType::UTIME>,
+                                               FsEvent<details::UVFsType::LINK>,
+                                               FsEvent<details::UVFsType::SYMLINK>,
+                                               FsEvent<details::UVFsType::REALPATH>,
+                                               FsEvent<details::UVFsType::CHOWN>,
+                                               FsEvent<details::UVFsType::LCHOWN>,
+                                               FsEvent<details::UVFsType::OPENDIR>,
+                                               FsEvent<details::UVFsType::CLOSEDIR>> {
     static void fsReadlinkCallback(uv_fs_t *req);
     static void fsReaddirCallback(uv_fs_t *req);
 

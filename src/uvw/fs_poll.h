@@ -38,7 +38,7 @@ struct UVW_EXTERN FsPollEvent {
  *
  * To create a `FsPollHandle` through a `Loop`, no arguments are required.
  */
-class UVW_EXTERN FsPollHandle final: public Handle<FsPollHandle, uv_fs_poll_t> {
+class UVW_EXTERN FsPollHandle final: public Handle<FsPollHandle, uv_fs_poll_t, FsPollEvent> {
     static void startCallback(uv_fs_poll_t *handle, int status, const uv_stat_t *prev, const uv_stat_t *curr);
 
 public:

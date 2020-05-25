@@ -65,7 +65,7 @@ struct UVW_EXTERN ExitEvent {
  * Process handles will spawn a new process and allow the user to control it and
  * establish communication channels with it using streams.
  */
-class UVW_EXTERN ProcessHandle final: public Handle<ProcessHandle, uv_process_t> {
+class UVW_EXTERN ProcessHandle final: public Handle<ProcessHandle, uv_process_t, ExitEvent> {
     static void exitCallback(uv_process_t *handle, int64_t exitStatus, int termSignal);
 
 public:
@@ -185,8 +185,8 @@ public:
      * @param flags A valid set of flags.
      * @return A reference to this process handle.
      */
-    template<typename T, typename U>
-    ProcessHandle & stdio(StreamHandle<T, U> &stream, Flags<StdIO> flags) {
+    template<typename T, typename U, typename... Events>
+    ProcessHandle & stdio(StreamHandle<T, U, Events...> &stream, Flags<StdIO> flags) {
         uv_stdio_container_t container;
         Flags<StdIO>::Type fgs = flags;
         container.flags = static_cast<uv_stdio_flags>(fgs);

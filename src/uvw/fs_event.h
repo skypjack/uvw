@@ -77,7 +77,7 @@ template class UVW_EXTERN Flags<details::UVFsEvent>;
  * [documentation](http://docs.libuv.org/en/v1.x/fs_event.html)
  * for further details.
  */
-class UVW_EXTERN FsEventHandle final: public Handle<FsEventHandle, uv_fs_event_t> {
+class UVW_EXTERN FsEventHandle final: public Handle<FsEventHandle, uv_fs_event_t, FsEventEvent> {
     static void startCallback(uv_fs_event_t *handle, const char *filename, int events, int status);
 
 public:

@@ -143,10 +143,10 @@ struct UVW_EXTERN BaseHandle {
  * It takes care of polling for I/O and scheduling callbacks to be run based on
  * different sources of events.
  */
-class UVW_EXTERN Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop> {
+class UVW_EXTERN Loop final: public Emitter<Loop, ErrorEvent>, public std::enable_shared_from_this<Loop> {
     using Deleter = void(*)(uv_loop_t *);
 
-    template<typename, typename>
+    template<typename, typename, typename...>
     friend class Resource;
 
     Loop(std::unique_ptr<uv_loop_t, Deleter> ptr) noexcept;

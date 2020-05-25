@@ -5,7 +5,7 @@
 
 struct FakeEvent { };
 
-struct TestEmitter: uvw::Emitter<TestEmitter> {
+struct TestEmitter: uvw::Emitter<TestEmitter, uvw::ErrorEvent, FakeEvent> {
     void emit() { publish(FakeEvent{}); }
 };
 

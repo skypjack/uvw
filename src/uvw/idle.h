@@ -37,7 +37,7 @@ struct UVW_EXTERN IdleEvent {};
  *
  * To create an `IdleHandle` through a `Loop`, no arguments are required.
  */
-class UVW_EXTERN IdleHandle final: public Handle<IdleHandle, uv_idle_t> {
+class UVW_EXTERN IdleHandle final: public Handle<IdleHandle, uv_idle_t, IdleEvent> {
     static void startCallback(uv_idle_t *handle);
 
 public:

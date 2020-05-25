@@ -41,7 +41,7 @@ enum class UVChmodFlags: std::underlying_type_t<uv_poll_event> {
  * * An optional boolean value that indicates if this pipe will be used for
  * handle passing between processes.
  */
-class UVW_EXTERN PipeHandle final: public StreamHandle<PipeHandle, uv_pipe_t> {
+class UVW_EXTERN PipeHandle final: public StreamHandle<PipeHandle, uv_pipe_t, ConnectEvent> {
 public:
     using Chmod = details::UVChmodFlags;
 

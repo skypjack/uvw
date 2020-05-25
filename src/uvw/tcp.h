@@ -46,7 +46,7 @@ enum class UVTCPFlags: std::underlying_type_t<uv_tcp_flags> {
  * [documentation](http://docs.libuv.org/en/v1.x/tcp.html#c.uv_tcp_init_ex)
  * for further details.
  */
-class UVW_EXTERN TCPHandle final: public StreamHandle<TCPHandle, uv_tcp_t> {
+class UVW_EXTERN TCPHandle final: public StreamHandle<TCPHandle, uv_tcp_t, ConnectEvent> {
 public:
     using Time = std::chrono::duration<unsigned int>;
     using Bind = details::UVTCPFlags;

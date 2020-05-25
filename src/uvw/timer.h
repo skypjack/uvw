@@ -29,7 +29,7 @@ struct UVW_EXTERN TimerEvent {};
  *
  * To create a `TimerHandle` through a `Loop`, no arguments are required.
  */
-class UVW_EXTERN TimerHandle final: public Handle<TimerHandle, uv_timer_t> {
+class UVW_EXTERN TimerHandle final: public Handle<TimerHandle, uv_timer_t, TimerEvent> {
     static void startCallback(uv_timer_t *handle);
 
 public:
