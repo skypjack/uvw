@@ -11,6 +11,9 @@
 #include "request.hpp"
 #include "stream.h"
 #include "util.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -43,7 +46,7 @@ enum class UVTCPFlags: std::underlying_type_t<uv_tcp_flags> {
  * [documentation](http://docs.libuv.org/en/v1.x/tcp.html#c.uv_tcp_init_ex)
  * for further details.
  */
-class TCPHandle final: public StreamHandle<TCPHandle, uv_tcp_t> {
+class UVW_EXTERN TCPHandle final: public StreamHandle<TCPHandle, uv_tcp_t> {
 public:
     using Time = std::chrono::duration<unsigned int>;
     using Bind = details::UVTCPFlags;
@@ -238,23 +241,23 @@ private:
 
 // (extern) explicit instantiations
 
-extern template void TCPHandle::bind<IPv4>(std::string, unsigned int, Flags<Bind>);
-extern template void TCPHandle::bind<IPv6>(std::string, unsigned int, Flags<Bind>);
+extern template UVW_EXTERN void TCPHandle::bind<IPv4>(std::string, unsigned int, Flags<Bind>);
+extern template UVW_EXTERN void TCPHandle::bind<IPv6>(std::string, unsigned int, Flags<Bind>);
 
-extern template void TCPHandle::bind<IPv4>(Addr, Flags<Bind>);
-extern template void TCPHandle::bind<IPv6>(Addr, Flags<Bind>);
+extern template UVW_EXTERN void TCPHandle::bind<IPv4>(Addr, Flags<Bind>);
+extern template UVW_EXTERN void TCPHandle::bind<IPv6>(Addr, Flags<Bind>);
 
-extern template Addr TCPHandle::sock<IPv4>() const noexcept;
-extern template Addr TCPHandle::sock<IPv6>() const noexcept;
+extern template UVW_EXTERN Addr TCPHandle::sock<IPv4>() const noexcept;
+extern template UVW_EXTERN Addr TCPHandle::sock<IPv6>() const noexcept;
 
-extern template Addr TCPHandle::peer<IPv4>() const noexcept;
-extern template Addr TCPHandle::peer<IPv6>() const noexcept;
+extern template UVW_EXTERN Addr TCPHandle::peer<IPv4>() const noexcept;
+extern template UVW_EXTERN Addr TCPHandle::peer<IPv6>() const noexcept;
 
-extern template void TCPHandle::connect<IPv4>(std::string, unsigned int);
-extern template void TCPHandle::connect<IPv6>(std::string, unsigned int);
+extern template UVW_EXTERN void TCPHandle::connect<IPv4>(std::string, unsigned int);
+extern template UVW_EXTERN void TCPHandle::connect<IPv6>(std::string, unsigned int);
 
-extern template void TCPHandle::connect<IPv4>(Addr addr);
-extern template void TCPHandle::connect<IPv6>(Addr addr);
+extern template UVW_EXTERN void TCPHandle::connect<IPv4>(Addr addr);
+extern template UVW_EXTERN void TCPHandle::connect<IPv6>(Addr addr);
 
 
 /**
@@ -269,5 +272,7 @@ extern template void TCPHandle::connect<IPv6>(Addr addr);
 #ifndef UVW_AS_LIB
 #include "tcp.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_TCP_INCLUDE_H

@@ -11,6 +11,9 @@
 #include "stream.h"
 #include "util.h"
 #include "loop.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -49,7 +52,7 @@ enum class UVStdIOFlags: std::underlying_type_t<uv_stdio_flags> {
  *
  * It will be emitted by ProcessHandle according with its functionalities.
  */
-struct ExitEvent {
+struct UVW_EXTERN ExitEvent {
     explicit ExitEvent(int64_t code, int sig) noexcept;
 
     int64_t status; /*!< The exit status. */
@@ -62,7 +65,7 @@ struct ExitEvent {
  * Process handles will spawn a new process and allow the user to control it and
  * establish communication channels with it using streams.
  */
-class ProcessHandle final: public Handle<ProcessHandle, uv_process_t> {
+class UVW_EXTERN ProcessHandle final: public Handle<ProcessHandle, uv_process_t> {
     static void exitCallback(uv_process_t *handle, int64_t exitStatus, int termSignal);
 
 public:
@@ -242,6 +245,7 @@ private:
     Uid poUid;
     Gid poGid;
 };
+template class UVW_EXTERN Flags<ProcessHandle::Process>;
 
 
 }
@@ -250,5 +254,7 @@ private:
 #ifndef UVW_AS_LIB
 #include "process.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_PROCESS_INCLUDE_H

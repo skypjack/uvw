@@ -14,6 +14,9 @@
 #include <uv.h>
 #include "emitter.h"
 #include "util.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -45,7 +48,7 @@ enum class UVRunMode: std::underlying_type_t<uv_run_mode> {
  * users walk them as untyped instances.<br/>
  * This can help to end all the pending requests by closing the handles.
  */
-struct BaseHandle {
+struct UVW_EXTERN BaseHandle {
     /**
      * @brief Gets the category of the handle.
      *
@@ -140,7 +143,7 @@ struct BaseHandle {
  * It takes care of polling for I/O and scheduling callbacks to be run based on
  * different sources of events.
  */
-class Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop> {
+class UVW_EXTERN Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop> {
     using Deleter = void(*)(uv_loop_t *);
 
     template<typename, typename>
@@ -425,9 +428,9 @@ private:
 
 // (extern) explicit instantiations
 
-extern template bool Loop::run<Loop::Mode::DEFAULT>() noexcept;
-extern template bool Loop::run<Loop::Mode::ONCE>() noexcept;
-extern template bool Loop::run<Loop::Mode::NOWAIT>() noexcept;
+extern template UVW_EXTERN bool Loop::run<Loop::Mode::DEFAULT>() noexcept;
+extern template UVW_EXTERN bool Loop::run<Loop::Mode::ONCE>() noexcept;
+extern template UVW_EXTERN bool Loop::run<Loop::Mode::NOWAIT>() noexcept;
 
 
 }
@@ -436,5 +439,7 @@ extern template bool Loop::run<Loop::Mode::NOWAIT>() noexcept;
 #ifndef UVW_AS_LIB
 #include "loop.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_LOOP_INCLUDE_H

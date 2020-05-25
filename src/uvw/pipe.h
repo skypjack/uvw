@@ -10,6 +10,9 @@
 #include "stream.h"
 #include "util.h"
 #include "loop.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -38,7 +41,7 @@ enum class UVChmodFlags: std::underlying_type_t<uv_poll_event> {
  * * An optional boolean value that indicates if this pipe will be used for
  * handle passing between processes.
  */
-class PipeHandle final: public StreamHandle<PipeHandle, uv_pipe_t> {
+class UVW_EXTERN PipeHandle final: public StreamHandle<PipeHandle, uv_pipe_t> {
 public:
     using Chmod = details::UVChmodFlags;
 
@@ -163,5 +166,7 @@ private:
 #ifndef UVW_AS_LIB
 #include "pipe.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_PIPE_INCLUDE_H

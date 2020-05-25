@@ -8,6 +8,9 @@
 #include "handle.hpp"
 #include "util.h"
 #include "loop.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -37,7 +40,7 @@ enum class UVFsEvent: std::underlying_type_t<uv_fs_event> {
  *
  * It will be emitted by FsEventHandle according with its functionalities.
  */
-struct FsEventEvent {
+struct UVW_EXTERN FsEventEvent {
     FsEventEvent(const char * pathname, Flags<details::UVFsEvent> events);
 
     /**
@@ -58,6 +61,7 @@ struct FsEventEvent {
      */
     Flags<details::UVFsEvent> flags;
 };
+template class UVW_EXTERN Flags<details::UVFsEvent>;
 
 
 /**
@@ -73,7 +77,7 @@ struct FsEventEvent {
  * [documentation](http://docs.libuv.org/en/v1.x/fs_event.html)
  * for further details.
  */
-class FsEventHandle final: public Handle<FsEventHandle, uv_fs_event_t> {
+class UVW_EXTERN FsEventHandle final: public Handle<FsEventHandle, uv_fs_event_t> {
     static void startCallback(uv_fs_event_t *handle, const char *filename, int events, int status);
 
 public:
@@ -145,5 +149,7 @@ public:
 #ifndef UVW_AS_LIB
 #include "fs_event.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_FS_EVENT_INCLUDE_H

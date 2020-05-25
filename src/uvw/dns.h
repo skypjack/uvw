@@ -9,6 +9,9 @@
 #include "request.hpp"
 #include "util.h"
 #include "loop.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -19,7 +22,7 @@ namespace uvw {
  *
  * It will be emitted by GetAddrInfoReq according with its functionalities.
  */
-struct AddrInfoEvent {
+struct UVW_EXTERN AddrInfoEvent {
     using Deleter = void(*)(addrinfo *);
 
     AddrInfoEvent(std::unique_ptr<addrinfo, Deleter> addr);
@@ -39,7 +42,7 @@ struct AddrInfoEvent {
  *
  * It will be emitted by GetNameInfoReq according with its functionalities.
  */
-struct NameInfoEvent {
+struct UVW_EXTERN NameInfoEvent {
     NameInfoEvent(const char *host, const char *serv);
 
     /**
@@ -68,7 +71,7 @@ struct NameInfoEvent {
  *
  * To create a `GetAddrInfoReq` through a `Loop`, no arguments are required.
  */
-class GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
+class UVW_EXTERN GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
     static void addrInfoCallback(uv_getaddrinfo_t *req, int status, addrinfo *res);
     void nodeAddrInfo(const char *node, const char *service, addrinfo *hints = nullptr);
     auto nodeAddrInfoSync(const char *node, const char *service, addrinfo *hints = nullptr);
@@ -153,7 +156,7 @@ public:
  *
  * To create a `GetNameInfoReq` through a `Loop`, no arguments are required.
  */
-class GetNameInfoReq final: public Request<GetNameInfoReq, uv_getnameinfo_t> {
+class UVW_EXTERN GetNameInfoReq final: public Request<GetNameInfoReq, uv_getnameinfo_t> {
     static void nameInfoCallback(uv_getnameinfo_t *req, int status, const char *hostname, const char *service);
 
 public:
@@ -238,17 +241,17 @@ public:
 
 // (extern) explicit instantiations
 
-extern template void GetNameInfoReq::nameInfo<IPv4>(std::string ip, unsigned int port, int flags);
-extern template void GetNameInfoReq::nameInfo<IPv6>(std::string ip, unsigned int port, int flags);
+extern template UVW_EXTERN void GetNameInfoReq::nameInfo<IPv4>(std::string ip, unsigned int port, int flags);
+extern template UVW_EXTERN void GetNameInfoReq::nameInfo<IPv6>(std::string ip, unsigned int port, int flags);
 
-extern template void GetNameInfoReq::nameInfo<IPv4>(Addr addr, int flags);
-extern template void GetNameInfoReq::nameInfo<IPv6>(Addr addr, int flags);
+extern template UVW_EXTERN void GetNameInfoReq::nameInfo<IPv4>(Addr addr, int flags);
+extern template UVW_EXTERN void GetNameInfoReq::nameInfo<IPv6>(Addr addr, int flags);
 
-extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(std::string ip, unsigned int port, int flags);
-extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(std::string ip, unsigned int port, int flags);
+extern template UVW_EXTERN std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(std::string ip, unsigned int port, int flags);
+extern template UVW_EXTERN std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(std::string ip, unsigned int port, int flags);
 
-extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(Addr addr, int flags);
-extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(Addr addr, int flags);
+extern template UVW_EXTERN std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(Addr addr, int flags);
+extern template UVW_EXTERN std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(Addr addr, int flags);
 
 
 /**
@@ -263,5 +266,7 @@ extern template std::pair<bool, std::pair<const char *, const char *>> GetNameIn
 #ifndef UVW_AS_LIB
 #include "dns.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_DNS_INCLUDE_H

@@ -5,6 +5,9 @@
 #include <uv.h>
 #include "handle.hpp"
 #include "loop.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -15,7 +18,7 @@ namespace uvw {
  *
  * It will be emitted by SignalHandle according with its functionalities.
  */
-struct SignalEvent {
+struct UVW_EXTERN SignalEvent {
     explicit SignalEvent(int sig) noexcept;
 
     int signum; /*!< The signal being monitored by this handle. */
@@ -35,7 +38,7 @@ struct SignalEvent {
  * [documentation](http://docs.libuv.org/en/v1.x/signal.html)
  * for further details.
  */
-class SignalHandle final: public Handle<SignalHandle, uv_signal_t> {
+class UVW_EXTERN SignalHandle final: public Handle<SignalHandle, uv_signal_t> {
     static void startCallback(uv_signal_t *handle, int signum);
 
 public:
@@ -85,5 +88,7 @@ public:
 #ifndef UVW_AS_LIB
 #include "signal.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_SIGNAL_INCLUDE_H

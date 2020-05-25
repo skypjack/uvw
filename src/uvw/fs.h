@@ -10,6 +10,9 @@
 #include "request.hpp"
 #include "util.h"
 #include "loop.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -433,7 +436,7 @@ public:
  * [documentation](http://docs.libuv.org/en/v1.x/fs.html)
  * for further details.
  */
-class FileReq final: public FsRequest<FileReq> {
+class UVW_EXTERN FileReq final: public FsRequest<FileReq> {
     static constexpr uv_file BAD_FD = -1;
 
     static void fsOpenCallback(uv_fs_t *req);
@@ -784,7 +787,7 @@ private:
  * [documentation](http://docs.libuv.org/en/v1.x/fs.html)
  * for further details.
  */
-class FsReq final: public FsRequest<FsReq> {
+class UVW_EXTERN FsReq final: public FsRequest<FsReq> {
     static void fsReadlinkCallback(uv_fs_t *req);
     static void fsReaddirCallback(uv_fs_t *req);
 
@@ -1425,7 +1428,7 @@ private:
 
 
 /*! @brief Helper functions. */
-struct FsHelper {
+struct UVW_EXTERN FsHelper {
     /**
      * @brief Gets the OS dependent handle.
      *
@@ -1458,5 +1461,7 @@ struct FsHelper {
 #ifndef UVW_AS_LIB
 #include "fs.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_FS_INCLUDE_H

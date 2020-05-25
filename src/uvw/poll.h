@@ -7,6 +7,9 @@
 #include <uv.h>
 #include "handle.hpp"
 #include "util.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -31,7 +34,7 @@ enum class UVPollEvent: std::underlying_type_t<uv_poll_event> {
  *
  * It will be emitted by PollHandle according with its functionalities.
  */
-struct PollEvent {
+struct UVW_EXTERN PollEvent {
     explicit PollEvent(Flags<details::UVPollEvent> events) noexcept;
 
     /**
@@ -46,6 +49,7 @@ struct PollEvent {
      */
     Flags<details::UVPollEvent> flags;
 };
+template class UVW_EXTERN Flags<details::UVPollEvent>;
 
 
 /**
@@ -64,7 +68,7 @@ struct PollEvent {
  * [documentation](http://docs.libuv.org/en/v1.x/poll.html)
  * for further details.
  */
-class PollHandle final: public Handle<PollHandle, uv_poll_t> {
+class UVW_EXTERN PollHandle final: public Handle<PollHandle, uv_poll_t> {
     static void startCallback(uv_poll_t *handle, int status, int events);
 
 public:
@@ -141,5 +145,7 @@ private:
 #ifndef UVW_AS_LIB
 #include "poll.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_POLL_INCLUDE_H

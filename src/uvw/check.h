@@ -5,7 +5,9 @@
 #include <uv.h>
 #include "handle.hpp"
 #include "loop.h"
+#include "config.h"
 
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 namespace uvw {
 
@@ -15,7 +17,7 @@ namespace uvw {
  *
  * It will be emitted by CheckHandle according with its functionalities.
  */
-struct CheckEvent {};
+struct UVW_EXTERN CheckEvent {};
 
 
 /**
@@ -26,7 +28,7 @@ struct CheckEvent {};
  *
  * To create a `CheckHandle` through a `Loop`, no arguments are required.
  */
-class CheckHandle final: public Handle<CheckHandle, uv_check_t> {
+class UVW_EXTERN CheckHandle final : public Handle<CheckHandle, uv_check_t> {
     static void startCallback(uv_check_t *handle);
 
 public:
@@ -59,5 +61,7 @@ public:
 #ifndef UVW_AS_LIB
 #include "check.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_CHECK_INCLUDE_H

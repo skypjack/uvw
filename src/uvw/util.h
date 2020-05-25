@@ -11,6 +11,9 @@
 #include <memory>
 #include <array>
 #include <uv.h>
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -177,7 +180,7 @@ private:
 /**
  * @brief Windows size representation.
  */
-struct WinSize {
+struct UVW_EXTERN WinSize {
     int width; /*!< The _width_ of the given window. */
     int height; /*!< The _height_ of the given window. */
 };
@@ -214,7 +217,7 @@ using RUsage = uv_rusage_t; /*!< Library equivalent for uv_rusage_t. */
  *
  * \sa Utilities::passwd
  */
-struct Passwd {
+struct UVW_EXTERN Passwd {
     Passwd(std::shared_ptr<uv_passwd_t> pwd);
 
     /**
@@ -267,7 +270,7 @@ private:
  *
  * \sa Utilities::uname
  */
-struct UtsName {
+struct UVW_EXTERN UtsName {
     UtsName(std::shared_ptr<uv_utsname_t> utsname);
 
     /**
@@ -304,7 +307,7 @@ private:
  *
  * To be used as template parameter to switch between IPv4 and IPv6.
  */
-struct IPv4 {};
+struct UVW_EXTERN IPv4 {};
 
 
 /**
@@ -312,13 +315,13 @@ struct IPv4 {};
  *
  * To be used as template parameter to switch between IPv4 and IPv6.
  */
-struct IPv6 {};
+struct UVW_EXTERN IPv6 {};
 
 
 /**
  * @brief Address representation.
  */
-struct Addr {
+struct UVW_EXTERN Addr {
     std::string ip; /*!< Either an IPv4 or an IPv6. */
     unsigned int port; /*!< A valid service identifier. */
 };
@@ -327,7 +330,7 @@ struct Addr {
 /**
  * \brief CPU information.
  */
-struct CPUInfo {
+struct UVW_EXTERN CPUInfo {
     using CPUTime = decltype(uv_cpu_info_t::cpu_times);
 
     std::string model; /*!< The model of the CPU. */
@@ -346,7 +349,7 @@ struct CPUInfo {
 /**
  * \brief Interface address.
  */
-struct InterfaceAddress {
+struct UVW_EXTERN InterfaceAddress {
     std::string name; /*!< The name of the interface (as an example _eth0_). */
     char physical[6]; /*!< The physical address. */
     bool internal; /*!< True if it is an internal interface (as an example _loopback_), false otherwise. */
@@ -364,14 +367,13 @@ static constexpr std::size_t DEFAULT_SIZE = 128;
 template<typename>
 struct IpTraits;
 
-
 template<>
 struct IpTraits<IPv4> {
     using Type = sockaddr_in;
-    using AddrFuncType = int(*)(const char *, int, Type *);
-    using NameFuncType = int(*)(const Type *, char *, std::size_t);
-    static constexpr AddrFuncType addrFunc = &uv_ip4_addr;
-    static constexpr NameFuncType nameFunc = &uv_ip4_name;
+    using AddrFuncType = int (*)(const char*, int, Type*);
+    using NameFuncType = int (*)(const Type*, char*, std::size_t);
+    static UVW_EXTERN const AddrFuncType addrFunc;
+    static UVW_EXTERN const NameFuncType nameFunc;
     static constexpr auto sinPort(const Type *addr) { return addr->sin_port; }
 };
 
@@ -381,8 +383,8 @@ struct IpTraits<IPv6> {
     using Type = sockaddr_in6;
     using AddrFuncType = int(*)(const char *, int, Type *);
     using NameFuncType = int(*)(const Type *, char *, std::size_t);
-    static constexpr AddrFuncType addrFunc = &uv_ip6_addr;
-    static constexpr NameFuncType nameFunc = &uv_ip6_name;
+    static UVW_EXTERN const AddrFuncType addrFunc;
+    static UVW_EXTERN const NameFuncType nameFunc;
     static constexpr auto sinPort(const Type *addr) { return addr->sin6_port; }
 };
 
@@ -450,7 +452,7 @@ std::string tryRead(F &&f, Args&&... args) noexcept {
  *
  * Miscellaneous functions that don’t really belong to any other class.
  */
-struct Utilities {
+struct UVW_EXTERN Utilities {
     using MallocFuncType = void*(*)(size_t);
     using ReallocFuncType = void*(*)(void*, size_t);
     using CallocFuncType = void*(*)(size_t, size_t);
@@ -459,7 +461,7 @@ struct Utilities {
     /**
      * @brief OS dedicated utilities.
      */
-    struct OS {
+    struct UVW_EXTERN OS {
         /**
          * @brief Returns the current process id.
          *
@@ -827,5 +829,7 @@ struct Utilities {
 #ifndef UVW_AS_LIB
 #include "util.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_UTIL_INCLUDE_H

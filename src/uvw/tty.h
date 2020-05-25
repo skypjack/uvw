@@ -7,6 +7,9 @@
 #include <uv.h>
 #include "stream.h"
 #include "util.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -15,7 +18,7 @@ namespace uvw {
 namespace details {
 
 
-struct ResetModeMemo {
+struct UVW_EXTERN ResetModeMemo {
     ~ResetModeMemo();
 };
 
@@ -54,7 +57,7 @@ enum class UVTTYVTermStateT: std::underlying_type_t<uv_tty_vtermstate_t> {
  * [documentation](http://docs.libuv.org/en/v1.x/tty.html#c.uv_tty_init)
  * for further details.
  */
-class TTYHandle final: public StreamHandle<TTYHandle, uv_tty_t> {
+class UVW_EXTERN TTYHandle final: public StreamHandle<TTYHandle, uv_tty_t> {
     static std::shared_ptr<details::ResetModeMemo> resetModeMemo();
 
 public:
@@ -151,5 +154,7 @@ private:
 #ifndef UVW_AS_LIB
 #include "tty.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_TTY_INCLUDE_H
