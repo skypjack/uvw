@@ -6,6 +6,9 @@
 #include <uv.h>
 #include "handle.hpp"
 #include "loop.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -16,7 +19,7 @@ namespace uvw {
  *
  * It will be emitted by TimerHandle according with its functionalities.
  */
-struct TimerEvent {};
+struct UVW_EXTERN TimerEvent {};
 
 
 /**
@@ -26,7 +29,7 @@ struct TimerEvent {};
  *
  * To create a `TimerHandle` through a `Loop`, no arguments are required.
  */
-class TimerHandle final: public Handle<TimerHandle, uv_timer_t> {
+class UVW_EXTERN TimerHandle final: public Handle<TimerHandle, uv_timer_t> {
     static void startCallback(uv_timer_t *handle);
 
 public:
@@ -103,5 +106,7 @@ public:
 #ifndef UVW_AS_LIB
 #include "timer.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_TIMER_INCLUDE_H

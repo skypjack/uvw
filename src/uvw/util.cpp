@@ -69,6 +69,10 @@ UVW_INLINE std::string UtsName::machine() const noexcept {
     return utsname ? utsname->machine : "";
 }
 
+const details::IpTraits<IPv4>::AddrFuncType details::IpTraits<IPv4>::addrFunc = &uv_ip4_addr;
+const details::IpTraits<IPv4>::NameFuncType details::IpTraits<IPv4>::nameFunc = &uv_ip4_name;
+const details::IpTraits<IPv6>::AddrFuncType details::IpTraits<IPv6>::addrFunc = &uv_ip6_addr;
+const details::IpTraits<IPv6>::NameFuncType details::IpTraits<IPv6>::nameFunc = &uv_ip6_name;
 
 UVW_INLINE PidType Utilities::OS::pid() noexcept {
     return uv_os_getpid();

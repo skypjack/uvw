@@ -5,6 +5,9 @@
 #include <uv.h>
 #include "handle.hpp"
 #include "loop.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -15,7 +18,7 @@ namespace uvw {
  *
  * It will be emitted by IdleHandle according with its functionalities.
  */
-struct IdleEvent {};
+struct UVW_EXTERN IdleEvent {};
 
 
 /**
@@ -34,7 +37,7 @@ struct IdleEvent {};
  *
  * To create an `IdleHandle` through a `Loop`, no arguments are required.
  */
-class IdleHandle final: public Handle<IdleHandle, uv_idle_t> {
+class UVW_EXTERN IdleHandle final: public Handle<IdleHandle, uv_idle_t> {
     static void startCallback(uv_idle_t *handle);
 
 public:
@@ -67,5 +70,7 @@ public:
 #ifndef UVW_AS_LIB
 #include "idle.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_IDLE_INCLUDE_H

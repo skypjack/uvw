@@ -8,6 +8,9 @@
 #include "handle.hpp"
 #include "util.h"
 #include "loop.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -18,7 +21,7 @@ namespace uvw {
  *
  * It will be emitted by FsPollHandle according with its functionalities.
  */
-struct FsPollEvent {
+struct UVW_EXTERN FsPollEvent {
     explicit FsPollEvent(Stat previous, Stat current) noexcept;
 
     Stat prev; /*!< The old Stat struct. */
@@ -35,7 +38,7 @@ struct FsPollEvent {
  *
  * To create a `FsPollHandle` through a `Loop`, no arguments are required.
  */
-class FsPollHandle final: public Handle<FsPollHandle, uv_fs_poll_t> {
+class UVW_EXTERN FsPollHandle final: public Handle<FsPollHandle, uv_fs_poll_t> {
     static void startCallback(uv_fs_poll_t *handle, int status, const uv_stat_t *prev, const uv_stat_t *curr);
 
 public:
@@ -79,5 +82,7 @@ public:
 #ifndef UVW_AS_LIB
 #include "fs_poll.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_FS_POLL_INCLUDE_H

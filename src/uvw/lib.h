@@ -8,6 +8,9 @@
 #include <uv.h>
 #include "loop.h"
 #include "underlying_type.hpp"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -19,7 +22,7 @@ namespace uvw {
  * `uvw` provides cross platform utilities for loading shared libraries and
  * retrieving symbols from them, by means of the API offered by `libuv`.
  */
-class SharedLib final: public UnderlyingType<SharedLib, uv_lib_t> {
+class UVW_EXTERN SharedLib final: public UnderlyingType<SharedLib, uv_lib_t> {
 public:
     explicit SharedLib(ConstructorAccess ca, std::shared_ptr<Loop> ref, std::string filename) noexcept;
 
@@ -66,5 +69,7 @@ private:
 #ifndef UVW_AS_LIB
 #include "lib.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_LIB_INCLUDE_H

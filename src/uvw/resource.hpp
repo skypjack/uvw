@@ -6,6 +6,9 @@
 #include <utility>
 #include "emitter.h"
 #include "underlying_type.hpp"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -69,5 +72,7 @@ private:
 };
 
 }
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_RESOURCE_INCLUDE_H

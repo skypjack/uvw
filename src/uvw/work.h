@@ -7,6 +7,9 @@
 #include <uv.h>
 #include "request.hpp"
 #include "loop.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -17,7 +20,7 @@ namespace uvw {
  *
  * It will be emitted by WorkReq according with its functionalities.
  */
-struct WorkEvent {};
+struct UVW_EXTERN WorkEvent {};
 
 
 /**
@@ -34,7 +37,7 @@ struct WorkEvent {};
  * [documentation](http://docs.libuv.org/en/v1.x/threadpool.html)
  * for further details.
  */
-class WorkReq final: public Request<WorkReq, uv_work_t> {
+class UVW_EXTERN WorkReq final: public Request<WorkReq, uv_work_t> {
     using InternalTask = std::function<void(void)>;
 
     static void workCallback(uv_work_t *req);
@@ -64,5 +67,7 @@ private:
 #ifndef UVW_AS_LIB
 #include "work.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_WORK_INCLUDE_H

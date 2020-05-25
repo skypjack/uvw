@@ -5,7 +5,9 @@
 #include <uv.h>
 #include "handle.hpp"
 #include "loop.h"
+#include "config.h"
 
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 namespace uvw {
 
@@ -15,7 +17,7 @@ namespace uvw {
  *
  * It will be emitted by AsyncHandle according with its functionalities.
  */
-struct AsyncEvent {};
+struct UVW_EXTERN AsyncEvent {};
 
 
 /**
@@ -26,7 +28,7 @@ struct AsyncEvent {};
  *
  * To create an `AsyncHandle` through a `Loop`, no arguments are required.
  */
-class AsyncHandle final: public Handle<AsyncHandle, uv_async_t> {
+class UVW_EXTERN AsyncHandle final : public Handle<AsyncHandle, uv_async_t> {
     static void sendCallback(uv_async_t *handle);
 
 public:
@@ -62,5 +64,7 @@ public:
 #ifndef UVW_AS_LIB
 #include "async.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_ASYNC_INCLUDE_H

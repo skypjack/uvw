@@ -11,6 +11,9 @@
 #include <memory>
 #include <list>
 #include <uv.h>
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -21,7 +24,7 @@ namespace uvw {
  *
  * Custom wrapper around error constants of `libuv`.
  */
-struct ErrorEvent {
+struct UVW_EXTERN ErrorEvent {
     template<typename U, typename = std::enable_if_t<std::is_integral_v<U>>>
     explicit ErrorEvent(U val) noexcept
         : ec{static_cast<int>(val)}
@@ -190,6 +193,14 @@ protected:
     }
 
 public:
+    Emitter() = default;
+    Emitter(Emitter &&) = default;
+    Emitter & operator=(Emitter &&) = default;
+
+    // These must be deleted because MSVC try to export them with UVW_EXPORT
+    Emitter(const Emitter&) = delete;
+    Emitter& operator=(const Emitter&) = delete;
+
     template<typename E>
     using Listener = typename Handler<E>::Listener;
 
@@ -320,5 +331,7 @@ private:
 #ifndef UVW_AS_LIB
 #include "emitter.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_EMITTER_INCLUDE_H

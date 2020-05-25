@@ -11,6 +11,9 @@
 #include "request.hpp"
 #include "handle.hpp"
 #include "util.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -21,7 +24,7 @@ namespace uvw {
  *
  * It will be emitted by UDPHandle according with its functionalities.
  */
-struct SendEvent {};
+struct UVW_EXTERN SendEvent {};
 
 
 /**
@@ -29,7 +32,7 @@ struct SendEvent {};
  *
  * It will be emitted by UDPHandle according with its functionalities.
  */
-struct UDPDataEvent {
+struct UVW_EXTERN UDPDataEvent {
     explicit UDPDataEvent(Addr sndr, std::unique_ptr<const char[]> buf, std::size_t len, bool part) noexcept;
 
     std::unique_ptr<const char[]> data; /*!< A bunch of data read on the stream. */
@@ -57,7 +60,7 @@ enum class UVMembership: std::underlying_type_t<uv_membership> {
 };
 
 
-class SendReq final: public Request<SendReq, uv_udp_send_t> {
+class UVW_EXTERN SendReq final: public Request<SendReq, uv_udp_send_t> {
 public:
     using Deleter = void(*)(char *);
 
@@ -90,7 +93,7 @@ private:
  * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_init_ex)
  * for further details.
  */
-class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
+class UVW_EXTERN UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
     template<typename I>
     static void recvCallback(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
         const typename details::IpTraits<I>::Type *aptr = reinterpret_cast<const typename details::IpTraits<I>::Type *>(addr);
@@ -578,62 +581,62 @@ private:
 
 // (extern) explicit instantiations
 
-extern template void UDPHandle::connect<IPv4>(std::string, unsigned int);
-extern template void UDPHandle::connect<IPv6>(std::string, unsigned int);
+extern template UVW_EXTERN void UDPHandle::connect<IPv4>(std::string, unsigned int);
+extern template UVW_EXTERN void UDPHandle::connect<IPv6>(std::string, unsigned int);
 
-extern template void UDPHandle::connect<IPv4>(Addr);
-extern template void UDPHandle::connect<IPv6>(Addr);
+extern template UVW_EXTERN void UDPHandle::connect<IPv4>(Addr);
+extern template UVW_EXTERN void UDPHandle::connect<IPv6>(Addr);
 
-extern template Addr UDPHandle::peer<IPv4>() const noexcept;
-extern template Addr UDPHandle::peer<IPv6>() const noexcept;
+extern template UVW_EXTERN Addr UDPHandle::peer<IPv4>() const noexcept;
+extern template UVW_EXTERN Addr UDPHandle::peer<IPv6>() const noexcept;
 
-extern template void UDPHandle::bind<IPv4>(std::string, unsigned int, Flags<Bind>);
-extern template void UDPHandle::bind<IPv6>(std::string, unsigned int, Flags<Bind>);
+extern template UVW_EXTERN void UDPHandle::bind<IPv4>(std::string, unsigned int, Flags<Bind>);
+extern template UVW_EXTERN void UDPHandle::bind<IPv6>(std::string, unsigned int, Flags<Bind>);
 
-extern template void UDPHandle::bind<IPv4>(Addr, Flags<Bind>);
-extern template void UDPHandle::bind<IPv6>(Addr, Flags<Bind>);
+extern template UVW_EXTERN void UDPHandle::bind<IPv4>(Addr, Flags<Bind>);
+extern template UVW_EXTERN void UDPHandle::bind<IPv6>(Addr, Flags<Bind>);
 
-extern template Addr UDPHandle::sock<IPv4>() const noexcept;
-extern template Addr UDPHandle::sock<IPv6>() const noexcept;
+extern template UVW_EXTERN Addr UDPHandle::sock<IPv4>() const noexcept;
+extern template UVW_EXTERN Addr UDPHandle::sock<IPv6>() const noexcept;
 
-extern template bool UDPHandle::multicastMembership<IPv4>(std::string, std::string, Membership);
-extern template bool UDPHandle::multicastMembership<IPv6>(std::string, std::string, Membership);
+extern template UVW_EXTERN bool UDPHandle::multicastMembership<IPv4>(std::string, std::string, Membership);
+extern template UVW_EXTERN bool UDPHandle::multicastMembership<IPv6>(std::string, std::string, Membership);
 
-extern template bool UDPHandle::multicastInterface<IPv4>(std::string);
-extern template bool UDPHandle::multicastInterface<IPv6>(std::string);
+extern template UVW_EXTERN bool UDPHandle::multicastInterface<IPv4>(std::string);
+extern template UVW_EXTERN bool UDPHandle::multicastInterface<IPv6>(std::string);
 
-extern template void UDPHandle::send<IPv4>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
-extern template void UDPHandle::send<IPv6>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
+extern template UVW_EXTERN void UDPHandle::send<IPv4>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
+extern template UVW_EXTERN void UDPHandle::send<IPv6>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
 
-extern template void UDPHandle::send<IPv4>(Addr, std::unique_ptr<char[]>, unsigned int);
-extern template void UDPHandle::send<IPv6>(Addr, std::unique_ptr<char[]>, unsigned int);
+extern template UVW_EXTERN void UDPHandle::send<IPv4>(Addr, std::unique_ptr<char[]>, unsigned int);
+extern template UVW_EXTERN void UDPHandle::send<IPv6>(Addr, std::unique_ptr<char[]>, unsigned int);
 
-extern template void UDPHandle::send<IPv4>(std::string, unsigned int, char *, unsigned int);
-extern template void UDPHandle::send<IPv6>(std::string, unsigned int, char *, unsigned int);
+extern template UVW_EXTERN void UDPHandle::send<IPv4>(std::string, unsigned int, char *, unsigned int);
+extern template UVW_EXTERN void UDPHandle::send<IPv6>(std::string, unsigned int, char *, unsigned int);
 
-extern template void UDPHandle::send<IPv4>(Addr, char *, unsigned int);
-extern template void UDPHandle::send<IPv6>(Addr, char *, unsigned int);
+extern template UVW_EXTERN void UDPHandle::send<IPv4>(Addr, char *, unsigned int);
+extern template UVW_EXTERN void UDPHandle::send<IPv6>(Addr, char *, unsigned int);
 
-extern template int UDPHandle::trySend<IPv4>(const sockaddr &, std::unique_ptr<char[]>, unsigned int);
-extern template int UDPHandle::trySend<IPv6>(const sockaddr &, std::unique_ptr<char[]>, unsigned int);
+extern template UVW_EXTERN int UDPHandle::trySend<IPv4>(const sockaddr &, std::unique_ptr<char[]>, unsigned int);
+extern template UVW_EXTERN int UDPHandle::trySend<IPv6>(const sockaddr &, std::unique_ptr<char[]>, unsigned int);
 
-extern template int UDPHandle::trySend<IPv4>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
-extern template int UDPHandle::trySend<IPv6>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
+extern template UVW_EXTERN int UDPHandle::trySend<IPv4>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
+extern template UVW_EXTERN int UDPHandle::trySend<IPv6>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
 
-extern template int UDPHandle::trySend<IPv4>(Addr, std::unique_ptr<char[]>, unsigned int);
-extern template int UDPHandle::trySend<IPv6>(Addr, std::unique_ptr<char[]>, unsigned int);
+extern template UVW_EXTERN int UDPHandle::trySend<IPv4>(Addr, std::unique_ptr<char[]>, unsigned int);
+extern template UVW_EXTERN int UDPHandle::trySend<IPv6>(Addr, std::unique_ptr<char[]>, unsigned int);
 
-extern template int UDPHandle::trySend<IPv4>(const sockaddr &, char *, unsigned int);
-extern template int UDPHandle::trySend<IPv6>(const sockaddr &, char *, unsigned int);
+extern template UVW_EXTERN int UDPHandle::trySend<IPv4>(const sockaddr &, char *, unsigned int);
+extern template UVW_EXTERN int UDPHandle::trySend<IPv6>(const sockaddr &, char *, unsigned int);
 
-extern template int UDPHandle::trySend<IPv4>(std::string, unsigned int, char *, unsigned int);
-extern template int UDPHandle::trySend<IPv6>(std::string, unsigned int, char *, unsigned int);
+extern template UVW_EXTERN int UDPHandle::trySend<IPv4>(std::string, unsigned int, char *, unsigned int);
+extern template UVW_EXTERN int UDPHandle::trySend<IPv6>(std::string, unsigned int, char *, unsigned int);
 
-extern template int UDPHandle::trySend<IPv4>(Addr, char *, unsigned int);
-extern template int UDPHandle::trySend<IPv6>(Addr, char *, unsigned int);
+extern template UVW_EXTERN int UDPHandle::trySend<IPv4>(Addr, char *, unsigned int);
+extern template UVW_EXTERN int UDPHandle::trySend<IPv6>(Addr, char *, unsigned int);
 
-extern template void UDPHandle::recv<IPv4>();
-extern template void UDPHandle::recv<IPv6>();
+extern template UVW_EXTERN void UDPHandle::recv<IPv4>();
+extern template UVW_EXTERN void UDPHandle::recv<IPv6>();
 
 }
 
@@ -641,5 +644,7 @@ extern template void UDPHandle::recv<IPv6>();
 #ifndef UVW_AS_LIB
 #include "udp.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_UDP_INCLUDE_H

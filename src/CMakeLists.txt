@@ -74,8 +74,20 @@ add_uvw_library(uvw-static)
 add_library(uvw-shared SHARED)
 add_library(uvw::uvw-shared ALIAS uvw-shared)
 target_link_libraries(uvw-shared PUBLIC uv::uv-shared)
-set_target_properties(uvw-shared PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${UVW_VERSION_MAJOR} EXCLUDE_FROM_DEFAULT_BUILD 1)
+set_target_properties(uvw-shared PROPERTIES
+	VERSION ${PROJECT_VERSION}
+	SOVERSION ${UVW_VERSION_MAJOR}
+	EXCLUDE_FROM_DEFAULT_BUILD 1
+	C_VISIBILITY_PRESET hidden
+	CXX_VISIBILITY_PRESET hidden
+)
 add_uvw_library(uvw-shared)
+target_compile_definitions(uvw-shared
+  INTERFACE
+    USING_UVW_SHARED=1
+  PRIVATE
+    BUILDING_UVW_SHARED=1
+)
 
 #
 # Install targets

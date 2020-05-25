@@ -5,6 +5,9 @@
 #include <uv.h>
 #include "handle.hpp"
 #include "loop.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -15,7 +18,7 @@ namespace uvw {
  *
  * It will be emitted by PrepareHandle according with its functionalities.
  */
-struct PrepareEvent {};
+struct UVW_EXTERN PrepareEvent {};
 
 
 /**
@@ -26,7 +29,7 @@ struct PrepareEvent {};
  *
  * To create a `PrepareHandle` through a `Loop`, no arguments are required.
  */
-class PrepareHandle final: public Handle<PrepareHandle, uv_prepare_t> {
+class UVW_EXTERN PrepareHandle final: public Handle<PrepareHandle, uv_prepare_t> {
     static void startCallback(uv_prepare_t *handle);
 
 public:
@@ -61,5 +64,7 @@ public:
 #ifndef UVW_AS_LIB
 #include "prepare.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_PREPARE_INCLUDE_H

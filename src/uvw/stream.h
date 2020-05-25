@@ -11,6 +11,9 @@
 #include "request.hpp"
 #include "handle.hpp"
 #include "loop.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -21,7 +24,7 @@ namespace uvw {
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct ConnectEvent {};
+struct UVW_EXTERN ConnectEvent {};
 
 
 /**
@@ -29,7 +32,7 @@ struct ConnectEvent {};
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct EndEvent {};
+struct UVW_EXTERN EndEvent {};
 
 
 /**
@@ -37,7 +40,7 @@ struct EndEvent {};
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct ListenEvent {};
+struct UVW_EXTERN ListenEvent {};
 
 
 /**
@@ -45,7 +48,7 @@ struct ListenEvent {};
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct ShutdownEvent {};
+struct UVW_EXTERN ShutdownEvent {};
 
 
 /**
@@ -53,7 +56,7 @@ struct ShutdownEvent {};
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct WriteEvent {};
+struct UVW_EXTERN WriteEvent {};
 
 
 /**
@@ -61,7 +64,7 @@ struct WriteEvent {};
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct DataEvent {
+struct UVW_EXTERN DataEvent {
     explicit DataEvent(std::unique_ptr<char[]> buf, std::size_t len) noexcept;
 
     std::unique_ptr<char[]> data; /*!< A bunch of data read on the stream. */
@@ -82,7 +85,7 @@ struct ConnectReq final: public Request<ConnectReq, uv_connect_t> {
 };
 
 
-struct ShutdownReq final: public Request<ShutdownReq, uv_shutdown_t> {
+struct UVW_EXTERN ShutdownReq final: public Request<ShutdownReq, uv_shutdown_t> {
     using Request::Request;
 
     void shutdown(uv_stream_t *handle);
@@ -446,5 +449,7 @@ public:
 #ifndef UVW_AS_LIB
 #include "stream.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_STREAM_INCLUDE_H

@@ -6,6 +6,9 @@
 #include <type_traits>
 #include <utility>
 #include "loop.h"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -115,5 +118,7 @@ private:
 
 
 }
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_UNDERLYING_TYPE_INCLUDE_H

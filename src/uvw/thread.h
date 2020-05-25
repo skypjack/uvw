@@ -10,6 +10,9 @@
 #include <uv.h>
 #include "loop.h"
 #include "underlying_type.hpp"
+#include "config.h"
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
 
 namespace uvw {
@@ -46,7 +49,7 @@ class Barrier;
  * that it can be assigned to an `std::function<void(std::shared_ptr<void>)>`.
  * * An optional payload the type of which is `std::shared_ptr<void>`.
  */
-class Thread final: public UnderlyingType<Thread, uv_thread_t> {
+class UVW_EXTERN Thread final: public UnderlyingType<Thread, uv_thread_t> {
     using InternalTask = std::function<void(std::shared_ptr<void>)>;
 
     static void createCallback(void *arg);
@@ -114,7 +117,7 @@ private:
  * seen as a global variable that is only visible to a particular thread and not
  * the whole program.
  */
-class ThreadLocalStorage final: public UnderlyingType<ThreadLocalStorage, uv_key_t> {
+class UVW_EXTERN ThreadLocalStorage final: public UnderlyingType<ThreadLocalStorage, uv_key_t> {
 public:
     explicit ThreadLocalStorage(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept;
 
@@ -148,7 +151,7 @@ public:
  * Runs a function once and only once. Concurrent calls to `once` will block all
  * callers except one (it’s unspecified which one).
  */
-class Once final: public UnderlyingType<Once, uv_once_t> {
+class UVW_EXTERN Once final: public UnderlyingType<Once, uv_once_t> {
     static uv_once_t* guard() noexcept;
 
 public:
@@ -181,7 +184,7 @@ public:
  * * An option boolean that specifies if the mutex is a recursive one. The
  * default value is false, the mutex isn't recursive.
  */
-class Mutex final: public UnderlyingType<Mutex, uv_mutex_t> {
+class UVW_EXTERN Mutex final: public UnderlyingType<Mutex, uv_mutex_t> {
     friend class Condition;
 
 public:
@@ -210,7 +213,7 @@ public:
 /**
  * @brief The RWLock wrapper.
  */
-class RWLock final: public UnderlyingType<RWLock, uv_rwlock_t> {
+class UVW_EXTERN RWLock final: public UnderlyingType<RWLock, uv_rwlock_t> {
 public:
     explicit RWLock(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept;
 
@@ -257,7 +260,7 @@ public:
  *
  * * An unsigned integer that specifies the initial value for the semaphore.
  */
-class Semaphore final: public UnderlyingType<Semaphore, uv_sem_t> {
+class UVW_EXTERN Semaphore final: public UnderlyingType<Semaphore, uv_sem_t> {
 public:
     explicit Semaphore(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int value) noexcept;
 
@@ -284,7 +287,7 @@ public:
 /**
  * @brief The Condition wrapper.
  */
-class Condition final: public UnderlyingType<Condition, uv_cond_t> {
+class UVW_EXTERN Condition final: public UnderlyingType<Condition, uv_cond_t> {
 public:
     explicit Condition(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept;
 
@@ -344,7 +347,7 @@ public:
  * `wait` before any of them successfully return from the call. The value
  * specified must be greater than zero.
  */
-class Barrier final: public UnderlyingType<Barrier, uv_barrier_t> {
+class UVW_EXTERN Barrier final: public UnderlyingType<Barrier, uv_barrier_t> {
 public:
     explicit Barrier(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int count) noexcept;
 
@@ -364,5 +367,7 @@ public:
 #ifndef UVW_AS_LIB
 #include "thread.cpp"
 #endif
+
+UVW_MSVC_WARNING_POP();
 
 #endif // UVW_THREAD_INCLUDE_H
