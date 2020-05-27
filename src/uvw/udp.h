@@ -30,9 +30,9 @@ struct SendEvent {};
  * It will be emitted by UDPHandle according with its functionalities.
  */
 struct UDPDataEvent {
-    explicit UDPDataEvent(Addr sndr, std::unique_ptr<const char[]> buf, std::size_t len, bool part) noexcept;
+    explicit UDPDataEvent(Addr sndr, std::unique_ptr<char[]> buf, std::size_t len, bool part) noexcept;
 
-    std::unique_ptr<const char[]> data; /*!< A bunch of data read on the stream. */
+    std::unique_ptr<char[]> data; /*!< A bunch of data read on the stream. */
     std::size_t length;  /*!< The amount of data read on the stream. */
     Addr sender; /*!< A valid instance of Addr. */
     bool partial; /*!< True if the message was truncated, false otherwise. */
@@ -97,7 +97,7 @@ class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
 
         UDPHandle &udp = *(static_cast<UDPHandle*>(handle->data));
         // data will be destroyed no matter of what the value of nread is
-        std::unique_ptr<const char[]> data{buf->base};
+        std::unique_ptr<char[]> data{buf->base};
 
         if(nread > 0) {
             // data available (can be truncated)

@@ -8,7 +8,7 @@
 namespace uvw {
 
 
-UVW_INLINE UDPDataEvent::UDPDataEvent(Addr sndr, std::unique_ptr<const char[]> buf, std::size_t len, bool part) noexcept
+UVW_INLINE UDPDataEvent::UDPDataEvent(Addr sndr, std::unique_ptr<char[]> buf, std::size_t len, bool part) noexcept
     : data{std::move(buf)}, length{len}, sender{std::move(sndr)}, partial{part}
 {}
 
