@@ -1,7 +1,8 @@
 <map id="uvw::UDPHandle" name="uvw::UDPHandle">
-<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title="uvw::Handle\&lt; UDPHandle,\l uv_udp_t \&gt;" alt="" coords="69,184,251,225"/>
-<area shape="rect" id="node3" href="$structuvw_1_1BaseHandle.html" title="Untyped handle class. " alt="" coords="5,102,131,129"/>
-<area shape="rect" id="node4" href="$classuvw_1_1Resource.html" title="uvw::Resource\&lt; UDPHandle,\l uv_udp_t \&gt;" alt="" coords="155,95,351,136"/>
-<area shape="rect" id="node5" href="$classuvw_1_1UnderlyingType.html" title="uvw::UnderlyingType\l\&lt; UDPHandle, uv_udp_t \&gt;" alt="" coords="61,5,238,47"/>
-<area shape="rect" id="node6" href="$classuvw_1_1Emitter.html" title="uvw::Emitter\&lt; UDPHandle \&gt;" alt="" coords="262,13,453,39"/>
+<area shape="rect" id="node1" title="The UDPHandle handle." alt="" coords="246,273,377,300"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title=" " alt="" coords="214,184,409,225"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Resource.html" title=" " alt="" coords="109,95,319,136"/>
+<area shape="rect" id="node4" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,199,47"/>
+<area shape="rect" id="node5" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="223,13,431,39"/>
+<area shape="rect" id="node6" href="$structuvw_1_1BaseHandle.html" title="Untyped handle class." alt="" coords="343,102,477,129"/>
 </map>

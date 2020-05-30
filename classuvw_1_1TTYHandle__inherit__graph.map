@@ -1,8 +1,9 @@
 <map id="uvw::TTYHandle" name="uvw::TTYHandle">
-<area shape="rect" id="node2" href="$classuvw_1_1StreamHandle.html" title="uvw::StreamHandle\&lt;\l TTYHandle, uv_tty_t \&gt;" alt="" coords="79,273,238,315"/>
-<area shape="rect" id="node3" href="$classuvw_1_1Handle.html" title="uvw::Handle\&lt; TTYHandle,\l uv_tty_t \&gt;" alt="" coords="70,184,247,225"/>
-<area shape="rect" id="node4" href="$structuvw_1_1BaseHandle.html" title="Untyped handle class. " alt="" coords="5,102,131,129"/>
-<area shape="rect" id="node5" href="$classuvw_1_1Resource.html" title="uvw::Resource\&lt; TTYHandle,\l uv_tty_t \&gt;" alt="" coords="155,95,347,136"/>
-<area shape="rect" id="node6" href="$classuvw_1_1UnderlyingType.html" title="uvw::UnderlyingType\l\&lt; TTYHandle, uv_tty_t \&gt;" alt="" coords="66,5,233,47"/>
-<area shape="rect" id="node7" href="$classuvw_1_1Emitter.html" title="uvw::Emitter\&lt; TTYHandle \&gt;" alt="" coords="257,13,444,39"/>
+<area shape="rect" id="node1" title="The TTYHandle handle." alt="" coords="239,363,365,389"/>
+<area shape="rect" id="node2" href="$classuvw_1_1StreamHandle.html" title=" " alt="" coords="216,273,388,315"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Handle.html" title=" " alt="" coords="207,184,397,225"/>
+<area shape="rect" id="node4" href="$classuvw_1_1Resource.html" title=" " alt="" coords="102,95,307,136"/>
+<area shape="rect" id="node5" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,188,47"/>
+<area shape="rect" id="node6" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="212,13,416,39"/>
+<area shape="rect" id="node7" href="$structuvw_1_1BaseHandle.html" title="Untyped handle class." alt="" coords="332,102,467,129"/>
 </map>

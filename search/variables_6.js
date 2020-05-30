@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['internal',['internal',['../structuvw_1_1InterfaceAddress.html#a402b5972c6175874d2e075e5d330192d',1,'uvw::InterfaceAddress']]],
-  ['ip',['ip',['../structuvw_1_1Addr.html#a398a3805b87c8c2b64baf94cdc586fef',1,'uvw::Addr']]]
+  ['internal_851',['internal',['../structuvw_1_1InterfaceAddress.html#a402b5972c6175874d2e075e5d330192d',1,'uvw::InterfaceAddress']]],
+  ['ip_852',['ip',['../structuvw_1_1Addr.html#a398a3805b87c8c2b64baf94cdc586fef',1,'uvw::Addr']]]
 ];

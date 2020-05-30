@@ -1,7 +1,8 @@
 <map id="uvw::AsyncHandle" name="uvw::AsyncHandle">
-<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title="uvw::Handle\&lt; AsyncHandle,\l uv_async_t \&gt;" alt="" coords="68,184,257,225"/>
-<area shape="rect" id="node3" href="$structuvw_1_1BaseHandle.html" title="Untyped handle class. " alt="" coords="5,102,131,129"/>
-<area shape="rect" id="node4" href="$classuvw_1_1Resource.html" title="uvw::Resource\&lt; AsyncHandle,\l uv_async_t \&gt;" alt="" coords="155,95,359,136"/>
-<area shape="rect" id="node5" href="$classuvw_1_1UnderlyingType.html" title="uvw::UnderlyingType\l\&lt; AsyncHandle, uv_async_t \&gt;" alt="" coords="46,5,245,47"/>
-<area shape="rect" id="node6" href="$classuvw_1_1Emitter.html" title="uvw::Emitter\&lt; AsyncHandle \&gt;" alt="" coords="269,13,467,39"/>
+<area shape="rect" id="node1" title="The AsyncHandle handle." alt="" coords="265,273,407,300"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title=" " alt="" coords="233,184,439,225"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Resource.html" title=" " alt="" coords="126,95,346,136"/>
+<area shape="rect" id="node4" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,224,47"/>
+<area shape="rect" id="node5" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="248,13,467,39"/>
+<area shape="rect" id="node6" href="$structuvw_1_1BaseHandle.html" title="Untyped handle class." alt="" coords="370,102,505,129"/>
 </map>

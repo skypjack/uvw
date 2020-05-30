@@ -1,7 +1,8 @@
 <map id="uvw::FsEventHandle" name="uvw::FsEventHandle">
-<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title="uvw::Handle\&lt; FsEventHandle,\l uv_fs_event_t \&gt;" alt="" coords="65,199,266,240"/>
-<area shape="rect" id="node3" href="$structuvw_1_1BaseHandle.html" title="Untyped handle class. " alt="" coords="5,117,131,143"/>
-<area shape="rect" id="node4" href="$classuvw_1_1Resource.html" title="uvw::Resource\&lt; FsEventHandle,\l uv_fs_event_t \&gt;" alt="" coords="155,109,371,151"/>
-<area shape="rect" id="node5" href="$classuvw_1_1UnderlyingType.html" title="uvw::UnderlyingType\l\&lt; FsEventHandle, uv\l_fs_event_t \&gt;" alt="" coords="88,5,235,61"/>
-<area shape="rect" id="node6" href="$classuvw_1_1Emitter.html" title="uvw::Emitter\&lt; FsEventHandle \&gt;" alt="" coords="259,20,469,47"/>
+<area shape="rect" id="node1" title="The FsEventHandle handle." alt="" coords="221,288,375,315"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title=" " alt="" coords="189,199,407,240"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Resource.html" title=" " alt="" coords="77,109,311,151"/>
+<area shape="rect" id="node4" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,164,61"/>
+<area shape="rect" id="node5" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="189,20,421,47"/>
+<area shape="rect" id="node6" href="$structuvw_1_1BaseHandle.html" title="Untyped handle class." alt="" coords="335,117,469,143"/>
 </map>
