@@ -28,6 +28,13 @@ protected:
         else { ptr->publish(E{}); }
     }
 
+    template<typename E>
+    static void tokenCallback(U *req, int status) {
+        auto ptr = reserve(req);
+        if(status) { ptr->publish(ErrorEvent{status}); }
+        else { ptr->publish(E{reinterpret_cast<uintptr_t>(req)}); }
+    }
+
     template<typename F, typename... Args>
     auto invoke(F &&f, Args&&... args) {
         if constexpr(std::is_void_v<std::invoke_result_t<F, Args...>>) {

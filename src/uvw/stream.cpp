@@ -12,6 +12,9 @@ UVW_INLINE DataEvent::DataEvent(std::unique_ptr<char[]> buf, std::size_t len) no
     : data{std::move(buf)}, length{len}
 {}
 
+UVW_INLINE WriteEvent::WriteEvent(TokenType token) noexcept
+    : token(token)
+{}
 
 UVW_INLINE void details::ShutdownReq::shutdown(uv_stream_t *handle) {
     invoke(&uv_shutdown, get(), handle, &defaultCallback<ShutdownEvent>);

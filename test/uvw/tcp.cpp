@@ -1,3 +1,5 @@
+#include <set>
+
 #include <gtest/gtest.h>
 #include <uvw.hpp>
 
@@ -49,6 +51,68 @@ TEST(TCP, ReadWrite) {
         handle.tryWrite(std::move(dataTryWrite), 1);
         auto dataWrite = std::unique_ptr<char[]>(new char[2]{ 'b', 'c' });
         handle.write(std::move(dataWrite), 2);
+    });
+
+    server->bind(address, port);
+    server->listen();
+    client->connect(address, port);
+
+    loop->run();
+}
+
+
+TEST(TCP, WriteTokens) {
+    std::set<uvw::TokenType> tokens;
+    const std::string address = std::string{"127.0.0.1"};
+    const unsigned int port = 4242;
+
+    auto loop = uvw::Loop::getDefault();
+    auto server = loop->resource<uvw::TCPHandle>();
+    auto client = loop->resource<uvw::TCPHandle>();
+
+    server->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    client->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+
+    server->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TCPHandle &handle) {
+        std::shared_ptr<uvw::TCPHandle> socket = handle.loop().resource<uvw::TCPHandle>();
+
+        socket->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { FAIL(); });
+        socket->on<uvw::CloseEvent>([&handle](const uvw::CloseEvent &, uvw::TCPHandle &) { handle.close(); });
+        socket->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TCPHandle &sock) { sock.close(); });
+
+        handle.accept(*socket);
+        socket->read();
+    });
+
+    client->on<uvw::WriteEvent>([&tokens](const uvw::WriteEvent &event, uvw::TCPHandle &handle) {
+        auto token = tokens.find(event.token);
+        ASSERT_FALSE(token == tokens.end());
+        tokens.erase(token);
+        if (tokens.size() == 0) handle.close();
+    });
+
+    client->once<uvw::ConnectEvent>([&tokens](const uvw::ConnectEvent &, uvw::TCPHandle &handle) {
+        ASSERT_TRUE(handle.writable());
+        ASSERT_TRUE(handle.readable());
+
+        {
+            auto dataWrite = std::unique_ptr<char[]>(new char[1]{ 'a' });
+            auto token = handle.write(std::move(dataWrite), 1);
+            ASSERT_TRUE(tokens.find(token) == tokens.end());
+            tokens.insert(token);
+        }
+        {
+            auto dataWrite = std::unique_ptr<char[]>(new char[2]{ 'b', 'c' });
+            auto token = handle.write(std::move(dataWrite), 2);
+            ASSERT_TRUE(tokens.find(token) == tokens.end());
+            tokens.insert(token);
+        }
+        {
+            auto dataWrite = std::unique_ptr<char[]>(new char[3]{ 'd', 'e', 'f' });
+            auto token = handle.write(std::move(dataWrite), 3);
+            ASSERT_TRUE(tokens.find(token) == tokens.end());
+            tokens.insert(token);
+        }
     });
 
     server->bind(address, port);

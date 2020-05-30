@@ -17,6 +17,18 @@ namespace uvw {
 
 
 /**
+ * @brief A token that some operations will emit, to match with their event.
+ *
+ * As calls are issued and queued, they may return a token of type TokenType.
+ * <br/>
+ * Then, when a event is issued, the same token will be present inside of it.
+ * The guarantees are that the token will be unique across all the
+ * pending requests, and that only one event will be issued per
+ * token received.
+ */
+using TokenType = std::uintptr_t;
+
+/**
  * @brief ConnectEvent event.
  *
  * It will be emitted by StreamHandle according with its functionalities.
@@ -53,7 +65,11 @@ struct ShutdownEvent {};
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
-struct WriteEvent {};
+struct WriteEvent {
+    explicit WriteEvent(TokenType token) noexcept;
+
+    TokenType token; /*!< The same token that was returned by the write call. */
+};
 
 
 /**
@@ -100,12 +116,14 @@ public:
           buf{uv_buf_init(data.get(), len)}
     {}
 
-    void write(uv_stream_t *handle) {
-        this->invoke(&uv_write, this->get(), handle, &buf, 1, &this->template defaultCallback<WriteEvent>);
+    TokenType write(uv_stream_t *handle) {
+        this->invoke(&uv_write, this->get(), handle, &buf, 1, &this->template tokenCallback<WriteEvent>);
+        return reinterpret_cast<TokenType>(this->get());
     }
 
-    void write(uv_stream_t *handle, uv_stream_t *send) {
-        this->invoke(&uv_write2, this->get(), handle, &buf, 1, send, &this->template defaultCallback<WriteEvent>);
+    TokenType write(uv_stream_t *handle, uv_stream_t *send) {
+        this->invoke(&uv_write2, this->get(), handle, &buf, 1, send, &this->template tokenCallback<WriteEvent>);
+        return reinterpret_cast<TokenType>(this->get());
     }
 
 private:
@@ -251,9 +269,10 @@ public:
      *
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
+     * @return A token that can be used to match the write request to its WriteEvent.
      */
     template<typename Deleter>
-    void write(std::unique_ptr<char[], Deleter> data, unsigned int len) {
+    TokenType write(std::unique_ptr<char[], Deleter> data, unsigned int len) {
         auto req = this->loop().template resource<details::WriteReq<Deleter>>(std::move(data), len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
@@ -261,7 +280,7 @@ public:
 
         req->template once<ErrorEvent>(listener);
         req->template once<WriteEvent>(listener);
-        req->write(this->template get<uv_stream_t>());
+        return req->write(this->template get<uv_stream_t>());
     }
 
     /**
@@ -275,8 +294,9 @@ public:
      *
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
+     * @return A token that can be used to match the write request to its WriteEvent.
      */
-    void write(char *data, unsigned int len) {
+    TokenType write(char *data, unsigned int len) {
         auto req = this->loop().template resource<details::WriteReq<void(*)(char *)>>(std::unique_ptr<char[], void(*)(char *)>{data, [](char *) {}}, len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
@@ -284,7 +304,7 @@ public:
 
         req->template once<ErrorEvent>(listener);
         req->template once<WriteEvent>(listener);
-        req->write(this->template get<uv_stream_t>());
+        return req->write(this->template get<uv_stream_t>());
     }
 
     /**
@@ -305,9 +325,10 @@ public:
      * @param send The handle over which to write data.
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
+     * @return A token that can be used to match the write request to its WriteEvent.
      */
     template<typename S, typename Deleter>
-    void write(S &send, std::unique_ptr<char[], Deleter> data, unsigned int len) {
+    TokenType write(S &send, std::unique_ptr<char[], Deleter> data, unsigned int len) {
         auto req = this->loop().template resource<details::WriteReq<Deleter>>(std::move(data), len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
@@ -315,7 +336,7 @@ public:
 
         req->template once<ErrorEvent>(listener);
         req->template once<WriteEvent>(listener);
-        req->write(this->template get<uv_stream_t>(), this->template get<uv_stream_t>(send));
+        return req->write(this->template get<uv_stream_t>(), this->template get<uv_stream_t>(send));
     }
 
     /**
@@ -336,9 +357,10 @@ public:
      * @param send The handle over which to write data.
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
+     * @return A token that can be used to match the write request to its WriteEvent.
      */
     template<typename S>
-    void write(S &send, char *data, unsigned int len) {
+    TokenType write(S &send, char *data, unsigned int len) {
         auto req = this->loop().template resource<details::WriteReq<void(*)(char *)>>(std::unique_ptr<char[], void(*)(char *)>{data, [](char *) {}}, len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
@@ -346,7 +368,7 @@ public:
 
         req->template once<ErrorEvent>(listener);
         req->template once<WriteEvent>(listener);
-        req->write(this->template get<uv_stream_t>(), this->template get<uv_stream_t>(send));
+        return req->write(this->template get<uv_stream_t>(), this->template get<uv_stream_t>(send));
     }
 
     /**
