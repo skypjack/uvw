@@ -264,7 +264,7 @@ public:
      * @return The file descriptor attached to the hande or a negative value in
      * case of errors.
      */
-    OSFileDescriptor fileno() const {
+    OSFileDescriptor fd() const {
         uv_os_fd_t fd;
         uv_fileno(this->template get<uv_handle_t>(), &fd);
         return fd;

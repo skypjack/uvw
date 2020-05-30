@@ -29,14 +29,13 @@ else()
 
     target_compile_features(gtest PUBLIC cxx_std_17)
     target_compile_features(gtest_main PUBLIC cxx_std_17)
+    target_compile_options(gtest PRIVATE -Wno-error)
     target_compile_features(gmock PUBLIC cxx_std_17)
     target_compile_features(gmock_main PUBLIC cxx_std_17)
 endif()
 
 if(WIN32)
     set(WINSOCK2 ws2_32)
-elseif(NOT APPLE)
-    find_library(LIBRT rt)
 endif()
 
 function(ADD_UVW_TEST TEST_NAME TEST_SOURCE)
