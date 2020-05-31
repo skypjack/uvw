@@ -230,6 +230,12 @@ private:
 };
 
 
+/**
+ * @cond TURN_OFF_DOXYGEN
+ * Internal details not to be documented.
+ */
+
+
 // (extern) explicit instantiations
 
 extern template void TCPHandle::bind<IPv4>(std::string, unsigned int, Flags<Bind>);
@@ -249,6 +255,12 @@ extern template void TCPHandle::connect<IPv6>(std::string, unsigned int);
 
 extern template void TCPHandle::connect<IPv4>(Addr addr);
 extern template void TCPHandle::connect<IPv6>(Addr addr);
+
+
+/**
+ * Internal details not to be documented.
+ * @endcond TURN_OFF_DOXYGEN
+ */
 
 
 }

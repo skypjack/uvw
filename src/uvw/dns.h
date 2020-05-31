@@ -230,6 +230,12 @@ public:
 };
 
 
+/**
+ * @cond TURN_OFF_DOXYGEN
+ * Internal details not to be documented.
+ */
+
+
 // (extern) explicit instantiations
 
 extern template void GetNameInfoReq::nameInfo<IPv4>(std::string ip, unsigned int port, int flags);
@@ -243,6 +249,12 @@ extern template std::pair<bool, std::pair<const char *, const char *>> GetNameIn
 
 extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(Addr addr, int flags);
 extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(Addr addr, int flags);
+
+
+/**
+ * Internal details not to be documented.
+ * @endcond TURN_OFF_DOXYGEN
+ */
 
 
 }

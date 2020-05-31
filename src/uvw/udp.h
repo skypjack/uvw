@@ -576,6 +576,12 @@ private:
 };
 
 
+/**
+ * @cond TURN_OFF_DOXYGEN
+ * Internal details not to be documented.
+ */
+
+
 // (extern) explicit instantiations
 
 extern template void UDPHandle::connect<IPv4>(std::string, unsigned int);
@@ -634,6 +640,13 @@ extern template int UDPHandle::trySend<IPv6>(Addr, char *, unsigned int);
 
 extern template void UDPHandle::recv<IPv4>();
 extern template void UDPHandle::recv<IPv6>();
+
+
+/**
+ * Internal details not to be documented.
+ * @endcond TURN_OFF_DOXYGEN
+ */
+
 
 }
 
