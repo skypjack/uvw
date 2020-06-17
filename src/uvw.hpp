@@ -25,3 +25,7 @@
 #include "uvw/underlying_type.hpp"
 #include "uvw/util.h"
 #include "uvw/work.h"
+
+#ifdef UVW_AS_LIB
+#include "../lib/inst/externs.hpp"
+#endif

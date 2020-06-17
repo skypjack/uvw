@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <uvw.hpp>
 
-
 TEST(TTY, Functionalities) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::TTYHandle>(uvw::StdOUT, false);

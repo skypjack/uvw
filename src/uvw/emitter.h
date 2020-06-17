@@ -15,6 +15,15 @@
 
 UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
 
+#include "config.h"
+
+#include "../lib/type_factory.h"
+#ifndef UVW_AS_LIB
+#include "../lib/type_factory.cpp"
+#endif
+
+UVW_MSVC_WARNING_PUSH_DISABLE_DLLINTERFACE();
+
 
 namespace uvw {
 
@@ -160,20 +169,9 @@ class Emitter {
         ListenerList onL{};
     };
 
-    static std::size_t next_type() noexcept {
-        static std::size_t counter = 0;
-        return counter++;
-    }
-
-    template<typename>
-    static std::size_t event_type() noexcept {
-        static std::size_t value = next_type();
-        return value;
-    }
-
     template<typename E>
     Handler<E> & handler() noexcept {
-        std::size_t type = event_type<E>();
+        std::size_t type = details::type_factory<T>::template event_type<E>();
 
         if(!(type < handlers.size())) {
             handlers.resize(type+1);
@@ -303,7 +301,7 @@ public:
      */
     template<typename E>
     bool empty() const noexcept {
-        std::size_t type = event_type<E>();
+        std::size_t type = details::type_factory<T>::template event_type<E>();
 
         return (!(type < handlers.size()) ||
                 !handlers[type] ||
@@ -327,6 +325,11 @@ private:
 
 }
 
+struct UVW_EXTERN FakeEvent { };
+
+struct UVW_EXTERN TestEmitter: uvw::Emitter<TestEmitter> {
+    void emit() { publish(FakeEvent{}); }
+};
 
 #ifndef UVW_AS_LIB
 #include "emitter.cpp"

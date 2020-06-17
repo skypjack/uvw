@@ -277,6 +277,15 @@ public:
 
 }
 
+struct fake_handle_t { void *data; };
+
+struct UVW_EXTERN FakeHandle: uvw::Handle<FakeHandle, fake_handle_t> {
+    using Handle::Handle;
+
+    template<typename... Args>
+    bool init(Args&&...) { return initialize([](auto...){ return true; }); }
+};
+
 UVW_MSVC_WARNING_POP();
 
 #endif // UVW_HANDLE_INCLUDE_H

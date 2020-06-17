@@ -75,7 +75,7 @@ struct UVW_EXTERN DataEvent {
 namespace details {
 
 
-struct ConnectReq final: public Request<ConnectReq, uv_connect_t> {
+struct UVW_EXTERN ConnectReq final: public Request<ConnectReq, uv_connect_t> {
     using Request::Request;
 
     template<typename F, typename... Args>
@@ -92,33 +92,26 @@ struct UVW_EXTERN ShutdownReq final: public Request<ShutdownReq, uv_shutdown_t> 
 };
 
 
-template<typename Deleter>
-class WriteReq final: public Request<WriteReq<Deleter>, uv_write_t> {
-    using ConstructorAccess = typename Request<WriteReq<Deleter>, uv_write_t>::ConstructorAccess;
-
-public:
-    WriteReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len)
-        : Request<WriteReq<Deleter>, uv_write_t>{ca, std::move(loop)},
-          data{std::move(dt)},
-          buf{uv_buf_init(data.get(), len)}
-    {}
-
-    void write(uv_stream_t *handle) {
-        this->invoke(&uv_write, this->get(), handle, &buf, 1, &this->template defaultCallback<WriteEvent>);
-    }
-
-    void write(uv_stream_t *handle, uv_stream_t *send) {
-        this->invoke(&uv_write2, this->get(), handle, &buf, 1, send, &this->template defaultCallback<WriteEvent>);
-    }
-
-private:
-    std::unique_ptr<char[], Deleter> data;
-    uv_buf_t buf;
-};
 
 
 }
 
+    template<typename Deleter>
+    class UVW_EXTERN WriteReq final: public Request<WriteReq<Deleter>, uv_write_t> {
+        using ConstructorAccess = typename Request<WriteReq<Deleter>, uv_write_t>::ConstructorAccess;
+
+    public:
+        WriteReq(WriteReq::ConstructorAccess ca, std::shared_ptr<Loop> loop,
+                 std::unique_ptr<char[], Deleter> dt, unsigned int len);
+
+        void write(uv_stream_t *handle);
+
+        void write(uv_stream_t *handle, uv_stream_t *send);
+
+    private:
+        std::unique_ptr<char[], Deleter> data;
+        uv_buf_t buf;
+    };
 
 /**
  * @brief The StreamHandle handle.
@@ -257,7 +250,7 @@ public:
      */
     template<typename Deleter>
     void write(std::unique_ptr<char[], Deleter> data, unsigned int len) {
-        auto req = this->loop().template resource<details::WriteReq<Deleter>>(std::move(data), len);
+        auto req = this->loop().template resource<WriteReq<Deleter>>(std::move(data), len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
@@ -280,7 +273,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     void write(char *data, unsigned int len) {
-        auto req = this->loop().template resource<details::WriteReq<void(*)(char *)>>(std::unique_ptr<char[], void(*)(char *)>{data, [](char *) {}}, len);
+        auto req = this->loop().template resource<WriteReq<void(*)(char *)>>(std::unique_ptr<char[], void(*)(char *)>{data, [](char *) {}}, len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
@@ -311,7 +304,7 @@ public:
      */
     template<typename S, typename Deleter>
     void write(S &send, std::unique_ptr<char[], Deleter> data, unsigned int len) {
-        auto req = this->loop().template resource<details::WriteReq<Deleter>>(std::move(data), len);
+        auto req = this->loop().template resource<WriteReq<Deleter>>(std::move(data), len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
@@ -342,7 +335,7 @@ public:
      */
     template<typename S>
     void write(S &send, char *data, unsigned int len) {
-        auto req = this->loop().template resource<details::WriteReq<void(*)(char *)>>(std::unique_ptr<char[], void(*)(char *)>{data, [](char *) {}}, len);
+        auto req = this->loop().template resource<WriteReq<void(*)(char *)>>(std::unique_ptr<char[], void(*)(char *)>{data, [](char *) {}}, len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
@@ -441,6 +434,15 @@ public:
         return uv_stream_get_write_queue_size(this->template get<uv_stream_t>());
     }
 };
+
+extern template UVW_EXTERN WriteReq<void (*)(char*) >::WriteReq(WriteReq::ConstructorAccess ca, std::shared_ptr<Loop> loop,
+                                                            std::unique_ptr<char[], void (*)(char*)> dt, unsigned int len);
+extern template UVW_EXTERN WriteReq<std::default_delete<char []> >::WriteReq(WriteReq::ConstructorAccess ca, std::shared_ptr<Loop> loop,
+                                                            std::unique_ptr<char[], std::default_delete<char []>> dt, unsigned int len);
+
+extern template UVW_EXTERN void WriteReq<std::default_delete<char []> >::write(uv_stream_s*);
+extern template UVW_EXTERN void WriteReq<void (*)(char*)>::write(uv_stream_s*);
+extern template UVW_EXTERN void WriteReq<std::default_delete<char []> >::write(uv_stream_t *handle, uv_stream_t *send);
 
 
 }

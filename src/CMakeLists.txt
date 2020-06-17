@@ -29,6 +29,7 @@ function(add_uvw_library LIB_NAME)
             uvw/udp.cpp
             uvw/util.cpp
             uvw/work.cpp
+            ../lib/type_factory.cpp
     )
 
     set_target_properties(${LIB_NAME} PROPERTIES POSITION_INDEPENDENT_CODE 1)

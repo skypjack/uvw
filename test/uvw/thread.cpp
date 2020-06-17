@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <uvw.hpp>
 
+
 TEST(Thread, Run) {
     auto loop = uvw::Loop::getDefault();
     auto has_run = std::make_shared<bool>();

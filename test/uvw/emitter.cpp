@@ -3,13 +3,6 @@
 #include <uvw/emitter.h>
 
 
-struct FakeEvent { };
-
-struct TestEmitter: uvw::Emitter<TestEmitter> {
-    void emit() { publish(FakeEvent{}); }
-};
-
-
 TEST(ErrorEvent, Functionalities) {
     auto ecode = static_cast<std::underlying_type_t<uv_errno_t>>(UV_EADDRINUSE);
 
@@ -23,7 +16,6 @@ TEST(ErrorEvent, Functionalities) {
     ASSERT_FALSE(static_cast<bool>(uvw::ErrorEvent{0}));
     ASSERT_TRUE(static_cast<bool>(uvw::ErrorEvent{ecode}));
 }
-
 
 TEST(Emitter, EmptyAndClear) {
     TestEmitter emitter{};

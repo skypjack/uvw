@@ -2,17 +2,6 @@
 #include <uvw.hpp>
 
 
-struct fake_handle_t { void *data; };
-
-
-struct FakeHandle: uvw::Handle<FakeHandle, fake_handle_t> {
-    using Handle::Handle;
-
-    template<typename... Args>
-    bool init(Args&&...) { return initialize([](auto...){ return true; }); }
-};
-
-
 TEST(Handle, Functionalities) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::AsyncHandle>();
@@ -44,7 +33,6 @@ TEST(Handle, Functionalities) {
 
     ASSERT_NO_THROW(handle->fileno());
 }
-
 
 TEST(Handle, InitializationFailure) {
     auto loop = uvw::Loop::getDefault();
