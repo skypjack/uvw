@@ -108,8 +108,6 @@ namespace uvw {
     template std::size_t details::type_factory<TCPHandle>::event_type<ListenEvent>() noexcept;
     template std::size_t details::type_factory<TCPHandle>::event_type<ShutdownEvent>() noexcept;
     template std::size_t details::type_factory<TCPHandle>::event_type<WriteEvent>() noexcept;
-    template std::size_t details::type_factory<TestEmitter>::event_type<ErrorEvent>() noexcept;
-    template std::size_t details::type_factory<TestEmitter>::event_type<FakeEvent>() noexcept;
     template std::size_t details::type_factory<TimerHandle>::event_type<CloseEvent>() noexcept;
     template std::size_t details::type_factory<TimerHandle>::event_type<ErrorEvent>() noexcept;
     template std::size_t details::type_factory<TimerHandle>::event_type<TimerEvent>() noexcept;
@@ -133,5 +131,10 @@ namespace uvw {
     template std::size_t details::type_factory<WriteReq<void (*)(char*) > >::event_type<WriteEvent>() noexcept;
 
 }
+
+#ifdef BUILD_TESTING_INSTANTIATIONS
+#include "debug/instantiations.hpp"
+#endif
+
 
 #endif //UVW_INSTANTIATIONS_HPP

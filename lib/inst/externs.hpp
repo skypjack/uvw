@@ -113,8 +113,6 @@ namespace uvw {
     extern template UVW_EXTERN std::size_t details::type_factory<TCPHandle>::event_type<ListenEvent>() noexcept;
     extern template UVW_EXTERN std::size_t details::type_factory<TCPHandle>::event_type<ShutdownEvent>() noexcept;
     extern template UVW_EXTERN std::size_t details::type_factory<TCPHandle>::event_type<WriteEvent>() noexcept;
-    extern template UVW_EXTERN std::size_t details::type_factory<TestEmitter>::event_type<ErrorEvent>() noexcept;
-    extern template UVW_EXTERN std::size_t details::type_factory<TestEmitter>::event_type<FakeEvent>() noexcept;
     extern template UVW_EXTERN std::size_t details::type_factory<TimerHandle>::event_type<ErrorEvent>() noexcept;
     extern template UVW_EXTERN std::size_t details::type_factory<TimerHandle>::event_type<TimerEvent>() noexcept;
     extern template UVW_EXTERN std::size_t details::type_factory<TTYHandle>::event_type<CloseEvent>() noexcept;
@@ -131,5 +129,10 @@ namespace uvw {
     extern template UVW_EXTERN std::size_t details::type_factory<WriteReq<void (*)(char*) > >::event_type<ErrorEvent>() noexcept;
     extern template UVW_EXTERN std::size_t details::type_factory<WriteReq<void (*)(char*) > >::event_type<WriteEvent>() noexcept;
 }
+
+#ifdef BUILD_TESTING_INSTANTIATIONS
+#include "debug/externs.hpp"
+#endif
+
 
 #endif //UVW_EXTERNS_HPP

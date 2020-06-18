@@ -55,6 +55,7 @@ function(ADD_UVW_TEST TEST_NAME TEST_SOURCE)
         )
 
     target_compile_definitions(${TEST_NAME} PRIVATE $<$<NOT:$<TARGET_EXISTS:uvw::uvw>>:UVW_AS_LIB>)
+    target_compile_definitions(${TEST_NAME} PRIVATE $<$<BOOL:${BUILD_TESTING}>:BUILD_TESTING_INSTANTIATIONS>)
     add_test(NAME uvw_${TEST_NAME} COMMAND $<TARGET_FILE:${TEST_NAME}>)
 endfunction()
 

@@ -325,15 +325,14 @@ private:
 
 }
 
-struct UVW_EXTERN FakeEvent { };
-
-struct UVW_EXTERN TestEmitter: uvw::Emitter<TestEmitter> {
-    void emit() { publish(FakeEvent{}); }
-};
-
 #ifndef UVW_AS_LIB
 #include "emitter.cpp"
 #endif
+
+#ifdef BUILD_TESTING_INSTANTIATIONS
+#include "../lib/inst/debug/emitter.cpp"
+#endif
+
 
 UVW_MSVC_WARNING_POP();
 

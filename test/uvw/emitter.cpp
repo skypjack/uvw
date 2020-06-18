@@ -2,7 +2,6 @@
 #include <gtest/gtest.h>
 #include <uvw/emitter.h>
 
-
 TEST(ErrorEvent, Functionalities) {
     auto ecode = static_cast<std::underlying_type_t<uv_errno_t>>(UV_EADDRINUSE);
 

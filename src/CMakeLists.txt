@@ -21,7 +21,7 @@ function(add_uvw_library LIB_NAME)
             uvw/prepare.cpp
             uvw/process.cpp
             uvw/signal.cpp
-            uvw/stream.cpp
+            $<$<BOOL:${BUILD_TESTING}>:uvw/stream.cpp>
             uvw/tcp.cpp
             uvw/thread.cpp
             uvw/timer.cpp
@@ -35,6 +35,7 @@ function(add_uvw_library LIB_NAME)
     set_target_properties(${LIB_NAME} PROPERTIES POSITION_INDEPENDENT_CODE 1)
     target_compile_definitions(${LIB_NAME} PUBLIC UVW_AS_LIB)
     target_compile_features(${LIB_NAME} PUBLIC cxx_std_17)
+    target_compile_definitions(${LIB_NAME} PRIVATE $<$<BOOL:${BUILD_TESTING}>:BUILD_TESTING_INSTANTIATIONS>)
 
     target_include_directories(
         ${LIB_NAME}
