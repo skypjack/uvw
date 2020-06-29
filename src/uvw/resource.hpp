@@ -39,9 +39,7 @@ protected:
 
 public:
     explicit Resource(ConstructorAccess ca, std::shared_ptr<Loop> ref)
-        : UnderlyingType<T, U>{ca, std::move(ref)},
-          Emitter<T>{},
-          std::enable_shared_from_this<T>{}
+        : UnderlyingType<T, U>{ca, std::move(ref)}
     {
         this->get()->data = this;
     }
