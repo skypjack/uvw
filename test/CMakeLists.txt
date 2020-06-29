@@ -31,12 +31,14 @@ else()
     target_compile_features(gtest_main PUBLIC cxx_std_17)
     target_compile_features(gmock PUBLIC cxx_std_17)
     target_compile_features(gmock_main PUBLIC cxx_std_17)
+
+    if(CMAKE_SYSTEM_NAME MATCHES OpenBSD)
+        target_compile_options(gtest PRIVATE -Wno-error)
+    endif()
 endif()
 
 if(WIN32)
     set(WINSOCK2 ws2_32)
-elseif(NOT APPLE)
-    find_library(LIBRT rt)
 endif()
 
 function(ADD_UVW_TEST TEST_NAME TEST_SOURCE)
@@ -103,6 +105,10 @@ ADD_UVW_TEST(udp uvw/udp.cpp)
 ADD_UVW_TEST(underlying_type uvw/underlying_type.cpp)
 ADD_UVW_TEST(util uvw/util.cpp)
 ADD_UVW_TEST(work uvw/work.cpp)
+
+if(NOT CMAKE_SYSTEM_NAME MATCHES OpenBSD)
+    ADD_UVW_DIR_TEST(file_req_sendfile uvw/file_req_sendfile.cpp)
+endif()
 
 if(BUILD_DNS_TEST)
     ADD_UVW_TEST(dns uvw/dns.cpp)

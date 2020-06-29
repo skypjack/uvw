@@ -42,7 +42,7 @@ TEST(Handle, Functionalities) {
     ASSERT_EQ(handle->recvBufferSize(), static_cast<decltype(handle->recvBufferSize())>(0));
     ASSERT_FALSE(handle->recvBufferSize(0));
 
-    ASSERT_NO_THROW(handle->fileno());
+    ASSERT_NO_THROW(handle->fd());
 }
 
 
