@@ -644,7 +644,7 @@ extern template void UDPHandle::recv<IPv6>();
 
 /**
  * Internal details not to be documented.
- * @endcond TURN_OFF_DOXYGEN
+ * @endcond
  */
 
 

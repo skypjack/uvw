@@ -5,6 +5,7 @@
 -->
 [![Build Status](https://github.com/skypjack/uvw/workflows/build/badge.svg)](https://github.com/skypjack/uvw/actions)
 [![Coverage](https://codecov.io/gh/skypjack/uvw/branch/master/graph/badge.svg)](https://codecov.io/gh/skypjack/uvw)
+[![Documentation](https://img.shields.io/badge/docs-docsforge-blue)](http://uvw.docsforge.com/)
 [![Download](https://api.bintray.com/packages/skypjack/conan/uvw%3Askypjack/images/download.svg)](https://bintray.com/skypjack/conan/uvw%3Askypjack/_latestVersion)
 [![Gitter chat](https://badges.gitter.im/skypjack/uvw.png)](https://gitter.im/skypjack/uvw)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/skypjack)
@@ -134,7 +135,7 @@ When used through `CMake`, the `uvw::uvw` target is exported for convenience.
 
 To use `uvw` as a compiled library, set the `BUILD_UVW_LIBS` options in cmake
 before including the project.<br/>
-This option triggers the generation of a targets named 
+This option triggers the generation of a targets named
 `uvw::uvw-static`. The matching version of `libuv` is also
 compiled and exported as `uv::uv-static` for convenience.
 
@@ -183,8 +184,11 @@ To navigate it with your favorite browser:
 * `$ cd build`
 * `$ your_favorite_browser docs/html/index.html`
 
-The API reference is also available [online](https://skypjack.github.io/uvw/)
-for the latest version.
+The same version is also available [online](https://skypjack.github.io/uvw/)
+for the latest release, that is the last stable tag. If you are looking for
+something more pleasing to the eye, consider reading the nice-looking version
+available on [docsforge](https://uvw.docsforge.com/): same documentation, much
+more pleasant to read.
 
 ### Note
 
@@ -349,9 +353,8 @@ It means that the following function types are all valid:
 * `void(EventType &, const ResourceType &)`
 * `void(const EventType &, const ResourceType &)`
 
-Once more, please note that there is no need to keep around references to the
-resources: they will pass themselves as an argument whenever an event is
-published.
+Please note that there is no need to keep around references to the resources:
+they will pass themselves as an argument whenever an event is published.
 
 There exist two methods to attach a listener to a resource:
 

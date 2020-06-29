@@ -12,6 +12,11 @@
 namespace uvw {
 
 
+/**
+ * @brief Request base class.
+ *
+ * Base type for all `uvw` request types.
+ */
 template<typename T, typename U>
 class Request: public Resource<T, U> {
 protected:

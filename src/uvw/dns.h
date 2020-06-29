@@ -253,7 +253,7 @@ extern template std::pair<bool, std::pair<const char *, const char *>> GetNameIn
 
 /**
  * Internal details not to be documented.
- * @endcond TURN_OFF_DOXYGEN
+ * @endcond
  */
 
 
