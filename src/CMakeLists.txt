@@ -68,21 +68,10 @@ set_target_properties(uvw-static PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
 add_uvw_library(uvw-static)
 
 #
-# Shared library
-#
-
-add_library(uvw-shared SHARED)
-add_library(uvw::uvw-shared ALIAS uvw-shared)
-target_link_libraries(uvw-shared PUBLIC uv::uv-shared)
-set_target_properties(uvw-shared PROPERTIES VERSION ${PROJECT_VERSION} SOVERSION ${UVW_VERSION_MAJOR} EXCLUDE_FROM_DEFAULT_BUILD 1)
-add_uvw_library(uvw-shared)
-
-#
 # Install targets
 #
 
 install(EXPORT uvw NAMESPACE uvw:: DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(TARGETS uvw-static EXPORT uvw ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(TARGETS uvw-shared EXPORT uvw LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(TARGETS uv_a EXPORT uvw ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(TARGETS uv EXPORT uvw LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})

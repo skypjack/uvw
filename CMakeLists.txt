@@ -22,7 +22,7 @@ set(UVW_VERSION_PATCH 0)
 project(
     uvw
     VERSION ${UVW_VERSION_MAJOR}.${UVW_VERSION_MINOR}.${UVW_VERSION_PATCH}
-    DESCRIPTION "Header-only, event based, tiny and easy to use libuv wrapper in modern C++ - now available as also shared/static library!"
+    DESCRIPTION "Header-only, event based, tiny and easy to use libuv wrapper in modern C++ - now available also as static library!"
     HOMEPAGE_URL "https://github.com/skypjack/uvw"
     LANGUAGES C CXX
 )
@@ -39,7 +39,7 @@ message("*")
 option(USE_LIBCPP "Use libc++ by adding -stdlib=libc++ flag if availbale." ON)
 option(USE_ASAN "Use address sanitizer by adding -fsanitize=address -fno-omit-frame-pointer flags" OFF)
 option(USE_UBSAN "Use address sanitizer by adding -fsanitize=undefined -fno-sanitize-recover=all -fno-omit-frame-pointer flags" OFF)
-option(BUILD_UVW_LIBS "Prepare targets for static and shared libraries rather than for a header-only library." OFF)
+option(BUILD_UVW_LIBS "Prepare targets for static library rather than for a header-only library." OFF)
 
 #
 # Compiler stuff
@@ -84,8 +84,6 @@ function(fetch_libuv)
 
     add_library(uv::uv-static ALIAS uv_a)
     set_target_properties(uv_a PROPERTIES POSITION_INDEPENDENT_CODE 1)
-
-    add_library(uv::uv-shared ALIAS uv)
     set_target_properties(uv PROPERTIES POSITION_INDEPENDENT_CODE 1)
 endfunction()
 
@@ -158,9 +156,6 @@ if(UNIX)
     set(prefix ${CMAKE_INSTALL_PREFIX})
     configure_file(libuvw-static.pc.in ${CMAKE_CURRENT_BINARY_DIR}/libuvw-static.pc @ONLY)
     install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libuvw-static.pc
-            DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
-    configure_file(libuvw-shared.pc.in ${CMAKE_CURRENT_BINARY_DIR}/libuvw-shared.pc @ONLY)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libuvw-shared.pc
             DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 endif()
 

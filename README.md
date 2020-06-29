@@ -25,8 +25,7 @@ and still support me today.
 
 `uvw` started as a header-only, event based, tiny and easy to use wrapper for
 [`libuv`](https://github.com/libuv/libuv) written in modern C++.<br/>
-Now it's finally available also as a compilable library, either static or
-shared.
+Now it's finally available also as a compilable static library.
 
 The basic idea is to hide completely the *C-ish* interface of `libuv` behind a
 graceful C++ API. Currently, no `uv_*_t` data structure is actually exposed by
@@ -110,7 +109,7 @@ libraries are compiled through `CMake`.
 ## Library
 
 `uvw` is a dual-mode library. It can be used in its header-only form or as a
-compiled library, either shared or static.<br/>
+compiled static library.<br/>
 The following sections describe what to do in both cases to get `uvw` up and
 runningin your own project.
 
@@ -131,13 +130,13 @@ libraries search paths for `libuv` in this case.
 
 When used through `CMake`, the `uvw::uvw` target is exported for convenience.
 
-### Static/Shared
+### Static
 
 To use `uvw` as a compiled library, set the `BUILD_UVW_LIBS` options in cmake
 before including the project.<br/>
-This option triggers the generation of two targets named respectively
-`uvw::uvw-static` and `uvw::uvw-shared`. The matching version of `libuv` is also
-compiled and exported as `uv::uv-static` and `uv::uv-shared` for convenience.
+This option triggers the generation of a targets named 
+`uvw::uvw-static`. The matching version of `libuv` is also
+compiled and exported as `uv::uv-static` for convenience.
 
 In case you don't use or don't want to use `CMake`, you can still compile all
 `.cpp` files and include all `.h` files to get the job done. In this case, users
