@@ -119,9 +119,7 @@ public:
     using IPv4 = uvw::IPv4;
     using IPv6 = uvw::IPv6;
 
-    using Handle::Handle;
-
-    explicit UDPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f);
+    explicit UDPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f = {});
 
     /**
      * @brief Initializes the handle. The actual socket is created lazily.
