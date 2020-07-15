@@ -46,6 +46,7 @@ enum class UVRunMode: std::underlying_type_t<uv_run_mode> {
  * This can help to end all the pending requests by closing the handles.
  */
 struct BaseHandle {
+    virtual ~BaseHandle() = default;
     /**
      * @brief Gets the category of the handle.
      *
