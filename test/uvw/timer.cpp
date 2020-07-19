@@ -122,3 +122,17 @@ TEST(Timer, Fake) {
 
     loop->run();
 }
+
+TEST(Timer, BaseHandleWalk) {
+    auto loop = uvw::Loop::getDefault();
+    auto timer = loop->resource<uvw::TimerHandle>();
+    timer->on<uvw::TimerEvent>([](const auto &event, uvw::TimerHandle &handle) {
+        auto &loop = handle.loop();
+        loop.walk([](uvw::BaseHandle& h){
+            h.type();
+        });
+        handle.close();
+    });
+    timer->start(uvw::TimerHandle::Time{1000}, uvw::TimerHandle::Time{1000});
+    loop->run();
+}
