@@ -95,7 +95,7 @@ class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
     static void recvCallback(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
         const typename details::IpTraits<I>::Type *aptr = reinterpret_cast<const typename details::IpTraits<I>::Type *>(addr);
 
-        UDPHandle &udp = *(static_cast<UDPHandle*>(handle->data));
+        UDPHandle &udp = Handle<UDPHandle, uv_udp_t>::downcast(handle->data);
         // data will be destroyed no matter of what the value of nread is
         std::unique_ptr<char[]> data{buf->base};
 

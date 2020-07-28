@@ -129,7 +129,7 @@ class StreamHandle: public Handle<T, U> {
     static constexpr unsigned int DEFAULT_BACKLOG = 128;
 
     static void readCallback(uv_stream_t *handle, ssize_t nread, const uv_buf_t *buf) {
-        T &ref = *(static_cast<T*>(handle->data));
+        T &ref = Handle<T,U>::downcast(handle->data);
         // data will be destroyed no matter of what the value of nread is
         std::unique_ptr<char[]> data{buf->base};
 
@@ -150,7 +150,7 @@ class StreamHandle: public Handle<T, U> {
     }
 
     static void listenCallback(uv_stream_t *handle, int status) {
-        T &ref = *(static_cast<T*>(handle->data));
+        T &ref = Handle<T,U>::downcast(handle->data);
         if(status) { ref.publish(ErrorEvent{status}); }
         else { ref.publish(ListenEvent{}); }
     }

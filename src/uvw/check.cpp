@@ -9,7 +9,7 @@ namespace uvw {
 
 
 UVW_INLINE void CheckHandle::startCallback(uv_check_t *handle) {
-    CheckHandle &check = *(static_cast<CheckHandle *>(handle->data));
+    CheckHandle &check = downcast(handle->data);
     check.publish(CheckEvent{});
 }
 

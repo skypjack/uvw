@@ -26,7 +26,7 @@ UVW_INLINE PollHandle::PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> re
 
 
 UVW_INLINE void PollHandle::startCallback(uv_poll_t *handle, int status, int events) {
-    PollHandle &poll = *(static_cast<PollHandle *>(handle->data));
+    PollHandle &poll = downcast(handle->data);
 
     if(status) {
         poll.publish(ErrorEvent{status});

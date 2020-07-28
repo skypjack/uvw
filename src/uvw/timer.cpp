@@ -9,7 +9,7 @@ namespace uvw {
 
 
 UVW_INLINE void TimerHandle::startCallback(uv_timer_t *handle) {
-    TimerHandle &timer = *(static_cast<TimerHandle *>(handle->data));
+    TimerHandle &timer = downcast(handle->data);
     timer.publish(TimerEvent{});
 }
 

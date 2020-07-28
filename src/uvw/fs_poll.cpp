@@ -16,7 +16,7 @@ UVW_INLINE FsPollEvent::FsPollEvent(Stat previous, Stat current) noexcept
 
 
 UVW_INLINE void FsPollHandle::startCallback(uv_fs_poll_t *handle, int status, const uv_stat_t *prev, const uv_stat_t *curr) {
-    FsPollHandle &fsPoll = *(static_cast<FsPollHandle *>(handle->data));
+    FsPollHandle &fsPoll = downcast(handle->data);
 
     if(status) {
         fsPoll.publish(ErrorEvent{status});

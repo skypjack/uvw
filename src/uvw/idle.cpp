@@ -9,7 +9,7 @@ namespace uvw {
 
 
 UVW_INLINE void IdleHandle::startCallback(uv_idle_t *handle) {
-    IdleHandle &idle = *(static_cast<IdleHandle *>(handle->data));
+    IdleHandle &idle = downcast(handle->data);
     idle.publish(IdleEvent{});
 }
 

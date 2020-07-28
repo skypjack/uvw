@@ -16,7 +16,7 @@ UVW_INLINE FsEventEvent::FsEventEvent(const char * pathname, Flags<details::UVFs
 
 
 UVW_INLINE void FsEventHandle::startCallback(uv_fs_event_t *handle, const char *filename, int events, int status) {
-    FsEventHandle &fsEvent = *(static_cast<FsEventHandle *>(handle->data));
+    FsEventHandle &fsEvent = downcast(handle->data);
 
     if(status) {
         fsEvent.publish(ErrorEvent{status});

@@ -9,7 +9,7 @@ namespace uvw {
 
 
 UVW_INLINE void PrepareHandle::startCallback(uv_prepare_t *handle) {
-    PrepareHandle &prepare = *(static_cast<PrepareHandle *>(handle->data));
+    PrepareHandle &prepare = downcast(handle->data);
     prepare.publish(PrepareEvent{});
 }
 

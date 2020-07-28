@@ -29,8 +29,10 @@ struct CloseEvent {};
 template<typename T, typename U>
 class Handle: public Resource<T, U>, public BaseHandle {
 protected:
+    using ConstructorAccess = typename UnderlyingType<T, U>::ConstructorAccess;
+
     static void closeCallback(uv_handle_t *handle) {
-        Handle<T, U> &ref = *(static_cast<T*>(handle->data));
+        auto& ref = downcast(handle->data);
         auto ptr = ref.shared_from_this();
         (void)ptr;
         ref.reset();
@@ -63,8 +65,17 @@ protected:
         if(err) { Emitter<T>::publish(ErrorEvent{err}); }
     }
 
+    static T& downcast(void* data)
+    {
+        return static_cast<T&>(*static_cast<BaseHandle*>(data));
+    }
+
 public:
-    using Resource<T, U>::Resource;
+    explicit Handle(ConstructorAccess ca, std::shared_ptr<Loop> ref)
+        : Resource<T,U>{ca,std::move(ref)}
+    {
+        this->get()->data = static_cast<BaseHandle*>(this);
+    }
 
     /**
      * @brief Gets the category of the handle.

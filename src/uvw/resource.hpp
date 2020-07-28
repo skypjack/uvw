@@ -11,6 +11,8 @@
 namespace uvw {
 
 
+template<typename T, typename U>
+class Handle;
 /**
  * @brief Common class for almost all the resources available in `uvw`.
  *
@@ -41,7 +43,8 @@ public:
     explicit Resource(ConstructorAccess ca, std::shared_ptr<Loop> ref)
         : UnderlyingType<T, U>{ca, std::move(ref)}
     {
-        this->get()->data = this;
+        if constexpr(!std::is_base_of_v<Handle<T,U>, T>)
+            this->get()->data = this;
     }
 
     /**

@@ -14,7 +14,7 @@ UVW_INLINE SignalEvent::SignalEvent(int sig) noexcept
 
 
 UVW_INLINE void SignalHandle::startCallback(uv_signal_t *handle, int signum) {
-    SignalHandle &signal = *(static_cast<SignalHandle *>(handle->data));
+    SignalHandle &signal = downcast(handle->data);
     signal.publish(SignalEvent{signum});
 }
 
