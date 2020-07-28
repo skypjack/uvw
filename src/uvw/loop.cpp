@@ -107,16 +107,6 @@ UVW_INLINE void Loop::update() const noexcept {
 }
 
 
-UVW_INLINE void Loop::walk(std::function<void(BaseHandle &)> callback) {
-    // remember: non-capturing lambdas decay to pointers to functions
-    uv_walk(loop.get(), [](uv_handle_t *handle, void *func) {
-        BaseHandle &ref = *static_cast<BaseHandle *>(handle->data);
-        std::function<void(BaseHandle &)> &f = *static_cast<std::function<void(BaseHandle &)> *>(func);
-        f(ref);
-    }, &callback);
-}
-
-
 UVW_INLINE void Loop::fork() noexcept {
     auto err = uv_loop_fork(loop.get());
 

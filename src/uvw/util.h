@@ -821,6 +821,24 @@ struct Utilities {
 };
 
 
+/**
+ * @brief Helper type for visitors.
+ * @tparam Func Types of function objects.
+ */
+template<class... Func>
+struct Overloaded: Func... {
+    using Func::operator()...;
+};
+
+
+/**
+ * @brief Deduction guide.
+ * @tparam Func Types of function objects.
+ */
+template<class... Func>
+Overloaded(Func...) -> Overloaded<Func...>;
+
+
 }
 
 

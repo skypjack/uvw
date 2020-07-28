@@ -9,7 +9,7 @@ TEST(Loop, DefaultLoop) {
     ASSERT_FALSE(def->alive());
     ASSERT_NO_THROW(def->stop());
 
-    def->walk([](uvw::BaseHandle &) { FAIL(); });
+    def->walk([](auto &) { FAIL(); });
 
     auto def2 = uvw::Loop::getDefault();
     ASSERT_EQ(def, def2);
@@ -38,7 +38,7 @@ TEST(Loop, Functionalities) {
 
     handle->start();
     handle->on<uvw::PrepareEvent>([](const auto &, auto &hndl) {
-        hndl.loop().walk([](uvw::BaseHandle &) {
+        hndl.loop().walk([](auto &) {
             static bool trigger = true;
             ASSERT_TRUE(trigger);
             trigger = false;
@@ -51,7 +51,7 @@ TEST(Loop, Functionalities) {
     ASSERT_TRUE(loop->timeout().first);
     ASSERT_NO_THROW(loop->run());
 
-    loop->walk([](uvw::BaseHandle &) { FAIL(); });
+    loop->walk([](auto &) { FAIL(); });
 
     ASSERT_NO_THROW(loop->run<uvw::Loop::Mode::ONCE>());
     ASSERT_NO_THROW(loop->run<uvw::Loop::Mode::NOWAIT>());

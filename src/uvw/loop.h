@@ -19,6 +19,22 @@
 namespace uvw {
 
 
+class AsyncHandle;
+class CheckHandle;
+class FsEventHandle;
+class FsPollHandle;
+class IdleHandle;
+class PipeHandle;
+class PollHandle;
+class PrepareHandle;
+class ProcessHandle;
+class SignalHandle;
+class TCPHandle;
+class TimerHandle;
+class TTYHandle;
+class UDPHandle;
+
+
 namespace details {
 
 
@@ -38,102 +54,6 @@ enum class UVRunMode: std::underlying_type_t<uv_run_mode> {
 
 
 /**
- * @brief Untyped handle class
- *
- * Handles' types are unknown from the point of view of the loop.<br/>
- * Anyway, a loop maintains a list of all the associated handles and let the
- * users walk them as untyped instances.<br/>
- * This can help to end all the pending requests by closing the handles.
- */
-struct BaseHandle {
-    virtual ~BaseHandle() = default;
-    /**
-     * @brief Gets the category of the handle.
-     *
-     * A base handle offers no functionality to promote it to the actual handle
-     * type. By means of this function, an opaque value that identifies the
-     * category of the handle is made available to the users.
-     *
-     * @return The actual category of the handle.
-     */
-    virtual HandleCategory category() const noexcept = 0;
-
-    /**
-     * @brief Gets the type of the handle.
-     *
-     * A base handle offers no functionality to promote it to the actual handle
-     * type. By means of this function, the type of the underlying handle as
-     * specified by HandleType is made available to the user.
-     *
-     * @return The actual type of the handle.
-     */
-    virtual HandleType type() const noexcept = 0;
-
-    /**
-     * @brief Checks if the handle is active.
-     *
-     * What _active_ means depends on the type of handle:
-     *
-     * * An AsyncHandle handle is always active and cannot be deactivated,
-     * except by closing it with uv_close().
-     * * A PipeHandle, TCPHandle, UDPHandle, etc. handle - basically any handle
-     * that deals with I/O - is active when it is doing something that involves
-     * I/O, like reading, writing, connecting, accepting new connections, etc.
-     * * A CheckHandle, IdleHandle, TimerHandle, etc. handle is active when it
-     * has been started with a call to `start()`.
-     *
-     * Rule of thumb: if a handle of type `FooHandle` has a `start()` member
-     * method, then it’s active from the moment that method is called. Likewise,
-     * `stop()` deactivates the handle again.
-     *
-     * @return True if the handle is active, false otherwise.
-     */
-    virtual bool active() const noexcept = 0;
-
-    /**
-     * @brief Checks if a handle is closing or closed.
-     *
-     * This function should only be used between the initialization of the
-     * handle and the arrival of the close callback.
-     *
-     * @return True if the handle is closing or closed, false otherwise.
-     */
-    virtual bool closing() const noexcept = 0;
-
-    /**
-     * @brief Reference the given handle.
-     *
-     * References are idempotent, that is, if a handle is already referenced
-     * calling this function again will have no effect.
-     */
-    virtual void reference() noexcept = 0;
-
-    /**
-     * @brief Unreference the given handle.
-     *
-     * References are idempotent, that is, if a handle is not referenced calling
-     * this function again will have no effect.
-     */
-    virtual void unreference() noexcept = 0;
-
-    /**
-     * @brief Checks if the given handle referenced.
-     * @return True if the handle referenced, false otherwise.
-     */
-    virtual bool referenced() const noexcept = 0;
-
-    /**
-     * @brief Request handle to be closed.
-     *
-     * This **must** be called on each handle before memory is released.<br/>
-     * In-progress requests are cancelled and this can result in an ErrorEvent
-     * emitted.
-     */
-    virtual void close() noexcept = 0;
-};
-
-
-/**
  * @brief The Loop class.
  *
  * The event loop is the central part of `uvw`'s functionalities, as well as
@@ -146,6 +66,18 @@ class Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop
 
     template<typename, typename>
     friend class Resource;
+
+    template<typename R, typename... Args>
+    auto create_resource(int, Args&&... args) -> decltype(std::declval<R>().init(), std::shared_ptr<R>{}) {
+        auto ptr = R::create(shared_from_this(), std::forward<Args>(args)...);
+        ptr = ptr->init() ? ptr : nullptr;
+        return ptr;
+    }
+
+    template<typename R, typename... Args>
+    std::shared_ptr<R> create_resource(char, Args&&... args) {
+        return R::create(shared_from_this(), std::forward<Args>(args)...);
+    }
 
     Loop(std::unique_ptr<uv_loop_t, Deleter> ptr) noexcept;
 
@@ -228,13 +160,7 @@ public:
      */
     template<typename R, typename... Args>
     std::shared_ptr<R> resource(Args&&... args) {
-        if constexpr(std::is_base_of_v<BaseHandle, R>) {
-            auto ptr = R::create(shared_from_this(), std::forward<Args>(args)...);
-            ptr = ptr->init() ? ptr : nullptr;
-            return ptr;
-        } else {
-            return R::create(shared_from_this(), std::forward<Args>(args)...);
-        }
+        return create_resource<R>(0, std::forward<Args>(args)...);
     }
 
     /**
@@ -335,7 +261,62 @@ public:
      *
      * @param callback A function to be invoked once for each active handle.
      */
-    void walk(std::function<void(BaseHandle &)> callback);
+    template<typename Func>
+    void walk(Func callback) {
+        // remember: non-capturing lambdas decay to pointers to functions
+        uv_walk(loop.get(), [](uv_handle_t *handle, void *func) {
+            auto &cb = *static_cast<Func *>(func);
+
+            switch(Utilities::guessHandle(HandleCategory{handle->type})) {
+            case HandleType::ASYNC:
+                cb(*static_cast<AsyncHandle *>(handle->data));
+                break;
+            case HandleType::CHECK:
+                cb(*static_cast<CheckHandle *>(handle->data));
+                break;
+            case HandleType::FS_EVENT:
+                cb(*static_cast<FsEventHandle *>(handle->data));
+                break;
+            case HandleType::FS_POLL:
+                cb(*static_cast<FsPollHandle *>(handle->data));
+                break;
+            case HandleType::IDLE:
+                cb(*static_cast<IdleHandle *>(handle->data));
+                break;
+            case HandleType::PIPE:
+                cb(*static_cast<PipeHandle *>(handle->data));
+                break;
+            case HandleType::POLL:
+                cb(*static_cast<PollHandle *>(handle->data));
+                break;
+            case HandleType::PREPARE:
+                cb(*static_cast<PrepareHandle *>(handle->data));
+                break;
+            case HandleType::PROCESS:
+                cb(*static_cast<ProcessHandle *>(handle->data));
+                break;
+            case HandleType::SIGNAL:
+                cb(*static_cast<SignalHandle *>(handle->data));
+                break;
+            case HandleType::TCP:
+                cb(*static_cast<TCPHandle *>(handle->data));
+                break;
+            case HandleType::TIMER:
+                cb(*static_cast<TimerHandle *>(handle->data));
+                break;
+            case HandleType::TTY:
+                cb(*static_cast<TTYHandle *>(handle->data));
+                break;
+            case HandleType::UDP:
+                cb(*static_cast<UDPHandle *>(handle->data));
+                break;
+            default:
+                // returns the underlying handle, uvw doesn't manage it properly yet
+                cb(handle);
+                break;
+            }
+        }, &callback);
+    }
 
     /**
      * @brief Reinitialize any kernel state necessary in the child process after

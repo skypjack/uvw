@@ -36,7 +36,7 @@ void listen(uvw::Loop &loop) {
         client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TCPHandle &handle) {
             std::cout << "end" << std::endl;
             int count = 0;
-            handle.loop().walk([&count](uvw::BaseHandle &) { ++count; });
+            handle.loop().walk([&count](auto &) { ++count; });
             std::cout << "still alive: " << count << " handles" << std::endl;
             handle.close();
         });
