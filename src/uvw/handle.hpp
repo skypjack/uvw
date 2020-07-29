@@ -32,7 +32,7 @@ protected:
     using ConstructorAccess = typename UnderlyingType<T, U>::ConstructorAccess;
 
     static void closeCallback(uv_handle_t *handle) {
-        auto& ref = downcast(handle->data);
+        auto& ref = downcast<Handle<T,U>>(handle->data);
         auto ptr = ref.shared_from_this();
         (void)ptr;
         ref.reset();
@@ -65,9 +65,10 @@ protected:
         if(err) { Emitter<T>::publish(ErrorEvent{err}); }
     }
 
-    static T& downcast(void* data)
+    template<typename R = T>
+    static R& downcast(void* data)
     {
-        return static_cast<T&>(*static_cast<BaseHandle*>(data));
+        return static_cast<R&>(*static_cast<BaseHandle*>(data));
     }
 
 public:
