@@ -6,15 +6,7 @@ TEST(Work, RunTask) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::CheckHandle>();
 
-    bool checkWorkEvent = false;
     bool checkTask = false;
-
-    handle->on<uvw::CheckEvent>([&checkWorkEvent](const auto &, auto &hndl) {
-        if(checkWorkEvent) {
-            hndl.stop();
-            hndl.close();
-        }
-    });
 
     auto req = loop->resource<uvw::WorkReq>([&checkTask]() {
         ASSERT_FALSE(checkTask);
@@ -23,16 +15,14 @@ TEST(Work, RunTask) {
 
     req->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
 
-    req->on<uvw::WorkEvent>([&checkWorkEvent](const auto &, auto &) {
-        ASSERT_FALSE(checkWorkEvent);
-        checkWorkEvent = true;
+    req->on<uvw::WorkEvent>([&handle](const auto &, auto &) {
+        handle->close();
     });
 
     handle->start();
     req->queue();
     loop->run();
 
-    ASSERT_TRUE(checkWorkEvent);
     ASSERT_TRUE(checkTask);
 }
 
