@@ -22,7 +22,7 @@ TEST(TTY, Functionalities) {
     });
 
     ASSERT_TRUE(handle->reset());
-    ASSERT_TRUE(handle->mode(uvw::TTYHandle::Mode::NORMAL));
+    ASSERT_TRUE(!handle->readable() || handle->mode(uvw::TTYHandle::Mode::NORMAL));
     ASSERT_NO_THROW(handle->getWinSize());
 
     timer->start(uvw::TimerHandle::Time{0}, uvw::TimerHandle::Time{0});
