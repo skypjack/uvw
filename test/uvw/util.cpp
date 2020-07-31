@@ -93,7 +93,11 @@ TEST(Util, Utilities) {
     ASSERT_FALSE(passwd.homedir().empty());
     ASSERT_NO_THROW(passwd.uid());
     ASSERT_NO_THROW(passwd.gid());
+
+#ifndef _MSC_VER
+    // libuv returns a null string for the shell on Windows
     ASSERT_FALSE(passwd.shell().empty());
+#endif
 
     ASSERT_EQ(uvw::Utilities::guessHandle(uvw::FileHandle{-1}), uvw::HandleType::UNKNOWN);
     ASSERT_NE(uvw::Utilities::guessHandle(uvw::StdIN), uvw::HandleType::UNKNOWN);
