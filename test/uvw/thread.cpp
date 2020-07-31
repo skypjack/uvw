@@ -34,10 +34,24 @@ TEST(Mutex, LockUnlock) {
     auto mtx = loop->resource<uvw::Mutex>();
 
     mtx->lock();
+
+#ifdef _MSC_VER
+    // this is allowed by libuv on Windows
+    ASSERT_TRUE(mtx->tryLock());
+#else
     ASSERT_FALSE(mtx->tryLock());
+#endif
+
     mtx->unlock();
     ASSERT_TRUE(mtx->tryLock());
+
+#ifdef _MSC_VER
+    // this is allowed by libuv on Windows
+    ASSERT_TRUE(mtx->tryLock());
+#else
     ASSERT_FALSE(mtx->tryLock());
+#endif
+
     mtx->unlock();
 
     loop->run();
