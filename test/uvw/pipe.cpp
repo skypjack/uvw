@@ -55,7 +55,7 @@ TEST(Pipe, SockPeer) {
     const std::string peername{ "\\\\?\\pipe\\test.sock" };
 #else
     const std::string sockname = std::string{TARGET_PIPE_DIR} + std::string{"/test.sock"};
-    const auto peernam = sockname;
+    const auto peername = sockname;
 #endif
 
     auto loop = uvw::Loop::getDefault();
