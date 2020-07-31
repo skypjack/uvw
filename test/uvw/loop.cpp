@@ -31,7 +31,11 @@ TEST(Loop, Functionalities) {
     ASSERT_TRUE(loop->descriptor());
     ASSERT_NO_THROW(loop->now());
     ASSERT_NO_THROW(loop->update());
+
+#ifndef _MSC_VER
+    // fork isn't implemented on Windows in libuv and it returns an error by default
     ASSERT_NO_THROW(loop->fork());
+#endif
 
     ASSERT_FALSE(loop->alive());
     ASSERT_FALSE(loop->timeout().first);
