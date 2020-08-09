@@ -313,26 +313,25 @@ std::shared_ptr<int> data = resource->data<int>();
 Remember from the previous section that a handle will keep itself alive until
 one invokes the `close` member function on it.<br/>
 To know what are the handles that are still alive and bound to a given loop,
-just do the following:
+there exists the `walk` member function. It returns handles with their types.
+Therefore, the use of `Overloaded` is recommended to be able to intercept all
+types of interest:
 
 ```cpp
-loop->walk([](uvw::BaseHandle &){ /* application code here */ });
+handle.loop().walk(uvw::Overloaded{
+    [](uvw::TimerHandle &h){ /* application code for timers here */ },
+    [](auto &&){ /* ignore all other types */ }
+});
 ```
 
-`BaseHandle` exposes a few methods and cannot be promoted to the original type
-of the handle (even though `type` and `category` member functions fill the gap
-somehow).<br/>
-Anyway, it can be used to close the handle that originated from it. As an
-example, all the pending handles can be closed easily as it follows:
+This function can also be used for a completely generic approach. For example,
+all the pending handles can be closed easily as it follows:
 
 ```cpp
-loop->walk([](uvw::BaseHandle &h){ h.close(); });
+loop->walk([](auto &&h){ h.close(); });
 ```
 
 No need to keep track of them.
-
-To know what are the available resources' types, please refer to the API
-reference.
 
 ## The event-based approach
 
