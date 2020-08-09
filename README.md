@@ -366,6 +366,10 @@ Both of them return an object of type `ResourceType::Connection` (as an example,
 A connection object can be used later as an argument to the `erase` member
 function of the resource to remove the listener.<br/>
 There exists also the `clear` member function to drop all the listeners at once.
+Note that `clear` should only be invoked on non-active handles. The handles
+exploit the same event mechanism made available to users to satisfy pending
+requests. Invoking `clear` on an active handle, for example with requests still
+in progress, risks leading to memory leaks or unexpected behavior.
 
 Almost all the resources emit `ErrorEvent` in case of errors.<br/>
 All the other events are specific for the given resource and documented in the
