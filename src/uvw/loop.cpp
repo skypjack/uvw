@@ -97,6 +97,11 @@ UVW_INLINE std::pair<bool, Loop::Time> Loop::timeout() const noexcept {
 }
 
 
+UVW_INLINE Loop::Time Loop::idleTime() const noexcept {
+    return Time{uv_metrics_idle_time(loop.get())};
+}
+
+
 UVW_INLINE Loop::Time Loop::now() const noexcept {
     return Time{uv_now(loop.get())};
 }

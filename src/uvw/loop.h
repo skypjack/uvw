@@ -39,7 +39,8 @@ namespace details {
 
 
 enum class UVLoopOption: std::underlying_type_t<uv_loop_option> {
-    BLOCK_SIGNAL = UV_LOOP_BLOCK_SIGNAL
+    BLOCK_SIGNAL = UV_LOOP_BLOCK_SIGNAL,
+    IDLE_TIME = UV_METRICS_IDLE_TIME
 };
 
 
@@ -134,6 +135,9 @@ public:
      *
      * * `Loop::Configure::BLOCK_SIGNAL`: Block a signal when polling for new
      * events. A second argument is required and it is the signal number.
+     * * `Loop::Configure::IDLE_TIME`: Accumulate the amount of idle time the
+     * event loop spends in the event provider. This option is necessary to use
+     * `idleTime()`.
      *
      * An ErrorEvent will be emitted in case of errors.
      *
@@ -228,6 +232,13 @@ public:
      * * Milliseconds (`std::chrono::duration<uint64_t, std::milli>`).
      */
     std::pair<bool, Time> timeout() const noexcept;
+
+    /**
+    * @brief Returns the amount of time the event loop has been idle. The call
+    * is thread safe.
+    * @return The accumulated time spent idle.
+    */
+    Time idleTime() const noexcept;
 
     /**
      * @brief Returns the current timestamp in milliseconds.

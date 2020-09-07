@@ -16,7 +16,7 @@ endif()
 # Project configuration
 #
 set(UVW_VERSION_MAJOR 2)
-set(UVW_VERSION_MINOR 6)
+set(UVW_VERSION_MINOR 7)
 set(UVW_VERSION_PATCH 0)
 
 project(
@@ -71,7 +71,7 @@ function(fetch_libuv)
     FetchContent_Declare(
         libuv
         GIT_REPOSITORY https://github.com/libuv/libuv.git
-        GIT_TAG v1.38.0
+        GIT_TAG v1.39.0
         GIT_SHALLOW 1
     )
 

@@ -84,6 +84,14 @@ TEST(Loop, Configure) {
     ASSERT_NO_THROW(loop->run());
 }
 
+
+TEST(Loop, IdleTime) {
+    auto loop = uvw::Loop::create();
+    loop->configure(uvw::Loop::Configure::IDLE_TIME);
+    ASSERT_EQ(loop->idleTime().count(), 0u);
+}
+
+
 TEST(Loop, Raw) {
     auto loop = uvw::Loop::getDefault();
     const auto &cloop = uvw::Loop::getDefault();
