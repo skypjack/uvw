@@ -94,6 +94,15 @@ public:
      * `std::chrono::duration<uint64_t, std::milli>`).
      */
     Time repeat();
+
+    /**
+     * @brief Gets the timer due value.
+     * 
+     * The time is relative to `Loop::now()`.
+     * 
+     * @return The timer due value or 0 if it has expired.
+     */
+    Time dueIn();
 };
 
 

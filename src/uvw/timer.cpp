@@ -44,4 +44,9 @@ UVW_INLINE TimerHandle::Time TimerHandle::repeat() {
 }
 
 
+UVW_INLINE TimerHandle::Time TimerHandle::dueIn() {
+    return Time{uv_timer_get_due_in(get())};
+}
+
+
 }
