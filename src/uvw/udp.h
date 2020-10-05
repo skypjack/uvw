@@ -586,7 +586,7 @@ private:
 
 
 // (extern) explicit instantiations
-
+#ifdef UVW_AS_LIB
 extern template void UDPHandle::connect<IPv4>(std::string, unsigned int);
 extern template void UDPHandle::connect<IPv6>(std::string, unsigned int);
 
@@ -643,7 +643,7 @@ extern template int UDPHandle::trySend<IPv6>(Addr, char *, unsigned int);
 
 extern template void UDPHandle::recv<IPv4>();
 extern template void UDPHandle::recv<IPv6>();
-
+#endif // UVW_AS_LIB
 
 /**
  * Internal details not to be documented.

@@ -417,11 +417,11 @@ private:
 
 
 // (extern) explicit instantiations
-
+#ifdef UVW_AS_LIB
 extern template bool Loop::run<Loop::Mode::DEFAULT>() noexcept;
 extern template bool Loop::run<Loop::Mode::ONCE>() noexcept;
 extern template bool Loop::run<Loop::Mode::NOWAIT>() noexcept;
-
+#endif // UVW_AS_LIB
 
 }
 

@@ -129,7 +129,7 @@ UVW_INLINE std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq
 
 
 // explicit instantiations
-
+#ifdef UVW_AS_LIB
 template void GetNameInfoReq::nameInfo<IPv4>(std::string ip, unsigned int port, int flags);
 template void GetNameInfoReq::nameInfo<IPv6>(std::string ip, unsigned int port, int flags);
 
@@ -141,6 +141,6 @@ template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::
 
 template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(Addr addr, int flags);
 template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(Addr addr, int flags);
-
+#endif // UVW_AS_LIB
 
 }

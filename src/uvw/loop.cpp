@@ -137,10 +137,10 @@ UVW_INLINE uv_loop_t *Loop::raw() noexcept {
 
 
 // explicit instantiations
-
+#ifdef UVW_AS_LIB
 template bool Loop::run<Loop::Mode::DEFAULT>() noexcept;
 template bool Loop::run<Loop::Mode::ONCE>() noexcept;
 template bool Loop::run<Loop::Mode::NOWAIT>() noexcept;
-
+#endif // UVW_AS_LIB
 
 }

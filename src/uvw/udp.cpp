@@ -264,7 +264,7 @@ UVW_INLINE size_t UDPHandle::sendQueueCount() const noexcept {
 
 
 // explicit instantiations
-
+#ifdef UVW_AS_LIB
 template void UDPHandle::connect<IPv4>(std::string, unsigned int);
 template void UDPHandle::connect<IPv6>(std::string, unsigned int);
 
@@ -321,6 +321,6 @@ template int UDPHandle::trySend<IPv6>(Addr, char *, unsigned int);
 
 template void UDPHandle::recv<IPv4>();
 template void UDPHandle::recv<IPv6>();
-
+#endif // UVW_AS_LIB
 
 }
