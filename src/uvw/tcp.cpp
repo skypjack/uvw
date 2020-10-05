@@ -102,7 +102,7 @@ UVW_INLINE void TCPHandle::closeReset() {
 
 
 // explicit instantiations
-
+#ifdef UVW_AS_LIB
 template void TCPHandle::bind<IPv4>(std::string, unsigned int, Flags<Bind>);
 template void TCPHandle::bind<IPv6>(std::string, unsigned int, Flags<Bind>);
 
@@ -120,6 +120,6 @@ template void TCPHandle::connect<IPv6>(std::string, unsigned int);
 
 template void TCPHandle::connect<IPv4>(Addr addr);
 template void TCPHandle::connect<IPv6>(Addr addr);
-
+#endif // UVW_AS_LIB
 
 }
