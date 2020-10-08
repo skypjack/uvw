@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-#include <uvw.hpp>
+#include <uvw/pipe.h>
+#include <uvw/process.h>
 
 
 TEST(Process, Pid) {

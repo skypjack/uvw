@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-#include <uvw.hpp>
+#include <uvw/fs.h>
+#include <uvw/fs_event.h>
 
 
 TEST(FsEvent, Functionalities) {

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-#include <uvw.hpp>
+#include <uvw/async.h>
+#include <uvw/underlying_type.hpp>
 
 
 TEST(UnderlyingType, Functionalities) {

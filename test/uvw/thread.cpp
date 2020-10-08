@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <uvw.hpp>
+#include <uvw/thread.h>
 
 TEST(Thread, Run) {
     auto loop = uvw::Loop::getDefault();

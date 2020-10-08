@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <uvw.hpp>
+#include <uvw/dns.h>
 
 
 TEST(GetAddrInfo, GetNodeAddrInfo) {

@@ -3,7 +3,6 @@
 #include <gtest/gtest.h>
 #include <uvw.hpp>
 
-
 template<typename T>
 struct tag { using type = T; };
 

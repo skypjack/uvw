@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <uvw.hpp>
+#include <uvw/stream.h>
 
 
 struct fake_stream_t { void *data; };
