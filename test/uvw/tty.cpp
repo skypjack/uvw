@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-#include <uvw.hpp>
+#include <uvw/timer.h>
+#include <uvw/tty.h>
 
 
 TEST(TTY, Functionalities) {

@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
-#include <uvw.hpp>
+#include <uvw/prepare.h>
+#include <uvw/work.h>
+#include <uvw/loop.h>
 
 
 TEST(Loop, DefaultLoop) {

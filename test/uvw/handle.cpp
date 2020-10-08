@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-#include <uvw.hpp>
+#include <uvw/async.h>
+#include <uvw/handle.hpp>
 
 
 struct fake_handle_t { void *data; };

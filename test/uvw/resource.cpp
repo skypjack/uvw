@@ -1,7 +1,8 @@
 #include <memory>
 #include <type_traits>
 #include <gtest/gtest.h>
-#include <uvw.hpp>
+#include <uvw/async.h>
+#include <uvw/request.hpp>
 
 
 struct Res: uvw::Resource<Res, int> { };

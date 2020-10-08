@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-#include <uvw.hpp>
+#include <uvw/check.h>
+#include <uvw/signal.h>
 
 
 TEST(Signal, Start) {

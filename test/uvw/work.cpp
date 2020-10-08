@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
-#include <uvw.hpp>
+#include <uvw/check.h>
+#include <uvw/timer.h>
+#include <uvw/work.h>
 
 
 TEST(Work, RunTask) {

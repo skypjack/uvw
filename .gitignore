@@ -4,3 +4,4 @@ CMakeSettings.json
 cmake-build-debug/
 .idea/
 .vs/
+.vscode/

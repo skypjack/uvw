@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
-#include <uvw.hpp>
+#include <uvw/work.h>
+#include <uvw/request.hpp>
 
 
 TEST(Request, Functionalities) {
