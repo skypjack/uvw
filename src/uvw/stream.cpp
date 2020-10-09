@@ -8,7 +8,7 @@
 namespace uvw {
 
 
-UVW_INLINE DataEvent::DataEvent(std::unique_ptr<char[]> buf, std::size_t len) noexcept
+UVW_INLINE DataEvent::DataEvent(std::unique_ptr<char[],std::function<void(char*)>> buf, std::size_t len) noexcept
     : data{std::move(buf)}, length{len}
 {}
 

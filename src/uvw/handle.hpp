@@ -21,6 +21,27 @@ namespace uvw {
 struct CloseEvent {};
 
 
+class Allocator{
+public:
+    virtual uv_buf_t allocate(std::size_t suggested)
+    {
+        auto size = static_cast<unsigned int>(suggested);
+        return uv_buf_init(new char[size], size);
+    }
+
+    virtual void deallocate(char* ptr)
+    {
+        delete [] ptr;
+    }
+
+    virtual ~Allocator()= default;;
+
+    static Allocator* getDefaultAllocator(){
+        static Allocator defaultAllocator;
+        return &defaultAllocator;
+    }
+};
+
 /**
  * @brief Handle base class.
  *
@@ -29,6 +50,8 @@ struct CloseEvent {};
 template<typename T, typename U>
 class Handle: public Resource<T, U> {
 protected:
+    Allocator* allocatorPtr = Allocator::getDefaultAllocator();
+
 	static void closeCallback(uv_handle_t *handle) {
 		Handle<T, U> &ref = *(static_cast<T*>(handle->data));
 		auto ptr = ref.shared_from_this();
@@ -37,9 +60,9 @@ protected:
 		ref.publish(CloseEvent{});
 	}
 
-	static void allocCallback(uv_handle_t *, std::size_t suggested, uv_buf_t *buf) {
-		auto size = static_cast<unsigned int>(suggested);
-		*buf = uv_buf_init(new char[size], size);
+	static void allocCallback(uv_handle_t *handle, std::size_t suggested, uv_buf_t *buf) {
+        Handle<T, U> &ref = *(static_cast<T*>(handle->data));
+		*buf = ref.allocatorPtr->allocate(suggested);
 	}
 
 	template<typename F, typename... Args>
@@ -65,6 +88,11 @@ protected:
 
 public:
 	using Resource<T, U>::Resource;
+
+	void setAllocator(Allocator* ptr)
+    {
+	    allocatorPtr=ptr;
+    }
 
 	/**
 	 * @brief Gets the category of the handle.

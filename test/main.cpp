@@ -5,6 +5,24 @@
 #include <chrono>
 
 
+bool use_my_allocator = false;
+class MyAllocator: public uvw::Allocator
+{
+public:
+
+    uv_buf_t allocate(std::size_t suggested) override
+    {
+        use_my_allocator = true;
+        return {buf,1024};
+    }
+    void deallocate(char*) override
+    {
+        std::cout<<"MyAllocator deallocate!"<<std::endl;
+    }
+
+private:
+    char buf[1024]{};
+};
 void listen(uvw::Loop &loop) {
     std::shared_ptr<uvw::TCPHandle> tcp = loop.resource<uvw::TCPHandle>();
     tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { assert(false); });
@@ -12,7 +30,9 @@ void listen(uvw::Loop &loop) {
     tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TCPHandle &srv) {
         std::cout << "listen" << std::endl;
 
+        auto allocator = std::make_shared<MyAllocator>();
         std::shared_ptr<uvw::TCPHandle> client = srv.loop().resource<uvw::TCPHandle>();
+        client->setAllocator(allocator.get());
         client->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { assert(false); });
 
         client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::TCPHandle &) {
@@ -28,7 +48,7 @@ void listen(uvw::Loop &loop) {
         uvw::Addr remote = client->peer();
         std::cout << "remote: " << remote.ip << " " << remote.port << std::endl;
 
-        client->on<uvw::DataEvent>([](const uvw::DataEvent &event, uvw::TCPHandle &) {
+        client->on<uvw::DataEvent>([allocator](const uvw::DataEvent &event, uvw::TCPHandle &) {
             std::cout.write(event.data.get(), event.length) << std::endl;
             std::cout << "data length: " << event.length << std::endl;
         });
@@ -86,6 +106,7 @@ void g() {
     conn(*loop);
     loop->run();
     loop = nullptr;
+    assert(use_my_allocator);
 }
 
 int main() {

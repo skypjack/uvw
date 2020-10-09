@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <functional>
 #include <cstddef>
 #include <utility>
 #include <memory>
@@ -62,9 +63,9 @@ struct WriteEvent {};
  * It will be emitted by StreamHandle according with its functionalities.
  */
 struct DataEvent {
-    explicit DataEvent(std::unique_ptr<char[]> buf, std::size_t len) noexcept;
+    explicit DataEvent(std::unique_ptr<char[],std::function<void(char*)>> buf, std::size_t len) noexcept;
 
-    std::unique_ptr<char[]> data; /*!< A bunch of data read on the stream. */
+    std::unique_ptr<char[],std::function<void(char*)>> data; /*!< A bunch of data read on the stream. */
     std::size_t length; /*!< The amount of data read on the stream. */
 };
 
@@ -131,7 +132,9 @@ class StreamHandle: public Handle<T, U> {
     static void readCallback(uv_stream_t *handle, ssize_t nread, const uv_buf_t *buf) {
         T &ref = *(static_cast<T*>(handle->data));
         // data will be destroyed no matter of what the value of nread is
-        std::unique_ptr<char[]> data{buf->base};
+        std::unique_ptr<char[],std::function<void(char*)>> data{buf->base,[allocatorPtr=ref.allocatorPtr](char* ptr){
+            allocatorPtr->deallocate(ptr);
+        } };
 
         // nread == 0 is ignored (see http://docs.libuv.org/en/v1.x/stream.html)
         // equivalent to EAGAIN/EWOULDBLOCK, it shouldn't be treated as an error
