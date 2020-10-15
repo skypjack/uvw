@@ -1,5 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="5,5,188,32"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title=" " alt="" coords="236,27,419,69"/>
-<area shape="rect" id="node3" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="18,57,175,98"/>
+<area shape="rect" id="node1" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="5,5,200,32"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title=" " alt="" coords="248,31,447,73"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Handle.html" title=" " alt="" coords="495,31,679,73"/>
+<area shape="rect" id="node4" href="$classuvw_1_1FsPollHandle.html" title="The FsPollHandle handle." alt="" coords="727,39,855,65"/>
+<area shape="rect" id="node5" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="29,56,177,112"/>
 </map>

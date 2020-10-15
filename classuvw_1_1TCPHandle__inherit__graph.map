@@ -1,9 +1,8 @@
 <map id="uvw::TCPHandle" name="uvw::TCPHandle">
-<area shape="rect" id="node1" title="The TCPHandle handle." alt="" coords="241,363,368,389"/>
-<area shape="rect" id="node2" href="$classuvw_1_1StreamHandle.html" title=" " alt="" coords="217,273,392,315"/>
-<area shape="rect" id="node3" href="$classuvw_1_1Handle.html" title=" " alt="" coords="209,184,400,225"/>
-<area shape="rect" id="node4" href="$classuvw_1_1Resource.html" title=" " alt="" coords="105,95,310,136"/>
-<area shape="rect" id="node5" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,191,47"/>
-<area shape="rect" id="node6" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="215,13,419,39"/>
-<area shape="rect" id="node7" href="$structuvw_1_1BaseHandle.html" title="Untyped handle class." alt="" coords="335,102,469,129"/>
+<area shape="rect" id="node1" title="The TCPHandle handle." alt="" coords="129,363,245,389"/>
+<area shape="rect" id="node2" href="$classuvw_1_1StreamHandle.html" title=" " alt="" coords="108,273,267,315"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Handle.html" title=" " alt="" coords="101,184,273,225"/>
+<area shape="rect" id="node4" href="$classuvw_1_1Resource.html" title=" " alt="" coords="94,95,281,136"/>
+<area shape="rect" id="node5" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,172,47"/>
+<area shape="rect" id="node6" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="196,13,379,39"/>
 </map>

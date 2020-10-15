@@ -1,4 +1,8 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,203,47"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Semaphore.html" title="The Semaphore wrapper." alt="" coords="251,13,381,39"/>
+<area shape="rect" id="node1" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="5,5,188,32"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title=" " alt="" coords="236,27,424,69"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Handle.html" title=" " alt="" coords="472,27,645,69"/>
+<area shape="rect" id="node4" href="$classuvw_1_1StreamHandle.html" title=" " alt="" coords="693,27,860,69"/>
+<area shape="rect" id="node5" href="$classuvw_1_1PipeHandle.html" title="The PipeHandle handle." alt="" coords="908,35,1025,61"/>
+<area shape="rect" id="node6" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="9,57,184,98"/>
 </map>

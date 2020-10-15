@@ -1,3 +1,8 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structuvw_1_1UtsName.html" title="Utility class." alt="" coords="5,5,123,32"/>
+<area shape="rect" id="node1" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="5,5,188,32"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title=" " alt="" coords="236,27,423,69"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Handle.html" title=" " alt="" coords="471,27,643,69"/>
+<area shape="rect" id="node4" href="$classuvw_1_1StreamHandle.html" title=" " alt="" coords="691,27,849,69"/>
+<area shape="rect" id="node5" href="$classuvw_1_1TCPHandle.html" title="The TCPHandle handle." alt="" coords="897,35,1013,61"/>
+<area shape="rect" id="node6" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="13,57,180,98"/>
 </map>

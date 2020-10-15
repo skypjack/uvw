@@ -1,5 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="5,5,184,47"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title=" " alt="" coords="232,43,423,84"/>
-<area shape="rect" id="node3" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="15,71,175,127"/>
+<area shape="rect" id="node1" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="16,5,213,32"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title=" " alt="" coords="272,27,475,69"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Request.html" title=" " alt="" coords="523,27,717,69"/>
+<area shape="rect" id="node4" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,57,224,98"/>
 </map>

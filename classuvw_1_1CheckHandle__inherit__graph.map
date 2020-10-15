@@ -1,8 +1,7 @@
 <map id="uvw::CheckHandle" name="uvw::CheckHandle">
-<area shape="rect" id="node1" title="The CheckHandle handle." alt="" coords="266,273,409,300"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title=" " alt="" coords="234,184,441,225"/>
-<area shape="rect" id="node3" href="$classuvw_1_1Resource.html" title=" " alt="" coords="125,95,347,136"/>
-<area shape="rect" id="node4" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,224,47"/>
-<area shape="rect" id="node5" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="249,13,469,39"/>
-<area shape="rect" id="node6" href="$structuvw_1_1BaseHandle.html" title="Untyped handle class." alt="" coords="371,102,506,129"/>
+<area shape="rect" id="node1" title="The CheckHandle handle." alt="" coords="149,273,277,300"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title=" " alt="" coords="121,184,305,225"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Resource.html" title=" " alt="" coords="113,95,312,136"/>
+<area shape="rect" id="node4" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,201,47"/>
+<area shape="rect" id="node5" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="226,13,421,39"/>
 </map>

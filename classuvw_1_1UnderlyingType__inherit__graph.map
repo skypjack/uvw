@@ -1,6 +1,7 @@
 <map id="uvw::UnderlyingType&lt; T, U &gt;" name="uvw::UnderlyingType&lt; T, U &gt;">
-<area shape="rect" id="node1" title="Wrapper class for underlying types." alt="" coords="13,5,170,47"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title="Common class for almost all the resources available in uvw." alt="" coords="5,95,177,121"/>
-<area shape="rect" id="node3" href="$classuvw_1_1Handle.html" title="Handle base class." alt="" coords="12,169,171,196"/>
-<area shape="rect" id="node4" href="$classuvw_1_1StreamHandle.html" title="The StreamHandle handle." alt="" coords="11,244,171,285"/>
+<area shape="rect" id="node1" title="Wrapper class for underlying types." alt="" coords="89,5,229,47"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title="Common class for almost all the resources available in uvw." alt="" coords="81,95,236,121"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Handle.html" title="Handle base class." alt="" coords="7,169,145,196"/>
+<area shape="rect" id="node5" href="$classuvw_1_1Request.html" title="Request base class." alt="" coords="169,169,316,196"/>
+<area shape="rect" id="node4" href="$classuvw_1_1StreamHandle.html" title="The StreamHandle handle." alt="" coords="5,244,147,285"/>
 </map>

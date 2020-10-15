@@ -6,5 +6,6 @@ var searchData=
   ['datasyncsync_50',['datasyncSync',['../classuvw_1_1FileReq.html#a99c13abb2aae436a94ce1d83affb7a6b',1,'uvw::FileReq']]],
   ['descriptor_51',['descriptor',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1MKSTEMP_01_4.html#a73e5d6cd4e20337228b8fb5064ae95e7',1,'uvw::FsEvent&lt; details::UVFsType::MKSTEMP &gt;::descriptor()'],['../classuvw_1_1Loop.html#ac78ffc161590ea88902c867ef716d0a2',1,'uvw::Loop::descriptor()']]],
   ['disablestdioinheritance_52',['disableStdIOInheritance',['../classuvw_1_1ProcessHandle.html#a99d3c33bcc1d564080874c3378e5a39d',1,'uvw::ProcessHandle']]],
-  ['disconnect_53',['disconnect',['../classuvw_1_1UDPHandle.html#aae0a9ec23746b395ec91b5e62b6b95d5',1,'uvw::UDPHandle']]]
+  ['disconnect_53',['disconnect',['../classuvw_1_1UDPHandle.html#aae0a9ec23746b395ec91b5e62b6b95d5',1,'uvw::UDPHandle']]],
+  ['duein_54',['dueIn',['../classuvw_1_1TimerHandle.html#a6917943888bb2e2a18804e537ab841c3',1,'uvw::TimerHandle']]]
 ];

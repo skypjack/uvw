@@ -1,8 +1,7 @@
 <map id="uvw::FsPollHandle" name="uvw::FsPollHandle">
-<area shape="rect" id="node1" title="The FsPollHandle handle." alt="" coords="225,288,367,315"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title=" " alt="" coords="193,199,399,240"/>
-<area shape="rect" id="node3" href="$classuvw_1_1Resource.html" title=" " alt="" coords="86,109,306,151"/>
-<area shape="rect" id="node4" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,171,61"/>
-<area shape="rect" id="node5" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="195,20,413,47"/>
-<area shape="rect" id="node6" href="$structuvw_1_1BaseHandle.html" title="Untyped handle class." alt="" coords="330,117,465,143"/>
+<area shape="rect" id="node1" title="The FsPollHandle handle." alt="" coords="113,288,241,315"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title=" " alt="" coords="85,199,269,240"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Resource.html" title=" " alt="" coords="77,109,276,151"/>
+<area shape="rect" id="node4" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,153,61"/>
+<area shape="rect" id="node5" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="178,20,373,47"/>
 </map>

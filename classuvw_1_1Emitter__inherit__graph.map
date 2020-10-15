@@ -1,7 +1,10 @@
 <map id="uvw::Emitter&lt; T &gt;" name="uvw::Emitter&lt; T &gt;">
-<area shape="rect" id="node1" title="Event emitter base class." alt="" coords="116,5,259,32"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title=" " alt="" coords="5,80,180,107"/>
-<area shape="rect" id="node3" href="$classuvw_1_1Resource.html" title="Common class for almost all the resources available in uvw." alt="" coords="205,80,359,107"/>
-<area shape="rect" id="node4" href="$classuvw_1_1Handle.html" title="Handle base class." alt="" coords="203,155,361,181"/>
-<area shape="rect" id="node5" href="$classuvw_1_1StreamHandle.html" title="The StreamHandle handle." alt="" coords="202,229,362,271"/>
+<area shape="rect" id="node1" title="Event emitter base class." alt="" coords="107,5,231,32"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title=" " alt="" coords="5,80,161,107"/>
+<area shape="rect" id="node5" href="$classuvw_1_1Resource.html" title="Common class for almost all the resources available in uvw." alt="" coords="185,80,323,107"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Request.html" title=" " alt="" coords="14,155,153,196"/>
+<area shape="rect" id="node4" href="$classuvw_1_1FsRequest.html" title="Base class for FsReq and/or FileReq." alt="" coords="11,251,156,278"/>
+<area shape="rect" id="node6" href="$classuvw_1_1Handle.html" title="Handle base class." alt="" coords="183,162,322,189"/>
+<area shape="rect" id="node8" href="$classuvw_1_1Request.html" title="Request base class." alt="" coords="346,162,493,189"/>
+<area shape="rect" id="node7" href="$classuvw_1_1StreamHandle.html" title="The StreamHandle handle." alt="" coords="182,244,323,285"/>
 </map>

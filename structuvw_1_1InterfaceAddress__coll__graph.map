@@ -1,4 +1,4 @@
 <map id="uvw::InterfaceAddress" name="uvw::InterfaceAddress">
-<area shape="rect" id="node1" title="Interface address." alt="" coords="5,109,172,136"/>
-<area shape="rect" id="node2" href="$structuvw_1_1Addr.html" title="Address representation." alt="" coords="45,5,132,32"/>
+<area shape="rect" id="node1" title="Interface address." alt="" coords="5,109,153,136"/>
+<area shape="rect" id="node2" href="$structuvw_1_1Addr.html" title="Address representation." alt="" coords="40,5,119,32"/>
 </map>

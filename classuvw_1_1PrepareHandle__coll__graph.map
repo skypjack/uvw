@@ -1,8 +1,7 @@
 <map id="uvw::PrepareHandle" name="uvw::PrepareHandle">
-<area shape="rect" id="node1" title="The PrepareHandle handle." alt="" coords="220,288,372,315"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title=" " alt="" coords="187,199,405,240"/>
-<area shape="rect" id="node3" href="$classuvw_1_1Resource.html" title=" " alt="" coords="78,109,309,151"/>
-<area shape="rect" id="node4" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,163,61"/>
-<area shape="rect" id="node5" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="187,20,418,47"/>
-<area shape="rect" id="node6" href="$structuvw_1_1BaseHandle.html" title="Untyped handle class." alt="" coords="333,117,467,143"/>
+<area shape="rect" id="node1" title="The PrepareHandle handle." alt="" coords="105,288,241,315"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title=" " alt="" coords="77,199,269,240"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Resource.html" title=" " alt="" coords="69,109,276,151"/>
+<area shape="rect" id="node4" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,145,61"/>
+<area shape="rect" id="node5" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="170,20,373,47"/>
 </map>
