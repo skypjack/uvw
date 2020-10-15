@@ -370,8 +370,8 @@ struct IpTraits<IPv4> {
     using Type = sockaddr_in;
     using AddrFuncType = int(*)(const char *, int, Type *);
     using NameFuncType = int(*)(const Type *, char *, std::size_t);
-    static constexpr AddrFuncType addrFunc = &uv_ip4_addr;
-    static constexpr NameFuncType nameFunc = &uv_ip4_name;
+    inline static const AddrFuncType addrFunc = &uv_ip4_addr;
+    inline static const NameFuncType nameFunc = &uv_ip4_name;
     static constexpr auto sinPort(const Type *addr) { return addr->sin_port; }
 };
 
@@ -381,8 +381,8 @@ struct IpTraits<IPv6> {
     using Type = sockaddr_in6;
     using AddrFuncType = int(*)(const char *, int, Type *);
     using NameFuncType = int(*)(const Type *, char *, std::size_t);
-    static constexpr AddrFuncType addrFunc = &uv_ip6_addr;
-    static constexpr NameFuncType nameFunc = &uv_ip6_name;
+    inline static const AddrFuncType addrFunc = &uv_ip6_addr;
+    inline static const NameFuncType nameFunc = &uv_ip6_name;
     static constexpr auto sinPort(const Type *addr) { return addr->sin6_port; }
 };
 
