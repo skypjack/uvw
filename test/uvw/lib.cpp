@@ -22,7 +22,10 @@ TEST(SharedLib, Success) {
     ASSERT_TRUE(static_cast<bool>(*lib));
     ASSERT_EQ(&lib->loop(), loop.get());
     ASSERT_EQ(lib->sym<int(double *)>("foobar"), nullptr);
-    ASSERT_NE(lib->sym<int(double *)>("uv_uptime"), nullptr);
+    ASSERT_NE(lib->sym<int(double *)>("fake_func"), nullptr);
+    double d{1.};
+    ASSERT_EQ(-42, lib->sym<int(double *)>("fake_func")(&d));
+    ASSERT_DOUBLE_EQ(-1., d);
 
     // this forces a call to the destructor to invoke uv_dlclose
     lib.reset();

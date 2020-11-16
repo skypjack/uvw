@@ -63,7 +63,7 @@ endfunction()
 
 add_library(uvw-static STATIC)
 add_library(uvw::uvw-static ALIAS uvw-static)
-target_link_libraries(uvw-static PUBLIC uv::uv-static)
+target_link_libraries(uvw-static PUBLIC $<$<TARGET_EXISTS:uv::uv-static>:uv::uv-static> $<$<NOT:$<TARGET_EXISTS:uv::uv-static>>:uv_a dl>)
 set_target_properties(uvw-static PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
 add_uvw_library(uvw-static)
 
@@ -73,5 +73,7 @@ add_uvw_library(uvw-static)
 
 install(EXPORT uvw NAMESPACE uvw:: DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(TARGETS uvw-static EXPORT uvw ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(TARGETS uv_a EXPORT uvw ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(TARGETS uv EXPORT uvw LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+if(FETCH_LIBUV)
+    install(TARGETS uv_a EXPORT uvw ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    install(TARGETS uv EXPORT uvw LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+endif(FETCH_LIBUV)

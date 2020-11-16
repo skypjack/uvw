@@ -48,7 +48,7 @@ function(ADD_UVW_TEST TEST_NAME TEST_SOURCE)
         ${TEST_NAME}
         PRIVATE
             $<$<TARGET_EXISTS:uvw::uvw>:uvw::uvw>
-            $<$<TARGET_EXISTS:uvw::uvw>:uv::uv-static>
+            $<$<TARGET_EXISTS:uv::uv-static>:uv::uv-static>
             $<$<TARGET_EXISTS:uvw::uvw-static>:uvw::uvw-static>
             GTest::Main
             Threads::Threads
@@ -78,8 +78,10 @@ endfunction()
 function(ADD_UVW_LIB_TEST TEST_NAME TEST_SOURCE)
     ADD_UVW_TEST(${TEST_NAME} ${TEST_SOURCE})
     target_link_libraries(${TEST_NAME} PRIVATE ${CMAKE_DL_LIBS})
-    target_compile_definitions(${TEST_NAME} PRIVATE TARGET_LIB_SO="$<TARGET_FILE:uv>")
+    target_compile_definitions(${TEST_NAME} PRIVATE TARGET_LIB_SO="$<TARGET_FILE:fake>")
 endfunction()
+
+add_library(fake SHARED fake.cpp)
 
 # List of available targets
 
