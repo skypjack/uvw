@@ -129,7 +129,7 @@ public:
 private:
     enum { FD, SOCKET } tag;
     union {
-        int fd;
+        int file_desc;
         OSSocketHandle::Type socket;
     };
 };

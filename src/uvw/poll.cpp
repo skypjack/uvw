@@ -16,7 +16,7 @@ UVW_INLINE PollEvent::PollEvent(Flags<details::UVPollEvent> events) noexcept
 
 
 UVW_INLINE PollHandle::PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, int desc)
-    : Handle{ca, std::move(ref)}, tag{FD}, fd{desc}
+    : Handle{ca, std::move(ref)}, tag{FD}, file_desc{desc}
 {}
 
 
@@ -37,7 +37,7 @@ UVW_INLINE void PollHandle::startCallback(uv_poll_t *handle, int status, int eve
 
 
 UVW_INLINE bool PollHandle::init() {
-    return (tag == SOCKET) ? initialize(&uv_poll_init_socket, socket) : initialize(&uv_poll_init, fd);
+    return (tag == SOCKET) ? initialize(&uv_poll_init_socket, socket) : initialize(&uv_poll_init, file_desc);
 }
 
 
