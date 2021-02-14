@@ -16,7 +16,7 @@ endif()
 # Project configuration
 #
 set(UVW_VERSION_MAJOR 2)
-set(UVW_VERSION_MINOR 8)
+set(UVW_VERSION_MINOR 9)
 set(UVW_VERSION_PATCH 0)
 
 project(
@@ -30,11 +30,6 @@ project(
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
-
-message("*")
-message("* ${PROJECT_NAME} v${PROJECT_VERSION} (${CMAKE_BUILD_TYPE})")
-message("* Copyright (c) 2016-2020 Michele Caini <michele.caini@gmail.com>")
-message("*")
 
 option(USE_LIBCPP "Use libc++ by adding -stdlib=libc++ flag if availbale." ON)
 option(USE_ASAN "Use address sanitizer by adding -fsanitize=address -fno-omit-frame-pointer flags" OFF)
@@ -73,7 +68,7 @@ function(fetch_libuv)
         FetchContent_Declare(
             libuv
             GIT_REPOSITORY https://github.com/libuv/libuv.git
-            GIT_TAG v1.40.0
+            GIT_TAG v1.41.0
             GIT_SHALLOW 1
         )
 
