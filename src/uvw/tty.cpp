@@ -58,6 +58,7 @@ UVW_INLINE WinSize TTYHandle::getWinSize() {
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,33,0)
 UVW_INLINE void TTYHandle::vtermState(TTYHandle::VTermState s) const noexcept {
     switch(s) {
         case VTermState::SUPPORTED:
@@ -75,6 +76,7 @@ UVW_INLINE TTYHandle::VTermState TTYHandle::vtermState() const noexcept {
     uv_tty_get_vterm_state(&state);
     return VTermState{state};
 }
+#endif
 
 
 }

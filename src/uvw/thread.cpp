@@ -39,10 +39,12 @@ UVW_INLINE bool Thread::run() noexcept {
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,26,0)
 UVW_INLINE bool Thread::run(Flags<Options> opts, std::size_t stack) noexcept {
     uv_thread_options_t params{static_cast<unsigned int>(opts), stack};
     return (0 == uv_thread_create_ex(get(), &params, &createCallback, this));
 }
+#endif
 
 
 UVW_INLINE bool Thread::join() noexcept {

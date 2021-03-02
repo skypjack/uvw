@@ -25,8 +25,10 @@ enum class UVProcessFlags: std::underlying_type_t<uv_process_flags> {
     WINDOWS_VERBATIM_ARGUMENTS = UV_PROCESS_WINDOWS_VERBATIM_ARGUMENTS,
     DETACHED = UV_PROCESS_DETACHED,
     WINDOWS_HIDE = UV_PROCESS_WINDOWS_HIDE,
+#if LIBUV_VERSION_AT_LEAST(1,24,0)
     WINDOWS_HIDE_CONSOLE = UV_PROCESS_WINDOWS_HIDE_CONSOLE,
-    WINDOWS_HIDE_GUI = UV_PROCESS_WINDOWS_HIDE_GUI
+    WINDOWS_HIDE_GUI = UV_PROCESS_WINDOWS_HIDE_GUI,
+#endif
 };
 
 
@@ -37,7 +39,9 @@ enum class UVStdIOFlags: std::underlying_type_t<uv_stdio_flags> {
     INHERIT_STREAM = UV_INHERIT_STREAM,
     READABLE_PIPE = UV_READABLE_PIPE,
     WRITABLE_PIPE = UV_WRITABLE_PIPE,
-    OVERLAPPED_PIPE = UV_OVERLAPPED_PIPE
+#if LIBUV_VERSION_AT_LEAST(1,21,0)
+    OVERLAPPED_PIPE = UV_OVERLAPPED_PIPE,
+#endif
 };
 
 
@@ -149,8 +153,8 @@ public:
      * * `ProcessHandle::Process::WINDOWS_VERBATIM_ARGUMENTS`
      * * `ProcessHandle::Process::DETACHED`
      * * `ProcessHandle::Process::WINDOWS_HIDE`
-     * * `ProcessHandle::Process::WINDOWS_HIDE_CONSOLE`
-     * * `ProcessHandle::Process::WINDOWS_HIDE_GUI`
+     * * `ProcessHandle::Process::WINDOWS_HIDE_CONSOLE` (requires libuv 1.24.0+)
+     * * `ProcessHandle::Process::WINDOWS_HIDE_GUI` (requires libuv 1.24.0+)
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_process_flags)
@@ -172,7 +176,7 @@ public:
      * * `ProcessHandle::StdIO::INHERIT_STREAM`
      * * `ProcessHandle::StdIO::READABLE_PIPE`
      * * `ProcessHandle::StdIO::WRITABLE_PIPE`
-     * * `ProcessHandle::StdIO::OVERLAPPED_PIPE`
+     * * `ProcessHandle::StdIO::OVERLAPPED_PIPE` (requires libuv 1.21.0+)
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_stdio_flags)
@@ -203,7 +207,7 @@ public:
      * * `ProcessHandle::StdIO::INHERIT_STREAM`
      * * `ProcessHandle::StdIO::READABLE_PIPE`
      * * `ProcessHandle::StdIO::WRITABLE_PIPE`
-     * * `ProcessHandle::StdIO::OVERLAPPED_PIPE`
+     * * `ProcessHandle::StdIO::OVERLAPPED_PIPE` (requires libuv 1.21.0+)
      *
      * Default file descriptors are:
      *     * `uvw::StdIN` for `stdin`

@@ -27,10 +27,12 @@ enum class UVTTYModeT: std::underlying_type_t<uv_tty_mode_t> {
 };
 
 
+#if LIBUV_VERSION_AT_LEAST(1,33,0)
 enum class UVTTYVTermStateT: std::underlying_type_t<uv_tty_vtermstate_t> {
     SUPPORTED = UV_TTY_SUPPORTED,
     UNSUPPORTED = UV_TTY_UNSUPPORTED
 };
+#endif
 
 
 }
@@ -59,7 +61,9 @@ class TTYHandle final: public StreamHandle<TTYHandle, uv_tty_t> {
 
 public:
     using Mode = details::UVTTYModeT;
+#if LIBUV_VERSION_AT_LEAST(1,33,0)
     using VTermState = details::UVTTYVTermStateT;
+#endif
 
     explicit TTYHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, FileHandle desc, bool readable);
 
@@ -99,12 +103,13 @@ public:
      */
     WinSize getWinSize();
 
+#if LIBUV_VERSION_AT_LEAST(1,33,0)
     /**
      * @brief Controls whether console virtual terminal sequences are processed
      * by the library or console.
      *
      * This function is only meaningful on Windows systems. On Unix it is
-     * silently ignored.
+     * silently ignored. Requires libuv 1.33.0+.
      *
      * Available states are:
      *
@@ -123,7 +128,7 @@ public:
      * @brief Gets the current state of whether console virtual terminal
      * sequences are handled by the library or the console.
      *
-     * This function is not implemented on Unix.
+     * This function is not implemented on Unix. Requires libuv 1.33.0+.
      *
      * Available states are:
      *
@@ -137,6 +142,7 @@ public:
      * @return The current state.
      */
     VTermState vtermState() const noexcept;
+#endif
 
 private:
     std::shared_ptr<details::ResetModeMemo> memo;

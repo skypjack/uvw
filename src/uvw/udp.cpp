@@ -45,6 +45,7 @@ UVW_INLINE void UDPHandle::bind(const sockaddr &addr, Flags<UDPHandle::Bind> opt
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,27,0)
 UVW_INLINE void UDPHandle::connect(const sockaddr &addr) {
     invoke(&uv_udp_connect, get(), &addr);
 }
@@ -73,6 +74,7 @@ template<typename I>
 UVW_INLINE Addr UDPHandle::peer() const noexcept {
     return details::address<I>(&uv_udp_getpeername, get());
 }
+#endif
 
 
 template<typename I>
@@ -253,6 +255,7 @@ UVW_INLINE void UDPHandle::stop() {
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,19,0)
 UVW_INLINE size_t UDPHandle::sendQueueSize() const noexcept {
     return uv_udp_get_send_queue_size(get());
 }
@@ -261,6 +264,7 @@ UVW_INLINE size_t UDPHandle::sendQueueSize() const noexcept {
 UVW_INLINE size_t UDPHandle::sendQueueCount() const noexcept {
     return uv_udp_get_send_queue_count(get());
 }
+#endif
 
 
 // explicit instantiations

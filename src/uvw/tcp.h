@@ -211,18 +211,20 @@ public:
     template<typename I = IPv4>
     void connect(Addr addr);
 
+#if LIBUV_VERSION_AT_LEAST(1,32,0)
     /**
      * @brief Resets a TCP connection by sending a RST packet.
      *
      * This is accomplished by setting the `SO_LINGER` socket option with a
      * linger interval of zero and then calling `close`.<br/>
      * Due to some platform inconsistencies, mixing of `shutdown` and
-     * `closeReset` calls is not allowed.
+     * `closeReset` calls is not allowed.  Requires libuv 1.32.0+.
      *
      * A CloseEvent event is emitted when the connection has been reset.<br/>
      * An ErrorEvent event is emitted in case of errors.
      */
     void closeReset();
+#endif
 
 private:
     enum { DEFAULT, FLAGS } tag;

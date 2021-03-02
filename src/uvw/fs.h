@@ -50,13 +50,23 @@ enum class UVFsType: std::underlying_type_t<uv_fs_type> {
     FCHOWN = UV_FS_FCHOWN,
     REALPATH = UV_FS_REALPATH,
     COPYFILE = UV_FS_COPYFILE,
+#if LIBUV_VERSION_AT_LEAST(1,21,0)
     LCHOWN = UV_FS_LCHOWN,
+#endif
+#if LIBUV_VERSION_AT_LEAST(1,28,0)
     OPENDIR = UV_FS_OPENDIR,
     READDIR = UV_FS_READDIR,
     CLOSEDIR = UV_FS_CLOSEDIR,
+#endif
+#if LIBUV_VERSION_AT_LEAST(1,31,0)
     STATFS = UV_FS_STATFS,
+#endif
+#if LIBUV_VERSION_AT_LEAST(1,34,0)
     MKSTEMP = UV_FS_MKSTEMP,
-    LUTIME = UV_FS_LUTIME
+#endif
+#if LIBUV_VERSION_AT_LEAST(1,36,0)
+    LUTIME = UV_FS_LUTIME,
+#endif
 };
 
 
@@ -80,7 +90,9 @@ enum class UVFileOpenFlags: int {
     DSYNC = UV_FS_O_DSYNC,
     EXCL = UV_FS_O_EXCL,
     EXLOCK = UV_FS_O_EXLOCK,
+#if LIBUV_VERSION_AT_LEAST(1,31,0)
     FILEMAP = UV_FS_O_FILEMAP,
+#endif
     NOATIME = UV_FS_O_NOATIME,
     NOCTTY = UV_FS_O_NOCTTY,
     NOFOLLOW = UV_FS_O_NOFOLLOW,
@@ -100,8 +112,10 @@ enum class UVFileOpenFlags: int {
 
 enum class UVCopyFileFlags: int {
     EXCL = UV_FS_COPYFILE_EXCL,
+#if LIBUV_VERSION_AT_LEAST(1,20,0)
     FICLONE = UV_FS_COPYFILE_FICLONE,
-    FICLONE_FORCE = UV_FS_COPYFILE_FICLONE_FORCE
+    FICLONE_FORCE = UV_FS_COPYFILE_FICLONE_FORCE,
+#endif
 };
 
 
@@ -150,13 +164,13 @@ enum class UVSymLinkFlags: int {
  * * `FsRequest::Type::FCHOWN`
  * * `FsRequest::Type::REALPATH`
  * * `FsRequest::Type::COPYFILE`
- * * `FsRequest::Type::LCHOWN`
- * * `FsRequest::Type::OPENDIR`
- * * `FsRequest::Type::READDIR`
- * * `FsRequest::Type::CLOSEDIR`
- * * `FsRequest::Type::STATFS`
- * * `FsRequest::Type::MKSTEMP`
- * * `FsRequest::Type::LUTIME`
+ * * `FsRequest::Type::LCHOWN` (libuv 1.21.0+)
+ * * `FsRequest::Type::OPENDIR` (libuv 1.28.0+)
+ * * `FsRequest::Type::READDIR` (libuv 1.28.0+)
+ * * `FsRequest::Type::CLOSEDIR` (libuv 1.28.0+)
+ * * `FsRequest::Type::STATFS` (libuv 1.31.0+)
+ * * `FsRequest::Type::MKSTEMP` (libuv 1.34.0+)
+ * * `FsRequest::Type::LUTIME` (libuv 1.36.0+)
  *
  * It will be emitted by FsReq and/or FileReq according with their
  * functionalities.
@@ -276,6 +290,7 @@ struct FsEvent<details::UVFsType::LSTAT> {
 };
 
 
+#if LIBUV_VERSION_AT_LEAST(1,31,0)
 /**
  * @brief FsEvent event specialization for `FsRequest::Type::STATFS`.
  *
@@ -291,8 +306,10 @@ struct FsEvent<details::UVFsType::STATFS> {
     const char * path; /*!< The path affecting the request. */
     Statfs statfs; /*!< An initialized instance of Statfs. */
 };
+#endif
 
 
+#if LIBUV_VERSION_AT_LEAST(1,34,0)
 /**
  * @brief FsEvent event specialization for `FsRequest::Type::MKSTEMP`.
  *
@@ -308,6 +325,7 @@ struct FsEvent<details::UVFsType::MKSTEMP> {
     const char * path; /*!< The created file path. */
     std::size_t descriptor; /*!< The file descriptor as an integer. */
 };
+#endif
 
 
 /**
@@ -345,6 +363,7 @@ struct FsEvent<details::UVFsType::READLINK> {
 };
 
 
+#if LIBUV_VERSION_AT_LEAST(1,28,0)
 /**
  * @brief FsEvent event specialization for `FsRequest::Type::READDIR`.
  *
@@ -363,6 +382,7 @@ struct FsEvent<details::UVFsType::READDIR> {
     EntryType type; /*!< The entry type. */
     bool eos; /*!< True if there a no more entries to read. */
 };
+#endif
 
 
 /**
@@ -394,11 +414,13 @@ protected:
         else { ptr->publish(FsEvent<e>{req->path, req->statbuf}); }
     }
 
+#if LIBUV_VERSION_AT_LEAST(1,31,0)
     static void fsStatfsCallback(uv_fs_t *req) {
         auto ptr = Request<T, uv_fs_t>::reserve(req);
         if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
         else { ptr->publish(FsEvent<Type::STATFS>{req->path, *static_cast<Statfs *>(req->ptr)}); }
     }
+#endif
 
     template<typename... Args>
     void cleanupAndInvoke(Args&&... args) {
@@ -476,7 +498,7 @@ public:
      * * `FileReq::FileOpen::DSYNC`
      * * `FileReq::FileOpen::EXCL`
      * * `FileReq::FileOpen::EXLOCK`
-     * * `FileReq::FileOpen::FILEMAP`
+     * * `FileReq::FileOpen::FILEMAP` (libuv 1.31.0+)
      * * `FileReq::FileOpen::NOATIME`
      * * `FileReq::FileOpen::NOCTTY`
      * * `FileReq::FileOpen::NOFOLLOW`
@@ -514,7 +536,7 @@ public:
      * * `FileReq::FileOpen::DSYNC`
      * * `FileReq::FileOpen::EXCL`
      * * `FileReq::FileOpen::EXLOCK`
-     * * `FileReq::FileOpen::FILEMAP`
+     * * `FileReq::FileOpen::FILEMAP` (libuv 1.31.0+)
      * * `FileReq::FileOpen::NOATIME`
      * * `FileReq::FileOpen::NOCTTY`
      * * `FileReq::FileOpen::NOFOLLOW`
@@ -786,7 +808,9 @@ private:
  */
 class FsReq final: public FsRequest<FsReq> {
     static void fsReadlinkCallback(uv_fs_t *req);
+#if LIBUV_VERSION_AT_LEAST(1,28,0)
     static void fsReaddirCallback(uv_fs_t *req);
+#endif
 
 public:
     using CopyFile = details::UVCopyFileFlags;
@@ -853,6 +877,7 @@ public:
      */
     std::pair<bool, const char *> mkdtempSync(std::string tpl);
 
+#if LIBUV_VERSION_AT_LEAST(1,34,0)
     /**
      * @brief Async [mkstemp](https://linux.die.net/man/3/mkstemp).
      *
@@ -884,7 +909,9 @@ public:
      * * The second parameter is a composed value (see above).
      */
     std::pair<bool, std::pair<std::string, std::size_t>> mkstempSync(std::string tpl);
+#endif
 
+#if LIBUV_VERSION_AT_LEAST(1,36,0)
     /**
      * @brief Async [lutime](http://linux.die.net/man/3/lutimes).
      *
@@ -909,6 +936,7 @@ public:
      * @return True in case of success, false otherwise.
      */
     bool lutimeSync(std::string path, Time atime, Time mtime);
+#endif
 
     /**
      * @brief Async [rmdir](http://linux.die.net/man/2/rmdir).
@@ -1023,6 +1051,7 @@ public:
      */
     std::pair<bool, Stat> lstatSync(std::string path);
 
+#if LIBUV_VERSION_AT_LEAST(1,31,0)
     /**
      * @brief Async [statfs](http://linux.die.net/man/2/statfs).
      *
@@ -1049,6 +1078,7 @@ public:
      * * An initialized instance of Statfs.
      */
     std::pair<bool, Statfs> statfsSync(std::string path);
+#endif
 
     /**
      * @brief Async [rename](http://linux.die.net/man/2/rename).
@@ -1083,10 +1113,10 @@ public:
      * it exists).
      * * `FsReq::CopyFile::FICLONE`: If present, it will attempt to create a
      * copy-on-write reflink. If the underlying platform does not support
-     * copy-on-write, then a fallback copy mechanism is used.
+     * copy-on-write, then a fallback copy mechanism is used. Requires libuv 1.20.0+.
      * * `FsReq::CopyFile::FICLONE_FORCE`: If present, it will attempt to create
      * a copy-on-write reflink. If the underlying platform does not support
-     * copy-on-write, then an error is returned.
+     * copy-on-write, then an error is returned. Requires libuv 1.20.0+.
      *
      * @warning
      * If the destination path is created, but an error occurs while copying the
@@ -1304,11 +1334,13 @@ public:
      */
     bool chownSync(std::string path, Uid uid, Gid gid);
 
+#if LIBUV_VERSION_AT_LEAST(1,21,0)
     /**
      * @brief Async [lchown](https://linux.die.net/man/2/lchown).
      *
      * Emit a `FsEvent<FsReq::Type::LCHOWN>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
+     * Requires libuv 1.21.0+.
      *
      * @param path Path, as described in the official documentation.
      * @param uid UID, as described in the official documentation.
@@ -1317,19 +1349,22 @@ public:
     void lchown(std::string path, Uid uid, Gid gid);
 
     /**
-     * @brief Sync [lchown](https://linux.die.net/man/2/lchown).
+     * @brief Sync [lchown](https://linux.die.net/man/2/lchown). (libuv 1.21.0+)
      * @param path Path, as described in the official documentation.
      * @param uid UID, as described in the official documentation.
      * @param gid GID, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
     bool lchownSync(std::string path, Uid uid, Gid gid);
+#endif
 
+#if LIBUV_VERSION_AT_LEAST(1,28,0)
     /**
      * @brief Opens a path asynchronously as a directory stream.
      *
      * Emit a `FsEvent<FsReq::Type::OPENDIR>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
+     * Requires libuv 1.28.0+.
      *
      * The contents of the directory can be iterated over by means of the
      * `readdir` od `readdirSync` member functions. The memory allocated by this
@@ -1345,6 +1380,7 @@ public:
      * The contents of the directory can be iterated over by means of the
      * `readdir` od `readdirSync` member functions. The memory allocated by this
      * function must be freed by calling `closedir` or `closedirSync`.
+     * Requires libuv 1.28.0+.
      *
      * @param path The path to open as a directory stream.
      * @return True in case of success, false otherwise.
@@ -1356,6 +1392,7 @@ public:
      *
      * Emit a `FsEvent<FsReq::Type::CLOSEDIR>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
+     * Requires libuv 1.28.0+.
      *
      * It frees also the memory allocated internally when a path has been opened
      * as a directory stream.
@@ -1367,6 +1404,7 @@ public:
      *
      * It frees also the memory allocated internally when a path has been opened
      * as a directory stream.
+     * Requires libuv 1.28.0+.
      *
      * @return True in case of success, false otherwise.
      */
@@ -1378,6 +1416,7 @@ public:
      *
      * Emit a `FsEvent<FsReq::Type::READDIR>` event when completed.<br/>
      * Emit an ErrorEvent event in case of errors.
+     * Requires libuv 1.28.0+.
      *
      * This function isn't thread safe. Moreover, it doesn't return the `.` and
      * `..` entries.
@@ -1411,6 +1450,8 @@ public:
      * This function isn't thread safe. Moreover, it doesn't return the `.` and
      * `..` entries.
      *
+     * Requires libuv 1.28.0+.
+     *
      * @return A pair where:
      *
      * * The first parameter is a boolean value that indicates if the current
@@ -1418,6 +1459,7 @@ public:
      * * The second parameter is a composed value (see above).
      */
     std::pair<bool, std::pair<EntryType, const char *>> readdirSync();
+#endif
 
 private:
     uv_dirent_t dirents[1];
@@ -1438,6 +1480,7 @@ struct FsHelper {
      */
     static OSFileDescriptor handle(FileHandle file) noexcept;
 
+#if LIBUV_VERSION_AT_LEAST(1,23,0)
     /**
      * @brief Gets the file descriptor.
      *
@@ -1447,8 +1490,10 @@ struct FsHelper {
      * Note that the return value is still owned by the C runtime, any attempts
      * to close it or to use it after closing the handle may lead to
      * malfunction.
+     * Requires libuv 1.23.0+.
      */
     static FileHandle open(OSFileDescriptor descriptor) noexcept;
+#endif
 };
 
 

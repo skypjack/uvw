@@ -45,6 +45,7 @@ UVW_INLINE Passwd::operator bool() const noexcept {
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,25,0)
 UVW_INLINE UtsName::UtsName(std::shared_ptr<uv_utsname_t> utsname)
     : utsname{utsname}
 {}
@@ -68,6 +69,7 @@ UVW_INLINE std::string UtsName::version() const noexcept {
 UVW_INLINE std::string UtsName::machine() const noexcept {
     return utsname ? utsname->machine : "";
 }
+#endif
 
 
 UVW_INLINE PidType Utilities::OS::pid() noexcept {
@@ -105,11 +107,13 @@ UVW_INLINE std::string Utilities::OS::hostname() noexcept {
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,25,0)
 UVW_INLINE UtsName Utilities::OS::uname() noexcept {
     auto ptr = std::make_shared<uv_utsname_t>();
     uv_os_uname(ptr.get());
     return ptr;
 }
+#endif
 
 
 UVW_INLINE Passwd Utilities::OS::passwd() noexcept {
@@ -124,6 +128,7 @@ UVW_INLINE Passwd Utilities::OS::passwd() noexcept {
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,23,0)
 UVW_INLINE int Utilities::osPriority(PidType pid) {
     int prio = 0;
 
@@ -138,6 +143,7 @@ UVW_INLINE int Utilities::osPriority(PidType pid) {
 UVW_INLINE bool Utilities::osPriority(PidType pid, int prio) {
     return 0 == uv_os_setpriority(pid, prio);
 }
+#endif
 
 
 UVW_INLINE HandleType Utilities::guessHandle(HandleCategory category) noexcept {
@@ -288,9 +294,11 @@ UVW_INLINE uint64_t Utilities::totalMemory() noexcept {
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,29,0)
 UVW_INLINE uint64_t Utilities::constrainedMemory() noexcept {
     return uv_get_constrained_memory();
 }
+#endif
 
 
 UVW_INLINE double Utilities::uptime() noexcept {
@@ -331,16 +339,20 @@ UVW_INLINE bool Utilities::chdir(const std::string &dir) noexcept {
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,28,0)
 UVW_INLINE TimeVal64 Utilities::timeOfDay() noexcept {
     uv_timeval64_t ret;
     uv_gettimeofday(&ret);
     return ret;
 }
+#endif
 
 
+#if LIBUV_VERSION_AT_LEAST(1,34,0)
 UVW_INLINE void Utilities::sleep(unsigned int msec) noexcept {
     uv_sleep(msec);
 }
+#endif
 
 
 }

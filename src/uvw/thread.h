@@ -18,10 +18,12 @@ namespace uvw {
 namespace details {
 
 
+#if LIBUV_VERSION_AT_LEAST(1,26,0)
 enum class UVThreadCreateFlags: std::underlying_type_t<uv_thread_create_flags> {
     THREAD_NO_FLAGS = UV_THREAD_NO_FLAGS,
     THREAD_HAS_STACK_SIZE = UV_THREAD_HAS_STACK_SIZE
 };
+#endif
 
 
 }
@@ -52,7 +54,9 @@ class Thread final: public UnderlyingType<Thread, uv_thread_t> {
     static void createCallback(void *arg);
 
 public:
+#if LIBUV_VERSION_AT_LEAST(1,26,0)
     using Options = details::UVThreadCreateFlags;
+#endif
     using Task = InternalTask;
     using Type = uv_thread_t;
 
@@ -80,6 +84,7 @@ public:
      */
     bool run() noexcept;
 
+#if LIBUV_VERSION_AT_LEAST(1,26,0)
     /**
      * @brief Creates a new thread.
      *
@@ -91,9 +96,12 @@ public:
      * be used (it behaves as if the flag was not set). Other values will be
      * rounded up to the nearest page boundary.
      *
+     * Requires libuv 1.26.0+
+     *
      * @return True in case of success, false otherwise.
      */
     bool run(Flags<Options> opts, std::size_t stack = {}) noexcept;
+#endif
 
     /**
      * @brief Joins with a terminated thread.

@@ -44,9 +44,11 @@ UVW_INLINE TimerHandle::Time TimerHandle::repeat() {
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,40,0)
 UVW_INLINE TimerHandle::Time TimerHandle::dueIn() {
     return Time{uv_timer_get_due_in(get())};
 }
+#endif
 
 
 }

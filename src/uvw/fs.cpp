@@ -239,6 +239,7 @@ UVW_INLINE void FsReq::fsReadlinkCallback(uv_fs_t *req) {
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,28,0)
 UVW_INLINE void FsReq::fsReaddirCallback(uv_fs_t *req) {
     auto ptr = reserve(req);
 
@@ -249,6 +250,7 @@ UVW_INLINE void FsReq::fsReaddirCallback(uv_fs_t *req) {
         ptr->publish(FsEvent<Type::READDIR>{dir->dirents[0].name, static_cast<EntryType>(dir->dirents[0].type), !req->result});
     }
 }
+#endif
 
 
 UVW_INLINE FsReq::~FsReq() noexcept {
@@ -292,6 +294,7 @@ UVW_INLINE std::pair<bool, const char *> FsReq::mkdtempSync(std::string tpl) {
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,34,0)
 UVW_INLINE void FsReq::mkstemp(std::string tpl) {
     cleanupAndInvoke(&uv_fs_mkstemp, parent(), get(), tpl.data(), &fsResultCallback<Type::MKSTEMP>);
 }
@@ -310,8 +313,10 @@ UVW_INLINE std::pair<bool, std::pair<std::string, std::size_t>> FsReq::mkstempSy
 
     return ret;
 }
+#endif
 
 
+#if LIBUV_VERSION_AT_LEAST(1,36,0)
 UVW_INLINE void FsReq::lutime(std::string path, Time atime, Time mtime) {
     cleanupAndInvoke(&uv_fs_lutime, parent(), get(), path.data(), atime.count(), mtime.count(), &fsGenericCallback<Type::LUTIME>);
 }
@@ -322,6 +327,7 @@ UVW_INLINE bool FsReq::lutimeSync(std::string path, Time atime, Time mtime) {
     cleanupAndInvokeSync(&uv_fs_lutime, parent(), req, path.data(), atime.count(), mtime.count());
     return !(req->result < 0);
 }
+#endif
 
 
 UVW_INLINE void FsReq::rmdir(std::string path) {
@@ -390,6 +396,7 @@ UVW_INLINE std::pair<bool, Stat> FsReq::lstatSync(std::string path) {
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,31,0)
 UVW_INLINE void FsReq::statfs(std::string path) {
     cleanupAndInvoke(&uv_fs_statfs, parent(), get(), path.data(), &fsStatfsCallback);
 }
@@ -400,6 +407,7 @@ UVW_INLINE std::pair<bool, Statfs> FsReq::statfsSync(std::string path) {
     cleanupAndInvokeSync(&uv_fs_statfs, parent(), req, path.data());
     return std::make_pair(!(req->result < 0), *static_cast<uv_statfs_t *>(req->ptr));
 }
+#endif
 
 
 UVW_INLINE void FsReq::rename(std::string old, std::string path) {
@@ -523,6 +531,7 @@ UVW_INLINE bool FsReq::chownSync(std::string path, Uid uid, Gid gid) {
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,21,0)
 UVW_INLINE void FsReq::lchown(std::string path, Uid uid, Gid gid) {
     cleanupAndInvoke(&uv_fs_lchown, parent(), get(), path.data(), uid, gid, &fsGenericCallback<Type::LCHOWN>);
 }
@@ -533,8 +542,10 @@ UVW_INLINE bool FsReq::lchownSync(std::string path, Uid uid, Gid gid) {
     cleanupAndInvokeSync(&uv_fs_lchown, parent(), req, path.data(), uid, gid);
     return !(req->result < 0);
 }
+#endif
 
 
+#if LIBUV_VERSION_AT_LEAST(1,28,0)
 UVW_INLINE void FsReq::opendir(std::string path) {
     cleanupAndInvoke(&uv_fs_opendir, parent(), get(), path.data(), &fsGenericCallback<Type::OPENDIR>);
 }
@@ -579,6 +590,7 @@ UVW_INLINE std::pair<bool, std::pair<FsReq::EntryType, const char *>> FsReq::rea
     cleanupAndInvokeSync(&uv_fs_readdir, parent(), req, dir);
     return {req->result != 0, { static_cast<EntryType>(dirents[0].type), dirents[0].name }};
 }
+#endif
 
 
 UVW_INLINE OSFileDescriptor FsHelper::handle(FileHandle file) noexcept {
@@ -586,9 +598,11 @@ UVW_INLINE OSFileDescriptor FsHelper::handle(FileHandle file) noexcept {
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,23,0)
 UVW_INLINE FileHandle FsHelper::open(OSFileDescriptor descriptor) noexcept {
     return uv_open_osfhandle(descriptor);
 }
+#endif
 
 
 }

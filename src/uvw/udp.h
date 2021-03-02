@@ -46,9 +46,15 @@ enum class UVUDPFlags: std::underlying_type_t<uv_udp_flags> {
     IPV6ONLY = UV_UDP_IPV6ONLY,
     UDP_PARTIAL = UV_UDP_PARTIAL,
     REUSEADDR = UV_UDP_REUSEADDR,
+#if LIBUV_VERSION_AT_LEAST(1,35,0)
     UDP_MMSG_CHUNK = UV_UDP_MMSG_CHUNK,
+#endif
+#if LIBUV_VERSION_AT_LEAST(1,40,0)
     UDP_MMSG_FREE = UV_UDP_MMSG_FREE,
-    UDP_RECVMMSG = UV_UDP_RECVMMSG
+#endif
+#if LIBUV_VERSION_AT_LEAST(1,37,0)
+    UDP_RECVMMSG = UV_UDP_RECVMMSG,
+#endif
 };
 
 
@@ -150,9 +156,9 @@ public:
      * * `UDPHandle::Bind::IPV6ONLY`
      * * `UDPHandle::Bind::UDP_PARTIAL`
      * * `UDPHandle::Bind::REUSEADDR`
-     * * `UDPHandle::Bind::UDP_MMSG_CHUNK`
-     * * `UDPHandle::Bind::UDP_MMSG_FREE`
-     * * `UDPHandle::Bind::UDP_RECVMMSG`
+     * * `UDPHandle::Bind::UDP_MMSG_CHUNK` (libuv 1.35.0+)
+     * * `UDPHandle::Bind::UDP_MMSG_FREE` (libuv 1.40.0+)
+     * * `UDPHandle::Bind::UDP_RECVMMSG` (libuv 1.37.0+)
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
@@ -163,6 +169,7 @@ public:
      */
     void bind(const sockaddr &addr, Flags<Bind> opts = Flags<Bind>{});
 
+#if LIBUV_VERSION_AT_LEAST(1,27,0)
     /**
      * @brief Associates the handle to a remote address and port (either IPv4 or
      * IPv6).
@@ -171,6 +178,7 @@ public:
      * destination.<br/>
      * Trying to call this function on an already connected handle isn't
      * allowed.
+     * Requires libuv 1.27.0+.
      *
      * An ErrorEvent event is emitted in case of errors during the connection.
      *
@@ -226,6 +234,7 @@ public:
      */
     template<typename I = IPv4>
     Addr peer() const noexcept;
+#endif
 
     /**
      * @brief Binds the UDP handle to an IP address and port.
@@ -235,9 +244,9 @@ public:
      * * `UDPHandle::Bind::IPV6ONLY`
      * * `UDPHandle::Bind::UDP_PARTIAL`
      * * `UDPHandle::Bind::REUSEADDR`
-     * * `UDPHandle::Bind::UDP_MMSG_CHUNK`
-     * * `UDPHandle::Bind::UDP_MMSG_FREE`
-     * * `UDPHandle::Bind::UDP_RECVMMSG`
+     * * `UDPHandle::Bind::UDP_MMSG_CHUNK` (libuv 1.35.0+)
+     * * `UDPHandle::Bind::UDP_MMSG_FREE` (libuv 1.40.0+)
+     * * `UDPHandle::Bind::UDP_RECVMMSG` (libuv 1.37.0+)
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
@@ -258,9 +267,9 @@ public:
      * * `UDPHandle::Bind::IPV6ONLY`
      * * `UDPHandle::Bind::UDP_PARTIAL`
      * * `UDPHandle::Bind::REUSEADDR`
-     * * `UDPHandle::Bind::UDP_MMSG_CHUNK`
-     * * `UDPHandle::Bind::UDP_MMSG_FREE`
-     * * `UDPHandle::Bind::UDP_RECVMMSG`
+     * * `UDPHandle::Bind::UDP_MMSG_CHUNK` (libuv 1.35.0+)
+     * * `UDPHandle::Bind::UDP_MMSG_FREE` (libuv 1.40.0+)
+     * * `UDPHandle::Bind::UDP_RECVMMSG` (libuv 1.37.0+)
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
@@ -558,20 +567,23 @@ public:
      */
     void stop();
 
+#if LIBUV_VERSION_AT_LEAST(1,19,0)
     /**
      * @brief Gets the number of bytes queued for sending.
      *
-     * It strictly shows how much information is currently queued.
+     * It strictly shows how much information is currently queued.  Requires libuv 1.19.0+.
      *
      * @return Number of bytes queued for sending.
      */
     size_t sendQueueSize() const noexcept;
 
     /**
-     * @brief Number of send requests currently in the queue awaiting to be processed.
+     * @brief Number of send requests currently in the queue awaiting to be processed. libuv
+     * 1.19.0+.
      * @return Number of send requests currently in the queue.
      */
     size_t sendQueueCount() const noexcept;
+#endif
 
 private:
     enum { DEFAULT, FLAGS } tag{DEFAULT};

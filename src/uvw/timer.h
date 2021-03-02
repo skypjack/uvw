@@ -95,6 +95,7 @@ public:
      */
     Time repeat();
 
+#if LIBUV_VERSION_AT_LEAST(1,40,0)
     /**
      * @brief Gets the timer due value.
      * 
@@ -103,6 +104,7 @@ public:
      * @return The timer due value or 0 if it has expired.
      */
     Time dueIn();
+#endif
 };
 
 

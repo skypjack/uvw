@@ -40,7 +40,9 @@ namespace details {
 
 enum class UVLoopOption: std::underlying_type_t<uv_loop_option> {
     BLOCK_SIGNAL = UV_LOOP_BLOCK_SIGNAL,
-    IDLE_TIME = UV_METRICS_IDLE_TIME
+#if LIBUV_VERSION_AT_LEAST(1,39,0)
+    IDLE_TIME = UV_METRICS_IDLE_TIME,
+#endif
 };
 
 
@@ -233,12 +235,14 @@ public:
      */
     std::pair<bool, Time> timeout() const noexcept;
 
+#if LIBUV_VERSION_AT_LEAST(1,39,0)
     /**
     * @brief Returns the amount of time the event loop has been idle. The call
-    * is thread safe.
+    * is thread safe. Requires libuv 1.39.0+.
     * @return The accumulated time spent idle.
     */
     Time idleTime() const noexcept;
+#endif
 
     /**
      * @brief Returns the current timestamp in milliseconds.

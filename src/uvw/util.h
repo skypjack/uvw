@@ -11,6 +11,7 @@
 #include <memory>
 #include <array>
 #include <uv.h>
+#include "config.h"
 
 
 namespace uvw {
@@ -197,12 +198,16 @@ constexpr FileHandle StdERR{2}; /*!< Placeholder for stderr descriptor. */
 
 using TimeSpec = uv_timespec_t; /*!< Library equivalent for uv_timespec_t. */
 using Stat = uv_stat_t; /*!< Library equivalent for uv_stat_t. */
+#if LIBUV_VERSION_AT_LEAST(1,31,0)
 using Statfs = uv_statfs_t; /*!< Library equivalent for uv_statfs_t. */
+#endif
 using Uid = uv_uid_t; /*!< Library equivalent for uv_uid_t. */
 using Gid = uv_gid_t; /*!< Library equivalent for uv_gid_t. */
 
 using TimeVal = uv_timeval_t; /*!< Library equivalent for uv_timeval_t. */
-using TimeVal64 = uv_timeval64_t; /*!< Library equivalent for uv_timeval64_t. */
+#if LIBUV_VERSION_AT_LEAST(1,28,0)
+using TimeVal64 = uv_timeval64_t; /*!< Library equivalent for uv_timeval64_t. (requires libuv 1.28.0+) */
+#endif
 using RUsage = uv_rusage_t; /*!< Library equivalent for uv_rusage_t. */
 
 
@@ -258,12 +263,15 @@ private:
 };
 
 
+#if LIBUV_VERSION_AT_LEAST(1,25,0)
 /**
  * @brief Utility class.
  *
  * This class can be used to get name and information about the current kernel.
  * The populated data includes the operating system name, release, version, and
  * machine.
+ *
+ * Requires libuv 1.25.0+.
  *
  * \sa Utilities::uname
  */
@@ -297,6 +305,7 @@ struct UtsName {
 private:
     std::shared_ptr<uv_utsname_t> utsname;
 };
+#endif
 
 
 /**
@@ -522,6 +531,7 @@ struct Utilities {
          */
         static bool env(const std::string &name, const std::string &value) noexcept;
 
+#if LIBUV_VERSION_AT_LEAST(1,31,0)
         /**
          * @brief Retrieves all environment variables and iterates them.
          *
@@ -529,6 +539,7 @@ struct Utilities {
          * form of `std::string_view`s.<br/>
          * The signature of the function call operator must be such that it
          * accepts two parameters, the name and the value of the i-th variable.
+         * Requires libuv 1.31.0+.
          *
          * @tparam Func Type of a function object to which to pass environment
          * variables.
@@ -553,6 +564,7 @@ struct Utilities {
 
             return ret;
         }
+#endif
 
         /**
          * @brief Returns the hostname.
@@ -560,6 +572,7 @@ struct Utilities {
          */
         static std::string hostname() noexcept;
 
+#if LIBUV_VERSION_AT_LEAST(1,25,0)
         /**
          * @brief Gets name and information about the current kernel.
          *
@@ -570,6 +583,7 @@ struct Utilities {
          * @return Name and information about the current kernel.
          */
         static UtsName uname() noexcept;
+#endif
 
         /**
          * @brief Gets a subset of the password file entry.
@@ -586,11 +600,13 @@ struct Utilities {
         static Passwd passwd() noexcept;
     };
 
+#if LIBUV_VERSION_AT_LEAST(1,23,0)
     /**
      * @brief Retrieves the scheduling priority of a process.
      *
      * The returned value is between -20 (high priority) and 19 (low priority).
      * A value that is out of range is returned in case of errors.
+     * Requires libuv 1.23.0+
      *
      * @note
      * On Windows, the result won't equal necessarily the exact value of the
@@ -606,6 +622,7 @@ struct Utilities {
      *
      * The returned value range is between -20 (high priority) and 19 (low
      * priority).
+     * Requires libuv 1.23.0+
      *
      * @note
      * On Windows, the priority is mapped to a Windows priority class. When
@@ -617,6 +634,7 @@ struct Utilities {
      * @return True in case of success, false otherwise.
      */
     static bool osPriority(PidType pid, int prio);
+#endif
 
     /**
      * @brief Gets the type of the handle given a category.
@@ -750,6 +768,7 @@ struct Utilities {
      */
     static uint64_t totalMemory() noexcept;
 
+#if LIBUV_VERSION_AT_LEAST(1,29,0)
     /**
      * @brief Gets the amount of memory available to the process (in bytes).
      *
@@ -758,10 +777,12 @@ struct Utilities {
      * unknown, `0` is returned.<br/>
      * Note that it is not unusual for this value to be less than or greater
      * than `totalMemory`.
+     * Requires libuv 1.29.0+.
      *
      * @return Amount of memory available to the process.
      */
     static uint64_t constrainedMemory() noexcept;
+#endif
 
     /**
      * @brief Gets the current system uptime.
@@ -806,18 +827,22 @@ struct Utilities {
      */
     static bool chdir(const std::string &dir) noexcept;
 
+#if LIBUV_VERSION_AT_LEAST(1,28,0)
     /**
      * @brief Cross-platform implementation of
-     * [`gettimeofday`](https://linux.die.net/man/2/gettimeofday)
+     * [`gettimeofday`](https://linux.die.net/man/2/gettimeofday) (libuv 1.28.0+)
      * @return The current time.
      */
     static TimeVal64 timeOfDay() noexcept;
+#endif
 
+#if LIBUV_VERSION_AT_LEAST(1,34,0)
     /**
-     * @brief Causes the calling thread to sleep for a while.
+     * @brief Causes the calling thread to sleep for a while. (libuv 1.34.0+)
      * @param msec Number of milliseconds to sleep.
      */
     static void sleep(unsigned int msec) noexcept;
+#endif
 };
 
 

@@ -97,9 +97,11 @@ UVW_INLINE std::pair<bool, Loop::Time> Loop::timeout() const noexcept {
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,39,0)
 UVW_INLINE Loop::Time Loop::idleTime() const noexcept {
     return Time{uv_metrics_idle_time(loop.get())};
 }
+#endif
 
 
 UVW_INLINE Loop::Time Loop::now() const noexcept {

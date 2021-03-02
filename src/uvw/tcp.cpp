@@ -96,9 +96,11 @@ UVW_INLINE void TCPHandle::connect(const sockaddr &addr) {
 }
 
 
+#if LIBUV_VERSION_AT_LEAST(1,32,0)
 UVW_INLINE void TCPHandle::closeReset() {
     invoke(&uv_tcp_close_reset, get(), &this->closeCallback);
 }
+#endif
 
 
 // explicit instantiations
