@@ -88,9 +88,13 @@ TEST(Loop, Configure) {
 
 
 TEST(Loop, IdleTime) {
+#if !LIBUV_VERSION_AT_LEAST(1,39,0)
+    GTEST_SKIP() << "Requires libuv 1.39.0+";
+#else
     auto loop = uvw::Loop::create();
     loop->configure(uvw::Loop::Configure::IDLE_TIME);
     ASSERT_EQ(loop->idleTime().count(), 0u);
+#endif
 }
 
 

@@ -707,6 +707,9 @@ TEST(FsReq, ChownSync) {
 
 
 TEST(FsReq, Lchown) {
+#if !LIBUV_VERSION_AT_LEAST(1,21,0)
+    GTEST_SKIP() << "Requires libuv 1.21.0+";
+#else
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
@@ -743,10 +746,14 @@ TEST(FsReq, Lchown) {
     loop->run();
 
     ASSERT_TRUE(checkFsLChownEvent);
+#endif
 }
 
 
 TEST(FsReq, LchownSync) {
+#if !LIBUV_VERSION_AT_LEAST(1,21,0)
+    GTEST_SKIP() << "Requires libuv 1.21.0+";
+#else
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::Loop::getDefault();
@@ -764,9 +771,13 @@ TEST(FsReq, LchownSync) {
     ASSERT_TRUE(fsReq->lchownSync(filename, uid, gid));
 
     loop->run();
+#endif
 }
 
 TEST(FsReq, ReadDir) {
+#if !LIBUV_VERSION_AT_LEAST(1,28,0)
+    GTEST_SKIP() << "Requires libuv 1.28.0+";
+#else
     const std::string dir_name = std::string{TARGET_FS_REQ_DIR};
 
     auto loop = uvw::Loop::getDefault();
@@ -805,9 +816,13 @@ TEST(FsReq, ReadDir) {
     ASSERT_TRUE(checkFsCloseDirEvent);
     ASSERT_TRUE(checkFsReadDirEvent);
     ASSERT_TRUE(checkFsOpenDirEvent);
+#endif
 }
 
 TEST(FsReq, ReadDirSync) {
+#if !LIBUV_VERSION_AT_LEAST(1,28,0)
+    GTEST_SKIP() << "Requires libuv 1.28.0+";
+#else
     const std::string dir_name = std::string{TARGET_FS_REQ_DIR};
 
     auto loop = uvw::Loop::getDefault();
@@ -821,4 +836,5 @@ TEST(FsReq, ReadDirSync) {
     ASSERT_TRUE(fsReq->closedirSync());
 
     loop->run();
+#endif
 }
