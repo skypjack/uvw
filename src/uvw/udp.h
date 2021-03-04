@@ -599,6 +599,7 @@ private:
 
 // (extern) explicit instantiations
 #ifdef UVW_AS_LIB
+#if LIBUV_VERSION_AT_LEAST(1,27,0)
 extern template void UDPHandle::connect<IPv4>(std::string, unsigned int);
 extern template void UDPHandle::connect<IPv6>(std::string, unsigned int);
 
@@ -607,6 +608,7 @@ extern template void UDPHandle::connect<IPv6>(Addr);
 
 extern template Addr UDPHandle::peer<IPv4>() const noexcept;
 extern template Addr UDPHandle::peer<IPv6>() const noexcept;
+#endif
 
 extern template void UDPHandle::bind<IPv4>(std::string, unsigned int, Flags<Bind>);
 extern template void UDPHandle::bind<IPv6>(std::string, unsigned int, Flags<Bind>);
