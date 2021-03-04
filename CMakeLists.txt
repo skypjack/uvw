@@ -62,6 +62,10 @@ endif()
 
 option(FETCH_LIBUV "Fetch the libuv repo using CMake FetchContent facility" ON)
 function(fetch_libuv)
+    if (TARGET uv::uv-static)
+        return()
+    endif()
+
     if (FETCH_LIBUV)
         include(FetchContent)
 
@@ -83,7 +87,18 @@ function(fetch_libuv)
 
         set_target_properties(uv_a PROPERTIES POSITION_INDEPENDENT_CODE 1)
         set_target_properties(uv PROPERTIES POSITION_INDEPENDENT_CODE 1)
-    endif(FETCH_LIBUV)
+    else()
+        find_library(UV_STATIC NAMES uv_a libuv.a)
+        if(UV_STATIC)
+            message(STATUS "Using libuv at ${UV_STATIC}")
+            add_library(uv_a STATIC IMPORTED)
+            target_link_libraries(uv_a INTERFACE dl)
+            set_property(TARGET uv_a PROPERTY IMPORTED_LOCATION "${UV_STATIC}")
+            add_library(uv::uv-static ALIAS uv_a)
+        else()
+            message(FATAL_ERROR "Could not find static libuv or libuv_a")
+        endif()
+    endif()
 endfunction()
 
 #

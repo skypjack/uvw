@@ -28,6 +28,29 @@ jobs:
         CTEST_OUTPUT_ON_FAILURE: 1
       run: ctest --timeout 5 -C Debug -j2
 
+  linux-native-libuv:
+    timeout-minutes: 60
+
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Compile tests (${{ matrix.os }} system libuv)
+      working-directory: build
+      run: |
+        sudo apt-get -o=Dpkg::Use-Pty=0 -qy install libuv1-dev
+        cmake -DBUILD_UVW_LIBS=ON -DFETCH_LIBUV=OFF -DBUILD_TESTING=ON ..
+        make -j2
+    - name: Run tests
+      working-directory: build
+      env:
+        CTEST_OUTPUT_ON_FAILURE: 1
+      run: ctest --timeout 5 -C Debug -j2
+
   windows:
     timeout-minutes: 60
     runs-on: windows-latest
