@@ -31,7 +31,7 @@ UVW_INLINE bool FsPollHandle::init() {
 }
 
 
-UVW_INLINE void FsPollHandle::start(std::string file, FsPollHandle::Time interval) {
+UVW_INLINE void FsPollHandle::start(const std::string &file, FsPollHandle::Time interval) {
     invoke(&uv_fs_poll_start, get(), &startCallback, file.data(), interval.count());
 }
 

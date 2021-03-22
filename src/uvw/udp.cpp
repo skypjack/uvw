@@ -51,7 +51,7 @@ UVW_INLINE void UDPHandle::connect(const sockaddr &addr) {
 
 
 template<typename I>
-UVW_INLINE void UDPHandle::connect(std::string ip, unsigned int port) {
+UVW_INLINE void UDPHandle::connect(const std::string &ip, unsigned int port) {
     typename details::IpTraits<I>::Type addr;
     details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
     connect(reinterpret_cast<const sockaddr &>(addr));
@@ -76,7 +76,7 @@ UVW_INLINE Addr UDPHandle::peer() const noexcept {
 
 
 template<typename I>
-UVW_INLINE void UDPHandle::bind(std::string ip, unsigned int port, Flags<Bind> opts) {
+UVW_INLINE void UDPHandle::bind(const std::string &ip, unsigned int port, Flags<Bind> opts) {
     typename details::IpTraits<I>::Type addr;
     details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
     bind(reinterpret_cast<const sockaddr &>(addr), std::move(opts));
@@ -96,7 +96,7 @@ UVW_INLINE Addr UDPHandle::sock() const noexcept {
 
 
 template<typename I>
-UVW_INLINE bool UDPHandle::multicastMembership(std::string multicast, std::string iface, Membership membership) {
+UVW_INLINE bool UDPHandle::multicastMembership(const std::string &multicast, const std::string &iface, Membership membership) {
     return (0 == uv_udp_set_membership(get(), multicast.data(), iface.data(), static_cast<uv_membership>(membership)));
 }
 
@@ -112,7 +112,7 @@ UVW_INLINE bool UDPHandle::multicastTtl(int val) {
 
 
 template<typename I>
-UVW_INLINE bool UDPHandle::multicastInterface(std::string iface) {
+UVW_INLINE bool UDPHandle::multicastInterface(const std::string &iface) {
     return (0 == uv_udp_set_multicast_interface(get(), iface.data()));
 }
 
@@ -144,7 +144,7 @@ UVW_INLINE void UDPHandle::send(const sockaddr &addr, std::unique_ptr<char[]> da
 
 
 template<typename I>
-UVW_INLINE void UDPHandle::send(std::string ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len) {
+UVW_INLINE void UDPHandle::send(const std::string &ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len) {
     typename details::IpTraits<I>::Type addr;
     details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
     send(reinterpret_cast<const sockaddr &>(addr), std::move(data), len);
@@ -173,7 +173,7 @@ UVW_INLINE void UDPHandle::send(const sockaddr &addr, char *data, unsigned int l
 
 
 template<typename I>
-UVW_INLINE void UDPHandle::send(std::string ip, unsigned int port, char *data, unsigned int len) {
+UVW_INLINE void UDPHandle::send(const std::string &ip, unsigned int port, char *data, unsigned int len) {
     typename details::IpTraits<I>::Type addr;
     details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
     send(reinterpret_cast<const sockaddr &>(addr), data, len);
@@ -201,7 +201,7 @@ UVW_INLINE int UDPHandle::trySend(const sockaddr &addr, std::unique_ptr<char[]> 
 
 
 template<typename I>
-UVW_INLINE int UDPHandle::trySend(std::string ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len) {
+UVW_INLINE int UDPHandle::trySend(const std::string &ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len) {
     typename details::IpTraits<I>::Type addr;
     details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
     return trySend(reinterpret_cast<const sockaddr &>(addr), std::move(data), len);
@@ -229,7 +229,7 @@ UVW_INLINE int UDPHandle::trySend(const sockaddr &addr, char *data, unsigned int
 
 
 template<typename I>
-UVW_INLINE int UDPHandle::trySend(std::string ip, unsigned int port, char *data, unsigned int len) {
+UVW_INLINE int UDPHandle::trySend(const std::string &ip, unsigned int port, char *data, unsigned int len) {
     typename details::IpTraits<I>::Type addr;
     details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
     return trySend(reinterpret_cast<const sockaddr &>(addr), data, len);
@@ -265,8 +265,8 @@ UVW_INLINE size_t UDPHandle::sendQueueCount() const noexcept {
 
 // explicit instantiations
 #ifdef UVW_AS_LIB
-template void UDPHandle::connect<IPv4>(std::string, unsigned int);
-template void UDPHandle::connect<IPv6>(std::string, unsigned int);
+template void UDPHandle::connect<IPv4>(const std::string &, unsigned int);
+template void UDPHandle::connect<IPv6>(const std::string &, unsigned int);
 
 template void UDPHandle::connect<IPv4>(Addr);
 template void UDPHandle::connect<IPv6>(Addr);
@@ -274,8 +274,8 @@ template void UDPHandle::connect<IPv6>(Addr);
 template Addr UDPHandle::peer<IPv4>() const noexcept;
 template Addr UDPHandle::peer<IPv6>() const noexcept;
 
-template void UDPHandle::bind<IPv4>(std::string, unsigned int, Flags<Bind>);
-template void UDPHandle::bind<IPv6>(std::string, unsigned int, Flags<Bind>);
+template void UDPHandle::bind<IPv4>(const std::string &, unsigned int, Flags<Bind>);
+template void UDPHandle::bind<IPv6>(const std::string &, unsigned int, Flags<Bind>);
 
 template void UDPHandle::bind<IPv4>(Addr, Flags<Bind>);
 template void UDPHandle::bind<IPv6>(Addr, Flags<Bind>);
@@ -283,20 +283,20 @@ template void UDPHandle::bind<IPv6>(Addr, Flags<Bind>);
 template Addr UDPHandle::sock<IPv4>() const noexcept;
 template Addr UDPHandle::sock<IPv6>() const noexcept;
 
-template bool UDPHandle::multicastMembership<IPv4>(std::string, std::string, Membership);
-template bool UDPHandle::multicastMembership<IPv6>(std::string, std::string, Membership);
+template bool UDPHandle::multicastMembership<IPv4>(const std::string &, const std::string &, Membership);
+template bool UDPHandle::multicastMembership<IPv6>(const std::string &, const std::string &, Membership);
 
-template bool UDPHandle::multicastInterface<IPv4>(std::string);
-template bool UDPHandle::multicastInterface<IPv6>(std::string);
+template bool UDPHandle::multicastInterface<IPv4>(const std::string &);
+template bool UDPHandle::multicastInterface<IPv6>(const std::string &);
 
-template void UDPHandle::send<IPv4>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
-template void UDPHandle::send<IPv6>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
+template void UDPHandle::send<IPv4>(const std::string &, unsigned int, std::unique_ptr<char[]>, unsigned int);
+template void UDPHandle::send<IPv6>(const std::string &, unsigned int, std::unique_ptr<char[]>, unsigned int);
 
 template void UDPHandle::send<IPv4>(Addr, std::unique_ptr<char[]>, unsigned int);
 template void UDPHandle::send<IPv6>(Addr, std::unique_ptr<char[]>, unsigned int);
 
-template void UDPHandle::send<IPv4>(std::string, unsigned int, char *, unsigned int);
-template void UDPHandle::send<IPv6>(std::string, unsigned int, char *, unsigned int);
+template void UDPHandle::send<IPv4>(const std::string &, unsigned int, char *, unsigned int);
+template void UDPHandle::send<IPv6>(const std::string &, unsigned int, char *, unsigned int);
 
 template void UDPHandle::send<IPv4>(Addr, char *, unsigned int);
 template void UDPHandle::send<IPv6>(Addr, char *, unsigned int);
@@ -304,8 +304,8 @@ template void UDPHandle::send<IPv6>(Addr, char *, unsigned int);
 template int UDPHandle::trySend<IPv4>(const sockaddr &, std::unique_ptr<char[]>, unsigned int);
 template int UDPHandle::trySend<IPv6>(const sockaddr &, std::unique_ptr<char[]>, unsigned int);
 
-template int UDPHandle::trySend<IPv4>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
-template int UDPHandle::trySend<IPv6>(std::string, unsigned int, std::unique_ptr<char[]>, unsigned int);
+template int UDPHandle::trySend<IPv4>(const std::string &, unsigned int, std::unique_ptr<char[]>, unsigned int);
+template int UDPHandle::trySend<IPv6>(const std::string &, unsigned int, std::unique_ptr<char[]>, unsigned int);
 
 template int UDPHandle::trySend<IPv4>(Addr, std::unique_ptr<char[]>, unsigned int);
 template int UDPHandle::trySend<IPv6>(Addr, std::unique_ptr<char[]>, unsigned int);
@@ -313,8 +313,8 @@ template int UDPHandle::trySend<IPv6>(Addr, std::unique_ptr<char[]>, unsigned in
 template int UDPHandle::trySend<IPv4>(const sockaddr &, char *, unsigned int);
 template int UDPHandle::trySend<IPv6>(const sockaddr &, char *, unsigned int);
 
-template int UDPHandle::trySend<IPv4>(std::string, unsigned int, char *, unsigned int);
-template int UDPHandle::trySend<IPv6>(std::string, unsigned int, char *, unsigned int);
+template int UDPHandle::trySend<IPv4>(const std::string &, unsigned int, char *, unsigned int);
+template int UDPHandle::trySend<IPv6>(const std::string &, unsigned int, char *, unsigned int);
 
 template int UDPHandle::trySend<IPv4>(Addr, char *, unsigned int);
 template int UDPHandle::trySend<IPv6>(Addr, char *, unsigned int);
@@ -322,5 +322,6 @@ template int UDPHandle::trySend<IPv6>(Addr, char *, unsigned int);
 template void UDPHandle::recv<IPv4>();
 template void UDPHandle::recv<IPv6>();
 #endif // UVW_AS_LIB
+
 
 }

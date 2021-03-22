@@ -84,7 +84,7 @@ public:
      * @param hints Optional `addrinfo` data structure with additional address
      * type constraints.
      */
-    void nodeAddrInfo(std::string node, addrinfo *hints = nullptr);
+    void nodeAddrInfo(const std::string &node, addrinfo *hints = nullptr);
 
     /**
      * @brief Sync [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
@@ -97,7 +97,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * A `std::unique_ptr<addrinfo, Deleter>` containing the data requested.
      */
-    std::pair<bool, std::unique_ptr<addrinfo, Deleter>> nodeAddrInfoSync(std::string node, addrinfo *hints = nullptr);
+    std::pair<bool, std::unique_ptr<addrinfo, Deleter>> nodeAddrInfoSync(const std::string &node, addrinfo *hints = nullptr);
 
     /**
      * @brief Async [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
@@ -105,7 +105,7 @@ public:
      * @param hints Optional `addrinfo` data structure with additional address
      * type constraints.
      */
-    void serviceAddrInfo(std::string service, addrinfo *hints = nullptr);
+    void serviceAddrInfo(const std::string &service, addrinfo *hints = nullptr);
 
     /**
      * @brief Sync [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
@@ -118,7 +118,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * A `std::unique_ptr<addrinfo, Deleter>` containing the data requested.
      */
-    std::pair<bool, std::unique_ptr<addrinfo, Deleter>> serviceAddrInfoSync(std::string service, addrinfo *hints = nullptr);
+    std::pair<bool, std::unique_ptr<addrinfo, Deleter>> serviceAddrInfoSync(const std::string &service, addrinfo *hints = nullptr);
 
     /**
      * @brief Async [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
@@ -127,7 +127,7 @@ public:
      * @param hints Optional `addrinfo` data structure with additional address
      * type constraints.
      */
-    void addrInfo(std::string node, std::string service, addrinfo *hints = nullptr);
+    void addrInfo(const std::string &node, const std::string &service, addrinfo *hints = nullptr);
 
     /**
      * @brief Sync [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
@@ -141,7 +141,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * A `std::unique_ptr<addrinfo, Deleter>` containing the data requested.
      */
-    std::pair<bool, std::unique_ptr<addrinfo, Deleter>> addrInfoSync(std::string node, std::string service, addrinfo *hints = nullptr);
+    std::pair<bool, std::unique_ptr<addrinfo, Deleter>> addrInfoSync(const std::string &node, const std::string &service, addrinfo *hints = nullptr);
 };
 
 
@@ -173,7 +173,7 @@ public:
      * @param flags Optional flags that modify the behavior of `getnameinfo`.
      */
     template<typename I = IPv4>
-    void nameInfo(std::string ip, unsigned int port, int flags = 0);
+    void nameInfo(const std::string &ip, unsigned int port, int flags = 0);
 
     /**
      * @brief Async [getnameinfo](http://linux.die.net/man/3/getnameinfo).
@@ -211,7 +211,7 @@ public:
      *   * A `const char *` containing a valid service name.
      */
     template<typename I = IPv4>
-    std::pair<bool, std::pair<const char *, const char *>> nameInfoSync(std::string ip, unsigned int port, int flags = 0);
+    std::pair<bool, std::pair<const char *, const char *>> nameInfoSync(const std::string &ip, unsigned int port, int flags = 0);
 
     /**
      * @brief Sync [getnameinfo](http://linux.die.net/man/3/getnameinfo).
@@ -238,18 +238,19 @@ public:
 
 // (extern) explicit instantiations
 #ifdef UVW_AS_LIB
-extern template void GetNameInfoReq::nameInfo<IPv4>(std::string ip, unsigned int port, int flags);
-extern template void GetNameInfoReq::nameInfo<IPv6>(std::string ip, unsigned int port, int flags);
+extern template void GetNameInfoReq::nameInfo<IPv4>(const std::string &, unsigned int, int);
+extern template void GetNameInfoReq::nameInfo<IPv6>(const std::string &, unsigned int, int);
 
-extern template void GetNameInfoReq::nameInfo<IPv4>(Addr addr, int flags);
-extern template void GetNameInfoReq::nameInfo<IPv6>(Addr addr, int flags);
+extern template void GetNameInfoReq::nameInfo<IPv4>(Addr, int);
+extern template void GetNameInfoReq::nameInfo<IPv6>(Addr, int);
 
-extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(std::string ip, unsigned int port, int flags);
-extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(std::string ip, unsigned int port, int flags);
+extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(const std::string &, unsigned int, int);
+extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(const std::string &, unsigned int, int);
 
-extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(Addr addr, int flags);
-extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(Addr addr, int flags);
+extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(Addr, int);
+extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(Addr, int);
 #endif // UVW_AS_LIB
+
 
 /**
  * Internal details not to be documented.
@@ -263,5 +264,6 @@ extern template std::pair<bool, std::pair<const char *, const char *>> GetNameIn
 #ifndef UVW_AS_LIB
 #include "dns.cpp"
 #endif
+
 
 #endif // UVW_DNS_INCLUDE_H

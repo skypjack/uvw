@@ -82,7 +82,7 @@ UVW_INLINE int ProcessHandle::pid() noexcept {
 }
 
 
-UVW_INLINE ProcessHandle &ProcessHandle::cwd(std::string path) noexcept {
+UVW_INLINE ProcessHandle &ProcessHandle::cwd(const std::string &path) noexcept {
     poCwd = path;
     return *this;
 }

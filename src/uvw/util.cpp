@@ -278,7 +278,7 @@ UVW_INLINE std::string Utilities::processTitle() {
 }
 
 
-UVW_INLINE bool Utilities::processTitle(std::string title) {
+UVW_INLINE bool Utilities::processTitle(const std::string &title) {
     return (0 == uv_set_process_title(title.c_str()));
 }
 

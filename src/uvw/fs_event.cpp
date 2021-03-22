@@ -3,7 +3,6 @@
 #endif
 
 #include <utility>
-
 #include "config.h"
 
 
@@ -31,12 +30,12 @@ UVW_INLINE bool FsEventHandle::init() {
 }
 
 
-UVW_INLINE void FsEventHandle::start(std::string path, Flags<Event> flags) {
+UVW_INLINE void FsEventHandle::start(const std::string &path, Flags<Event> flags) {
     invoke(&uv_fs_event_start, get(), &startCallback, path.data(), flags);
 }
 
 
-UVW_INLINE void FsEventHandle::start(std::string path, FsEventHandle::Event flag) {
+UVW_INLINE void FsEventHandle::start(const std::string &path, FsEventHandle::Event flag) {
     start(std::move(path), Flags<Event>{flag});
 }
 

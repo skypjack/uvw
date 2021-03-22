@@ -21,7 +21,7 @@ namespace uvw {
  */
 class SharedLib final: public UnderlyingType<SharedLib, uv_lib_t> {
 public:
-    explicit SharedLib(ConstructorAccess ca, std::shared_ptr<Loop> ref, std::string filename) noexcept;
+    explicit SharedLib(ConstructorAccess ca, std::shared_ptr<Loop> ref, const std::string &filename) noexcept;
 
     ~SharedLib() noexcept;
 
@@ -41,7 +41,7 @@ public:
      * @return A valid function pointer in case of success, `nullptr` otherwise.
      */
     template<typename F>
-    F * sym(std::string name) {
+    F * sym(const std::string &name) {
         static_assert(std::is_function_v<F>);
         F *func;
         auto err = uv_dlsym(get(), name.data(), reinterpret_cast<void**>(&func));
@@ -66,5 +66,6 @@ private:
 #ifndef UVW_AS_LIB
 #include "lib.cpp"
 #endif
+
 
 #endif // UVW_LIB_INCLUDE_H

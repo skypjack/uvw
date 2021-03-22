@@ -500,7 +500,7 @@ public:
      * @param flags Flags made out of underlying constants.
      * @param mode Mode, as described in the official documentation.
      */
-    void open(std::string path, Flags<FileOpen> flags, int mode);
+    void open(const std::string &path, Flags<FileOpen> flags, int mode);
 
     /**
      * @brief Sync [open](http://linux.die.net/man/2/open).
@@ -539,7 +539,7 @@ public:
      * @param mode Mode, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool openSync(std::string path, Flags<FileOpen> flags, int mode);
+    bool openSync(const std::string &path, Flags<FileOpen> flags, int mode);
 
     /**
      * @brief Async [read](http://linux.die.net/man/2/preadv).
@@ -804,14 +804,14 @@ public:
      *
      * @param path Path, as described in the official documentation.
      */
-    void unlink(std::string path);
+    void unlink(const std::string &path);
 
     /**
      * @brief Sync [unlink](http://linux.die.net/man/2/unlink).
      * @param path Path, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool unlinkSync(std::string path);
+    bool unlinkSync(const std::string &path);
 
     /**
      * @brief Async [mkdir](http://linux.die.net/man/2/mkdir).
@@ -822,7 +822,7 @@ public:
      * @param path Path, as described in the official documentation.
      * @param mode Mode, as described in the official documentation.
      */
-    void mkdir(std::string path, int mode);
+    void mkdir(const std::string &path, int mode);
 
     /**
      * @brief Sync [mkdir](http://linux.die.net/man/2/mkdir).
@@ -830,7 +830,7 @@ public:
      * @param mode Mode, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool mkdirSync(std::string path, int mode);
+    bool mkdirSync(const std::string &path, int mode);
 
     /**
      * @brief Async [mktemp](http://linux.die.net/man/3/mkdtemp).
@@ -840,7 +840,7 @@ public:
      *
      * @param tpl Template, as described in the official documentation.
      */
-    void mkdtemp(std::string tpl);
+    void mkdtemp(const std::string &tpl);
 
     /**
      * @brief Sync [mktemp](http://linux.die.net/man/3/mkdtemp).
@@ -851,7 +851,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The actual path of the newly created directory.
      */
-    std::pair<bool, const char *> mkdtempSync(std::string tpl);
+    std::pair<bool, const char *> mkdtempSync(const std::string &tpl);
 
     /**
      * @brief Async [mkstemp](https://linux.die.net/man/3/mkstemp).
@@ -861,7 +861,7 @@ public:
      *
      * @param tpl Template, as described in the official documentation.
      */
-    void mkstemp(std::string tpl);
+    void mkstemp(const std::string &tpl);
 
     /**
      * @brief Sync [mkstemp](https://linux.die.net/man/3/mkstemp).
@@ -883,7 +883,7 @@ public:
      * false otherwise.
      * * The second parameter is a composed value (see above).
      */
-    std::pair<bool, std::pair<std::string, std::size_t>> mkstempSync(std::string tpl);
+    std::pair<bool, std::pair<std::string, std::size_t>> mkstempSync(const std::string &tpl);
 
     /**
      * @brief Async [lutime](http://linux.die.net/man/3/lutimes).
@@ -897,7 +897,7 @@ public:
      * @param mtime `std::chrono::duration<double>`, having the same meaning as
      * described in the official documentation.
      */
-    void lutime(std::string path, Time atime, Time mtime);
+    void lutime(const std::string &path, Time atime, Time mtime);
 
     /**
      * @brief Sync [lutime](http://linux.die.net/man/3/lutimes).
@@ -908,7 +908,7 @@ public:
      * described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool lutimeSync(std::string path, Time atime, Time mtime);
+    bool lutimeSync(const std::string &path, Time atime, Time mtime);
 
     /**
      * @brief Async [rmdir](http://linux.die.net/man/2/rmdir).
@@ -918,14 +918,14 @@ public:
      *
      * @param path Path, as described in the official documentation.
      */
-    void rmdir(std::string path);
+    void rmdir(const std::string &path);
 
     /**
      * @brief Sync [rmdir](http://linux.die.net/man/2/rmdir).
      * @param path Path, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool rmdirSync(std::string path);
+    bool rmdirSync(const std::string &path);
 
     /**
      * @brief Async [scandir](http://linux.die.net/man/3/scandir).
@@ -936,7 +936,7 @@ public:
      * @param path Path, as described in the official documentation.
      * @param flags Flags, as described in the official documentation.
      */
-    void scandir(std::string path, int flags);
+    void scandir(const std::string &path, int flags);
 
     /**
      * @brief Sync [scandir](http://linux.die.net/man/3/scandir).
@@ -948,7 +948,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The number of directory entries selected.
      */
-    std::pair<bool, std::size_t> scandirSync(std::string path, int flags);
+    std::pair<bool, std::size_t> scandirSync(const std::string &path, int flags);
 
     /**
      * @brief Gets entries populated with the next directory entry data.
@@ -989,7 +989,7 @@ public:
      *
      * @param path Path, as described in the official documentation.
      */
-    void stat(std::string path);
+    void stat(const std::string &path);
 
     /**
      * @brief Sync [stat](http://linux.die.net/man/2/stat).
@@ -1000,7 +1000,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * An initialized instance of Stat.
      */
-    std::pair<bool, Stat> statSync(std::string path);
+    std::pair<bool, Stat> statSync(const std::string &path);
 
     /**
      * @brief Async [lstat](http://linux.die.net/man/2/lstat).
@@ -1010,7 +1010,7 @@ public:
      *
      * @param path Path, as described in the official documentation.
      */
-    void lstat(std::string path);
+    void lstat(const std::string &path);
 
     /**
      * @brief Sync [lstat](http://linux.die.net/man/2/lstat).
@@ -1021,7 +1021,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * An initialized instance of Stat.
      */
-    std::pair<bool, Stat> lstatSync(std::string path);
+    std::pair<bool, Stat> lstatSync(const std::string &path);
 
     /**
      * @brief Async [statfs](http://linux.die.net/man/2/statfs).
@@ -1034,7 +1034,7 @@ public:
      *
      * @param path Path, as described in the official documentation.
      */
-    void statfs(std::string path);
+    void statfs(const std::string &path);
 
     /**
      * @brief Sync [statfs](http://linux.die.net/man/2/statfs).
@@ -1048,7 +1048,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * An initialized instance of Statfs.
      */
-    std::pair<bool, Statfs> statfsSync(std::string path);
+    std::pair<bool, Statfs> statfsSync(const std::string &path);
 
     /**
      * @brief Async [rename](http://linux.die.net/man/2/rename).
@@ -1059,7 +1059,7 @@ public:
      * @param old Old path, as described in the official documentation.
      * @param path New path, as described in the official documentation.
      */
-    void rename(std::string old, std::string path);
+    void rename(const std::string &old, const std::string &path);
 
     /**
      * @brief Sync [rename](http://linux.die.net/man/2/rename).
@@ -1067,7 +1067,7 @@ public:
      * @param path New path, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool renameSync(std::string old, std::string path);
+    bool renameSync(const std::string &old, const std::string &path);
 
     /**
      * @brief Copies a file asynchronously from a path to a new one.
@@ -1098,7 +1098,7 @@ public:
      * @param path New path, as described in the official documentation.
      * @param flags Optional additional flags.
      */
-    void copyfile(std::string old, std::string path, Flags<CopyFile> flags = Flags<CopyFile>{});
+    void copyfile(const std::string &old, const std::string &path, Flags<CopyFile> flags = Flags<CopyFile>{});
 
     /**
      * @brief Copies a file synchronously from a path to a new one.
@@ -1119,7 +1119,7 @@ public:
      * @param flags Optional additional flags.
      * @return True in case of success, false otherwise.
      */
-    bool copyfileSync(std::string old, std::string path, Flags<CopyFile> flags = Flags<CopyFile>{});
+    bool copyfileSync(const std::string &old, const std::string &path, Flags<CopyFile> flags = Flags<CopyFile>{});
 
     /**
      * @brief Async [access](http://linux.die.net/man/2/access).
@@ -1130,7 +1130,7 @@ public:
      * @param path Path, as described in the official documentation.
      * @param mode Mode, as described in the official documentation.
      */
-    void access(std::string path, int mode);
+    void access(const std::string &path, int mode);
 
     /**
      * @brief Sync [access](http://linux.die.net/man/2/access).
@@ -1138,7 +1138,7 @@ public:
      * @param mode Mode, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool accessSync(std::string path, int mode);
+    bool accessSync(const std::string &path, int mode);
 
     /**
      * @brief Async [chmod](http://linux.die.net/man/2/chmod).
@@ -1149,7 +1149,7 @@ public:
      * @param path Path, as described in the official documentation.
      * @param mode Mode, as described in the official documentation.
      */
-    void chmod(std::string path, int mode);
+    void chmod(const std::string &path, int mode);
 
     /**
      * @brief Sync [chmod](http://linux.die.net/man/2/chmod).
@@ -1157,7 +1157,7 @@ public:
      * @param mode Mode, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool chmodSync(std::string path, int mode);
+    bool chmodSync(const std::string &path, int mode);
 
     /**
      * @brief Async [utime](http://linux.die.net/man/2/utime).
@@ -1171,7 +1171,7 @@ public:
      * @param mtime `std::chrono::duration<double>`, having the same meaning as
      * described in the official documentation.
      */
-    void utime(std::string path, Time atime, Time mtime);
+    void utime(const std::string &path, Time atime, Time mtime);
 
     /**
      * @brief Sync [utime](http://linux.die.net/man/2/utime).
@@ -1182,7 +1182,7 @@ public:
      * described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool utimeSync(std::string path, Time atime, Time mtime);
+    bool utimeSync(const std::string &path, Time atime, Time mtime);
 
     /**
      * @brief Async [link](http://linux.die.net/man/2/link).
@@ -1193,7 +1193,7 @@ public:
      * @param old Old path, as described in the official documentation.
      * @param path New path, as described in the official documentation.
      */
-    void link(std::string old, std::string path);
+    void link(const std::string &old, const std::string &path);
 
     /**
      * @brief Sync [link](http://linux.die.net/man/2/link).
@@ -1201,7 +1201,7 @@ public:
      * @param path New path, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool linkSync(std::string old, std::string path);
+    bool linkSync(const std::string &old, const std::string &path);
 
     /**
      * @brief Async [symlink](http://linux.die.net/man/2/symlink).
@@ -1220,7 +1220,7 @@ public:
      * @param path New path, as described in the official documentation.
      * @param flags Optional additional flags.
      */
-    void symlink(std::string old, std::string path, Flags<SymLink> flags = Flags<SymLink>{});
+    void symlink(const std::string &old, const std::string &path, Flags<SymLink> flags = Flags<SymLink>{});
 
     /**
      * @brief Sync [symlink](http://linux.die.net/man/2/symlink).
@@ -1237,7 +1237,7 @@ public:
      * @param flags Flags, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool symlinkSync(std::string old, std::string path, Flags<SymLink> flags = Flags<SymLink>{});
+    bool symlinkSync(const std::string &old, const std::string &path, Flags<SymLink> flags = Flags<SymLink>{});
 
     /**
      * @brief Async [readlink](http://linux.die.net/man/2/readlink).
@@ -1247,7 +1247,7 @@ public:
      *
      * @param path Path, as described in the official documentation.
      */
-    void readlink(std::string path);
+    void readlink(const std::string &path);
 
     /**
      * @brief Sync [readlink](http://linux.die.net/man/2/readlink).
@@ -1260,7 +1260,7 @@ public:
      *   * A bunch of data read from the given path.
      *   * The amount of data read from the given path.
      */
-    std::pair<bool, std::pair<const char *, std::size_t>> readlinkSync(std::string path);
+    std::pair<bool, std::pair<const char *, std::size_t>> readlinkSync(const std::string &path);
 
     /**
      * @brief Async [realpath](http://linux.die.net/man/3/realpath).
@@ -1270,7 +1270,7 @@ public:
      *
      * @param path Path, as described in the official documentation.
      */
-    void realpath(std::string path);
+    void realpath(const std::string &path);
 
     /**
      * @brief Sync [realpath](http://linux.die.net/man/3/realpath).
@@ -1281,7 +1281,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The canonicalized absolute pathname.
      */
-    std::pair<bool, const char *> realpathSync(std::string path);
+    std::pair<bool, const char *> realpathSync(const std::string &path);
 
     /**
      * @brief Async [chown](http://linux.die.net/man/2/chown).
@@ -1293,7 +1293,7 @@ public:
      * @param uid UID, as described in the official documentation.
      * @param gid GID, as described in the official documentation.
      */
-    void chown(std::string path, Uid uid, Gid gid);
+    void chown(const std::string &path, Uid uid, Gid gid);
 
     /**
      * @brief Sync [chown](http://linux.die.net/man/2/chown).
@@ -1302,7 +1302,7 @@ public:
      * @param gid GID, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool chownSync(std::string path, Uid uid, Gid gid);
+    bool chownSync(const std::string &path, Uid uid, Gid gid);
 
     /**
      * @brief Async [lchown](https://linux.die.net/man/2/lchown).
@@ -1314,7 +1314,7 @@ public:
      * @param uid UID, as described in the official documentation.
      * @param gid GID, as described in the official documentation.
      */
-    void lchown(std::string path, Uid uid, Gid gid);
+    void lchown(const std::string &path, Uid uid, Gid gid);
 
     /**
      * @brief Sync [lchown](https://linux.die.net/man/2/lchown).
@@ -1323,7 +1323,7 @@ public:
      * @param gid GID, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool lchownSync(std::string path, Uid uid, Gid gid);
+    bool lchownSync(const std::string &path, Uid uid, Gid gid);
 
     /**
      * @brief Opens a path asynchronously as a directory stream.
@@ -1337,7 +1337,7 @@ public:
      *
      * @param path The path to open as a directory stream.
      */
-    void opendir(std::string path);
+    void opendir(const std::string &path);
 
     /**
      * @brief Opens a path synchronously as a directory stream.
@@ -1349,7 +1349,7 @@ public:
      * @param path The path to open as a directory stream.
      * @return True in case of success, false otherwise.
      */
-    bool opendirSync(std::string path);
+    bool opendirSync(const std::string &path);
 
     /**
      * @brief Closes asynchronously a directory stream.
@@ -1458,5 +1458,6 @@ struct FsHelper {
 #ifndef UVW_AS_LIB
 #include "fs.cpp"
 #endif
+
 
 #endif // UVW_FS_INCLUDE_H

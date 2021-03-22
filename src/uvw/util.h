@@ -742,7 +742,7 @@ struct Utilities {
      * @param title The process title to be set.
      * @return True in case of success, false otherwise.
      */
-    static bool processTitle(std::string title);
+    static bool processTitle(const std::string &title);
 
     /**
      * @brief Gets memory information (in bytes).
@@ -845,5 +845,6 @@ Overloaded(Func...) -> Overloaded<Func...>;
 #ifndef UVW_AS_LIB
 #include "util.cpp"
 #endif
+
 
 #endif // UVW_UTIL_INCLUDE_H

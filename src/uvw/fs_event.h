@@ -105,7 +105,7 @@ public:
      * @param path The file or directory to be monitored.
      * @param flags Additional flags to control the behavior.
      */
-    void start(std::string path, Flags<Event> flags = Flags<Event>{});
+    void start(const std::string &path, Flags<Event> flags = Flags<Event>{});
 
     /**
      * @brief Starts watching the specified path.
@@ -124,7 +124,7 @@ public:
      * @param path The file or directory to be monitored.
      * @param flag Additional flag to control the behavior.
      */
-    void start(std::string path, Event flag);
+    void start(const std::string &path, Event flag);
 
     /**
      * @brief Stops polling the file descriptor.
@@ -145,5 +145,6 @@ public:
 #ifndef UVW_AS_LIB
 #include "fs_event.cpp"
 #endif
+
 
 #endif // UVW_FS_EVENT_INCLUDE_H

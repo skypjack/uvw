@@ -136,7 +136,7 @@ public:
      * @param opts Optional additional flags.
      */
     template<typename I = IPv4>
-    void bind(std::string ip, unsigned int port, Flags<Bind> opts = Flags<Bind>{});
+    void bind(const std::string &ip, unsigned int port, Flags<Bind> opts = Flags<Bind>{});
 
     /**
      * @brief Binds the handle to an address and port.
@@ -197,7 +197,7 @@ public:
      * @param port The port to which to bind.
      */
     template<typename I = IPv4>
-    void connect(std::string ip, unsigned int port);
+    void connect(const std::string &ip, unsigned int port);
 
     /**
      * @brief Establishes an IPv4 or IPv6 TCP connection.
@@ -238,8 +238,8 @@ private:
 
 // (extern) explicit instantiations
 #ifdef UVW_AS_LIB
-extern template void TCPHandle::bind<IPv4>(std::string, unsigned int, Flags<Bind>);
-extern template void TCPHandle::bind<IPv6>(std::string, unsigned int, Flags<Bind>);
+extern template void TCPHandle::bind<IPv4>(const std::string &, unsigned int, Flags<Bind>);
+extern template void TCPHandle::bind<IPv6>(const std::string &, unsigned int, Flags<Bind>);
 
 extern template void TCPHandle::bind<IPv4>(Addr, Flags<Bind>);
 extern template void TCPHandle::bind<IPv6>(Addr, Flags<Bind>);
@@ -250,12 +250,13 @@ extern template Addr TCPHandle::sock<IPv6>() const noexcept;
 extern template Addr TCPHandle::peer<IPv4>() const noexcept;
 extern template Addr TCPHandle::peer<IPv6>() const noexcept;
 
-extern template void TCPHandle::connect<IPv4>(std::string, unsigned int);
-extern template void TCPHandle::connect<IPv6>(std::string, unsigned int);
+extern template void TCPHandle::connect<IPv4>(const std::string &, unsigned int);
+extern template void TCPHandle::connect<IPv6>(const std::string &, unsigned int);
 
 extern template void TCPHandle::connect<IPv4>(Addr addr);
 extern template void TCPHandle::connect<IPv6>(Addr addr);
 #endif // UVW_AS_LIB
+
 
 /**
  * Internal details not to be documented.
@@ -269,5 +270,6 @@ extern template void TCPHandle::connect<IPv6>(Addr addr);
 #ifndef UVW_AS_LIB
 #include "tcp.cpp"
 #endif
+
 
 #endif // UVW_TCP_INCLUDE_H

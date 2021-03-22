@@ -57,7 +57,7 @@ public:
      * @param file The path to the file to be checked.
      * @param interval Milliseconds between successive checks.
      */
-    void start(std::string file, Time interval);
+    void start(const std::string &file, Time interval);
 
     /**
      * @brief Stops the handle.
@@ -79,5 +79,6 @@ public:
 #ifndef UVW_AS_LIB
 #include "fs_poll.cpp"
 #endif
+
 
 #endif // UVW_FS_POLL_INCLUDE_H

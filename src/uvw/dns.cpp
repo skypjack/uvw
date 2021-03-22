@@ -49,32 +49,32 @@ UVW_INLINE auto GetAddrInfoReq::nodeAddrInfoSync(const char *node, const char *s
 }
 
 
-UVW_INLINE void GetAddrInfoReq::nodeAddrInfo(std::string node, addrinfo *hints) {
+UVW_INLINE void GetAddrInfoReq::nodeAddrInfo(const std::string &node, addrinfo *hints) {
     nodeAddrInfo(node.data(), nullptr, hints);
 }
 
 
-UVW_INLINE std::pair<bool, std::unique_ptr<addrinfo, GetAddrInfoReq::Deleter>> GetAddrInfoReq::nodeAddrInfoSync(std::string node, addrinfo *hints) {
+UVW_INLINE std::pair<bool, std::unique_ptr<addrinfo, GetAddrInfoReq::Deleter>> GetAddrInfoReq::nodeAddrInfoSync(const std::string &node, addrinfo *hints) {
     return nodeAddrInfoSync(node.data(), nullptr, hints);
 }
 
 
-UVW_INLINE void GetAddrInfoReq::serviceAddrInfo(std::string service, addrinfo *hints) {
+UVW_INLINE void GetAddrInfoReq::serviceAddrInfo(const std::string &service, addrinfo *hints) {
     nodeAddrInfo(nullptr, service.data(), hints);
 }
 
 
-UVW_INLINE std::pair<bool, std::unique_ptr<addrinfo, GetAddrInfoReq::Deleter>> GetAddrInfoReq::serviceAddrInfoSync(std::string service, addrinfo *hints) {
+UVW_INLINE std::pair<bool, std::unique_ptr<addrinfo, GetAddrInfoReq::Deleter>> GetAddrInfoReq::serviceAddrInfoSync(const std::string &service, addrinfo *hints) {
     return nodeAddrInfoSync(nullptr, service.data(), hints);
 }
 
 
-UVW_INLINE void GetAddrInfoReq::addrInfo(std::string node, std::string service, addrinfo *hints) {
+UVW_INLINE void GetAddrInfoReq::addrInfo(const std::string &node, const std::string &service, addrinfo *hints) {
     nodeAddrInfo(node.data(), service.data(), hints);
 }
 
 
-UVW_INLINE std::pair<bool, std::unique_ptr<addrinfo, GetAddrInfoReq::Deleter>> GetAddrInfoReq::addrInfoSync(std::string node, std::string service, addrinfo *hints) {
+UVW_INLINE std::pair<bool, std::unique_ptr<addrinfo, GetAddrInfoReq::Deleter>> GetAddrInfoReq::addrInfoSync(const std::string &node, const std::string &service, addrinfo *hints) {
     return nodeAddrInfoSync(node.data(), service.data(), hints);
 }
 
@@ -96,7 +96,7 @@ UVW_INLINE void GetNameInfoReq::nameInfo(const sockaddr &addr, int flags) {
 
 
 template<typename I>
-UVW_INLINE void GetNameInfoReq::nameInfo(std::string ip, unsigned int port, int flags) {
+UVW_INLINE void GetNameInfoReq::nameInfo(const std::string &ip, unsigned int port, int flags) {
     typename details::IpTraits<I>::Type addr;
     details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
     nameInfo(reinterpret_cast<const sockaddr &>(addr), flags);
@@ -115,7 +115,7 @@ UVW_INLINE std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq
 
 
 template<typename I>
-UVW_INLINE std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync(std::string ip, unsigned int port, int flags) {
+UVW_INLINE std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync(const std::string &ip, unsigned int port, int flags) {
     typename details::IpTraits<I>::Type addr;
     details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
     return nameInfoSync(reinterpret_cast<const sockaddr &>(addr), flags);
@@ -130,17 +130,18 @@ UVW_INLINE std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq
 
 // explicit instantiations
 #ifdef UVW_AS_LIB
-template void GetNameInfoReq::nameInfo<IPv4>(std::string ip, unsigned int port, int flags);
-template void GetNameInfoReq::nameInfo<IPv6>(std::string ip, unsigned int port, int flags);
+template void GetNameInfoReq::nameInfo<IPv4>(const std::string &, unsigned int, int);
+template void GetNameInfoReq::nameInfo<IPv6>(const std::string &, unsigned int, int);
 
-template void GetNameInfoReq::nameInfo<IPv4>(Addr addr, int flags);
-template void GetNameInfoReq::nameInfo<IPv6>(Addr addr, int flags);
+template void GetNameInfoReq::nameInfo<IPv4>(Addr, int);
+template void GetNameInfoReq::nameInfo<IPv6>(Addr, int);
 
-template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(std::string ip, unsigned int port, int flags);
-template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(std::string ip, unsigned int port, int flags);
+template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(const std::string &, unsigned int, int);
+template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(const std::string &, unsigned int, int);
 
-template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(Addr addr, int flags);
-template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(Addr addr, int flags);
+template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv4>(Addr, int);
+template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(Addr, int);
 #endif // UVW_AS_LIB
+
 
 }

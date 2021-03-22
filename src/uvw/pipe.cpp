@@ -3,7 +3,6 @@
 #endif
 
 #include <utility>
-
 #include "config.h"
 
 
@@ -25,12 +24,12 @@ UVW_INLINE void PipeHandle::open(FileHandle file) {
 }
 
 
-UVW_INLINE void PipeHandle::bind(std::string name) {
+UVW_INLINE void PipeHandle::bind(const std::string &name) {
     invoke(&uv_pipe_bind, get(), name.data());
 }
 
 
-UVW_INLINE void PipeHandle::connect(std::string name) {
+UVW_INLINE void PipeHandle::connect(const std::string &name) {
     auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
         ptr->publish(event);
     };

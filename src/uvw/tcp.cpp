@@ -44,7 +44,7 @@ UVW_INLINE void TCPHandle::bind(const sockaddr &addr, Flags<Bind> opts) {
 
 
 template<typename I>
-UVW_INLINE void TCPHandle::bind(std::string ip, unsigned int port, Flags<Bind> opts)
+UVW_INLINE void TCPHandle::bind(const std::string &ip, unsigned int port, Flags<Bind> opts)
 {
     typename details::IpTraits<I>::Type addr;
     details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
@@ -71,7 +71,7 @@ UVW_INLINE Addr TCPHandle::peer() const noexcept {
 
 
 template<typename I>
-UVW_INLINE void TCPHandle::connect(std::string ip, unsigned int port) {
+UVW_INLINE void TCPHandle::connect(const std::string &ip, unsigned int port) {
     typename details::IpTraits<I>::Type addr;
     details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
     connect(reinterpret_cast<const sockaddr &>(addr));
@@ -103,8 +103,8 @@ UVW_INLINE void TCPHandle::closeReset() {
 
 // explicit instantiations
 #ifdef UVW_AS_LIB
-template void TCPHandle::bind<IPv4>(std::string, unsigned int, Flags<Bind>);
-template void TCPHandle::bind<IPv6>(std::string, unsigned int, Flags<Bind>);
+template void TCPHandle::bind<IPv4>(const std::string &, unsigned int, Flags<Bind>);
+template void TCPHandle::bind<IPv6>(const std::string &, unsigned int, Flags<Bind>);
 
 template void TCPHandle::bind<IPv4>(Addr, Flags<Bind>);
 template void TCPHandle::bind<IPv6>(Addr, Flags<Bind>);
@@ -115,11 +115,12 @@ template Addr TCPHandle::sock<IPv6>() const noexcept;
 template Addr TCPHandle::peer<IPv4>() const noexcept;
 template Addr TCPHandle::peer<IPv6>() const noexcept;
 
-template void TCPHandle::connect<IPv4>(std::string, unsigned int);
-template void TCPHandle::connect<IPv6>(std::string, unsigned int);
+template void TCPHandle::connect<IPv4>(const std::string &, unsigned int);
+template void TCPHandle::connect<IPv6>(const std::string &, unsigned int);
 
 template void TCPHandle::connect<IPv4>(Addr addr);
 template void TCPHandle::connect<IPv6>(Addr addr);
 #endif // UVW_AS_LIB
+
 
 }

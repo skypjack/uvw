@@ -137,7 +137,7 @@ public:
      * @param path The working directory to be used when `spawn()` is invoked.
      * @return A reference to this process handle.
      */
-    ProcessHandle & cwd(std::string path) noexcept;
+    ProcessHandle & cwd(const std::string &path) noexcept;
 
     /**
      * @brief Sets flags that control how `spawn()` behaves.
@@ -250,5 +250,6 @@ private:
 #ifndef UVW_AS_LIB
 #include "process.cpp"
 #endif
+
 
 #endif // UVW_PROCESS_INCLUDE_H

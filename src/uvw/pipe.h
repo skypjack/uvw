@@ -69,7 +69,7 @@ public:
      *
      * @param name A valid file path.
      */
-    void bind(std::string name);
+    void bind(const std::string &name);
 
     /**
      * @brief Connects to the Unix domain socket or the named pipe.
@@ -81,7 +81,7 @@ public:
      *
      * @param name A valid domain socket or named pipe.
      */
-    void connect(std::string name);
+    void connect(const std::string &name);
 
     /**
      * @brief Gets the name of the Unix domain socket or the named pipe.
@@ -163,5 +163,6 @@ private:
 #ifndef UVW_AS_LIB
 #include "pipe.cpp"
 #endif
+
 
 #endif // UVW_PIPE_INCLUDE_H
