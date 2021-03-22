@@ -276,55 +276,56 @@ public:
     void walk(Func callback) {
         // remember: non-capturing lambdas decay to pointers to functions
         uv_walk(loop.get(), [](uv_handle_t *handle, void *func) {
-            auto &cb = *static_cast<Func *>(func);
+            if(handle->data) {
+                auto &cb = *static_cast<Func *>(func);
 
-            switch(Utilities::guessHandle(HandleCategory{handle->type})) {
-            case HandleType::ASYNC:
-                cb(*static_cast<AsyncHandle *>(handle->data));
-                break;
-            case HandleType::CHECK:
-                cb(*static_cast<CheckHandle *>(handle->data));
-                break;
-            case HandleType::FS_EVENT:
-                cb(*static_cast<FsEventHandle *>(handle->data));
-                break;
-            case HandleType::FS_POLL:
-                cb(*static_cast<FsPollHandle *>(handle->data));
-                break;
-            case HandleType::IDLE:
-                cb(*static_cast<IdleHandle *>(handle->data));
-                break;
-            case HandleType::PIPE:
-                cb(*static_cast<PipeHandle *>(handle->data));
-                break;
-            case HandleType::POLL:
-                cb(*static_cast<PollHandle *>(handle->data));
-                break;
-            case HandleType::PREPARE:
-                cb(*static_cast<PrepareHandle *>(handle->data));
-                break;
-            case HandleType::PROCESS:
-                cb(*static_cast<ProcessHandle *>(handle->data));
-                break;
-            case HandleType::SIGNAL:
-                cb(*static_cast<SignalHandle *>(handle->data));
-                break;
-            case HandleType::TCP:
-                cb(*static_cast<TCPHandle *>(handle->data));
-                break;
-            case HandleType::TIMER:
-                cb(*static_cast<TimerHandle *>(handle->data));
-                break;
-            case HandleType::TTY:
-                cb(*static_cast<TTYHandle *>(handle->data));
-                break;
-            case HandleType::UDP:
-                cb(*static_cast<UDPHandle *>(handle->data));
-                break;
-            default:
-                // returns the underlying handle, uvw doesn't manage it properly yet
-                cb(handle);
-                break;
+                switch(Utilities::guessHandle(HandleCategory{handle->type})) {
+                case HandleType::ASYNC:
+                    cb(*static_cast<AsyncHandle *>(handle->data));
+                    break;
+                case HandleType::CHECK:
+                    cb(*static_cast<CheckHandle *>(handle->data));
+                    break;
+                case HandleType::FS_EVENT:
+                    cb(*static_cast<FsEventHandle *>(handle->data));
+                    break;
+                case HandleType::FS_POLL:
+                    cb(*static_cast<FsPollHandle *>(handle->data));
+                    break;
+                case HandleType::IDLE:
+                    cb(*static_cast<IdleHandle *>(handle->data));
+                    break;
+                case HandleType::PIPE:
+                    cb(*static_cast<PipeHandle *>(handle->data));
+                    break;
+                case HandleType::POLL:
+                    cb(*static_cast<PollHandle *>(handle->data));
+                    break;
+                case HandleType::PREPARE:
+                    cb(*static_cast<PrepareHandle *>(handle->data));
+                    break;
+                case HandleType::PROCESS:
+                    cb(*static_cast<ProcessHandle *>(handle->data));
+                    break;
+                case HandleType::SIGNAL:
+                    cb(*static_cast<SignalHandle *>(handle->data));
+                    break;
+                case HandleType::TCP:
+                    cb(*static_cast<TCPHandle *>(handle->data));
+                    break;
+                case HandleType::TIMER:
+                    cb(*static_cast<TimerHandle *>(handle->data));
+                    break;
+                case HandleType::TTY:
+                    cb(*static_cast<TTYHandle *>(handle->data));
+                    break;
+                case HandleType::UDP:
+                    cb(*static_cast<UDPHandle *>(handle->data));
+                    break;
+                default:
+                    // this handle isn't managed by uvw, let it be...
+                    break;
+                }
             }
         }, &callback);
     }
