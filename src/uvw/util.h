@@ -389,7 +389,7 @@ struct IpTraits<IPv6> {
 
 template<typename I>
 Addr address(const typename details::IpTraits<I>::Type *aptr) noexcept {
-    Addr addr;
+    Addr addr{};
     char name[DEFAULT_SIZE];
 
     int err = details::IpTraits<I>::nameFunc(aptr, name, DEFAULT_SIZE);
