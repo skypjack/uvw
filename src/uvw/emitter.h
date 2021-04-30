@@ -7,11 +7,22 @@
 #include <algorithm>
 #include <utility>
 #include <cstddef>
-#include <vector>
+#include <unordered_map>
+#include <string>
 #include <memory>
 #include <list>
 #include <uv.h>
 
+
+#if defined __clang__ || defined __GNUC__
+#    define UVW_PRETTY_FUNCTION __PRETTY_FUNCTION__
+#    define UVW_PRETTY_FUNCTION_PREFIX '='
+#    define UVW_PRETTY_FUNCTION_SUFFIX ']'
+#elif defined _MSC_VER
+#    define UVW_PRETTY_FUNCTION __FUNCSIG__
+#    define UVW_PRETTY_FUNCTION_PREFIX '<'
+#    define UVW_PRETTY_FUNCTION_SUFFIX '>'
+#endif
 
 namespace uvw {
 
@@ -157,30 +168,20 @@ class Emitter {
         ListenerList onL{};
     };
 
-    static std::size_t next_type() noexcept {
-        static std::size_t counter = 0;
-        return counter++;
-    }
-
-    template<typename>
-    static std::size_t event_type() noexcept {
-        static std::size_t value = next_type();
-        return value;
+    template <typename E>
+    std::string event_type() const noexcept {
+        return UVW_PRETTY_FUNCTION;
     }
 
     template<typename E>
     Handler<E> & handler() noexcept {
-        std::size_t type = event_type<E>();
+        auto type = event_type<E>();
 
-        if(!(type < handlers.size())) {
-            handlers.resize(type+1);
-        }
-
-        if(!handlers[type]) {
+        if(!handlers.count(type)) {
            handlers[type] = std::make_unique<Handler<E>>();
         }
 
-        return static_cast<Handler<E>&>(*handlers[type]);
+        return static_cast<Handler<E>&>(*handlers.at(type));
     }
 
 protected:
@@ -282,7 +283,7 @@ public:
      */
     void clear() noexcept {
         std::for_each(handlers.begin(), handlers.end(),
-                      [](auto &&hdlr){ if(hdlr) { hdlr->clear(); } });
+                      [](auto &&hdlr){ if(hdlr.second) { hdlr.second->clear(); } });
     }
 
     /**
@@ -292,11 +293,10 @@ public:
      */
     template<typename E>
     bool empty() const noexcept {
-        std::size_t type = event_type<E>();
+        auto type = event_type<E>();
 
-        return (!(type < handlers.size()) ||
-                !handlers[type] ||
-                static_cast<Handler<E>&>(*handlers[type]).empty());
+        return (!handlers.count(type) ||
+            static_cast<Handler<E>&>(*handlers.at(type)).empty());
     }
 
     /**
@@ -306,11 +306,11 @@ public:
      */
     bool empty() const noexcept {
         return std::all_of(handlers.cbegin(), handlers.cend(),
-                           [](auto &&hdlr){ return !hdlr || hdlr->empty(); });
+                           [](auto &&hdlr){ return !hdlr.second || hdlr.second->empty(); });
     }
 
 private:
-    std::vector<std::unique_ptr<BaseHandler>> handlers{};
+    std::unordered_map<std::string, std::unique_ptr<BaseHandler>> handlers{};
 };
 
 
