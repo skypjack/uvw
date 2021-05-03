@@ -57,15 +57,23 @@ function(add_uvw_library LIB_NAME)
     endif()
 endfunction()
 
-#
-# Static library
+# 
+# Build libraries
 #
 
-add_library(uvw-static STATIC)
-add_library(uvw::uvw-static ALIAS uvw-static)
-target_link_libraries(uvw-static PUBLIC $<$<TARGET_EXISTS:uv::uv-static>:uv::uv-static> $<$<NOT:$<TARGET_EXISTS:uv::uv-static>>:uv_a dl>)
-set_target_properties(uvw-static PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
-add_uvw_library(uvw-static)
+if (BUILD_UVW_SHARED_LIB)
+    add_library(uvw-shared SHARED)
+    add_library(uvw::uvw-shared ALIAS uvw-shared)
+    target_link_libraries(uvw-shared PUBLIC $<$<TARGET_EXISTS:uv::uv-shared>:uv::uv-shared>)
+    set_target_properties(uvw-shared PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
+    add_uvw_library(uvw-shared)
+else()
+    add_library(uvw-static STATIC)
+    add_library(uvw::uvw-static ALIAS uvw-static)
+    target_link_libraries(uvw-static PUBLIC $<$<TARGET_EXISTS:uv::uv-static>:uv::uv-static> $<$<NOT:$<TARGET_EXISTS:uv::uv-static>>:uv_a dl>)
+    set_target_properties(uvw-static PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
+    add_uvw_library(uvw-static)
+endif()
 
 #
 # Install targets

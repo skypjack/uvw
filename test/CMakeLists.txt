@@ -49,7 +49,9 @@ function(ADD_UVW_TEST TEST_NAME TEST_SOURCE)
         PRIVATE
             $<$<TARGET_EXISTS:uvw::uvw>:uvw::uvw>
             $<$<TARGET_EXISTS:uv::uv-static>:uv::uv-static>
-            $<$<TARGET_EXISTS:uvw::uvw-static>:uvw::uvw-static>
+            $<$<TARGET_EXISTS:uvw::uvw-static>:uvw::uvw-static>            
+            $<$<TARGET_EXISTS:uv::uv-shared>:uv::uv-shared>
+            $<$<TARGET_EXISTS:uvw::uvw-shared>:uvw::uvw-shared>
             GTest::Main
             Threads::Threads
             ${LIBRT}
