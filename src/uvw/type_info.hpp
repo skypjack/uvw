@@ -32,7 +32,7 @@ namespace internal {
 }
 
 
-[[nodiscard]] static std::uint32_t counter() noexcept {
+[[nodiscard]] static inline std::uint32_t counter() noexcept {
     static std::uint32_t cnt{};
     return cnt++;
 }
