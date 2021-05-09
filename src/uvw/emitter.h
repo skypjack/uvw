@@ -8,21 +8,11 @@
 #include <utility>
 #include <cstddef>
 #include <unordered_map>
-#include <string>
 #include <memory>
 #include <list>
 #include <uv.h>
+#include "type_info.hpp"
 
-
-#if defined __clang__ || defined __GNUC__
-#    define UVW_PRETTY_FUNCTION __PRETTY_FUNCTION__
-#    define UVW_PRETTY_FUNCTION_PREFIX '='
-#    define UVW_PRETTY_FUNCTION_SUFFIX ']'
-#elif defined _MSC_VER
-#    define UVW_PRETTY_FUNCTION __FUNCSIG__
-#    define UVW_PRETTY_FUNCTION_PREFIX '<'
-#    define UVW_PRETTY_FUNCTION_SUFFIX '>'
-#endif
 
 namespace uvw {
 
@@ -168,20 +158,15 @@ class Emitter {
         ListenerList onL{};
     };
 
-    template <typename E>
-    std::string event_type() const noexcept {
-        return UVW_PRETTY_FUNCTION;
-    }
-
     template<typename E>
     Handler<E> & handler() noexcept {
-        auto type = event_type<E>();
+        auto id = type<E>();
 
-        if(!handlers.count(type)) {
-           handlers[type] = std::make_unique<Handler<E>>();
+        if(!handlers.count(id)) {
+           handlers[id] = std::make_unique<Handler<E>>();
         }
 
-        return static_cast<Handler<E>&>(*handlers.at(type));
+        return static_cast<Handler<E>&>(*handlers.at(id));
     }
 
 protected:
@@ -293,10 +278,10 @@ public:
      */
     template<typename E>
     bool empty() const noexcept {
-        auto type = event_type<E>();
+        auto id = type<E>();
 
-        return (!handlers.count(type) ||
-            static_cast<Handler<E>&>(*handlers.at(type)).empty());
+        return (!handlers.count(id) ||
+            static_cast<Handler<E>&>(*handlers.at(id)).empty());
     }
 
     /**
@@ -310,7 +295,7 @@ public:
     }
 
 private:
-    std::unordered_map<std::string, std::unique_ptr<BaseHandler>> handlers{};
+    std::unordered_map<std::uint32_t, std::unique_ptr<BaseHandler>> handlers{};
 };
 
 
