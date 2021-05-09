@@ -35,6 +35,15 @@ option(USE_LIBCPP "Use libc++ by adding -stdlib=libc++ flag if availbale." ON)
 option(USE_ASAN "Use address sanitizer by adding -fsanitize=address -fno-omit-frame-pointer flags" OFF)
 option(USE_UBSAN "Use address sanitizer by adding -fsanitize=undefined -fno-sanitize-recover=all -fno-omit-frame-pointer flags" OFF)
 option(BUILD_UVW_LIBS "Prepare targets for static library rather than for a header-only library." OFF)
+option(BUILD_UVW_SHARED_LIB "Prepare targets for shared library rather than for a header-only library (not available for WIN32)." OFF)
+
+if(BUILD_UVW_SHARED_LIB AND WIN32)
+    message(FATAL_ERROR "This feature is not yet available for WIN32 targets.")
+endif()
+
+if(BUILD_UVW_SHARED_LIB)
+    set(BUILD_UVW_LIBS BOOL:ON)
+endif()
 
 #
 # Compiler stuff
@@ -79,10 +88,14 @@ function(fetch_libuv)
             add_subdirectory(${libuv_SOURCE_DIR} ${libuv_BINARY_DIR})
         endif()
 
-        add_library(uv::uv-static ALIAS uv_a)
-
-        set_target_properties(uv_a PROPERTIES POSITION_INDEPENDENT_CODE 1)
-        set_target_properties(uv PROPERTIES POSITION_INDEPENDENT_CODE 1)
+        if(BUILD_UVW_SHARED_LIB)
+            add_library(uv::uv-shared ALIAS uv)
+            set_target_properties(uv PROPERTIES POSITION_INDEPENDENT_CODE 1)
+        else()
+            add_library(uv::uv-static ALIAS uv_a)
+            set_target_properties(uv_a PROPERTIES POSITION_INDEPENDENT_CODE 1)
+        endif()
+        
     endif(FETCH_LIBUV)
 endfunction()
 
