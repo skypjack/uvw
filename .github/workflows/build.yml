@@ -10,11 +10,29 @@ jobs:
 
     strategy:
       matrix:
-        compiler: [g++, clang++]
+        compiler: [
+            g++-7, g++-8, g++-9, g++,
+            clang++-8, clang++-9, clang++
+        ]
         mode: [-DBUILD_UVW_SHARED_LIB=ON, -DBUILD_UVW_LIBS=ON, -DBUILD_UVW_LIBS=OFF]
 
     steps:
     - uses: actions/checkout@v1
+    - name: Install g++-7
+      if: ${{ matrix.compiler == 'g++-7' }}
+      run: |
+        sudo apt-get update
+        sudo apt-get install g++-7 -y
+    - name: Install g++-8
+      if: ${{ matrix.compiler == 'g++-8' }}
+      run: |
+        sudo apt-get update
+        sudo apt-get install g++-8 -y
+    - name: Install clang-8
+      if: ${{ matrix.compiler == 'clang++-8' }}
+      run: |
+        sudo apt-get update
+        sudo apt-get install clang-8 -y
     - name: Compile tests
       working-directory: build
       env:
