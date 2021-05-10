@@ -60,7 +60,7 @@ jobs:
     - name: Compile tests
       working-directory: build
       run: |
-        cmake ${{ matrix.mode }} -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF -DCMAKE_CXX_FLAGS=/W1 -G"${{ matrix.generator }}" ..
+        cmake -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE ${{ matrix.mode }} -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF -DCMAKE_CXX_FLAGS=/W1 -G"${{ matrix.generator }}" ..
         cmake --build . -j 2
 
   macos:
