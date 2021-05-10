@@ -62,11 +62,9 @@ template<typename Type>
 template<typename Type>
 [[nodiscard]] static constexpr std::uint32_t type() noexcept {
 #if defined __clang__ || defined __GNUC__
-    constexpr auto value = internal::fnv1a(__PRETTY_FUNCTION__);
-    return value;
+    return internal::fnv1a(__PRETTY_FUNCTION__);
 #elif defined _MSC_VER
-    constexpr auto value = internal::fnv1a(__FUNCSIG__);
-    return value;
+    return internal::fnv1a(__FUNCSIG__);
 #else
     return internal::fake();
 #endif
