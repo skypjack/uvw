@@ -156,6 +156,18 @@ install(
 )
 
 #
+# Install targets
+#
+
+install(EXPORT uvwConfig NAMESPACE uvw:: DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/uvw)
+install(TARGETS uvw EXPORT uvwConfig ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+if(FETCH_LIBUV AND BUILD_UVW_LIBS)
+    # libuv is only fetched when both above conditions are true
+    install(TARGETS uv_a EXPORT uvwConfig ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    install(TARGETS uv EXPORT uvwConfig LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+endif(FETCH_LIBUV AND BUILD_UVW_LIBS)
+
+#
 # Pkg-Config
 #
 
