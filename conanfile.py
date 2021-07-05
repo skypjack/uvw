@@ -3,7 +3,7 @@
 from conans import ConanFile
 
 
-class UVMConan(ConanFile):
+class UVWConan(ConanFile):
     name = "uvw"
     description = "Header-only, event based, tiny and easy to use libuv wrapper in modern C++"
     homepage = "https://github.com/skypjack/uvw"
