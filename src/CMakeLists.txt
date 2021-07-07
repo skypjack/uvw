@@ -57,34 +57,26 @@ function(add_uvw_library LIB_NAME)
     endif()
 endfunction()
 
-# 
+#
 # Build and install libraries
 #
 
 if (BUILD_UVW_SHARED_LIB)
-    add_library(uvw-shared SHARED)
-    add_library(uvw::uvw-shared ALIAS uvw-shared)
-    target_link_libraries(uvw-shared PUBLIC $<$<TARGET_EXISTS:uv::uv-shared>:uv::uv-shared>)
-    set_target_properties(uvw-shared PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
-
-    add_uvw_library(uvw-shared)
-
-    install(TARGETS uvw-shared EXPORT uvw ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR})
-
+    add_library(uvw SHARED)
+    add_library(uvw::uvw-shared ALIAS uvw)
+    # If libuv is not fetched by ourselves, it's the caller's responsibility to make sure of the linkage.
     if(FETCH_LIBUV)
-        install(TARGETS uv_a EXPORT uvw ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+        target_link_libraries(uvw PUBLIC uv::uv-shared)
     endif()
 else()
-    add_library(uvw-static STATIC)
-    add_library(uvw::uvw-static ALIAS uvw-static)
-    target_link_libraries(uvw-static PUBLIC $<$<TARGET_EXISTS:uv::uv-static>:uv::uv-static> $<$<NOT:$<TARGET_EXISTS:uv::uv-static>>:uv_a dl>)
-    set_target_properties(uvw-static PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
-
-    add_uvw_library(uvw-static)
-
-    install(TARGETS uvw-static EXPORT uvw ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-
+    add_library(uvw STATIC)
+    add_library(uvw::uvw-static ALIAS uvw)
+    # If libuv is not fetched by ourselves, it's the caller's responsibility to make sure of the linkage.
     if(FETCH_LIBUV)
-        install(TARGETS uv EXPORT uvw LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+        target_link_libraries(uvw PUBLIC uv::uv-static)
     endif()
 endif()
+
+add_library(uvw::uvw ALIAS uvw)
+set_target_properties(uvw PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
+add_uvw_library(uvw)
