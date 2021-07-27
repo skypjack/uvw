@@ -48,6 +48,7 @@ enum class UVUDPFlags: std::underlying_type_t<uv_udp_flags> {
     REUSEADDR = UV_UDP_REUSEADDR,
     UDP_MMSG_CHUNK = UV_UDP_MMSG_CHUNK,
     UDP_MMSG_FREE = UV_UDP_MMSG_FREE,
+    UDP_LINUX_RECVERR = UV_UDP_LINUX_RECVERR,
     UDP_RECVMMSG = UV_UDP_RECVMMSG
 };
 
@@ -152,6 +153,7 @@ public:
      * * `UDPHandle::Bind::REUSEADDR`
      * * `UDPHandle::Bind::UDP_MMSG_CHUNK`
      * * `UDPHandle::Bind::UDP_MMSG_FREE`
+     * * `UDPHandle::Bind::UDP_LINUX_RECVERR`
      * * `UDPHandle::Bind::UDP_RECVMMSG`
      *
      * See the official
@@ -237,6 +239,7 @@ public:
      * * `UDPHandle::Bind::REUSEADDR`
      * * `UDPHandle::Bind::UDP_MMSG_CHUNK`
      * * `UDPHandle::Bind::UDP_MMSG_FREE`
+     * * `UDPHandle::Bind::UDP_LINUX_RECVERR`
      * * `UDPHandle::Bind::UDP_RECVMMSG`
      *
      * See the official
@@ -260,6 +263,7 @@ public:
      * * `UDPHandle::Bind::REUSEADDR`
      * * `UDPHandle::Bind::UDP_MMSG_CHUNK`
      * * `UDPHandle::Bind::UDP_MMSG_FREE`
+     * * `UDPHandle::Bind::UDP_LINUX_RECVERR`
      * * `UDPHandle::Bind::UDP_RECVMMSG`
      *
      * See the official
