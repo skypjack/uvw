@@ -16,7 +16,7 @@ endif()
 # Project configuration
 #
 set(UVW_VERSION_MAJOR 2)
-set(UVW_VERSION_MINOR 9)
+set(UVW_VERSION_MINOR 10)
 set(UVW_VERSION_PATCH 0)
 
 project(
