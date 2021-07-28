@@ -375,6 +375,30 @@ public:
     /**
      * @brief Queues a write request if it can be completed immediately.
      *
+     * Same as `tryWrite` for sending handles over a pipe.<br/>
+     * An ErrorEvent event will be emitted in case of errors.
+     * 
+     * @param data The data to be written to the stream.
+     * @param len The lenght of the submitted data.
+     * @param send A valid handle suitable for the purpose.
+     * @return Number of bytes written.
+     */
+    template<typename V, typename W>
+    int tryWrite(std::unique_ptr<char[]> data, unsigned int len, StreamHandle<V, W> &send) {
+        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
+        auto bw = uv_try_write2(this->template get<uv_stream_t>(), bufs, 1, send.raw());
+
+        if(bw < 0) {
+            this->publish(ErrorEvent{bw});
+            bw = 0;
+        }
+
+        return bw;
+    }
+
+    /**
+     * @brief Queues a write request if it can be completed immediately.
+     *
      * Same as `write()`, but won’t queue a write request if it can’t be
      * completed immediately.<br/>
      * An ErrorEvent event will be emitted in case of errors.
@@ -386,6 +410,30 @@ public:
     int tryWrite(char *data, unsigned int len) {
         uv_buf_t bufs[] = { uv_buf_init(data, len) };
         auto bw = uv_try_write(this->template get<uv_stream_t>(), bufs, 1);
+
+        if(bw < 0) {
+            this->publish(ErrorEvent{bw});
+            bw = 0;
+        }
+
+        return bw;
+    }
+
+    /**
+     * @brief Queues a write request if it can be completed immediately.
+     *
+     * Same as `tryWrite` for sending handles over a pipe.<br/>
+     * An ErrorEvent event will be emitted in case of errors.
+     *
+     * @param data The data to be written to the stream.
+     * @param len The lenght of the submitted data.
+     * @param send A valid handle suitable for the purpose.
+     * @return Number of bytes written.
+     */
+    template<typename V, typename W>
+    int tryWrite(char *data, unsigned int len, StreamHandle<V, W> &send) {
+        uv_buf_t bufs[] = { uv_buf_init(data, len) };
+        auto bw = uv_try_write2(this->template get<uv_stream_t>(), bufs, 1, send.raw());
 
         if(bw < 0) {
             this->publish(ErrorEvent{bw});
