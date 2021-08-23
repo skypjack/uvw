@@ -1,8 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="5,5,167,32"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title=" " alt="" coords="215,27,381,69"/>
-<area shape="rect" id="node3" href="$classuvw_1_1Request.html" title=" " alt="" coords="429,27,588,69"/>
-<area shape="rect" id="node4" href="$classuvw_1_1FsRequest.html" title=" " alt="" coords="636,35,819,61"/>
-<area shape="rect" id="node5" href="$classuvw_1_1FileReq.html" title="The FileReq request." alt="" coords="867,35,961,61"/>
-<area shape="rect" id="node6" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="16,57,156,98"/>
+<area shape="rect" id="node1" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,176,47"/>
+<area shape="rect" id="node2" href="$classuvw_1_1RWLock.html" title="The RWLock wrapper." alt="" coords="224,13,325,39"/>
 </map>

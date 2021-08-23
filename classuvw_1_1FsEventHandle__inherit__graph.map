@@ -1,7 +1,7 @@
 <map id="uvw::FsEventHandle" name="uvw::FsEventHandle">
-<area shape="rect" id="node1" title="The FsEventHandle handle." alt="" coords="105,288,244,315"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title=" " alt="" coords="77,199,272,240"/>
-<area shape="rect" id="node3" href="$classuvw_1_1Resource.html" title=" " alt="" coords="70,109,279,151"/>
-<area shape="rect" id="node4" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,147,61"/>
-<area shape="rect" id="node5" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="171,20,375,47"/>
+<area shape="rect" id="node1" title="The FsEventHandle handle." alt="" coords="83,259,222,285"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title=" " alt="" coords="55,169,250,211"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Resource.html" title="Common class for almost all the resources available in uvw." alt="" coords="75,95,230,121"/>
+<area shape="rect" id="node4" href="$classuvw_1_1UnderlyingType.html" title="Wrapper class for underlying types." alt="" coords="5,5,145,47"/>
+<area shape="rect" id="node5" href="$classuvw_1_1Emitter.html" title="Event emitter base class." alt="" coords="169,13,293,39"/>
 </map>

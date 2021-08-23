@@ -1,7 +1,7 @@
 <map id="uvw::AsyncHandle" name="uvw::AsyncHandle">
-<area shape="rect" id="node1" title="The AsyncHandle handle." alt="" coords="149,273,277,300"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title=" " alt="" coords="121,184,305,225"/>
-<area shape="rect" id="node3" href="$classuvw_1_1Resource.html" title=" " alt="" coords="113,95,312,136"/>
-<area shape="rect" id="node4" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,201,47"/>
-<area shape="rect" id="node5" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="226,13,421,39"/>
+<area shape="rect" id="node1" title="The AsyncHandle handle." alt="" coords="89,259,217,285"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Handle.html" title=" " alt="" coords="61,169,245,211"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Resource.html" title="Common class for almost all the resources available in uvw." alt="" coords="75,95,230,121"/>
+<area shape="rect" id="node4" href="$classuvw_1_1UnderlyingType.html" title="Wrapper class for underlying types." alt="" coords="5,5,145,47"/>
+<area shape="rect" id="node5" href="$classuvw_1_1Emitter.html" title="Event emitter base class." alt="" coords="169,13,293,39"/>
 </map>

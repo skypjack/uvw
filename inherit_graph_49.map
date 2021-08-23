@@ -1,7 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="6,5,201,32"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title=" " alt="" coords="249,27,448,69"/>
-<area shape="rect" id="node3" href="$classuvw_1_1Handle.html" title=" " alt="" coords="496,27,680,69"/>
-<area shape="rect" id="node4" href="$classuvw_1_1CheckHandle.html" title="The CheckHandle handle." alt="" coords="728,35,856,61"/>
-<area shape="rect" id="node5" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,57,201,98"/>
+<area shape="rect" id="node1" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,172,47"/>
+<area shape="rect" id="node2" href="$classuvw_1_1Condition.html" title="The Condition wrapper." alt="" coords="220,13,325,39"/>
 </map>

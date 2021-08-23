@@ -1,7 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="5,5,179,47"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title=" " alt="" coords="227,43,413,84"/>
-<area shape="rect" id="node3" href="$classuvw_1_1Request.html" title=" " alt="" coords="461,43,640,84"/>
-<area shape="rect" id="node4" href="$classuvw_1_1GetAddrInfoReq.html" title="The GetAddrInfoReq request." alt="" coords="688,50,831,77"/>
-<area shape="rect" id="node5" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="19,71,165,127"/>
+<area shape="rect" id="node1" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,159,61"/>
+<area shape="rect" id="node2" href="$classuvw_1_1ThreadLocalStorage.html" title="The ThreadLocalStorage wrapper." alt="" coords="207,20,373,47"/>
 </map>

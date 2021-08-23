@@ -1,8 +1,8 @@
 <map id="uvw::FsReq" name="uvw::FsReq">
-<area shape="rect" id="node1" title="The FsReq request." alt="" coords="116,348,205,375"/>
-<area shape="rect" id="node2" href="$classuvw_1_1FsRequest.html" title=" " alt="" coords="73,273,249,300"/>
-<area shape="rect" id="node3" href="$classuvw_1_1Request.html" title=" " alt="" coords="84,184,237,225"/>
-<area shape="rect" id="node4" href="$classuvw_1_1Resource.html" title=" " alt="" coords="81,95,241,136"/>
-<area shape="rect" id="node5" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,145,47"/>
-<area shape="rect" id="node6" href="$classuvw_1_1Emitter.html" title=" " alt="" coords="170,13,325,39"/>
+<area shape="rect" id="node1" title="The FsReq request." alt="" coords="108,319,197,345"/>
+<area shape="rect" id="node2" href="$classuvw_1_1FsRequest.html" title=" " alt="" coords="65,244,241,271"/>
+<area shape="rect" id="node3" href="$classuvw_1_1Request.html" title="Request base class." alt="" coords="79,169,226,196"/>
+<area shape="rect" id="node4" href="$classuvw_1_1Resource.html" title="Common class for almost all the resources available in uvw." alt="" coords="75,95,230,121"/>
+<area shape="rect" id="node5" href="$classuvw_1_1UnderlyingType.html" title="Wrapper class for underlying types." alt="" coords="5,5,145,47"/>
+<area shape="rect" id="node6" href="$classuvw_1_1Emitter.html" title="Event emitter base class." alt="" coords="169,13,293,39"/>
 </map>
