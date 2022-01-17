@@ -18,7 +18,7 @@ namespace uvw {
 namespace internal {
 
 
-// Fowler–Noll–Vo hash function v. 1a - the good
+// Fowler-Noll-Vo hash function v. 1a - the good
 [[nodiscard]] static constexpr std::uint32_t fnv1a(const char *curr) noexcept {
     constexpr std::uint32_t offset = 2166136261;
     constexpr std::uint32_t prime = 16777619;
