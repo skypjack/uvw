@@ -439,10 +439,8 @@ who has partecipated so far.
 Code and documentation Copyright (c) 2016-2022 Michele Caini.<br/>
 Logo Copyright (c) 2018-2021 Richard Caseres.
 
-Code released under
-[the MIT license](https://github.com/skypjack/uvw/blob/master/LICENSE).
-Documentation released under
-[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).<br/>
+Code and documentation released under
+[the MIT license](https://github.com/skypjack/uvw/blob/master/LICENSE).<br/>
 Logo released under
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
