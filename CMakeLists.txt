@@ -85,7 +85,7 @@ function(fetch_libuv)
 
         if(NOT libuv_POPULATED)
             FetchContent_Populate(libuv)
-            add_subdirectory(${libuv_SOURCE_DIR} ${libuv_BINARY_DIR})
+            add_subdirectory(${libuv_SOURCE_DIR} ${libuv_BINARY_DIR} EXCLUDE_FROM_ALL)
         endif()
 
         if(BUILD_UVW_SHARED_LIB)
@@ -191,22 +191,14 @@ install(EXPORT uvwConfig NAMESPACE uvw:: DESTINATION ${CMAKE_INSTALL_LIBDIR}/cma
 install(TARGETS uvw EXPORT uvwConfig ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 if(FETCH_LIBUV AND BUILD_UVW_LIBS)
     # libuv is only fetched when both above conditions are true
-    install(TARGETS uv_a EXPORT uvwConfig ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-    install(TARGETS uv EXPORT uvwConfig LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+    install(DIRECTORY ${libuv_SOURCE_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/uvw/uv/include)
+    if (BUILD_UVW_SHARED_LIB)
+        install(TARGETS uv EXPORT uvwConfig LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/uvw)
+    else()
+        install(TARGETS uv_a EXPORT uvwConfig ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/uvw)
+    endif()
+    
 endif(FETCH_LIBUV AND BUILD_UVW_LIBS)
-
-#
-# Pkg-Config
-#
-
-if(UNIX)
-    set(includedir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_INCLUDEDIR})
-    set(libdir ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
-    set(prefix ${CMAKE_INSTALL_PREFIX})
-    configure_file(libuvw-static.pc.in ${CMAKE_CURRENT_BINARY_DIR}/libuvw-static.pc @ONLY)
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/libuvw-static.pc
-            DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
-endif()
 
 ### Testing
 
