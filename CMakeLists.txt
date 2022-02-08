@@ -36,6 +36,7 @@ option(USE_ASAN "Use address sanitizer by adding -fsanitize=address -fno-omit-fr
 option(USE_UBSAN "Use address sanitizer by adding -fsanitize=undefined -fno-sanitize-recover=all -fno-omit-frame-pointer flags" OFF)
 option(BUILD_UVW_LIBS "Prepare targets for static library rather than for a header-only library." OFF)
 option(BUILD_UVW_SHARED_LIB "Prepare targets for shared library rather than for a header-only library." OFF)
+option(FIND_LIBUV "Try finding libuv library development files in the system" OFF)
 
 if(BUILD_UVW_SHARED_LIB)
     set(BUILD_UVW_LIBS BOOL:ON)
@@ -65,7 +66,10 @@ if(NOT WIN32 AND USE_LIBCPP)
     cmake_pop_check_state()
 endif()
 
-option(FETCH_LIBUV "Fetch the libuv repo using CMake FetchContent facility" ON)
+
+# Required minimal libuv version
+set(LIBUV_VERSION 1.43.0)
+
 function(fetch_libuv)
     if (FETCH_LIBUV)
         include(FetchContent)
@@ -73,7 +77,7 @@ function(fetch_libuv)
         FetchContent_Declare(
             libuv
             GIT_REPOSITORY https://github.com/libuv/libuv.git
-            GIT_TAG v1.43.0
+            GIT_TAG "v${LIBUV_VERSION}"
             GIT_SHALLOW 1
         )
 
@@ -91,8 +95,32 @@ function(fetch_libuv)
             add_library(uv::uv-static ALIAS uv_a)
             set_target_properties(uv_a PROPERTIES POSITION_INDEPENDENT_CODE 1)
         endif()
-        
     endif(FETCH_LIBUV)
+endfunction()
+
+function(use_libuv)
+    set(FETCH_LIBUV_DEFAULT ON)
+    if (FIND_LIBUV)
+        find_package(libuv ${LIBUV_VERSION} QUIET)
+        if (libuv_FOUND)
+            add_library(uv::uv-shared ALIAS uv)
+            set(FETCH_LIBUV_DEFAULT OFF)
+            message(STATUS "libuv ${libuv_VERSION} found via cmake")
+        else(libuv_FOUND)
+            find_package(PkgConfig QUIET)
+            if (PkgConfig_FOUND)
+                pkg_check_modules(libuv IMPORTED_TARGET libuv>=${LIBUV_VERSION})
+                if (libuv_FOUND)
+                    add_library(uv::uv-shared ALIAS PkgConfig::libuv)
+                    set(FETCH_LIBUV_DEFAULT OFF)
+                    message(STATUS "libuv ${libuv_VERSION} found via pkg-config")
+                endif(libuv_FOUND)
+            endif(PkgConfig_FOUND)
+        endif(libuv_FOUND)
+    endif(FIND_LIBUV)
+
+    option(FETCH_LIBUV "Fetch the libuv repo using CMake FetchContent facility" ${FETCH_LIBUV_DEFAULT})
+    fetch_libuv()
 endfunction()
 
 #
@@ -103,7 +131,7 @@ include(GNUInstallDirs)
 
 
 if(BUILD_UVW_LIBS)
-    fetch_libuv()
+    use_libuv()
 
     add_subdirectory(src)
     file(GLOB HEADERS src/uvw/*.h src/uvw/*.hpp)
@@ -179,7 +207,9 @@ option(BUILD_TESTING "Enable testing with ctest." OFF)
 if(BUILD_TESTING)
     option(FIND_GTEST_PACKAGE "Enable finding gtest package." OFF)
 
-    fetch_libuv()
+    if (NOT BUILD_UVW_LIBS)
+        use_libuv()
+    endif()
 
     enable_testing()
     add_subdirectory(test)
