@@ -124,7 +124,7 @@ UVW_INLINE Passwd Utilities::OS::passwd() noexcept {
 }
 
 
-UVW_INLINE int Utilities::osPriority(PidType pid) {
+UVW_INLINE int Utilities::OS::priority(PidType pid) {
     int prio = 0;
 
     if(uv_os_getpriority(pid, &prio)) {
@@ -135,7 +135,7 @@ UVW_INLINE int Utilities::osPriority(PidType pid) {
 }
 
 
-UVW_INLINE bool Utilities::osPriority(PidType pid, int prio) {
+UVW_INLINE bool Utilities::OS::priority(PidType pid, int prio) {
     return 0 == uv_os_setpriority(pid, prio);
 }
 

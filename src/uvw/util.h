@@ -584,39 +584,39 @@ struct Utilities {
          * @return The accessible subset of the password file entry.
          */
         static Passwd passwd() noexcept;
+
+        /**
+         * @brief Retrieves the scheduling priority of a process.
+         *
+         * The returned value is between -20 (high priority) and 19 (low priority).
+         * A value that is out of range is returned in case of errors.
+         *
+         * @note
+         * On Windows, the result won't equal necessarily the exact value of the
+         * priority because of a mapping to a Windows priority class.
+         *
+         * @param pid A valid process id.
+         * @return The scheduling priority of the process.
+         */
+        static int priority(PidType pid);
+
+        /**
+         * @brief Sets the scheduling priority of a process.
+         *
+         * The returned value range is between -20 (high priority) and 19 (low
+         * priority).
+         *
+         * @note
+         * On Windows, the priority is mapped to a Windows priority class. When
+         * retrieving the process priority, the result won't equal necessarily the
+         * exact value of the priority.
+         *
+         * @param pid A valid process id.
+         * @param prio The scheduling priority to set to the process.
+         * @return True in case of success, false otherwise.
+         */
+        static bool priority(PidType pid, int prio);
     };
-
-    /**
-     * @brief Retrieves the scheduling priority of a process.
-     *
-     * The returned value is between -20 (high priority) and 19 (low priority).
-     * A value that is out of range is returned in case of errors.
-     *
-     * @note
-     * On Windows, the result won't equal necessarily the exact value of the
-     * priority because of a mapping to a Windows priority class.
-     *
-     * @param pid A valid process id.
-     * @return The scheduling priority of the process.
-     */
-    static int osPriority(PidType pid);
-
-    /**
-     * @brief Sets the scheduling priority of a process.
-     *
-     * The returned value range is between -20 (high priority) and 19 (low
-     * priority).
-     *
-     * @note
-     * On Windows, the priority is mapped to a Windows priority class. When
-     * retrieving the process priority, the result won't equal necessarily the
-     * exact value of the priority.
-     *
-     * @param pid A valid process id.
-     * @param prio The scheduling priority to set to the process.
-     * @return True in case of success, false otherwise.
-     */
-    static bool osPriority(PidType pid, int prio);
 
     /**
      * @brief Gets the type of the handle given a category.
