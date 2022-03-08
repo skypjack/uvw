@@ -1,7 +1,6 @@
 #ifndef UVW_LIB_INCLUDE_H
 #define UVW_LIB_INCLUDE_H
 
-
 #include <memory>
 #include <string>
 #include <type_traits>
@@ -9,9 +8,7 @@
 #include "loop.h"
 #include "underlying_type.hpp"
 
-
 namespace uvw {
-
 
 /**
  * @brief The SharedLib class.
@@ -41,10 +38,10 @@ public:
      * @return A valid function pointer in case of success, `nullptr` otherwise.
      */
     template<typename F>
-    F * sym(const std::string &name) {
+    F *sym(const std::string &name) {
         static_assert(std::is_function_v<F>);
         F *func;
-        auto err = uv_dlsym(get(), name.data(), reinterpret_cast<void**>(&func));
+        auto err = uv_dlsym(get(), name.data(), reinterpret_cast<void **>(&func));
         if(err) { func = nullptr; }
         return func;
     }
@@ -53,19 +50,16 @@ public:
      * @brief Returns the last error message, if any.
      * @return The last error message, if any.
      */
-    const char * error() const noexcept;
+    const char *error() const noexcept;
 
 private:
     bool opened;
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "lib.cpp"
+#    include "lib.cpp"
 #endif
-
 
 #endif // UVW_LIB_INCLUDE_H

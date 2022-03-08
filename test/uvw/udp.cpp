@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <uvw/udp.h>
 
-
 TEST(UDP, Functionalities) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::UDPHandle>();
@@ -20,7 +19,6 @@ TEST(UDP, Functionalities) {
     loop->run();
 }
 
-
 TEST(UDP, BindRecvStop) {
     const std::string address = std::string{"127.0.0.1"};
     const unsigned int port = 4242;
@@ -38,7 +36,6 @@ TEST(UDP, BindRecvStop) {
     loop->run();
 }
 
-
 TEST(UDP, ReadTrySend) {
     const std::string address = std::string{"127.0.0.1"};
     const unsigned int port = 4242;
@@ -55,20 +52,19 @@ TEST(UDP, ReadTrySend) {
         handle.close();
     });
 
-    server->bind(uvw::Addr{ address, port });
+    server->bind(uvw::Addr{address, port});
     server->recv();
 
-    auto dataTrySend = std::unique_ptr<char[]>(new char[1]{ 'a' });
+    auto dataTrySend = std::unique_ptr<char[]>(new char[1]{'a'});
 
-    client->trySend(uvw::Addr{ address, port }, dataTrySend.get(), 1);
+    client->trySend(uvw::Addr{address, port}, dataTrySend.get(), 1);
     client->trySend(address, port, nullptr, 0);
 
-    client->trySend(uvw::Addr{ address, port }, std::move(dataTrySend), 1);
+    client->trySend(uvw::Addr{address, port}, std::move(dataTrySend), 1);
     client->trySend(address, port, std::unique_ptr<char[]>{}, 0);
 
     loop->run();
 }
-
 
 TEST(UDP, ReadSend) {
     const std::string address = std::string{"127.0.0.1"};
@@ -92,17 +88,16 @@ TEST(UDP, ReadSend) {
     server->bind(address, port);
     server->recv();
 
-    auto dataSend = std::unique_ptr<char[]>(new char[2]{ 'b', 'c' });
+    auto dataSend = std::unique_ptr<char[]>(new char[2]{'b', 'c'});
 
-    client->send(uvw::Addr{ address , port }, dataSend.get(), 2);
+    client->send(uvw::Addr{address, port}, dataSend.get(), 2);
     client->send(address, port, nullptr, 0);
 
-    client->send(uvw::Addr{ address , port }, std::move(dataSend), 2);
+    client->send(uvw::Addr{address, port}, std::move(dataSend), 2);
     client->send(address, port, std::unique_ptr<char[]>{}, 0);
 
     loop->run();
 }
-
 
 TEST(UDP, Sock) {
     const std::string address = std::string{"127.0.0.1"};

@@ -1,46 +1,36 @@
 #ifdef UVW_AS_LIB
-#include "process.h"
+#    include "process.h"
 #endif
 #include <algorithm>
 
 #include "config.h"
 
-
 namespace uvw {
 
-
 UVW_INLINE ExitEvent::ExitEvent(int64_t code, int sig) noexcept
-    : status{code}, signal{sig}
-{}
-
+    : status{code}, signal{sig} {}
 
 UVW_INLINE void ProcessHandle::exitCallback(uv_process_t *handle, int64_t exitStatus, int termSignal) {
     ProcessHandle &process = *(static_cast<ProcessHandle *>(handle->data));
     process.publish(ExitEvent{exitStatus, termSignal});
 }
 
-
 UVW_INLINE ProcessHandle::ProcessHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref)
-    : Handle{ca, std::move(ref)}
-{}
-
+    : Handle{ca, std::move(ref)} {}
 
 UVW_INLINE void ProcessHandle::disableStdIOInheritance() noexcept {
     uv_disable_stdio_inheritance();
 }
 
-
 UVW_INLINE bool ProcessHandle::kill(int pid, int signum) noexcept {
     return (0 == uv_kill(pid, signum));
 }
-
 
 UVW_INLINE bool ProcessHandle::init() {
     // deferred initialization: libuv initializes process handles only when
     // uv_spawn is invoked and uvw stays true to the underlying library
     return true;
 }
-
 
 UVW_INLINE void ProcessHandle::spawn(const char *file, char **args, char **env) {
     uv_process_options_t po;
@@ -71,28 +61,23 @@ UVW_INLINE void ProcessHandle::spawn(const char *file, char **args, char **env) 
     invoke(&uv_spawn, parent(), get(), &po);
 }
 
-
 UVW_INLINE void ProcessHandle::kill(int signum) {
     invoke(&uv_process_kill, get(), signum);
 }
 
-
 UVW_INLINE int ProcessHandle::pid() noexcept {
     return get()->pid;
 }
-
 
 UVW_INLINE ProcessHandle &ProcessHandle::cwd(const std::string &path) noexcept {
     poCwd = path;
     return *this;
 }
 
-
 UVW_INLINE ProcessHandle &ProcessHandle::flags(Flags<Process> flags) noexcept {
     poFlags = flags;
     return *this;
 }
-
 
 UVW_INLINE ProcessHandle &ProcessHandle::stdio(FileHandle fd, Flags<StdIO> flags) {
     auto fgs = static_cast<uv_stdio_flags>(Flags<StdIO>::Type{flags});
@@ -116,17 +101,14 @@ UVW_INLINE ProcessHandle &ProcessHandle::stdio(FileHandle fd, Flags<StdIO> flags
     return *this;
 }
 
-
 UVW_INLINE ProcessHandle &ProcessHandle::uid(Uid id) {
     poUid = id;
     return *this;
 }
-
 
 UVW_INLINE ProcessHandle &ProcessHandle::gid(Gid id) {
     poGid = id;
     return *this;
 }
 
-
-}
+} // namespace uvw

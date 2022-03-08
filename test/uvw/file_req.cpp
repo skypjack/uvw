@@ -1,12 +1,11 @@
+#include <chrono>
 #include <gtest/gtest.h>
 #include <uvw/fs.h>
-#include <chrono>
 
 #ifdef _WIN32
-#define _CRT_DECLARE_NONSTDC_NAMES 1
-#include <fcntl.h>
+#    define _CRT_DECLARE_NONSTDC_NAMES 1
+#    include <fcntl.h>
 #endif
-
 
 TEST(FileReq, OpenAndCloseErr) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/err.file"};
@@ -38,7 +37,6 @@ TEST(FileReq, OpenAndCloseErr) {
     ASSERT_TRUE(checkFileCloseErrorEvent);
 }
 
-
 TEST(FileReq, OpenAndCloseErrSync) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/err.file"};
 
@@ -50,7 +48,6 @@ TEST(FileReq, OpenAndCloseErrSync) {
 
     loop->run();
 }
-
 
 TEST(FileReq, OpenAndClose) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
@@ -83,7 +80,6 @@ TEST(FileReq, OpenAndClose) {
     ASSERT_TRUE(checkFileCloseEvent);
 }
 
-
 TEST(FileReq, OpenAndCloseSync) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
@@ -95,7 +91,6 @@ TEST(FileReq, OpenAndCloseSync) {
 
     loop->run();
 }
-
 
 TEST(FileReq, RWChecked) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
@@ -122,7 +117,7 @@ TEST(FileReq, RWChecked) {
     });
 
     request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
-        req.write(std::unique_ptr<char[]>{new char[1]{ 42 }}, 1, 0);
+        req.write(std::unique_ptr<char[]>{new char[1]{42}}, 1, 0);
     });
 
     auto flags = uvw::Flags<uvw::FileReq::FileOpen>::from<uvw::FileReq::FileOpen::CREAT, uvw::FileReq::FileOpen::RDWR, uvw::FileReq::FileOpen::TRUNC>();
@@ -134,10 +129,9 @@ TEST(FileReq, RWChecked) {
     ASSERT_TRUE(checkFileReadEvent);
 }
 
-
 TEST(FileReq, RWUnchecked) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
-    std::unique_ptr<char[]> data{new char[1]{ 42 }};
+    std::unique_ptr<char[]> data{new char[1]{42}};
 
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::FileReq>();
@@ -173,7 +167,6 @@ TEST(FileReq, RWUnchecked) {
     ASSERT_TRUE(checkFileReadEvent);
 }
 
-
 TEST(FileReq, RWSync) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
@@ -182,7 +175,7 @@ TEST(FileReq, RWSync) {
 
     ASSERT_TRUE(request->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0644));
 
-    auto writeR = request->writeSync(std::unique_ptr<char[]>{new char[1]{ 42 }}, 1, 0);
+    auto writeR = request->writeSync(std::unique_ptr<char[]>{new char[1]{42}}, 1, 0);
 
     ASSERT_TRUE(writeR.first);
     ASSERT_EQ(writeR.second, std::size_t{1});
@@ -196,7 +189,6 @@ TEST(FileReq, RWSync) {
 
     loop->run();
 }
-
 
 TEST(FileReq, Stat) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
@@ -226,7 +218,6 @@ TEST(FileReq, Stat) {
     ASSERT_TRUE(checkFileStatEvent);
 }
 
-
 TEST(FileReq, StatSync) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
@@ -242,7 +233,6 @@ TEST(FileReq, StatSync) {
 
     loop->run();
 }
-
 
 TEST(FileReq, Sync) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
@@ -272,7 +262,6 @@ TEST(FileReq, Sync) {
     ASSERT_TRUE(checkFileSyncEvent);
 }
 
-
 TEST(FileReq, SyncSync) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
@@ -285,7 +274,6 @@ TEST(FileReq, SyncSync) {
 
     loop->run();
 }
-
 
 TEST(FileReq, Datasync) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
@@ -315,7 +303,6 @@ TEST(FileReq, Datasync) {
     ASSERT_TRUE(checkFileDatasyncEvent);
 }
 
-
 TEST(FileReq, DatasyncSync) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
@@ -328,7 +315,6 @@ TEST(FileReq, DatasyncSync) {
 
     loop->run();
 }
-
 
 TEST(FileReq, Truncate) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
@@ -358,7 +344,6 @@ TEST(FileReq, Truncate) {
     ASSERT_TRUE(checkFileTruncateEvent);
 }
 
-
 TEST(FileReq, TruncateSync) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
@@ -371,7 +356,6 @@ TEST(FileReq, TruncateSync) {
 
     loop->run();
 }
-
 
 TEST(FileReq, Chmod) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
@@ -401,7 +385,6 @@ TEST(FileReq, Chmod) {
     ASSERT_TRUE(checkFileChmodEvent);
 }
 
-
 TEST(FileReq, ChmodSync) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
@@ -414,7 +397,6 @@ TEST(FileReq, ChmodSync) {
 
     loop->run();
 }
-
 
 TEST(FileReq, Futime) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
@@ -447,7 +429,6 @@ TEST(FileReq, Futime) {
     ASSERT_TRUE(checkFileUtimeEvent);
 }
 
-
 TEST(FileReq, FutimeSync) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
@@ -466,7 +447,6 @@ TEST(FileReq, FutimeSync) {
 
     loop->run();
 }
-
 
 TEST(FileReq, Chown) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
@@ -501,7 +481,6 @@ TEST(FileReq, Chown) {
 
     ASSERT_TRUE(checkFileChownEvent);
 }
-
 
 TEST(FileReq, ChownSync) {
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};

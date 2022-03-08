@@ -1,31 +1,25 @@
 #ifndef UVW_THREAD_INCLUDE_H
 #define UVW_THREAD_INCLUDE_H
 
-
+#include <cstddef>
 #include <memory>
 #include <string>
-#include <cstddef>
 #include <type_traits>
 #include <utility>
 #include <uv.h>
 #include "loop.h"
 #include "underlying_type.hpp"
 
-
 namespace uvw {
-
 
 namespace details {
 
-
-enum class UVThreadCreateFlags: std::underlying_type_t<uv_thread_create_flags> {
+enum class UVThreadCreateFlags : std::underlying_type_t<uv_thread_create_flags> {
     THREAD_NO_FLAGS = UV_THREAD_NO_FLAGS,
     THREAD_HAS_STACK_SIZE = UV_THREAD_HAS_STACK_SIZE
 };
 
-
 }
-
 
 class Thread;
 class ThreadLocalStorage;
@@ -35,7 +29,6 @@ class RWLock;
 class Semaphore;
 class Condition;
 class Barrier;
-
 
 /**
  * @brief The Thread wrapper.
@@ -106,7 +99,6 @@ private:
     Task task;
 };
 
-
 /**
  * @brief The ThreadLocalStorage wrapper.
  *
@@ -126,8 +118,8 @@ public:
      * @return A pointer to the given variable.
      */
     template<typename T>
-    T* get() noexcept {
-        return static_cast<T*>(uv_key_get(UnderlyingType::get()));
+    T *get() noexcept {
+        return static_cast<T *>(uv_key_get(UnderlyingType::get()));
     }
 
     /**
@@ -141,7 +133,6 @@ public:
     }
 };
 
-
 /**
  * @brief The Once wrapper.
  *
@@ -149,7 +140,7 @@ public:
  * callers except one (it’s unspecified which one).
  */
 class Once final: public UnderlyingType<Once, uv_once_t> {
-    static uv_once_t* guard() noexcept;
+    static uv_once_t *guard() noexcept;
 
 public:
     using UnderlyingType::UnderlyingType;
@@ -165,13 +156,12 @@ public:
      */
     template<typename F>
     static void once(F &&f) noexcept {
-        using CallbackType = void(*)(void);
+        using CallbackType = void (*)(void);
         static_assert(std::is_convertible_v<F, CallbackType>);
         CallbackType cb = f;
         uv_once(guard(), cb);
     }
 };
-
 
 /**
  * @brief The Mutex wrapper.
@@ -205,7 +195,6 @@ public:
      */
     void unlock() noexcept;
 };
-
 
 /**
  * @brief The RWLock wrapper.
@@ -249,7 +238,6 @@ public:
     void wrUnlock() noexcept;
 };
 
-
 /**
  * @brief The Semaphore wrapper.
  *
@@ -279,7 +267,6 @@ public:
      */
     bool tryWait() noexcept;
 };
-
 
 /**
  * @brief The Condition wrapper.
@@ -334,7 +321,6 @@ public:
     bool timedWait(Mutex &mutex, uint64_t timeout) noexcept;
 };
 
-
 /**
  * @brief The Barrier wrapper.
  *
@@ -357,12 +343,10 @@ public:
     bool wait() noexcept;
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "thread.cpp"
+#    include "thread.cpp"
 #endif
 
 #endif // UVW_THREAD_INCLUDE_H

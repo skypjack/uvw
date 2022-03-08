@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <uvw/dns.h>
 
-
 TEST(GetAddrInfo, GetNodeAddrInfo) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::GetAddrInfoReq>();
@@ -22,7 +21,6 @@ TEST(GetAddrInfo, GetNodeAddrInfo) {
     ASSERT_TRUE(checkAddrInfoEvent);
 }
 
-
 TEST(GetAddrInfo, GetNodeAddrInfoSync) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::GetAddrInfoReq>();
@@ -32,7 +30,6 @@ TEST(GetAddrInfo, GetNodeAddrInfoSync) {
 
     loop->run();
 }
-
 
 TEST(GetAddrInfo, GetServiceAddrInfo) {
     auto loop = uvw::Loop::getDefault();
@@ -52,7 +49,6 @@ TEST(GetAddrInfo, GetServiceAddrInfo) {
     ASSERT_TRUE(checkErrorEvent);
 }
 
-
 TEST(GetAddrInfo, GetServiceAddrInfoSync) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::GetAddrInfoReq>();
@@ -61,7 +57,6 @@ TEST(GetAddrInfo, GetServiceAddrInfoSync) {
 
     loop->run();
 }
-
 
 TEST(GetAddrInfo, GetAddrInfo) {
     auto loop = uvw::Loop::getDefault();
@@ -83,7 +78,6 @@ TEST(GetAddrInfo, GetAddrInfo) {
     ASSERT_TRUE(checkAddrInfoEvent);
 }
 
-
 TEST(GetAddrInfo, GetAddrInfoSync) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::GetAddrInfoReq>();
@@ -93,7 +87,6 @@ TEST(GetAddrInfo, GetAddrInfoSync) {
 
     loop->run();
 }
-
 
 TEST(GetNameInfo, GetNameInfo) {
     auto loop = uvw::Loop::getDefault();
@@ -113,7 +106,7 @@ TEST(GetNameInfo, GetNameInfo) {
         checkNameInfoEvent = true;
     });
 
-    koRequest->nameInfo(uvw::Addr{ "", 0 }, -1);
+    koRequest->nameInfo(uvw::Addr{"", 0}, -1);
     okRequest->nameInfo("irc.freenode.net", 6667);
 
     loop->run();
@@ -122,12 +115,11 @@ TEST(GetNameInfo, GetNameInfo) {
     ASSERT_TRUE(checkNameInfoEvent);
 }
 
-
 TEST(GetNameInfo, GetNameInfoSync) {
     auto loop = uvw::Loop::getDefault();
     auto request = loop->resource<uvw::GetNameInfoReq>();
 
-    ASSERT_FALSE(request->nameInfoSync(uvw::Addr{ "", 0 }, -1).first);
+    ASSERT_FALSE(request->nameInfoSync(uvw::Addr{"", 0}, -1).first);
     ASSERT_TRUE(request->nameInfoSync("irc.freenode.net", 6667).first);
 
     loop->run();

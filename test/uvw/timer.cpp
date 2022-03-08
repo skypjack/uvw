@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <uvw/timer.h>
 
-
 TEST(Timer, StartAndStop) {
     auto loop = uvw::Loop::getDefault();
     auto handleNoRepeat = loop->resource<uvw::TimerHandle>();
@@ -47,7 +46,6 @@ TEST(Timer, StartAndStop) {
     ASSERT_TRUE(checkTimerRepeatEvent);
 }
 
-
 TEST(Timer, Again) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::TimerHandle>();
@@ -92,7 +90,6 @@ TEST(Timer, Again) {
     ASSERT_TRUE(checkTimerEvent);
 }
 
-
 TEST(Timer, Repeat) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::TimerHandle>();
@@ -105,7 +102,6 @@ TEST(Timer, Repeat) {
     // (possible leak detected by valgrind otherwise)
     loop->run();
 }
-
 
 TEST(Timer, Fake) {
     auto loop = uvw::Loop::getDefault();
@@ -123,16 +119,14 @@ TEST(Timer, Fake) {
     loop->run();
 }
 
-
 TEST(Timer, BaseHandleWalk) {
     auto loop = uvw::Loop::getDefault();
     auto timer = loop->resource<uvw::TimerHandle>();
 
     timer->on<uvw::TimerEvent>([](const auto &, uvw::TimerHandle &handle) {
         handle.loop().walk(uvw::Overloaded{
-            [](uvw::TimerHandle &h){ h.close(); },
-            [](auto &&){}
-        });
+            [](uvw::TimerHandle &h) { h.close(); },
+            [](auto &&) {}});
     });
 
     timer->start(uvw::TimerHandle::Time{100}, uvw::TimerHandle::Time{100});

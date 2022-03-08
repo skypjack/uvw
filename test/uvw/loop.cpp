@@ -1,8 +1,7 @@
 #include <gtest/gtest.h>
+#include <uvw/loop.h>
 #include <uvw/prepare.h>
 #include <uvw/work.h>
-#include <uvw/loop.h>
-
 
 TEST(Loop, DefaultLoop) {
     auto def = uvw::Loop::getDefault();
@@ -17,11 +16,10 @@ TEST(Loop, DefaultLoop) {
     ASSERT_EQ(def, def2);
 }
 
-
 TEST(Loop, Functionalities) {
     auto loop = uvw::Loop::create();
     auto handle = loop->resource<uvw::PrepareHandle>();
-    auto req = loop->resource<uvw::WorkReq>([]{});
+    auto req = loop->resource<uvw::WorkReq>([] {});
 
     loop->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
     req->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
@@ -64,7 +62,6 @@ TEST(Loop, Functionalities) {
     ASSERT_FALSE(loop->alive());
 }
 
-
 TEST(Loop, UserData) {
     auto loop = uvw::Loop::create();
     loop->data(std::make_shared<int>(42));
@@ -78,20 +75,17 @@ TEST(Loop, UserData) {
     ASSERT_EQ(*loop->data<int>(), 42);
 }
 
-
 TEST(Loop, Configure) {
     auto loop = uvw::Loop::create();
     ASSERT_NO_THROW(loop->configure(uvw::Loop::Configure::BLOCK_SIGNAL, 9));
     ASSERT_NO_THROW(loop->run());
 }
 
-
 TEST(Loop, IdleTime) {
     auto loop = uvw::Loop::create();
     loop->configure(uvw::Loop::Configure::IDLE_TIME);
     ASSERT_EQ(loop->idleTime().count(), 0u);
 }
-
 
 TEST(Loop, Raw) {
     auto loop = uvw::Loop::getDefault();

@@ -1,15 +1,12 @@
 #ifndef UVW_TIMER_INCLUDE_H
 #define UVW_TIMER_INCLUDE_H
 
-
 #include <chrono>
 #include <uv.h>
 #include "handle.hpp"
 #include "loop.h"
 
-
 namespace uvw {
-
 
 /**
  * @brief TimerEvent event.
@@ -17,7 +14,6 @@ namespace uvw {
  * It will be emitted by TimerHandle according with its functionalities.
  */
 struct TimerEvent {};
-
 
 /**
  * @brief The TimerHandle handle.
@@ -97,20 +93,18 @@ public:
 
     /**
      * @brief Gets the timer due value.
-     * 
+     *
      * The time is relative to `Loop::now()`.
-     * 
+     *
      * @return The timer due value or 0 if it has expired.
      */
     Time dueIn();
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "timer.cpp"
+#    include "timer.cpp"
 #endif
 
 #endif // UVW_TIMER_INCLUDE_H

@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <uvw/check.h>
 
-
 TEST(Check, StartAndStop) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::CheckHandle>();
@@ -27,7 +26,6 @@ TEST(Check, StartAndStop) {
 
     ASSERT_TRUE(checkCheckEvent);
 }
-
 
 TEST(Check, Fake) {
     auto loop = uvw::Loop::getDefault();

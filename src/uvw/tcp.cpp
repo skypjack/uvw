@@ -1,74 +1,59 @@
 #ifdef UVW_AS_LIB
-#include "tcp.h"
+#    include "tcp.h"
 #endif
 
 #include "config.h"
 
-
 namespace uvw {
 
-
 UVW_INLINE TCPHandle::TCPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
-    : StreamHandle{ca, std::move(ref)}, tag{f ? FLAGS : DEFAULT}, flags{f}
-{}
-
+    : StreamHandle{ca, std::move(ref)}, tag{f ? FLAGS : DEFAULT}, flags{f} {}
 
 UVW_INLINE bool TCPHandle::init() {
     return (tag == FLAGS) ? initialize(&uv_tcp_init_ex, flags) : initialize(&uv_tcp_init);
 }
 
-
 UVW_INLINE void TCPHandle::open(OSSocketHandle socket) {
     invoke(&uv_tcp_open, get(), socket);
 }
-
 
 UVW_INLINE bool TCPHandle::noDelay(bool value) {
     return (0 == uv_tcp_nodelay(get(), value));
 }
 
-
 UVW_INLINE bool TCPHandle::keepAlive(bool enable, TCPHandle::Time time) {
     return (0 == uv_tcp_keepalive(get(), enable, time.count()));
 }
-
 
 UVW_INLINE bool TCPHandle::simultaneousAccepts(bool enable) {
     return (0 == uv_tcp_simultaneous_accepts(get(), enable));
 }
 
-
 UVW_INLINE void TCPHandle::bind(const sockaddr &addr, Flags<Bind> opts) {
     invoke(&uv_tcp_bind, get(), &addr, opts);
 }
 
-
 template<typename I>
-UVW_INLINE void TCPHandle::bind(const std::string &ip, unsigned int port, Flags<Bind> opts)
-{
+UVW_INLINE void TCPHandle::bind(const std::string &ip, unsigned int port, Flags<Bind> opts) {
     typename details::IpTraits<I>::Type addr;
     details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
     bind(reinterpret_cast<const sockaddr &>(addr), std::move(opts));
 }
-
 
 template<typename I>
 UVW_INLINE void TCPHandle::bind(Addr addr, Flags<Bind> opts) {
     bind<I>(std::move(addr.ip), addr.port, std::move(opts));
 }
 
-
 template<typename I>
 UVW_INLINE Addr TCPHandle::sock() const noexcept {
     return details::address<I>(&uv_tcp_getsockname, get());
 }
 
-
 template<typename I>
 UVW_INLINE Addr TCPHandle::peer() const noexcept {
     return details::address<I>(&uv_tcp_getpeername, get());
 }
-
 
 template<typename I>
 UVW_INLINE void TCPHandle::connect(const std::string &ip, unsigned int port) {
@@ -77,12 +62,10 @@ UVW_INLINE void TCPHandle::connect(const std::string &ip, unsigned int port) {
     connect(reinterpret_cast<const sockaddr &>(addr));
 }
 
-
 template<typename I>
 UVW_INLINE void TCPHandle::connect(Addr addr) {
     connect<I>(std::move(addr.ip), addr.port);
 }
-
 
 UVW_INLINE void TCPHandle::connect(const sockaddr &addr) {
     auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
@@ -95,11 +78,9 @@ UVW_INLINE void TCPHandle::connect(const sockaddr &addr) {
     req->connect(&uv_tcp_connect, get(), &addr);
 }
 
-
 UVW_INLINE void TCPHandle::closeReset() {
     invoke(&uv_tcp_close_reset, get(), &this->closeCallback);
 }
-
 
 // explicit instantiations
 #ifdef UVW_AS_LIB
@@ -122,5 +103,4 @@ template void TCPHandle::connect<IPv4>(Addr addr);
 template void TCPHandle::connect<IPv6>(Addr addr);
 #endif // UVW_AS_LIB
 
-
-}
+} // namespace uvw

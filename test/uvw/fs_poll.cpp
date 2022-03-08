@@ -3,7 +3,6 @@
 #include <uvw/fs_event.h>
 #include <uvw/fs_poll.h>
 
-
 TEST(FsPoll, Functionalities) {
     const std::string filename = std::string{TARGET_FS_POLL_DIR} + std::string{"/test.file"};
 
@@ -30,7 +29,7 @@ TEST(FsPoll, Functionalities) {
 
     request->openSync(filename, O_CREAT | O_RDWR | O_TRUNC, 0755);
     handle->start(filename, uvw::FsPollHandle::Time{1000});
-    request->write(std::unique_ptr<char[]>{new char[1]{ 42 }}, 1, 0);
+    request->write(std::unique_ptr<char[]>{new char[1]{42}}, 1, 0);
 
     ASSERT_EQ(handle->path(), filename);
     ASSERT_TRUE(handle->active());

@@ -1,31 +1,25 @@
 #ifndef UVW_PIPE_INCLUDE_H
 #define UVW_PIPE_INCLUDE_H
 
-
-#include <type_traits>
 #include <memory>
 #include <string>
+#include <type_traits>
 #include <uv.h>
+#include "loop.h"
 #include "request.hpp"
 #include "stream.h"
 #include "util.h"
-#include "loop.h"
-
 
 namespace uvw {
 
-
 namespace details {
 
-
-enum class UVChmodFlags: std::underlying_type_t<uv_poll_event> {
+enum class UVChmodFlags : std::underlying_type_t<uv_poll_event> {
     READABLE = UV_READABLE,
     WRITABLE = UV_WRITABLE
 };
 
-
 }
-
 
 /**
  * @brief The PipeHandle handle.
@@ -156,13 +150,10 @@ private:
     bool ipc;
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "pipe.cpp"
+#    include "pipe.cpp"
 #endif
-
 
 #endif // UVW_PIPE_INCLUDE_H

@@ -1,21 +1,18 @@
 #ifndef UVW_EMITTER_INCLUDE_H
 #define UVW_EMITTER_INCLUDE_H
 
-
-#include <type_traits>
-#include <functional>
 #include <algorithm>
-#include <utility>
 #include <cstddef>
-#include <unordered_map>
-#include <memory>
+#include <functional>
 #include <list>
+#include <memory>
+#include <type_traits>
+#include <unordered_map>
+#include <utility>
 #include <uv.h>
 #include "type_info.hpp"
 
-
 namespace uvw {
-
 
 /**
  * @brief The ErrorEvent event.
@@ -25,8 +22,7 @@ namespace uvw {
 struct ErrorEvent {
     template<typename U, typename = std::enable_if_t<std::is_integral_v<U>>>
     explicit ErrorEvent(U val) noexcept
-        : ec{static_cast<int>(val)}
-    {}
+        : ec{static_cast<int>(val)} {}
 
     /**
      * @brief Returns the `libuv` error code equivalent to the given platform dependent error code.
@@ -49,7 +45,7 @@ struct ErrorEvent {
      *
      * @return The error message for the given error code.
      */
-    const char * what() const noexcept;
+    const char *what() const noexcept;
 
     /**
      * @brief Returns the error name for the given error code.
@@ -58,7 +54,7 @@ struct ErrorEvent {
      *
      * @return The error name for the given error code.
      */
-    const char * name() const noexcept;
+    const char *name() const noexcept;
 
     /**
      * @brief Gets the underlying error code, that is an error constant of `libuv`.
@@ -75,7 +71,6 @@ struct ErrorEvent {
 private:
     const int ec;
 };
-
 
 /**
  * @brief Event emitter base class.
@@ -99,15 +94,14 @@ class Emitter {
         using Connection = typename ListenerList::iterator;
 
         bool empty() const noexcept override {
-            auto pred = [](auto &&element){ return element.first; };
+            auto pred = [](auto &&element) { return element.first; };
 
-            return std::all_of(onceL.cbegin(), onceL.cend(), pred) &&
-                    std::all_of(onL.cbegin(), onL.cend(), pred);
+            return std::all_of(onceL.cbegin(), onceL.cend(), pred) && std::all_of(onL.cbegin(), onL.cend(), pred);
         }
 
         void clear() noexcept override {
             if(publishing) {
-                auto func = [](auto &&element){ element.first = true; };
+                auto func = [](auto &&element) { element.first = true; };
                 std::for_each(onceL.begin(), onceL.end(), func);
                 std::for_each(onL.begin(), onL.end(), func);
             } else {
@@ -128,7 +122,7 @@ class Emitter {
             conn->first = true;
 
             if(!publishing) {
-                auto pred = [](auto &&element){ return element.first; };
+                auto pred = [](auto &&element) { return element.first; };
                 onceL.remove_if(pred);
                 onL.remove_if(pred);
             }
@@ -149,7 +143,7 @@ class Emitter {
 
             publishing = false;
 
-            onL.remove_if([](auto &&element){ return element.first; });
+            onL.remove_if([](auto &&element) { return element.first; });
         }
 
     private:
@@ -159,20 +153,20 @@ class Emitter {
     };
 
     template<typename E>
-    Handler<E> & handler() noexcept {
+    Handler<E> &handler() noexcept {
         auto id = type<E>();
 
         if(!handlers.count(id)) {
-           handlers[id] = std::make_unique<Handler<E>>();
+            handlers[id] = std::make_unique<Handler<E>>();
         }
 
-        return static_cast<Handler<E>&>(*handlers.at(id));
+        return static_cast<Handler<E> &>(*handlers.at(id));
     }
 
 protected:
     template<typename E>
     void publish(E event) {
-        handler<E>().publish(std::move(event), *static_cast<T*>(this));
+        handler<E>().publish(std::move(event), *static_cast<T *>(this));
     }
 
 public:
@@ -188,18 +182,18 @@ public:
      */
     template<typename E>
     struct Connection: private Handler<E>::Connection {
-        template<typename> friend class Emitter;
+        template<typename>
+        friend class Emitter;
 
         Connection() = default;
         Connection(const Connection &) = default;
         Connection(Connection &&) = default;
 
         Connection(typename Handler<E>::Connection conn)
-            : Handler<E>::Connection{std::move(conn)}
-        {}
+            : Handler<E>::Connection{std::move(conn)} {}
 
-        Connection & operator=(const Connection &) = default;
-        Connection & operator=(Connection &&) = default;
+        Connection &operator=(const Connection &) = default;
+        Connection &operator=(Connection &&) = default;
     };
 
     virtual ~Emitter() noexcept {
@@ -267,8 +261,7 @@ public:
      * @brief Disconnects all the listeners.
      */
     void clear() noexcept {
-        std::for_each(handlers.begin(), handlers.end(),
-                      [](auto &&hdlr){ if(hdlr.second) { hdlr.second->clear(); } });
+        std::for_each(handlers.begin(), handlers.end(), [](auto &&hdlr) { if(hdlr.second) { hdlr.second->clear(); } });
     }
 
     /**
@@ -280,8 +273,7 @@ public:
     bool empty() const noexcept {
         auto id = type<E>();
 
-        return (!handlers.count(id) ||
-            static_cast<Handler<E>&>(*handlers.at(id)).empty());
+        return (!handlers.count(id) || static_cast<Handler<E> &>(*handlers.at(id)).empty());
     }
 
     /**
@@ -290,20 +282,17 @@ public:
      * false otherwise.
      */
     bool empty() const noexcept {
-        return std::all_of(handlers.cbegin(), handlers.cend(),
-                           [](auto &&hdlr){ return !hdlr.second || hdlr.second->empty(); });
+        return std::all_of(handlers.cbegin(), handlers.cend(), [](auto &&hdlr) { return !hdlr.second || hdlr.second->empty(); });
     }
 
 private:
     std::unordered_map<std::uint32_t, std::unique_ptr<BaseHandler>> handlers{};
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "emitter.cpp"
+#    include "emitter.cpp"
 #endif
 
 #endif // UVW_EMITTER_INCLUDE_H

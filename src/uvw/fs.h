@@ -1,24 +1,20 @@
 #ifndef UVW_FS_INCLUDE_H
 #define UVW_FS_INCLUDE_H
 
-
-#include <utility>
+#include <chrono>
 #include <memory>
 #include <string>
-#include <chrono>
+#include <utility>
 #include <uv.h>
+#include "loop.h"
 #include "request.hpp"
 #include "util.h"
-#include "loop.h"
-
 
 namespace uvw {
 
-
 namespace details {
 
-
-enum class UVFsType: std::underlying_type_t<uv_fs_type> {
+enum class UVFsType : std::underlying_type_t<uv_fs_type> {
     UNKNOWN = UV_FS_UNKNOWN,
     CUSTOM = UV_FS_CUSTOM,
     OPEN = UV_FS_OPEN,
@@ -59,8 +55,7 @@ enum class UVFsType: std::underlying_type_t<uv_fs_type> {
     LUTIME = UV_FS_LUTIME
 };
 
-
-enum class UVDirentTypeT: std::underlying_type_t<uv_dirent_type_t> {
+enum class UVDirentTypeT : std::underlying_type_t<uv_dirent_type_t> {
     UNKNOWN = UV_DIRENT_UNKNOWN,
     FILE = UV_DIRENT_FILE,
     DIR = UV_DIRENT_DIR,
@@ -71,8 +66,7 @@ enum class UVDirentTypeT: std::underlying_type_t<uv_dirent_type_t> {
     BLOCK = UV_DIRENT_BLOCK
 };
 
-
-enum class UVFileOpenFlags: int {
+enum class UVFileOpenFlags : int {
     APPEND = UV_FS_O_APPEND,
     CREAT = UV_FS_O_CREAT,
     DIRECT = UV_FS_O_DIRECT,
@@ -97,22 +91,18 @@ enum class UVFileOpenFlags: int {
     WRONLY = UV_FS_O_WRONLY
 };
 
-
-enum class UVCopyFileFlags: int {
+enum class UVCopyFileFlags : int {
     EXCL = UV_FS_COPYFILE_EXCL,
     FICLONE = UV_FS_COPYFILE_FICLONE,
     FICLONE_FORCE = UV_FS_COPYFILE_FICLONE_FORCE
 };
 
-
-enum class UVSymLinkFlags: int {
+enum class UVSymLinkFlags : int {
     DIR = UV_FS_SYMLINK_DIR,
     JUNCTION = UV_FS_SYMLINK_JUNCTION
 };
 
-
-}
-
+} // namespace details
 
 /**
  * @brief Default FsEvent event.
@@ -167,11 +157,11 @@ enum class UVSymLinkFlags: int {
  */
 template<details::UVFsType e>
 struct FsEvent {
-    FsEvent(const char *pathname) noexcept: path{pathname} {}
+    FsEvent(const char *pathname) noexcept
+        : path{pathname} {}
 
-    const char * path; /*!< The path affecting the request. */
+    const char *path; /*!< The path affecting the request. */
 };
-
 
 /**
  * @brief FsEvent event specialization for `FsRequest::Type::READ`.
@@ -182,14 +172,12 @@ struct FsEvent {
 template<>
 struct FsEvent<details::UVFsType::READ> {
     FsEvent(const char *pathname, std::unique_ptr<const char[]> buf, std::size_t sz) noexcept
-        : path{pathname}, data{std::move(buf)}, size{sz}
-    {}
+        : path{pathname}, data{std::move(buf)}, size{sz} {}
 
-    const char * path; /*!< The path affecting the request. */
+    const char *path;                   /*!< The path affecting the request. */
     std::unique_ptr<const char[]> data; /*!< A bunch of data read from the given path. */
-    std::size_t size; /*!< The amount of data read from the given path. */
+    std::size_t size;                   /*!< The amount of data read from the given path. */
 };
-
 
 /**
  * @brief FsEvent event specialization for `FsRequest::Type::WRITE`.
@@ -200,13 +188,11 @@ struct FsEvent<details::UVFsType::READ> {
 template<>
 struct FsEvent<details::UVFsType::WRITE> {
     FsEvent(const char *pathname, std::size_t sz) noexcept
-        : path{pathname}, size{sz}
-    {}
+        : path{pathname}, size{sz} {}
 
-    const char * path; /*!< The path affecting the request. */
+    const char *path; /*!< The path affecting the request. */
     std::size_t size; /*!< The amount of data written to the given path. */
 };
-
 
 /**
  * @brief FsEvent event specialization for `FsRequest::Type::SENDFILE`.
@@ -217,13 +203,11 @@ struct FsEvent<details::UVFsType::WRITE> {
 template<>
 struct FsEvent<details::UVFsType::SENDFILE> {
     FsEvent(const char *pathname, std::size_t sz) noexcept
-        : path{pathname}, size{sz}
-    {}
+        : path{pathname}, size{sz} {}
 
-    const char * path; /*!< The path affecting the request. */
+    const char *path; /*!< The path affecting the request. */
     std::size_t size; /*!< The amount of data transferred. */
 };
-
 
 /**
  * @brief FsEvent event specialization for `FsRequest::Type::STAT`.
@@ -234,13 +218,11 @@ struct FsEvent<details::UVFsType::SENDFILE> {
 template<>
 struct FsEvent<details::UVFsType::STAT> {
     FsEvent(const char *pathname, Stat curr) noexcept
-        : path{pathname}, stat{std::move(curr)}
-    {}
+        : path{pathname}, stat{std::move(curr)} {}
 
-    const char * path; /*!< The path affecting the request. */
-    Stat stat; /*!< An initialized instance of Stat. */
+    const char *path; /*!< The path affecting the request. */
+    Stat stat;        /*!< An initialized instance of Stat. */
 };
-
 
 /**
  * @brief FsEvent event specialization for `FsRequest::Type::FSTAT`.
@@ -251,13 +233,11 @@ struct FsEvent<details::UVFsType::STAT> {
 template<>
 struct FsEvent<details::UVFsType::FSTAT> {
     FsEvent(const char *pathname, Stat curr) noexcept
-        : path{pathname}, stat{std::move(curr)}
-    {}
+        : path{pathname}, stat{std::move(curr)} {}
 
-    const char * path; /*!< The path affecting the request. */
-    Stat stat; /*!< An initialized instance of Stat. */
+    const char *path; /*!< The path affecting the request. */
+    Stat stat;        /*!< An initialized instance of Stat. */
 };
-
 
 /**
  * @brief FsEvent event specialization for `FsRequest::Type::LSTAT`.
@@ -268,13 +248,11 @@ struct FsEvent<details::UVFsType::FSTAT> {
 template<>
 struct FsEvent<details::UVFsType::LSTAT> {
     FsEvent(const char *pathname, Stat curr) noexcept
-        : path{pathname}, stat{std::move(curr)}
-    {}
+        : path{pathname}, stat{std::move(curr)} {}
 
-    const char * path; /*!< The path affecting the request. */
-    Stat stat; /*!< An initialized instance of Stat. */
+    const char *path; /*!< The path affecting the request. */
+    Stat stat;        /*!< An initialized instance of Stat. */
 };
-
 
 /**
  * @brief FsEvent event specialization for `FsRequest::Type::STATFS`.
@@ -285,13 +263,11 @@ struct FsEvent<details::UVFsType::LSTAT> {
 template<>
 struct FsEvent<details::UVFsType::STATFS> {
     FsEvent(const char *pathname, Statfs curr) noexcept
-        : path{pathname}, statfs{std::move(curr)}
-    {}
+        : path{pathname}, statfs{std::move(curr)} {}
 
-    const char * path; /*!< The path affecting the request. */
-    Statfs statfs; /*!< An initialized instance of Statfs. */
+    const char *path; /*!< The path affecting the request. */
+    Statfs statfs;    /*!< An initialized instance of Statfs. */
 };
-
 
 /**
  * @brief FsEvent event specialization for `FsRequest::Type::MKSTEMP`.
@@ -302,13 +278,11 @@ struct FsEvent<details::UVFsType::STATFS> {
 template<>
 struct FsEvent<details::UVFsType::MKSTEMP> {
     FsEvent(const char *pathname, std::size_t desc) noexcept
-        : path{pathname}, descriptor{desc}
-    {}
+        : path{pathname}, descriptor{desc} {}
 
-    const char * path; /*!< The created file path. */
+    const char *path;       /*!< The created file path. */
     std::size_t descriptor; /*!< The file descriptor as an integer. */
 };
-
 
 /**
  * @brief FsEvent event specialization for `FsRequest::Type::SCANDIR`.
@@ -319,13 +293,11 @@ struct FsEvent<details::UVFsType::MKSTEMP> {
 template<>
 struct FsEvent<details::UVFsType::SCANDIR> {
     FsEvent(const char *pathname, std::size_t sz) noexcept
-        : path{pathname}, size{sz}
-    {}
+        : path{pathname}, size{sz} {}
 
-    const char * path; /*!< The path affecting the request. */
+    const char *path; /*!< The path affecting the request. */
     std::size_t size; /*!< The number of directory entries selected. */
 };
-
 
 /**
  * @brief FsEvent event specialization for `FsRequest::Type::READLINK`.
@@ -336,14 +308,12 @@ struct FsEvent<details::UVFsType::SCANDIR> {
 template<>
 struct FsEvent<details::UVFsType::READLINK> {
     explicit FsEvent(const char *pathname, const char *buf, std::size_t sz) noexcept
-        : path{pathname}, data{buf}, size{sz}
-    {}
+        : path{pathname}, data{buf}, size{sz} {}
 
-    const char * path; /*!< The path affecting the request. */
-    const char * data; /*!< A bunch of data read from the given path. */
+    const char *path; /*!< The path affecting the request. */
+    const char *data; /*!< A bunch of data read from the given path. */
     std::size_t size; /*!< The amount of data read from the given path. */
 };
-
 
 /**
  * @brief FsEvent event specialization for `FsRequest::Type::READDIR`.
@@ -356,14 +326,12 @@ struct FsEvent<details::UVFsType::READDIR> {
     using EntryType = details::UVDirentTypeT;
 
     FsEvent(const char *name, EntryType type, bool eos) noexcept
-        : name{name}, type{type}, eos{eos}
-    {}
+        : name{name}, type{type}, eos{eos} {}
 
-    const char * name; /*!< The name of the last entry. */
-    EntryType type; /*!< The entry type. */
-    bool eos; /*!< True if there a no more entries to read. */
+    const char *name; /*!< The name of the last entry. */
+    EntryType type;   /*!< The entry type. */
+    bool eos;         /*!< True if there a no more entries to read. */
 };
-
 
 /**
  * @brief Base class for FsReq and/or FileReq.
@@ -375,39 +343,47 @@ class FsRequest: public Request<T, uv_fs_t> {
 protected:
     template<details::UVFsType e>
     static void fsGenericCallback(uv_fs_t *req) {
-        auto ptr = Request<T, uv_fs_t>::reserve(req);
-        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
-        else { ptr->publish(FsEvent<e>{req->path}); }
+        if(auto ptr = Request<T, uv_fs_t>::reserve(req); req->result < 0) {
+            ptr->publish(ErrorEvent{req->result});
+        } else {
+            ptr->publish(FsEvent<e>{req->path});
+        }
     }
 
     template<details::UVFsType e>
     static void fsResultCallback(uv_fs_t *req) {
-        auto ptr = Request<T, uv_fs_t>::reserve(req);
-        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
-        else { ptr->publish(FsEvent<e>{req->path, static_cast<std::size_t>(req->result)}); }
+        if(auto ptr = Request<T, uv_fs_t>::reserve(req); req->result < 0) {
+            ptr->publish(ErrorEvent{req->result});
+        } else {
+            ptr->publish(FsEvent<e>{req->path, static_cast<std::size_t>(req->result)});
+        }
     }
 
     template<details::UVFsType e>
     static void fsStatCallback(uv_fs_t *req) {
-        auto ptr = Request<T, uv_fs_t>::reserve(req);
-        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
-        else { ptr->publish(FsEvent<e>{req->path, req->statbuf}); }
+        if(auto ptr = Request<T, uv_fs_t>::reserve(req); req->result < 0) {
+            ptr->publish(ErrorEvent{req->result});
+        } else {
+            ptr->publish(FsEvent<e>{req->path, req->statbuf});
+        }
     }
 
     static void fsStatfsCallback(uv_fs_t *req) {
-        auto ptr = Request<T, uv_fs_t>::reserve(req);
-        if(req->result < 0) { ptr->publish(ErrorEvent{req->result}); }
-        else { ptr->publish(FsEvent<Type::STATFS>{req->path, *static_cast<Statfs *>(req->ptr)}); }
+        if(auto ptr = Request<T, uv_fs_t>::reserve(req); req->result < 0) {
+            ptr->publish(ErrorEvent{req->result});
+        } else {
+            ptr->publish(FsEvent<Type::STATFS>{req->path, *static_cast<Statfs *>(req->ptr)});
+        }
     }
 
     template<typename... Args>
-    void cleanupAndInvoke(Args&&... args) {
+    void cleanupAndInvoke(Args &&...args) {
         uv_fs_req_cleanup(this->get());
         this->invoke(std::forward<Args>(args)...);
     }
 
     template<typename F, typename... Args>
-    void cleanupAndInvokeSync(F &&f, Args&&... args) {
+    void cleanupAndInvokeSync(F &&f, Args &&...args) {
         uv_fs_req_cleanup(this->get());
         std::forward<F>(f)(std::forward<Args>(args)..., nullptr);
     }
@@ -419,7 +395,6 @@ public:
 
     using Request<T, uv_fs_t>::Request;
 };
-
 
 /**
  * @brief The FileReq request.
@@ -770,7 +745,6 @@ private:
     uv_buf_t buffer{};
     uv_file file{BAD_FD};
 };
-
 
 /**
  * @brief The FsReq request.
@@ -1423,7 +1397,6 @@ private:
     uv_dirent_t dirents[1];
 };
 
-
 /*! @brief Helper functions. */
 struct FsHelper {
     /**
@@ -1451,13 +1424,10 @@ struct FsHelper {
     static FileHandle open(OSFileDescriptor descriptor) noexcept;
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "fs.cpp"
+#    include "fs.cpp"
 #endif
-
 
 #endif // UVW_FS_INCLUDE_H

@@ -2,7 +2,6 @@
 #include <uvw/async.h>
 #include <uvw/underlying_type.hpp>
 
-
 TEST(UnderlyingType, Functionalities) {
     auto loop = uvw::Loop::getDefault();
     auto handle = uvw::AsyncHandle::create(loop);

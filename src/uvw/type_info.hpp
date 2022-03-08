@@ -1,22 +1,17 @@
 #ifndef UVW_TYPE_INFO_INCLUDE_HPP
 #define UVW_TYPE_INFO_INCLUDE_HPP
 
-
 #include <cstddef>
 #include <string_view>
 
-
 namespace uvw {
-
 
 /**
  * @cond TURN_OFF_DOXYGEN
  * Internal details not to be documented.
  */
 
-
 namespace internal {
-
 
 // Fowler-Noll-Vo hash function v. 1a - the good
 [[nodiscard]] static constexpr std::uint32_t fnv1a(const char *curr) noexcept {
@@ -31,12 +26,10 @@ namespace internal {
     return value;
 }
 
-
 [[nodiscard]] static inline std::uint32_t counter() noexcept {
     static std::uint32_t cnt{};
     return cnt++;
 }
-
 
 template<typename Type>
 [[nodiscard]] static std::uint32_t fake() noexcept {
@@ -44,15 +37,12 @@ template<typename Type>
     return local;
 }
 
-
-}
-
+} // namespace internal
 
 /**
  * Internal details not to be documented.
  * @endcond
  */
-
 
 /**
  * @brief Returns a numerical identifier for a given type.
@@ -70,7 +60,6 @@ template<typename Type>
 #endif
 }
 
-
-}
+} // namespace uvw
 
 #endif // UVW_TYPE_INFO_INCLUDE_HPP

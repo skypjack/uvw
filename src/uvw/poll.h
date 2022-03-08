@@ -1,30 +1,24 @@
 #ifndef UVW_POLL_INCLUDE_H
 #define UVW_POLL_INCLUDE_H
 
-
-#include <type_traits>
 #include <memory>
+#include <type_traits>
 #include <uv.h>
 #include "handle.hpp"
 #include "util.h"
 
-
 namespace uvw {
-
 
 namespace details {
 
-
-enum class UVPollEvent: std::underlying_type_t<uv_poll_event> {
+enum class UVPollEvent : std::underlying_type_t<uv_poll_event> {
     READABLE = UV_READABLE,
     WRITABLE = UV_WRITABLE,
     DISCONNECT = UV_DISCONNECT,
     PRIORITIZED = UV_PRIORITIZED
 };
 
-
 }
-
 
 /**
  * @brief PollEvent event.
@@ -46,7 +40,6 @@ struct PollEvent {
      */
     Flags<details::UVPollEvent> flags;
 };
-
 
 /**
  * @brief The PollHandle handle.
@@ -127,19 +120,21 @@ public:
     void stop();
 
 private:
-    enum { FD, SOCKET } tag;
+    enum {
+        FD,
+        SOCKET
+    } tag;
+
     union {
         int file_desc;
         OSSocketHandle::Type socket;
     };
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "poll.cpp"
+#    include "poll.cpp"
 #endif
 
 #endif // UVW_POLL_INCLUDE_H

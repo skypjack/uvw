@@ -1,16 +1,13 @@
 #ifndef UVW_WORK_INCLUDE_H
 #define UVW_WORK_INCLUDE_H
 
-
 #include <functional>
 #include <memory>
 #include <uv.h>
-#include "request.hpp"
 #include "loop.h"
-
+#include "request.hpp"
 
 namespace uvw {
-
 
 /**
  * @brief WorkEvent event.
@@ -18,7 +15,6 @@ namespace uvw {
  * It will be emitted by WorkReq according with its functionalities.
  */
 struct WorkEvent {};
-
 
 /**
  * @brief The WorkReq request.
@@ -57,12 +53,10 @@ private:
     Task task{};
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "work.cpp"
+#    include "work.cpp"
 #endif
 
 #endif // UVW_WORK_INCLUDE_H

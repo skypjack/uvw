@@ -1,23 +1,20 @@
 #ifndef UVW_LOOP_INCLUDE_H
 #define UVW_LOOP_INCLUDE_H
 
-
 #ifdef _WIN32
-#include <ciso646>
+#    include <ciso646>
 #endif
 
+#include <chrono>
 #include <functional>
 #include <memory>
-#include <utility>
 #include <type_traits>
-#include <chrono>
+#include <utility>
 #include <uv.h>
 #include "emitter.h"
 #include "util.h"
 
-
 namespace uvw {
-
 
 class AsyncHandle;
 class CheckHandle;
@@ -34,25 +31,20 @@ class TimerHandle;
 class TTYHandle;
 class UDPHandle;
 
-
 namespace details {
 
-
-enum class UVLoopOption: std::underlying_type_t<uv_loop_option> {
+enum class UVLoopOption : std::underlying_type_t<uv_loop_option> {
     BLOCK_SIGNAL = UV_LOOP_BLOCK_SIGNAL,
     IDLE_TIME = UV_METRICS_IDLE_TIME
 };
 
-
-enum class UVRunMode: std::underlying_type_t<uv_run_mode> {
+enum class UVRunMode : std::underlying_type_t<uv_run_mode> {
     DEFAULT = UV_RUN_DEFAULT,
     ONCE = UV_RUN_ONCE,
     NOWAIT = UV_RUN_NOWAIT
 };
 
-
-}
-
+} // namespace details
 
 /**
  * @brief The Loop class.
@@ -63,20 +55,20 @@ enum class UVRunMode: std::underlying_type_t<uv_run_mode> {
  * different sources of events.
  */
 class Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop> {
-    using Deleter = void(*)(uv_loop_t *);
+    using Deleter = void (*)(uv_loop_t *);
 
     template<typename, typename>
     friend class Resource;
 
     template<typename R, typename... Args>
-    auto create_resource(int, Args&&... args) -> decltype(std::declval<R>().init(), std::shared_ptr<R>{}) {
+    auto create_resource(int, Args &&...args) -> decltype(std::declval<R>().init(), std::shared_ptr<R>{}) {
         auto ptr = R::create(shared_from_this(), std::forward<Args>(args)...);
         ptr = ptr->init() ? ptr : nullptr;
         return ptr;
     }
 
     template<typename R, typename... Args>
-    std::shared_ptr<R> create_resource(char, Args&&... args) {
+    std::shared_ptr<R> create_resource(char, Args &&...args) {
         return R::create(shared_from_this(), std::forward<Args>(args)...);
     }
 
@@ -121,8 +113,9 @@ public:
 
     Loop(const Loop &) = delete;
     Loop(Loop &&other) = delete;
-    Loop & operator=(const Loop &) = delete;
-    Loop & operator=(Loop &&other) = delete;
+
+    Loop &operator=(const Loop &) = delete;
+    Loop &operator=(Loop &&other) = delete;
 
     ~Loop() noexcept;
 
@@ -146,7 +139,7 @@ public:
      * for further details.
      */
     template<typename... Args>
-    void configure(Configure flag, Args&&... args) {
+    void configure(Configure flag, Args &&...args) {
         auto option = static_cast<std::underlying_type_t<Configure>>(flag);
         auto err = uv_loop_configure(loop.get(), static_cast<uv_loop_option>(option), std::forward<Args>(args)...);
         if(err) { publish(ErrorEvent{err}); }
@@ -163,7 +156,7 @@ public:
      * @return A pointer to the newly created resource.
      */
     template<typename R, typename... Args>
-    std::shared_ptr<R> resource(Args&&... args) {
+    std::shared_ptr<R> resource(Args &&...args) {
         return create_resource<R>(0, std::forward<Args>(args)...);
     }
 
@@ -234,10 +227,10 @@ public:
     std::pair<bool, Time> timeout() const noexcept;
 
     /**
-    * @brief Returns the amount of time the event loop has been idle. The call
-    * is thread safe.
-    * @return The accumulated time spent idle.
-    */
+     * @brief Returns the amount of time the event loop has been idle. The call
+     * is thread safe.
+     * @return The accumulated time spent idle.
+     */
     Time idleTime() const noexcept;
 
     /**
@@ -274,8 +267,7 @@ public:
      */
     template<typename Func>
     void walk(Func callback) {
-        // remember: non-capturing lambdas decay to pointers to functions
-        uv_walk(loop.get(), [](uv_handle_t *handle, void *func) {
+        auto func = [](uv_handle_t *handle, void *func) {
             if(handle->data) {
                 auto &cb = *static_cast<Func *>(func);
 
@@ -327,7 +319,9 @@ public:
                     break;
                 }
             }
-        }, &callback);
+        };
+
+        uv_walk(loop.get(), func, &callback);
     }
 
     /**
@@ -392,7 +386,7 @@ public:
      *
      * @return The underlying raw data structure.
      */
-    const uv_loop_t * raw() const noexcept;
+    const uv_loop_t *raw() const noexcept;
 
     /**
      * @brief Gets the underlying raw data structure.
@@ -409,13 +403,12 @@ public:
      *
      * @return The underlying raw data structure.
      */
-    uv_loop_t * raw() noexcept;
+    uv_loop_t *raw() noexcept;
 
 private:
     std::unique_ptr<uv_loop_t, Deleter> loop;
     std::shared_ptr<void> userData{nullptr};
 };
-
 
 // (extern) explicit instantiations
 #ifdef UVW_AS_LIB
@@ -424,11 +417,10 @@ extern template bool Loop::run<Loop::Mode::ONCE>() noexcept;
 extern template bool Loop::run<Loop::Mode::NOWAIT>() noexcept;
 #endif // UVW_AS_LIB
 
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "loop.cpp"
+#    include "loop.cpp"
 #endif
 
 #endif // UVW_LOOP_INCLUDE_H

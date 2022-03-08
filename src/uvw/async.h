@@ -1,14 +1,11 @@
 #ifndef UVW_ASYNC_INCLUDE_H
 #define UVW_ASYNC_INCLUDE_H
 
-
 #include <uv.h>
 #include "handle.hpp"
 #include "loop.h"
 
-
 namespace uvw {
-
 
 /**
  * @brief AsyncEvent event.
@@ -16,7 +13,6 @@ namespace uvw {
  * It will be emitted by AsyncHandle according with its functionalities.
  */
 struct AsyncEvent {};
-
 
 /**
  * @brief The AsyncHandle handle.
@@ -55,12 +51,10 @@ public:
     void send();
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "async.cpp"
+#    include "async.cpp"
 #endif
 
 #endif // UVW_ASYNC_INCLUDE_H

@@ -1,12 +1,11 @@
+#include <chrono>
 #include <gtest/gtest.h>
 #include <uvw/fs.h>
-#include <chrono>
 
 #ifdef _WIN32
-#define _CRT_DECLARE_NONSTDC_NAMES 1
-#include <fcntl.h>
+#    define _CRT_DECLARE_NONSTDC_NAMES 1
+#    include <fcntl.h>
 #endif
-
 
 TEST(FsReq, MkdirAndRmdir) {
     const std::string dirname = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.dir"};
@@ -38,7 +37,6 @@ TEST(FsReq, MkdirAndRmdir) {
     ASSERT_TRUE(checkFsRmdirEvent);
 }
 
-
 TEST(FsReq, MkdirAndRmdirSync) {
     const std::string dirname = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.dir"};
 
@@ -50,7 +48,6 @@ TEST(FsReq, MkdirAndRmdirSync) {
 
     loop->run();
 }
-
 
 TEST(FsReq, MkdtempAndRmdir) {
     const std::string dirname = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.dir.XXXXXX"};
@@ -83,7 +80,6 @@ TEST(FsReq, MkdtempAndRmdir) {
     ASSERT_TRUE(checkFsRmdirEvent);
 }
 
-
 TEST(FsReq, MkdtempAndRmdirSync) {
     const std::string dirname = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.dir.XXXXXX"};
 
@@ -98,7 +94,6 @@ TEST(FsReq, MkdtempAndRmdirSync) {
 
     loop->run();
 }
-
 
 TEST(FsReq, Stat) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
@@ -133,7 +128,6 @@ TEST(FsReq, Stat) {
     ASSERT_TRUE(checkFsStatEvent);
 }
 
-
 TEST(FsReq, StatSync) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
 
@@ -150,7 +144,6 @@ TEST(FsReq, StatSync) {
 
     loop->run();
 }
-
 
 TEST(FsReq, Lstat) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
@@ -185,7 +178,6 @@ TEST(FsReq, Lstat) {
     ASSERT_TRUE(checkFsLstatEvent);
 }
 
-
 TEST(FsReq, LstatSync) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
 
@@ -202,7 +194,6 @@ TEST(FsReq, LstatSync) {
 
     loop->run();
 }
-
 
 TEST(FsReq, Rename) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
@@ -238,7 +229,6 @@ TEST(FsReq, Rename) {
     ASSERT_TRUE(checkFsRenameEvent);
 }
 
-
 TEST(FsReq, RenameSync) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
     const std::string rename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.rename"};
@@ -253,7 +243,6 @@ TEST(FsReq, RenameSync) {
 
     loop->run();
 }
-
 
 TEST(FsReq, Access) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
@@ -288,7 +277,6 @@ TEST(FsReq, Access) {
     ASSERT_TRUE(checkFsAccessEvent);
 }
 
-
 TEST(FsReq, AccessSync) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
 
@@ -302,7 +290,6 @@ TEST(FsReq, AccessSync) {
 
     loop->run();
 }
-
 
 TEST(FsReq, Chmod) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
@@ -337,7 +324,6 @@ TEST(FsReq, Chmod) {
     ASSERT_TRUE(checkFsChmodEvent);
 }
 
-
 TEST(FsReq, ChmodSync) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
 
@@ -351,7 +337,6 @@ TEST(FsReq, ChmodSync) {
 
     loop->run();
 }
-
 
 TEST(FsReq, Utime) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
@@ -389,7 +374,6 @@ TEST(FsReq, Utime) {
     ASSERT_TRUE(checkFsUtimeEvent);
 }
 
-
 TEST(FsReq, UtimeSync) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
 
@@ -408,7 +392,6 @@ TEST(FsReq, UtimeSync) {
 
     loop->run();
 }
-
 
 TEST(FsReq, LinkAndUnlink) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
@@ -452,7 +435,6 @@ TEST(FsReq, LinkAndUnlink) {
     ASSERT_TRUE(checkFsUnlinkEvent);
 }
 
-
 TEST(FsReq, LinkAndUnlinkSync) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
     const std::string linkname = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.link"};
@@ -468,7 +450,6 @@ TEST(FsReq, LinkAndUnlinkSync) {
 
     loop->run();
 }
-
 
 TEST(FsReq, SymlinkAndUnlink) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
@@ -512,7 +493,6 @@ TEST(FsReq, SymlinkAndUnlink) {
     ASSERT_TRUE(checkFsUnlinkEvent);
 }
 
-
 TEST(FsReq, SymlinkAndUnlinkSync) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
     const std::string linkname = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.link"};
@@ -528,7 +508,6 @@ TEST(FsReq, SymlinkAndUnlinkSync) {
 
     loop->run();
 }
-
 
 TEST(FsReq, Readlink) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
@@ -569,7 +548,6 @@ TEST(FsReq, Readlink) {
     ASSERT_TRUE(checkFsReadlinkEvent);
 }
 
-
 TEST(FsReq, ReadlinkSync) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
     const std::string linkname = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.link"};
@@ -589,7 +567,6 @@ TEST(FsReq, ReadlinkSync) {
 
     loop->run();
 }
-
 
 TEST(FsReq, Realpath) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
@@ -625,7 +602,6 @@ TEST(FsReq, Realpath) {
     ASSERT_TRUE(checkFsRealpathEvent);
 }
 
-
 TEST(FsReq, RealpathSync) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
 
@@ -643,7 +619,6 @@ TEST(FsReq, RealpathSync) {
 
     loop->run();
 }
-
 
 TEST(FsReq, Chown) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
@@ -684,7 +659,6 @@ TEST(FsReq, Chown) {
     ASSERT_TRUE(checkFsChownEvent);
 }
 
-
 TEST(FsReq, ChownSync) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
 
@@ -704,7 +678,6 @@ TEST(FsReq, ChownSync) {
 
     loop->run();
 }
-
 
 TEST(FsReq, Lchown) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
@@ -745,7 +718,6 @@ TEST(FsReq, Lchown) {
     ASSERT_TRUE(checkFsLChownEvent);
 }
 
-
 TEST(FsReq, LchownSync) {
     const std::string filename = std::string{TARGET_FS_REQ_DIR} + std::string{"/test.file"};
 
@@ -785,7 +757,7 @@ TEST(FsReq, ReadDir) {
 
     fsReq->on<uvw::FsEvent<uvw::FsReq::Type::READDIR>>([&checkFsReadDirEvent](const auto &event, auto &hndl) {
         ASSERT_FALSE(checkFsReadDirEvent);
-        if (!event.eos) {
+        if(!event.eos) {
             hndl.readdir();
         } else {
             checkFsReadDirEvent = true;

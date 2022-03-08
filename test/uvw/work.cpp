@@ -3,7 +3,6 @@
 #include <uvw/timer.h>
 #include <uvw/work.h>
 
-
 TEST(Work, RunTask) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::CheckHandle>();

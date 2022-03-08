@@ -1,14 +1,18 @@
-#include <memory>
 #include <cstdlib>
+#include <memory>
 #include <gtest/gtest.h>
 #include <uvw.hpp>
 
 template<typename T>
 struct tag { using type = T; };
 
-
 TEST(Util, UnscopedFlags) {
-    enum class UnscopedEnum { FOO = 1, BAR = 2, BAZ = 4, QUUX = 8 };
+    enum class UnscopedEnum {
+        FOO = 1,
+        BAR = 2,
+        BAZ = 4,
+        QUUX = 8
+    };
 
     uvw::Flags<UnscopedEnum> flags{};
 
@@ -38,9 +42,13 @@ TEST(Util, UnscopedFlags) {
     ASSERT_TRUE(flags & uvw::Flags<UnscopedEnum>::from<UnscopedEnum::QUUX>());
 }
 
-
 TEST(Util, ScopedFlags) {
-    enum class ScopedEnum { FOO = 1, BAR = 2, BAZ = 4, QUUX = 8 };
+    enum class ScopedEnum {
+        FOO = 1,
+        BAR = 2,
+        BAZ = 4,
+        QUUX = 8
+    };
 
     uvw::Flags<ScopedEnum> flags{};
 
@@ -69,7 +77,6 @@ TEST(Util, ScopedFlags) {
     ASSERT_TRUE(flags & ScopedEnum::BAZ);
     ASSERT_TRUE(flags & uvw::Flags<ScopedEnum>::from<ScopedEnum::QUUX>());
 }
-
 
 TEST(Util, Utilities) {
     ASSERT_EQ(uvw::PidType{}, uvw::PidType{});
@@ -141,8 +148,7 @@ TEST(Util, Utilities) {
         [](size_t size) { return malloc(size); },
         [](void *ptr, size_t size) { return realloc(ptr, size); },
         [](size_t num, size_t size) { return calloc(num, size); },
-        [](void *ptr) { return free(ptr); }
-    ));
+        [](void *ptr) { return free(ptr); }));
 
     ASSERT_NO_THROW(uvw::Utilities::loadAverage());
     ASSERT_NE(uvw::Utilities::totalMemory(), decltype(uvw::Utilities::totalMemory()){0});
@@ -153,7 +159,7 @@ TEST(Util, Utilities) {
     ASSERT_FALSE(uvw::Utilities::cwd().empty());
     ASSERT_TRUE(uvw::Utilities::chdir(uvw::Utilities::cwd()));
 
-    std::unique_ptr<char[], void(*)(void *)> fake{new char[1], [](void *ptr) { delete[] static_cast<char *>(ptr); }};
+    std::unique_ptr<char[], void (*)(void *)> fake{new char[1], [](void *ptr) { delete[] static_cast<char *>(ptr); }};
     char *argv = fake.get();
     argv[0] = '\0';
 

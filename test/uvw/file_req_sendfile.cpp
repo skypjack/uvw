@@ -1,10 +1,10 @@
+#include <chrono>
 #include <gtest/gtest.h>
 #include <uvw/fs.h>
-#include <chrono>
 
 #ifdef _WIN32
-#define _CRT_DECLARE_NONSTDC_NAMES 1
-#include <fcntl.h>
+#    define _CRT_DECLARE_NONSTDC_NAMES 1
+#    include <fcntl.h>
 #endif
 
 TEST(FileReq, SendFile) {
@@ -44,7 +44,6 @@ TEST(FileReq, SendFile) {
     ASSERT_TRUE(checkFileSendFileEvent);
 }
 
-
 TEST(FileReq, SendFileSync) {
     const std::string srcFilename = std::string{TARGET_FILE_REQ_SENDFILE_DIR} + std::string{"/src.file"};
     const std::string dstFilename = std::string{TARGET_FILE_REQ_SENDFILE_DIR} + std::string{"/dst.file"};
@@ -64,4 +63,3 @@ TEST(FileReq, SendFileSync) {
 
     loop->run();
 }
-

@@ -1,9 +1,8 @@
-#include <uvw.hpp>
 #include <cassert>
+#include <chrono>
 #include <iostream>
 #include <memory>
-#include <chrono>
-
+#include <uvw.hpp>
 
 void listen(uvw::Loop &loop) {
     std::shared_ptr<uvw::TCPHandle> tcp = loop.resource<uvw::TCPHandle>();
@@ -52,7 +51,6 @@ void listen(uvw::Loop &loop) {
     tcp->listen();
 }
 
-
 void conn(uvw::Loop &loop) {
     auto tcp = loop.resource<uvw::TCPHandle>();
     tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { assert(false); });
@@ -65,11 +63,11 @@ void conn(uvw::Loop &loop) {
     tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TCPHandle &handle) {
         std::cout << "connect" << std::endl;
 
-        auto dataTryWrite = std::unique_ptr<char[]>(new char[1]{ 'a' });
+        auto dataTryWrite = std::unique_ptr<char[]>(new char[1]{'a'});
         int bw = handle.tryWrite(std::move(dataTryWrite), 1);
         std::cout << "written: " << ((int)bw) << std::endl;
 
-        auto dataWrite = std::unique_ptr<char[]>(new char[2]{ 'b', 'c' });
+        auto dataWrite = std::unique_ptr<char[]>(new char[2]{'b', 'c'});
         handle.write(std::move(dataWrite), 2);
     });
 

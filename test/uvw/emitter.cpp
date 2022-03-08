@@ -2,13 +2,13 @@
 #include <gtest/gtest.h>
 #include <uvw/emitter.h>
 
-
-struct FakeEvent { };
+struct FakeEvent {};
 
 struct TestEmitter: uvw::Emitter<TestEmitter> {
-    void emit() { publish(FakeEvent{}); }
+    void emit() {
+        publish(FakeEvent{});
+    }
 };
-
 
 TEST(ErrorEvent, Functionalities) {
     auto ecode = static_cast<std::underlying_type_t<uv_errno_t>>(UV_EADDRINUSE);
@@ -24,13 +24,12 @@ TEST(ErrorEvent, Functionalities) {
     ASSERT_TRUE(static_cast<bool>(uvw::ErrorEvent{ecode}));
 }
 
-
 TEST(Emitter, EmptyAndClear) {
     TestEmitter emitter{};
 
     ASSERT_TRUE(emitter.empty());
 
-    emitter.on<uvw::ErrorEvent>([](const auto &, auto &){});
+    emitter.on<uvw::ErrorEvent>([](const auto &, auto &) {});
 
     ASSERT_FALSE(emitter.empty());
     ASSERT_FALSE(emitter.empty<uvw::ErrorEvent>());
@@ -48,8 +47,8 @@ TEST(Emitter, EmptyAndClear) {
     ASSERT_TRUE(emitter.empty<uvw::ErrorEvent>());
     ASSERT_TRUE(emitter.empty<FakeEvent>());
 
-    emitter.on<uvw::ErrorEvent>([](const auto &, auto &){});
-    emitter.on<FakeEvent>([](const auto &, auto &){});
+    emitter.on<uvw::ErrorEvent>([](const auto &, auto &) {});
+    emitter.on<FakeEvent>([](const auto &, auto &) {});
 
     ASSERT_FALSE(emitter.empty());
     ASSERT_FALSE(emitter.empty<uvw::ErrorEvent>());
@@ -62,11 +61,10 @@ TEST(Emitter, EmptyAndClear) {
     ASSERT_TRUE(emitter.empty<FakeEvent>());
 }
 
-
 TEST(Emitter, On) {
     TestEmitter emitter{};
 
-    emitter.on<FakeEvent>([](const auto &, auto &){});
+    emitter.on<FakeEvent>([](const auto &, auto &) {});
 
     ASSERT_FALSE(emitter.empty());
     ASSERT_FALSE(emitter.empty<FakeEvent>());
@@ -76,12 +74,11 @@ TEST(Emitter, On) {
     ASSERT_FALSE(emitter.empty());
     ASSERT_FALSE(emitter.empty<FakeEvent>());
 }
-
 
 TEST(Emitter, Once) {
     TestEmitter emitter{};
 
-    emitter.once<FakeEvent>([](const auto &, auto &){});
+    emitter.once<FakeEvent>([](const auto &, auto &) {});
 
     ASSERT_FALSE(emitter.empty());
     ASSERT_FALSE(emitter.empty<FakeEvent>());
@@ -92,11 +89,10 @@ TEST(Emitter, Once) {
     ASSERT_TRUE(emitter.empty<FakeEvent>());
 }
 
-
 TEST(Emitter, OnceAndErase) {
     TestEmitter emitter{};
 
-    auto conn = emitter.once<FakeEvent>([](const auto &, auto &){});
+    auto conn = emitter.once<FakeEvent>([](const auto &, auto &) {});
 
     ASSERT_FALSE(emitter.empty());
     ASSERT_FALSE(emitter.empty<FakeEvent>());
@@ -106,12 +102,11 @@ TEST(Emitter, OnceAndErase) {
     ASSERT_TRUE(emitter.empty());
     ASSERT_TRUE(emitter.empty<FakeEvent>());
 }
-
 
 TEST(Emitter, OnAndErase) {
     TestEmitter emitter{};
 
-    auto conn = emitter.on<FakeEvent>([](const auto &, auto &){});
+    auto conn = emitter.on<FakeEvent>([](const auto &, auto &) {});
 
     ASSERT_FALSE(emitter.empty());
     ASSERT_FALSE(emitter.empty<FakeEvent>());
@@ -121,13 +116,12 @@ TEST(Emitter, OnAndErase) {
     ASSERT_TRUE(emitter.empty());
     ASSERT_TRUE(emitter.empty<FakeEvent>());
 }
-
 
 TEST(Emitter, CallbackClear) {
     TestEmitter emitter{};
 
     emitter.on<FakeEvent>([](const auto &, auto &ref) {
-        ref.template on<FakeEvent>([](const auto &, auto &){});
+        ref.template on<FakeEvent>([](const auto &, auto &) {});
         ref.clear();
     });
 
@@ -141,7 +135,7 @@ TEST(Emitter, CallbackClear) {
 
     emitter.on<FakeEvent>([](const auto &, auto &ref) {
         ref.clear();
-        ref.template on<FakeEvent>([](const auto &, auto &){});
+        ref.template on<FakeEvent>([](const auto &, auto &) {});
     });
 
     ASSERT_FALSE(emitter.empty());

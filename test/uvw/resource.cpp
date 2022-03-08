@@ -4,9 +4,7 @@
 #include <uvw/async.h>
 #include <uvw/request.hpp>
 
-
-struct Res: uvw::Resource<Res, int> { };
-
+struct Res: uvw::Resource<Res, int> {};
 
 TEST(Resource, Functionalities) {
     ASSERT_FALSE(std::is_copy_constructible<uvw::AsyncHandle>::value);

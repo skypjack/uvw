@@ -1,14 +1,11 @@
 #ifndef UVW_CHECK_INCLUDE_H
 #define UVW_CHECK_INCLUDE_H
 
-
 #include <uv.h>
 #include "handle.hpp"
 #include "loop.h"
 
-
 namespace uvw {
-
 
 /**
  * @brief CheckEvent event.
@@ -16,7 +13,6 @@ namespace uvw {
  * It will be emitted by CheckHandle according with its functionalities.
  */
 struct CheckEvent {};
-
 
 /**
  * @brief The CheckHandle handle.
@@ -52,12 +48,10 @@ public:
     void stop();
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "check.cpp"
+#    include "check.cpp"
 #endif
 
 #endif // UVW_CHECK_INCLUDE_H

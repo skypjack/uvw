@@ -1,17 +1,14 @@
 #ifndef UVW_FS_POLL_INCLUDE_H
 #define UVW_FS_POLL_INCLUDE_H
 
-
-#include <string>
 #include <chrono>
+#include <string>
 #include <uv.h>
 #include "handle.hpp"
-#include "util.h"
 #include "loop.h"
-
+#include "util.h"
 
 namespace uvw {
-
 
 /**
  * @brief FsPollEvent event.
@@ -24,7 +21,6 @@ struct FsPollEvent {
     Stat prev; /*!< The old Stat struct. */
     Stat curr; /*!< The new Stat struct. */
 };
-
 
 /**
  * @brief The FsPollHandle handle.
@@ -72,13 +68,10 @@ public:
     std::string path() noexcept;
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "fs_poll.cpp"
+#    include "fs_poll.cpp"
 #endif
-
 
 #endif // UVW_FS_POLL_INCLUDE_H

@@ -1,12 +1,10 @@
 #ifdef UVW_AS_LIB
-#include "fs.h"
+#    include "fs.h"
 #endif
 
 #include "config.h"
 
-
 namespace uvw {
-
 
 UVW_INLINE void FileReq::fsOpenCallback(uv_fs_t *req) {
     auto ptr = reserve(req);
@@ -19,7 +17,6 @@ UVW_INLINE void FileReq::fsOpenCallback(uv_fs_t *req) {
     }
 }
 
-
 UVW_INLINE void FileReq::fsCloseCallback(uv_fs_t *req) {
     auto ptr = reserve(req);
 
@@ -31,7 +28,6 @@ UVW_INLINE void FileReq::fsCloseCallback(uv_fs_t *req) {
     }
 }
 
-
 UVW_INLINE void FileReq::fsReadCallback(uv_fs_t *req) {
     auto ptr = reserve(req);
 
@@ -42,16 +38,13 @@ UVW_INLINE void FileReq::fsReadCallback(uv_fs_t *req) {
     }
 }
 
-
 UVW_INLINE FileReq::~FileReq() noexcept {
     uv_fs_req_cleanup(get());
 }
 
-
 UVW_INLINE void FileReq::close() {
     cleanupAndInvoke(&uv_fs_close, parent(), get(), file, &fsCloseCallback);
 }
-
 
 UVW_INLINE bool FileReq::closeSync() {
     auto req = get();
@@ -65,11 +58,9 @@ UVW_INLINE bool FileReq::closeSync() {
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FileReq::open(const std::string &path, Flags<FileOpen> flags, int mode) {
     cleanupAndInvoke(&uv_fs_open, parent(), get(), path.data(), flags, mode, &fsOpenCallback);
 }
-
 
 UVW_INLINE bool FileReq::openSync(const std::string &path, Flags<FileOpen> flags, int mode) {
     auto req = get();
@@ -83,14 +74,12 @@ UVW_INLINE bool FileReq::openSync(const std::string &path, Flags<FileOpen> flags
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FileReq::read(int64_t offset, unsigned int len) {
     current = std::unique_ptr<char[]>{new char[len]};
     buffer = uv_buf_init(current.get(), len);
     uv_buf_t bufs[] = {buffer};
     cleanupAndInvoke(&uv_fs_read, parent(), get(), file, bufs, 1, offset, &fsReadCallback);
 }
-
 
 UVW_INLINE std::pair<bool, std::pair<std::unique_ptr<const char[]>, std::size_t>> FileReq::readSync(int64_t offset, unsigned int len) {
     current = std::unique_ptr<char[]>{new char[len]};
@@ -102,19 +91,16 @@ UVW_INLINE std::pair<bool, std::pair<std::unique_ptr<const char[]>, std::size_t>
     return std::make_pair(!err, std::make_pair(std::move(current), err ? 0 : std::size_t(req->result)));
 }
 
-
 UVW_INLINE void FileReq::write(std::unique_ptr<char[]> buf, unsigned int len, int64_t offset) {
     current = std::move(buf);
     uv_buf_t bufs[] = {uv_buf_init(current.get(), len)};
     cleanupAndInvoke(&uv_fs_write, parent(), get(), file, bufs, 1, offset, &fsResultCallback<Type::WRITE>);
 }
 
-
 UVW_INLINE void FileReq::write(char *buf, unsigned int len, int64_t offset) {
     uv_buf_t bufs[] = {uv_buf_init(buf, len)};
     cleanupAndInvoke(&uv_fs_write, parent(), get(), file, bufs, 1, offset, &fsResultCallback<Type::WRITE>);
 }
-
 
 UVW_INLINE std::pair<bool, std::size_t> FileReq::writeSync(std::unique_ptr<char[]> buf, unsigned int len, int64_t offset) {
     current = std::move(buf);
@@ -125,11 +111,9 @@ UVW_INLINE std::pair<bool, std::size_t> FileReq::writeSync(std::unique_ptr<char[
     return std::make_pair(!err, err ? 0 : std::size_t(req->result));
 }
 
-
 UVW_INLINE void FileReq::stat() {
     cleanupAndInvoke(&uv_fs_fstat, parent(), get(), file, &fsStatCallback<Type::FSTAT>);
 }
-
 
 UVW_INLINE std::pair<bool, Stat> FileReq::statSync() {
     auto req = get();
@@ -137,11 +121,9 @@ UVW_INLINE std::pair<bool, Stat> FileReq::statSync() {
     return std::make_pair(!(req->result < 0), req->statbuf);
 }
 
-
 UVW_INLINE void FileReq::sync() {
     cleanupAndInvoke(&uv_fs_fsync, parent(), get(), file, &fsGenericCallback<Type::FSYNC>);
 }
-
 
 UVW_INLINE bool FileReq::syncSync() {
     auto req = get();
@@ -149,11 +131,9 @@ UVW_INLINE bool FileReq::syncSync() {
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FileReq::datasync() {
     cleanupAndInvoke(&uv_fs_fdatasync, parent(), get(), file, &fsGenericCallback<Type::FDATASYNC>);
 }
-
 
 UVW_INLINE bool FileReq::datasyncSync() {
     auto req = get();
@@ -161,11 +141,9 @@ UVW_INLINE bool FileReq::datasyncSync() {
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FileReq::truncate(int64_t offset) {
     cleanupAndInvoke(&uv_fs_ftruncate, parent(), get(), file, offset, &fsGenericCallback<Type::FTRUNCATE>);
 }
-
 
 UVW_INLINE bool FileReq::truncateSync(int64_t offset) {
     auto req = get();
@@ -173,11 +151,9 @@ UVW_INLINE bool FileReq::truncateSync(int64_t offset) {
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FileReq::sendfile(FileHandle out, int64_t offset, std::size_t length) {
     cleanupAndInvoke(&uv_fs_sendfile, parent(), get(), out, file, offset, length, &fsResultCallback<Type::SENDFILE>);
 }
-
 
 UVW_INLINE std::pair<bool, std::size_t> FileReq::sendfileSync(FileHandle out, int64_t offset, std::size_t length) {
     auto req = get();
@@ -186,11 +162,9 @@ UVW_INLINE std::pair<bool, std::size_t> FileReq::sendfileSync(FileHandle out, in
     return std::make_pair(!err, err ? 0 : std::size_t(req->result));
 }
 
-
 UVW_INLINE void FileReq::chmod(int mode) {
     cleanupAndInvoke(&uv_fs_fchmod, parent(), get(), file, mode, &fsGenericCallback<Type::FCHMOD>);
 }
-
 
 UVW_INLINE bool FileReq::chmodSync(int mode) {
     auto req = get();
@@ -198,11 +172,9 @@ UVW_INLINE bool FileReq::chmodSync(int mode) {
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FileReq::futime(FsRequest::Time atime, FsRequest::Time mtime) {
     cleanupAndInvoke(&uv_fs_futime, parent(), get(), file, atime.count(), mtime.count(), &fsGenericCallback<Type::FUTIME>);
 }
-
 
 UVW_INLINE bool FileReq::futimeSync(FsRequest::Time atime, FsRequest::Time mtime) {
     auto req = get();
@@ -210,11 +182,9 @@ UVW_INLINE bool FileReq::futimeSync(FsRequest::Time atime, FsRequest::Time mtime
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FileReq::chown(Uid uid, Gid gid) {
     cleanupAndInvoke(&uv_fs_fchown, parent(), get(), file, uid, gid, &fsGenericCallback<Type::FCHOWN>);
 }
-
 
 UVW_INLINE bool FileReq::chownSync(Uid uid, Gid gid) {
     auto req = get();
@@ -222,11 +192,9 @@ UVW_INLINE bool FileReq::chownSync(Uid uid, Gid gid) {
     return !(req->result < 0);
 }
 
-
 UVW_INLINE FileReq::operator FileHandle() const noexcept {
     return file;
 }
-
 
 UVW_INLINE void FsReq::fsReadlinkCallback(uv_fs_t *req) {
     auto ptr = reserve(req);
@@ -237,7 +205,6 @@ UVW_INLINE void FsReq::fsReadlinkCallback(uv_fs_t *req) {
         ptr->publish(FsEvent<Type::READLINK>{req->path, static_cast<char *>(req->ptr), static_cast<std::size_t>(req->result)});
     }
 }
-
 
 UVW_INLINE void FsReq::fsReaddirCallback(uv_fs_t *req) {
     auto ptr = reserve(req);
@@ -250,16 +217,13 @@ UVW_INLINE void FsReq::fsReaddirCallback(uv_fs_t *req) {
     }
 }
 
-
 UVW_INLINE FsReq::~FsReq() noexcept {
     uv_fs_req_cleanup(get());
 }
 
-
 UVW_INLINE void FsReq::unlink(const std::string &path) {
     cleanupAndInvoke(&uv_fs_unlink, parent(), get(), path.data(), &fsGenericCallback<Type::UNLINK>);
 }
-
 
 UVW_INLINE bool FsReq::unlinkSync(const std::string &path) {
     auto req = get();
@@ -267,11 +231,9 @@ UVW_INLINE bool FsReq::unlinkSync(const std::string &path) {
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FsReq::mkdir(const std::string &path, int mode) {
     cleanupAndInvoke(&uv_fs_mkdir, parent(), get(), path.data(), mode, &fsGenericCallback<Type::MKDIR>);
 }
-
 
 UVW_INLINE bool FsReq::mkdirSync(const std::string &path, int mode) {
     auto req = get();
@@ -279,11 +241,9 @@ UVW_INLINE bool FsReq::mkdirSync(const std::string &path, int mode) {
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FsReq::mkdtemp(const std::string &tpl) {
     cleanupAndInvoke(&uv_fs_mkdtemp, parent(), get(), tpl.data(), &fsGenericCallback<Type::MKDTEMP>);
 }
-
 
 UVW_INLINE std::pair<bool, const char *> FsReq::mkdtempSync(const std::string &tpl) {
     auto req = get();
@@ -291,11 +251,9 @@ UVW_INLINE std::pair<bool, const char *> FsReq::mkdtempSync(const std::string &t
     return std::make_pair(!(req->result < 0), req->path);
 }
 
-
 UVW_INLINE void FsReq::mkstemp(const std::string &tpl) {
     cleanupAndInvoke(&uv_fs_mkstemp, parent(), get(), tpl.data(), &fsResultCallback<Type::MKSTEMP>);
 }
-
 
 UVW_INLINE std::pair<bool, std::pair<std::string, std::size_t>> FsReq::mkstempSync(const std::string &tpl) {
     std::pair<bool, std::pair<std::string, std::size_t>> ret{false, {}};
@@ -311,11 +269,9 @@ UVW_INLINE std::pair<bool, std::pair<std::string, std::size_t>> FsReq::mkstempSy
     return ret;
 }
 
-
 UVW_INLINE void FsReq::lutime(const std::string &path, Time atime, Time mtime) {
     cleanupAndInvoke(&uv_fs_lutime, parent(), get(), path.data(), atime.count(), mtime.count(), &fsGenericCallback<Type::LUTIME>);
 }
-
 
 UVW_INLINE bool FsReq::lutimeSync(const std::string &path, Time atime, Time mtime) {
     auto req = get();
@@ -323,11 +279,9 @@ UVW_INLINE bool FsReq::lutimeSync(const std::string &path, Time atime, Time mtim
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FsReq::rmdir(const std::string &path) {
     cleanupAndInvoke(&uv_fs_rmdir, parent(), get(), path.data(), &fsGenericCallback<Type::RMDIR>);
 }
-
 
 UVW_INLINE bool FsReq::rmdirSync(const std::string &path) {
     auto req = get();
@@ -335,11 +289,9 @@ UVW_INLINE bool FsReq::rmdirSync(const std::string &path) {
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FsReq::scandir(const std::string &path, int flags) {
     cleanupAndInvoke(&uv_fs_scandir, parent(), get(), path.data(), flags, &fsResultCallback<Type::SCANDIR>);
 }
-
 
 UVW_INLINE std::pair<bool, std::size_t> FsReq::scandirSync(const std::string &path, int flags) {
     auto req = get();
@@ -348,9 +300,8 @@ UVW_INLINE std::pair<bool, std::size_t> FsReq::scandirSync(const std::string &pa
     return std::make_pair(!err, err ? 0 : std::size_t(req->result));
 }
 
-
 UVW_INLINE std::pair<bool, std::pair<FsReq::EntryType, const char *>> FsReq::scandirNext() {
-    std::pair<bool, std::pair<EntryType, const char *>> ret{false, { EntryType::UNKNOWN, nullptr }};
+    std::pair<bool, std::pair<EntryType, const char *>> ret{false, {EntryType::UNKNOWN, nullptr}};
 
     // we cannot use cleanupAndInvokeSync because of the return value of uv_fs_scandir_next
     uv_fs_req_cleanup(get());
@@ -365,11 +316,9 @@ UVW_INLINE std::pair<bool, std::pair<FsReq::EntryType, const char *>> FsReq::sca
     return ret;
 }
 
-
 UVW_INLINE void FsReq::stat(const std::string &path) {
     cleanupAndInvoke(&uv_fs_stat, parent(), get(), path.data(), &fsStatCallback<Type::STAT>);
 }
-
 
 UVW_INLINE std::pair<bool, Stat> FsReq::statSync(const std::string &path) {
     auto req = get();
@@ -377,11 +326,9 @@ UVW_INLINE std::pair<bool, Stat> FsReq::statSync(const std::string &path) {
     return std::make_pair(!(req->result < 0), req->statbuf);
 }
 
-
 UVW_INLINE void FsReq::lstat(const std::string &path) {
     cleanupAndInvoke(&uv_fs_lstat, parent(), get(), path.data(), &fsStatCallback<Type::LSTAT>);
 }
-
 
 UVW_INLINE std::pair<bool, Stat> FsReq::lstatSync(const std::string &path) {
     auto req = get();
@@ -389,11 +336,9 @@ UVW_INLINE std::pair<bool, Stat> FsReq::lstatSync(const std::string &path) {
     return std::make_pair(!(req->result < 0), req->statbuf);
 }
 
-
 UVW_INLINE void FsReq::statfs(const std::string &path) {
     cleanupAndInvoke(&uv_fs_statfs, parent(), get(), path.data(), &fsStatfsCallback);
 }
-
 
 UVW_INLINE std::pair<bool, Statfs> FsReq::statfsSync(const std::string &path) {
     auto req = get();
@@ -401,11 +346,9 @@ UVW_INLINE std::pair<bool, Statfs> FsReq::statfsSync(const std::string &path) {
     return std::make_pair(!(req->result < 0), *static_cast<uv_statfs_t *>(req->ptr));
 }
 
-
 UVW_INLINE void FsReq::rename(const std::string &old, const std::string &path) {
     cleanupAndInvoke(&uv_fs_rename, parent(), get(), old.data(), path.data(), &fsGenericCallback<Type::RENAME>);
 }
-
 
 UVW_INLINE bool FsReq::renameSync(const std::string &old, const std::string &path) {
     auto req = get();
@@ -413,11 +356,9 @@ UVW_INLINE bool FsReq::renameSync(const std::string &old, const std::string &pat
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FsReq::copyfile(const std::string &old, const std::string &path, Flags<CopyFile> flags) {
     cleanupAndInvoke(&uv_fs_copyfile, parent(), get(), old.data(), path.data(), flags, &fsGenericCallback<Type::COPYFILE>);
 }
-
 
 UVW_INLINE bool FsReq::copyfileSync(const std::string &old, const std::string &path, Flags<CopyFile> flags) {
     auto req = get();
@@ -425,11 +366,9 @@ UVW_INLINE bool FsReq::copyfileSync(const std::string &old, const std::string &p
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FsReq::access(const std::string &path, int mode) {
     cleanupAndInvoke(&uv_fs_access, parent(), get(), path.data(), mode, &fsGenericCallback<Type::ACCESS>);
 }
-
 
 UVW_INLINE bool FsReq::accessSync(const std::string &path, int mode) {
     auto req = get();
@@ -437,11 +376,9 @@ UVW_INLINE bool FsReq::accessSync(const std::string &path, int mode) {
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FsReq::chmod(const std::string &path, int mode) {
     cleanupAndInvoke(&uv_fs_chmod, parent(), get(), path.data(), mode, &fsGenericCallback<Type::CHMOD>);
 }
-
 
 UVW_INLINE bool FsReq::chmodSync(const std::string &path, int mode) {
     auto req = get();
@@ -449,11 +386,9 @@ UVW_INLINE bool FsReq::chmodSync(const std::string &path, int mode) {
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FsReq::utime(const std::string &path, FsRequest::Time atime, FsRequest::Time mtime) {
     cleanupAndInvoke(&uv_fs_utime, parent(), get(), path.data(), atime.count(), mtime.count(), &fsGenericCallback<Type::UTIME>);
 }
-
 
 UVW_INLINE bool FsReq::utimeSync(const std::string &path, FsRequest::Time atime, FsRequest::Time mtime) {
     auto req = get();
@@ -461,11 +396,9 @@ UVW_INLINE bool FsReq::utimeSync(const std::string &path, FsRequest::Time atime,
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FsReq::link(const std::string &old, const std::string &path) {
     cleanupAndInvoke(&uv_fs_link, parent(), get(), old.data(), path.data(), &fsGenericCallback<Type::LINK>);
 }
-
 
 UVW_INLINE bool FsReq::linkSync(const std::string &old, const std::string &path) {
     auto req = get();
@@ -473,11 +406,9 @@ UVW_INLINE bool FsReq::linkSync(const std::string &old, const std::string &path)
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FsReq::symlink(const std::string &old, const std::string &path, Flags<SymLink> flags) {
     cleanupAndInvoke(&uv_fs_symlink, parent(), get(), old.data(), path.data(), flags, &fsGenericCallback<Type::SYMLINK>);
 }
-
 
 UVW_INLINE bool FsReq::symlinkSync(const std::string &old, const std::string &path, Flags<SymLink> flags) {
     auto req = get();
@@ -485,11 +416,9 @@ UVW_INLINE bool FsReq::symlinkSync(const std::string &old, const std::string &pa
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FsReq::readlink(const std::string &path) {
     cleanupAndInvoke(&uv_fs_readlink, parent(), get(), path.data(), &fsReadlinkCallback);
 }
-
 
 UVW_INLINE std::pair<bool, std::pair<const char *, std::size_t>> FsReq::readlinkSync(const std::string &path) {
     auto req = get();
@@ -498,11 +427,9 @@ UVW_INLINE std::pair<bool, std::pair<const char *, std::size_t>> FsReq::readlink
     return std::make_pair(!err, std::make_pair(static_cast<char *>(req->ptr), err ? 0 : std::size_t(req->result)));
 }
 
-
 UVW_INLINE void FsReq::realpath(const std::string &path) {
     cleanupAndInvoke(&uv_fs_realpath, parent(), get(), path.data(), &fsGenericCallback<Type::REALPATH>);
 }
-
 
 UVW_INLINE std::pair<bool, const char *> FsReq::realpathSync(const std::string &path) {
     auto req = get();
@@ -510,11 +437,9 @@ UVW_INLINE std::pair<bool, const char *> FsReq::realpathSync(const std::string &
     return std::make_pair(!(req->result < 0), req->path);
 }
 
-
 UVW_INLINE void FsReq::chown(const std::string &path, Uid uid, Gid gid) {
     cleanupAndInvoke(&uv_fs_chown, parent(), get(), path.data(), uid, gid, &fsGenericCallback<Type::CHOWN>);
 }
-
 
 UVW_INLINE bool FsReq::chownSync(const std::string &path, Uid uid, Gid gid) {
     auto req = get();
@@ -522,11 +447,9 @@ UVW_INLINE bool FsReq::chownSync(const std::string &path, Uid uid, Gid gid) {
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FsReq::lchown(const std::string &path, Uid uid, Gid gid) {
     cleanupAndInvoke(&uv_fs_lchown, parent(), get(), path.data(), uid, gid, &fsGenericCallback<Type::LCHOWN>);
 }
-
 
 UVW_INLINE bool FsReq::lchownSync(const std::string &path, Uid uid, Gid gid) {
     auto req = get();
@@ -534,11 +457,9 @@ UVW_INLINE bool FsReq::lchownSync(const std::string &path, Uid uid, Gid gid) {
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FsReq::opendir(const std::string &path) {
     cleanupAndInvoke(&uv_fs_opendir, parent(), get(), path.data(), &fsGenericCallback<Type::OPENDIR>);
 }
-
 
 UVW_INLINE bool FsReq::opendirSync(const std::string &path) {
     auto req = get();
@@ -546,13 +467,11 @@ UVW_INLINE bool FsReq::opendirSync(const std::string &path) {
     return !(req->result < 0);
 }
 
-
 UVW_INLINE void FsReq::closedir() {
     auto req = get();
     auto *dir = static_cast<uv_dir_t *>(req->ptr);
     cleanupAndInvoke(&uv_fs_closedir, parent(), req, dir, &fsGenericCallback<Type::CLOSEDIR>);
 }
-
 
 UVW_INLINE bool FsReq::closedirSync() {
     auto req = get();
@@ -560,7 +479,6 @@ UVW_INLINE bool FsReq::closedirSync() {
     cleanupAndInvokeSync(&uv_fs_closedir, parent(), req, dir);
     return !(req->result < 0);
 }
-
 
 UVW_INLINE void FsReq::readdir() {
     auto req = get();
@@ -570,25 +488,21 @@ UVW_INLINE void FsReq::readdir() {
     cleanupAndInvoke(&uv_fs_readdir, parent(), req, dir, &fsReaddirCallback);
 }
 
-
 UVW_INLINE std::pair<bool, std::pair<FsReq::EntryType, const char *>> FsReq::readdirSync() {
     auto req = get();
     auto *dir = static_cast<uv_dir_t *>(req->ptr);
     dir->dirents = dirents;
     dir->nentries = 1;
     cleanupAndInvokeSync(&uv_fs_readdir, parent(), req, dir);
-    return {req->result != 0, { static_cast<EntryType>(dirents[0].type), dirents[0].name }};
+    return {req->result != 0, {static_cast<EntryType>(dirents[0].type), dirents[0].name}};
 }
-
 
 UVW_INLINE OSFileDescriptor FsHelper::handle(FileHandle file) noexcept {
     return uv_get_osfhandle(file);
 }
 
-
 UVW_INLINE FileHandle FsHelper::open(OSFileDescriptor descriptor) noexcept {
     return uv_open_osfhandle(descriptor);
 }
 
-
-}
+} // namespace uvw

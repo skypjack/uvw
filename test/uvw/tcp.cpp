@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <uvw/tcp.h>
 
-
 TEST(TCP, Functionalities) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::TCPHandle>();
@@ -13,7 +12,6 @@ TEST(TCP, Functionalities) {
     handle->close();
     loop->run();
 }
-
 
 TEST(TCP, ReadWrite) {
     const std::string address = std::string{"127.0.0.1"};
@@ -45,9 +43,9 @@ TEST(TCP, ReadWrite) {
         ASSERT_TRUE(handle.writable());
         ASSERT_TRUE(handle.readable());
 
-        auto dataTryWrite = std::unique_ptr<char[]>(new char[1]{ 'a' });
+        auto dataTryWrite = std::unique_ptr<char[]>(new char[1]{'a'});
         handle.tryWrite(std::move(dataTryWrite), 1);
-        auto dataWrite = std::unique_ptr<char[]>(new char[2]{ 'b', 'c' });
+        auto dataWrite = std::unique_ptr<char[]>(new char[2]{'b', 'c'});
         handle.write(std::move(dataWrite), 2);
     });
 
@@ -57,7 +55,6 @@ TEST(TCP, ReadWrite) {
 
     loop->run();
 }
-
 
 TEST(TCP, SockPeer) {
     const std::string address = std::string{"127.0.0.1"};
@@ -93,13 +90,12 @@ TEST(TCP, SockPeer) {
         handle.close();
     });
 
-    server->bind(uvw::Addr{ address, port });
+    server->bind(uvw::Addr{address, port});
     server->listen();
-    client->connect(uvw::Addr{ address, port });
+    client->connect(uvw::Addr{address, port});
 
     loop->run();
 }
-
 
 TEST(TCP, Shutdown) {
     const std::string address = std::string{"127.0.0.1"};
@@ -137,7 +133,6 @@ TEST(TCP, Shutdown) {
 
     loop->run();
 }
-
 
 TEST(TCP, WriteError) {
     auto loop = uvw::Loop::getDefault();

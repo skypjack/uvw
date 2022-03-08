@@ -1,36 +1,29 @@
 #ifndef UVW_FS_EVENT_INCLUDE_H
 #define UVW_FS_EVENT_INCLUDE_H
 
-
-#include <type_traits>
 #include <string>
+#include <type_traits>
 #include <uv.h>
 #include "handle.hpp"
-#include "util.h"
 #include "loop.h"
-
+#include "util.h"
 
 namespace uvw {
 
-
 namespace details {
 
-
-enum class UVFsEventFlags: std::underlying_type_t<uv_fs_event_flags> {
+enum class UVFsEventFlags : std::underlying_type_t<uv_fs_event_flags> {
     WATCH_ENTRY = UV_FS_EVENT_WATCH_ENTRY,
     STAT = UV_FS_EVENT_STAT,
     RECURSIVE = UV_FS_EVENT_RECURSIVE
 };
 
-
-enum class UVFsEvent: std::underlying_type_t<uv_fs_event> {
+enum class UVFsEvent : std::underlying_type_t<uv_fs_event> {
     RENAME = UV_RENAME,
     CHANGE = UV_CHANGE
 };
 
-
-}
-
+} // namespace details
 
 /**
  * @brief FsEventEvent event.
@@ -38,7 +31,7 @@ enum class UVFsEvent: std::underlying_type_t<uv_fs_event> {
  * It will be emitted by FsEventHandle according with its functionalities.
  */
 struct FsEventEvent {
-    FsEventEvent(const char * pathname, Flags<details::UVFsEvent> events);
+    FsEventEvent(const char *pathname, Flags<details::UVFsEvent> events);
 
     /**
      * @brief The path to the file being monitored.
@@ -46,7 +39,7 @@ struct FsEventEvent {
      * If the handle was started with a directory, the filename parameter will
      * be a relative path to a file contained in the directory.
      */
-    const char * filename;
+    const char *filename;
 
     /**
      * @brief Detected events all in one.
@@ -58,7 +51,6 @@ struct FsEventEvent {
      */
     Flags<details::UVFsEvent> flags;
 };
-
 
 /**
  * @brief The FsEventHandle handle.
@@ -138,13 +130,10 @@ public:
     std::string path() noexcept;
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "fs_event.cpp"
+#    include "fs_event.cpp"
 #endif
-
 
 #endif // UVW_FS_EVENT_INCLUDE_H

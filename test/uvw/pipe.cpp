@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <uvw/pipe.h>
 
-
 TEST(Pipe, ReadWrite) {
 #ifdef _MSC_VER
     const std::string sockname{"\\\\.\\pipe\\test.sock"};
@@ -14,8 +13,8 @@ TEST(Pipe, ReadWrite) {
     auto client = loop->resource<uvw::PipeHandle>();
 
     server->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    client->on<uvw::ErrorEvent>([](const auto &, auto &) { 
-        FAIL(); 
+    client->on<uvw::ErrorEvent>([](const auto &, auto &) {
+        FAIL();
     });
 
     server->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::PipeHandle &handle) {
@@ -37,7 +36,7 @@ TEST(Pipe, ReadWrite) {
         ASSERT_TRUE(handle.writable());
         ASSERT_TRUE(handle.readable());
 
-        auto dataWrite = std::unique_ptr<char[]>(new char[2]{ 'x', 'y' });
+        auto dataWrite = std::unique_ptr<char[]>(new char[2]{'x', 'y'});
         handle.write(std::move(dataWrite), 2);
     });
 
@@ -48,11 +47,10 @@ TEST(Pipe, ReadWrite) {
     loop->run();
 }
 
-
 TEST(Pipe, SockPeer) {
 #ifdef _MSC_VER
     const std::string sockname{"\\\\.\\pipe\\test.sock"};
-    const std::string peername{ "\\\\?\\pipe\\test.sock" };
+    const std::string peername{"\\\\?\\pipe\\test.sock"};
 #else
     const std::string sockname = std::string{TARGET_PIPE_DIR} + std::string{"/test.sock"};
     const auto peername = sockname;
@@ -91,7 +89,6 @@ TEST(Pipe, SockPeer) {
     loop->run();
 }
 
-
 TEST(Pipe, Shutdown) {
 #ifdef _MSC_VER
     const std::string sockname{"\\\\.\\pipe\\test.sock"};
@@ -99,7 +96,7 @@ TEST(Pipe, Shutdown) {
     const std::string sockname = std::string{TARGET_PIPE_DIR} + std::string{"/test.sock"};
 #endif
 
-    auto data = std::unique_ptr<char[]>(new char[3]{ 'a', 'b', 'c' });
+    auto data = std::unique_ptr<char[]>(new char[3]{'a', 'b', 'c'});
 
     auto loop = uvw::Loop::getDefault();
     auto server = loop->resource<uvw::PipeHandle>();

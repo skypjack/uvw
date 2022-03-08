@@ -1,40 +1,32 @@
 #ifndef UVW_TTY_INCLUDE_H
 #define UVW_TTY_INCLUDE_H
 
-
-#include <type_traits>
 #include <memory>
+#include <type_traits>
 #include <uv.h>
 #include "stream.h"
 #include "util.h"
 
-
 namespace uvw {
 
-
 namespace details {
-
 
 struct ResetModeMemo {
     ~ResetModeMemo();
 };
 
-
-enum class UVTTYModeT: std::underlying_type_t<uv_tty_mode_t> {
+enum class UVTTYModeT : std::underlying_type_t<uv_tty_mode_t> {
     NORMAL = UV_TTY_MODE_NORMAL,
     RAW = UV_TTY_MODE_RAW,
     IO = UV_TTY_MODE_IO
 };
 
-
-enum class UVTTYVTermStateT: std::underlying_type_t<uv_tty_vtermstate_t> {
+enum class UVTTYVTermStateT : std::underlying_type_t<uv_tty_vtermstate_t> {
     SUPPORTED = UV_TTY_SUPPORTED,
     UNSUPPORTED = UV_TTY_UNSUPPORTED
 };
 
-
-}
-
+} // namespace details
 
 /**
  * @brief The TTYHandle handle.
@@ -144,12 +136,10 @@ private:
     int rw;
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "tty.cpp"
+#    include "tty.cpp"
 #endif
 
 #endif // UVW_TTY_INCLUDE_H

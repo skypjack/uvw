@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <uvw/prepare.h>
 
-
 TEST(Prepare, StartAndStop) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::PrepareHandle>();
@@ -27,7 +26,6 @@ TEST(Prepare, StartAndStop) {
 
     ASSERT_TRUE(checkPrepareEvent);
 }
-
 
 TEST(Prepare, Fake) {
     auto loop = uvw::Loop::getDefault();

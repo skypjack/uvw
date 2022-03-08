@@ -1,18 +1,15 @@
 #ifndef UVW_DNS_INCLUDE_H
 #define UVW_DNS_INCLUDE_H
 
-
-#include <utility>
 #include <memory>
 #include <string>
+#include <utility>
 #include <uv.h>
+#include "loop.h"
 #include "request.hpp"
 #include "util.h"
-#include "loop.h"
-
 
 namespace uvw {
-
 
 /**
  * @brief AddrInfoEvent event.
@@ -20,7 +17,7 @@ namespace uvw {
  * It will be emitted by GetAddrInfoReq according with its functionalities.
  */
 struct AddrInfoEvent {
-    using Deleter = void(*)(addrinfo *);
+    using Deleter = void (*)(addrinfo *);
 
     AddrInfoEvent(std::unique_ptr<addrinfo, Deleter> addr);
 
@@ -32,7 +29,6 @@ struct AddrInfoEvent {
      */
     std::unique_ptr<addrinfo, Deleter> data;
 };
-
 
 /**
  * @brief NameInfoEvent event.
@@ -48,7 +44,7 @@ struct NameInfoEvent {
      * See [getnameinfo](http://linux.die.net/man/3/getnameinfo) for further
      * details.
      */
-    const char * hostname;
+    const char *hostname;
 
     /**
      * @brief A valid service name.
@@ -56,9 +52,8 @@ struct NameInfoEvent {
      * See [getnameinfo](http://linux.die.net/man/3/getnameinfo) for further
      * details.
      */
-    const char * service;
+    const char *service;
 };
-
 
 /**
  * @brief The GetAddrInfoReq request.
@@ -74,7 +69,7 @@ class GetAddrInfoReq final: public Request<GetAddrInfoReq, uv_getaddrinfo_t> {
     auto nodeAddrInfoSync(const char *node, const char *service, addrinfo *hints = nullptr);
 
 public:
-    using Deleter = void(*)(addrinfo *);
+    using Deleter = void (*)(addrinfo *);
 
     using Request::Request;
 
@@ -143,7 +138,6 @@ public:
      */
     std::pair<bool, std::unique_ptr<addrinfo, Deleter>> addrInfoSync(const std::string &node, const std::string &service, addrinfo *hints = nullptr);
 };
-
 
 /**
  * @brief The GetNameInfoReq request.
@@ -229,12 +223,10 @@ public:
     std::pair<bool, std::pair<const char *, const char *>> nameInfoSync(Addr addr, int flags = 0);
 };
 
-
 /**
  * @cond TURN_OFF_DOXYGEN
  * Internal details not to be documented.
  */
-
 
 // (extern) explicit instantiations
 #ifdef UVW_AS_LIB
@@ -251,19 +243,15 @@ extern template std::pair<bool, std::pair<const char *, const char *>> GetNameIn
 extern template std::pair<bool, std::pair<const char *, const char *>> GetNameInfoReq::nameInfoSync<IPv6>(Addr, int);
 #endif // UVW_AS_LIB
 
-
 /**
  * Internal details not to be documented.
  * @endcond
  */
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "dns.cpp"
+#    include "dns.cpp"
 #endif
-
 
 #endif // UVW_DNS_INCLUDE_H

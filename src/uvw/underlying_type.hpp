@@ -1,15 +1,12 @@
 #ifndef UVW_UNDERLYING_TYPE_INCLUDE_H
 #define UVW_UNDERLYING_TYPE_INCLUDE_H
 
-
 #include <memory>
 #include <type_traits>
 #include <utility>
 #include "loop.h"
 
-
 namespace uvw {
-
 
 /**
  * @brief Wrapper class for underlying types.
@@ -22,7 +19,9 @@ class UnderlyingType {
     friend class UnderlyingType;
 
 protected:
-    struct ConstructorAccess { explicit ConstructorAccess(int) {} };
+    struct ConstructorAccess {
+        explicit ConstructorAccess(int) {}
+    };
 
     template<typename R = U>
     auto get() noexcept {
@@ -41,8 +40,7 @@ protected:
 
 public:
     explicit UnderlyingType(ConstructorAccess, std::shared_ptr<Loop> ref) noexcept
-        : pLoop{std::move(ref)}, resource{}
-    {}
+        : pLoop{std::move(ref)}, resource{} {}
 
     UnderlyingType(const UnderlyingType &) = delete;
     UnderlyingType(UnderlyingType &&) = delete;
@@ -51,8 +49,8 @@ public:
         static_assert(std::is_base_of_v<UnderlyingType<T, U>, T>);
     }
 
-    UnderlyingType & operator=(const UnderlyingType &) = delete;
-    UnderlyingType & operator=(UnderlyingType &&) = delete;
+    UnderlyingType &operator=(const UnderlyingType &) = delete;
+    UnderlyingType &operator=(UnderlyingType &&) = delete;
 
     /**
      * @brief Creates a new resource of the given type.
@@ -60,7 +58,7 @@ public:
      * @return A pointer to the newly created resource.
      */
     template<typename... Args>
-    static std::shared_ptr<T> create(Args&&... args) {
+    static std::shared_ptr<T> create(Args &&...args) {
         return std::make_shared<T>(ConstructorAccess{0}, std::forward<Args>(args)...);
     }
 
@@ -68,7 +66,9 @@ public:
      * @brief Gets the loop from which the resource was originated.
      * @return A reference to a loop instance.
      */
-    Loop & loop() const noexcept { return *pLoop; }
+    Loop &loop() const noexcept {
+        return *pLoop;
+    }
 
     /**
      * @brief Gets the underlying raw data structure.
@@ -85,7 +85,7 @@ public:
      *
      * @return The underlying raw data structure.
      */
-    const U * raw() const noexcept {
+    const U *raw() const noexcept {
         return &resource;
     }
 
@@ -104,7 +104,7 @@ public:
      *
      * @return The underlying raw data structure.
      */
-    U * raw() noexcept {
+    U *raw() noexcept {
         return const_cast<U *>(const_cast<const UnderlyingType *>(this)->raw());
     }
 
@@ -113,7 +113,6 @@ private:
     U resource;
 };
 
-
-}
+} // namespace uvw
 
 #endif // UVW_UNDERLYING_TYPE_INCLUDE_H

@@ -1,31 +1,25 @@
 #ifndef UVW_TCP_INCLUDE_H
 #define UVW_TCP_INCLUDE_H
 
-
-#include <type_traits>
-#include <utility>
+#include <chrono>
 #include <memory>
 #include <string>
-#include <chrono>
+#include <type_traits>
+#include <utility>
 #include <uv.h>
 #include "request.hpp"
 #include "stream.h"
 #include "util.h"
 
-
 namespace uvw {
-
 
 namespace details {
 
-
-enum class UVTCPFlags: std::underlying_type_t<uv_tcp_flags> {
+enum class UVTCPFlags : std::underlying_type_t<uv_tcp_flags> {
     IPV6ONLY = UV_TCP_IPV6ONLY
 };
 
-
 }
-
 
 /**
  * @brief The TCPHandle handle.
@@ -225,16 +219,18 @@ public:
     void closeReset();
 
 private:
-    enum { DEFAULT, FLAGS } tag;
+    enum {
+        DEFAULT,
+        FLAGS
+    } tag;
+
     unsigned int flags;
 };
-
 
 /**
  * @cond TURN_OFF_DOXYGEN
  * Internal details not to be documented.
  */
-
 
 // (extern) explicit instantiations
 #ifdef UVW_AS_LIB
@@ -257,19 +253,15 @@ extern template void TCPHandle::connect<IPv4>(Addr addr);
 extern template void TCPHandle::connect<IPv6>(Addr addr);
 #endif // UVW_AS_LIB
 
-
 /**
  * Internal details not to be documented.
  * @endcond
  */
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "tcp.cpp"
+#    include "tcp.cpp"
 #endif
-
 
 #endif // UVW_TCP_INCLUDE_H

@@ -1,20 +1,17 @@
 #ifndef UVW_STREAM_INCLUDE_H
 #define UVW_STREAM_INCLUDE_H
 
-
 #include <algorithm>
-#include <iterator>
 #include <cstddef>
-#include <utility>
+#include <iterator>
 #include <memory>
+#include <utility>
 #include <uv.h>
-#include "request.hpp"
 #include "handle.hpp"
 #include "loop.h"
-
+#include "request.hpp"
 
 namespace uvw {
-
 
 /**
  * @brief ConnectEvent event.
@@ -23,14 +20,12 @@ namespace uvw {
  */
 struct ConnectEvent {};
 
-
 /**
  * @brief EndEvent event.
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
 struct EndEvent {};
-
 
 /**
  * @brief ListenEvent event.
@@ -39,7 +34,6 @@ struct EndEvent {};
  */
 struct ListenEvent {};
 
-
 /**
  * @brief ShutdownEvent event.
  *
@@ -47,14 +41,12 @@ struct ListenEvent {};
  */
 struct ShutdownEvent {};
 
-
 /**
  * @brief WriteEvent event.
  *
  * It will be emitted by StreamHandle according with its functionalities.
  */
 struct WriteEvent {};
-
 
 /**
  * @brief DataEvent event.
@@ -65,29 +57,25 @@ struct DataEvent {
     explicit DataEvent(std::unique_ptr<char[]> buf, std::size_t len) noexcept;
 
     std::unique_ptr<char[]> data; /*!< A bunch of data read on the stream. */
-    std::size_t length; /*!< The amount of data read on the stream. */
+    std::size_t length;           /*!< The amount of data read on the stream. */
 };
 
-
 namespace details {
-
 
 struct ConnectReq final: public Request<ConnectReq, uv_connect_t> {
     using Request::Request;
 
     template<typename F, typename... Args>
-    void connect(F &&f, Args&&... args) {
+    void connect(F &&f, Args &&...args) {
         invoke(std::forward<F>(f), get(), std::forward<Args>(args)..., &defaultCallback<ConnectEvent>);
     }
 };
-
 
 struct ShutdownReq final: public Request<ShutdownReq, uv_shutdown_t> {
     using Request::Request;
 
     void shutdown(uv_stream_t *handle);
 };
-
 
 template<typename Deleter>
 class WriteReq final: public Request<WriteReq<Deleter>, uv_write_t> {
@@ -97,8 +85,7 @@ public:
     WriteReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len)
         : Request<WriteReq<Deleter>, uv_write_t>{ca, std::move(loop)},
           data{std::move(dt)},
-          buf{uv_buf_init(data.get(), len)}
-    {}
+          buf{uv_buf_init(data.get(), len)} {}
 
     void write(uv_stream_t *handle) {
         this->invoke(&uv_write, this->get(), handle, &buf, 1, &this->template defaultCallback<WriteEvent>);
@@ -113,9 +100,7 @@ private:
     uv_buf_t buf;
 };
 
-
-}
-
+} // namespace details
 
 /**
  * @brief The StreamHandle handle.
@@ -129,7 +114,7 @@ class StreamHandle: public Handle<T, U> {
     static constexpr unsigned int DEFAULT_BACKLOG = 128;
 
     static void readCallback(uv_stream_t *handle, ssize_t nread, const uv_buf_t *buf) {
-        T &ref = *(static_cast<T*>(handle->data));
+        T &ref = *(static_cast<T *>(handle->data));
         // data will be destroyed no matter of what the value of nread is
         std::unique_ptr<char[]> data{buf->base};
 
@@ -150,16 +135,17 @@ class StreamHandle: public Handle<T, U> {
     }
 
     static void listenCallback(uv_stream_t *handle, int status) {
-        T &ref = *(static_cast<T*>(handle->data));
-        if(status) { ref.publish(ErrorEvent{status}); }
-        else { ref.publish(ListenEvent{}); }
+        if(T &ref = *(static_cast<T *>(handle->data)); status) {
+            ref.publish(ErrorEvent{status});
+        } else {
+            ref.publish(ListenEvent{});
+        }
     }
 
 public:
 #ifdef _MSC_VER
     StreamHandle(typename Handle<T, U>::ConstructorAccess ca, std::shared_ptr<Loop> ref)
-        : Handle<T, U>{ca, std::move(ref)}
-    {}
+        : Handle<T, U>{ca, std::move(ref)} {}
 #else
     using Handle<T, U>::Handle;
 #endif
@@ -277,7 +263,7 @@ public:
      * @param len The lenght of the submitted data.
      */
     void write(char *data, unsigned int len) {
-        auto req = this->loop().template resource<details::WriteReq<void(*)(char *)>>(std::unique_ptr<char[], void(*)(char *)>{data, [](char *) {}}, len);
+        auto req = this->loop().template resource<details::WriteReq<void (*)(char *)>>(std::unique_ptr<char[], void (*)(char *)>{data, [](char *) {}}, len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
@@ -339,7 +325,7 @@ public:
      */
     template<typename S>
     void write(S &send, char *data, unsigned int len) {
-        auto req = this->loop().template resource<details::WriteReq<void(*)(char *)>>(std::unique_ptr<char[], void(*)(char *)>{data, [](char *) {}}, len);
+        auto req = this->loop().template resource<details::WriteReq<void (*)(char *)>>(std::unique_ptr<char[], void (*)(char *)>{data, [](char *) {}}, len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
@@ -361,7 +347,7 @@ public:
      * @return Number of bytes written.
      */
     int tryWrite(std::unique_ptr<char[]> data, unsigned int len) {
-        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
+        uv_buf_t bufs[] = {uv_buf_init(data.get(), len)};
         auto bw = uv_try_write(this->template get<uv_stream_t>(), bufs, 1);
 
         if(bw < 0) {
@@ -377,7 +363,7 @@ public:
      *
      * Same as `tryWrite` for sending handles over a pipe.<br/>
      * An ErrorEvent event will be emitted in case of errors.
-     * 
+     *
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
      * @param send A valid handle suitable for the purpose.
@@ -385,7 +371,7 @@ public:
      */
     template<typename V, typename W>
     int tryWrite(std::unique_ptr<char[]> data, unsigned int len, StreamHandle<V, W> &send) {
-        uv_buf_t bufs[] = { uv_buf_init(data.get(), len) };
+        uv_buf_t bufs[] = {uv_buf_init(data.get(), len)};
         auto bw = uv_try_write2(this->template get<uv_stream_t>(), bufs, 1, send.raw());
 
         if(bw < 0) {
@@ -408,7 +394,7 @@ public:
      * @return Number of bytes written.
      */
     int tryWrite(char *data, unsigned int len) {
-        uv_buf_t bufs[] = { uv_buf_init(data, len) };
+        uv_buf_t bufs[] = {uv_buf_init(data, len)};
         auto bw = uv_try_write(this->template get<uv_stream_t>(), bufs, 1);
 
         if(bw < 0) {
@@ -432,7 +418,7 @@ public:
      */
     template<typename V, typename W>
     int tryWrite(char *data, unsigned int len, StreamHandle<V, W> &send) {
-        uv_buf_t bufs[] = { uv_buf_init(data, len) };
+        uv_buf_t bufs[] = {uv_buf_init(data, len)};
         auto bw = uv_try_write2(this->template get<uv_stream_t>(), bufs, 1, send.raw());
 
         if(bw < 0) {
@@ -487,12 +473,10 @@ public:
     }
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "stream.cpp"
+#    include "stream.cpp"
 #endif
 
 #endif // UVW_STREAM_INCLUDE_H

@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <uvw/idle.h>
 
-
 TEST(Idle, StartAndStop) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::IdleHandle>();
@@ -27,7 +26,6 @@ TEST(Idle, StartAndStop) {
 
     ASSERT_TRUE(checkIdleEvent);
 }
-
 
 TEST(Idle, Fake) {
     auto loop = uvw::Loop::getDefault();

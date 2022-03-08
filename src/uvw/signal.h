@@ -1,14 +1,11 @@
 #ifndef UVW_SIGNAL_INCLUDE_H
 #define UVW_SIGNAL_INCLUDE_H
 
-
 #include <uv.h>
 #include "handle.hpp"
 #include "loop.h"
 
-
 namespace uvw {
-
 
 /**
  * @brief SignalEvent event.
@@ -20,7 +17,6 @@ struct SignalEvent {
 
     int signum; /*!< The signal being monitored by this handle. */
 };
-
 
 /**
  * @brief The SignalHandle handle.
@@ -78,12 +74,10 @@ public:
     int signal() const noexcept;
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "signal.cpp"
+#    include "signal.cpp"
 #endif
 
 #endif // UVW_SIGNAL_INCLUDE_H

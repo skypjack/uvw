@@ -1,14 +1,11 @@
 #ifndef UVW_PREPARE_INCLUDE_H
 #define UVW_PREPARE_INCLUDE_H
 
-
 #include <uv.h>
 #include "handle.hpp"
 #include "loop.h"
 
-
 namespace uvw {
-
 
 /**
  * @brief PrepareEvent event.
@@ -16,7 +13,6 @@ namespace uvw {
  * It will be emitted by PrepareHandle according with its functionalities.
  */
 struct PrepareEvent {};
-
 
 /**
  * @brief The PrepareHandle handle.
@@ -54,12 +50,10 @@ public:
     void stop();
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "prepare.cpp"
+#    include "prepare.cpp"
 #endif
 
 #endif // UVW_PREPARE_INCLUDE_H

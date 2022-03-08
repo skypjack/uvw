@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <uvw/lib.h>
 
-
 TEST(SharedLib, Failure) {
     auto loop = uvw::Loop::getDefault();
     auto lib = loop->resource<uvw::SharedLib>("foobar.so");
@@ -13,7 +12,6 @@ TEST(SharedLib, Failure) {
     // this forces a call to the destructor to invoke uv_dlclose
     lib.reset();
 }
-
 
 TEST(SharedLib, Success) {
     auto loop = uvw::Loop::getDefault();

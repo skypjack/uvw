@@ -2,7 +2,6 @@
 #include <uvw/pipe.h>
 #include <uvw/process.h>
 
-
 TEST(Process, Pid) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::ProcessHandle>();
@@ -12,7 +11,6 @@ TEST(Process, Pid) {
     loop->run();
 }
 
-
 TEST(Process, Cwd) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::ProcessHandle>();
@@ -21,7 +19,6 @@ TEST(Process, Cwd) {
 
     loop->run();
 }
-
 
 TEST(Process, StdIO) {
     auto loop = uvw::Loop::getDefault();

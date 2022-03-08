@@ -2,7 +2,6 @@
 #include <uvw/check.h>
 #include <uvw/signal.h>
 
-
 TEST(Signal, Start) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::SignalHandle>();

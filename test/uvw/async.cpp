@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
 #include <uvw/async.h>
 
-
 TEST(Async, Send) {
     auto loop = uvw::Loop::getDefault();
     auto handle = loop->resource<uvw::AsyncHandle>();
@@ -26,7 +25,6 @@ TEST(Async, Send) {
 
     ASSERT_TRUE(checkAsyncEvent);
 }
-
 
 TEST(Async, Fake) {
     auto loop = uvw::Loop::getDefault();

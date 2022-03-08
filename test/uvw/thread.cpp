@@ -4,12 +4,13 @@
 TEST(Thread, Run) {
     auto loop = uvw::Loop::getDefault();
     auto has_run = std::make_shared<bool>();
-
-    auto handle = loop->resource<uvw::Thread>([](std::shared_ptr<void> data) {
+    auto cb = [](std::shared_ptr<void> data) {
         if(auto has_run = std::static_pointer_cast<bool>(data); has_run) {
             *has_run = true;
         }
-    }, has_run);
+    };
+
+    auto handle = loop->resource<uvw::Thread>(cb, has_run);
 
     ASSERT_TRUE(handle->run());
     ASSERT_TRUE(handle->join());

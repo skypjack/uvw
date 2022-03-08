@@ -2,7 +2,6 @@
 #include <uvw/fs.h>
 #include <uvw/fs_event.h>
 
-
 TEST(FsEvent, Functionalities) {
     const std::string filename = std::string{TARGET_FS_EVENT_DIR} + std::string{"/test.file"};
 
@@ -29,7 +28,7 @@ TEST(FsEvent, Functionalities) {
     });
 
     request->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([](const auto &, auto &req) {
-        req.write(std::unique_ptr<char[]>{new char[1]{ 42 }}, 1, 0);
+        req.write(std::unique_ptr<char[]>{new char[1]{42}}, 1, 0);
     });
 
     handle->start(std::string{TARGET_FS_EVENT_DIR}, uvw::FsEventHandle::Event::RECURSIVE);

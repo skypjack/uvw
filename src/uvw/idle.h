@@ -1,14 +1,11 @@
 #ifndef UVW_IDLE_INCLUDE_H
 #define UVW_IDLE_INCLUDE_H
 
-
 #include <uv.h>
 #include "handle.hpp"
 #include "loop.h"
 
-
 namespace uvw {
-
 
 /**
  * @brief IdleEvent event.
@@ -16,7 +13,6 @@ namespace uvw {
  * It will be emitted by IdleHandle according with its functionalities.
  */
 struct IdleEvent {};
-
 
 /**
  * @brief The IdleHandle handle.
@@ -60,12 +56,10 @@ public:
     void stop();
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "idle.cpp"
+#    include "idle.cpp"
 #endif
 
 #endif // UVW_IDLE_INCLUDE_H

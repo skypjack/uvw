@@ -1,25 +1,21 @@
 #ifndef UVW_PROCESS_INCLUDE_H
 #define UVW_PROCESS_INCLUDE_H
 
-
-#include <utility>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 #include <uv.h>
 #include "handle.hpp"
+#include "loop.h"
 #include "stream.h"
 #include "util.h"
-#include "loop.h"
-
 
 namespace uvw {
 
-
 namespace details {
 
-
-enum class UVProcessFlags: std::underlying_type_t<uv_process_flags> {
+enum class UVProcessFlags : std::underlying_type_t<uv_process_flags> {
     SETUID = UV_PROCESS_SETUID,
     SETGID = UV_PROCESS_SETGID,
     WINDOWS_VERBATIM_ARGUMENTS = UV_PROCESS_WINDOWS_VERBATIM_ARGUMENTS,
@@ -29,8 +25,7 @@ enum class UVProcessFlags: std::underlying_type_t<uv_process_flags> {
     WINDOWS_HIDE_GUI = UV_PROCESS_WINDOWS_HIDE_GUI
 };
 
-
-enum class UVStdIOFlags: std::underlying_type_t<uv_stdio_flags> {
+enum class UVStdIOFlags : std::underlying_type_t<uv_stdio_flags> {
     IGNORE_STREAM = UV_IGNORE,
     CREATE_PIPE = UV_CREATE_PIPE,
     INHERIT_FD = UV_INHERIT_FD,
@@ -40,9 +35,7 @@ enum class UVStdIOFlags: std::underlying_type_t<uv_stdio_flags> {
     OVERLAPPED_PIPE = UV_OVERLAPPED_PIPE
 };
 
-
-}
-
+} // namespace details
 
 /**
  * @brief ExitEvent event.
@@ -53,7 +46,7 @@ struct ExitEvent {
     explicit ExitEvent(int64_t code, int sig) noexcept;
 
     int64_t status; /*!< The exit status. */
-    int signal; /*!< The signal that caused the process to terminate, if any. */
+    int signal;     /*!< The signal that caused the process to terminate, if any. */
 };
 
 /**
@@ -137,7 +130,7 @@ public:
      * @param path The working directory to be used when `spawn()` is invoked.
      * @return A reference to this process handle.
      */
-    ProcessHandle & cwd(const std::string &path) noexcept;
+    ProcessHandle &cwd(const std::string &path) noexcept;
 
     /**
      * @brief Sets flags that control how `spawn()` behaves.
@@ -159,7 +152,7 @@ public:
      * @param flags A valid set of flags.
      * @return A reference to this process handle.
      */
-    ProcessHandle & flags(Flags<Process> flags) noexcept;
+    ProcessHandle &flags(Flags<Process> flags) noexcept;
 
     /**
      * @brief Makes a `stdio` handle available to the child process.
@@ -183,7 +176,7 @@ public:
      * @return A reference to this process handle.
      */
     template<typename T, typename U>
-    ProcessHandle & stdio(StreamHandle<T, U> &stream, Flags<StdIO> flags) {
+    ProcessHandle &stdio(StreamHandle<T, U> &stream, Flags<StdIO> flags) {
         uv_stdio_container_t container;
         Flags<StdIO>::Type fgs = flags;
         container.flags = static_cast<uv_stdio_flags>(fgs);
@@ -218,21 +211,21 @@ public:
      * @param flags A valid set of flags.
      * @return A reference to this process handle.
      */
-    ProcessHandle & stdio(FileHandle fd, Flags<StdIO> flags);
+    ProcessHandle &stdio(FileHandle fd, Flags<StdIO> flags);
 
     /**
      * @brief Sets the child process' user id.
      * @param id A valid user id to be used.
      * @return A reference to this process handle.
      */
-    ProcessHandle & uid(Uid id);
+    ProcessHandle &uid(Uid id);
 
     /**
      * @brief Sets the child process' group id.
      * @param id A valid group id to be used.
      * @return A reference to this process handle.
      */
-    ProcessHandle & gid(Gid id);
+    ProcessHandle &gid(Gid id);
 
 private:
     std::string poCwd;
@@ -243,13 +236,10 @@ private:
     Gid poGid;
 };
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "process.cpp"
+#    include "process.cpp"
 #endif
-
 
 #endif // UVW_PROCESS_INCLUDE_H

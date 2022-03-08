@@ -1,25 +1,21 @@
 #ifndef UVW_UTIL_INCLUDE_H
 #define UVW_UTIL_INCLUDE_H
 
-
+#include <array>
+#include <cstddef>
+#include <memory>
+#include <string>
 #include <string_view>
 #include <type_traits>
-#include <cstddef>
 #include <utility>
-#include <string>
 #include <vector>
-#include <memory>
-#include <array>
 #include <uv.h>
-
 
 namespace uvw {
 
-
 namespace details {
 
-
-enum class UVHandleType: std::underlying_type_t<uv_handle_type> {
+enum class UVHandleType : std::underlying_type_t<uv_handle_type> {
     UNKNOWN = UV_UNKNOWN_HANDLE,
     ASYNC = UV_ASYNC,
     CHECK = UV_CHECK,
@@ -40,15 +36,19 @@ enum class UVHandleType: std::underlying_type_t<uv_handle_type> {
     FILE = UV_FILE
 };
 
-
 template<typename T>
 struct UVTypeWrapper {
     using Type = T;
 
-    constexpr UVTypeWrapper(): value{} {}
-    constexpr UVTypeWrapper(Type val): value{val} {}
+    constexpr UVTypeWrapper()
+        : value{} {}
 
-    constexpr operator Type() const noexcept { return value; }
+    constexpr UVTypeWrapper(Type val)
+        : value{val} {}
+
+    constexpr operator Type() const noexcept {
+        return value;
+    }
 
     bool operator==(UVTypeWrapper other) const noexcept {
         return value == other.value;
@@ -58,15 +58,12 @@ private:
     const Type value;
 };
 
-
 template<typename T>
 bool operator==(UVTypeWrapper<T> lhs, UVTypeWrapper<T> rhs) {
     return !(lhs == rhs);
 }
 
-
-}
-
+} // namespace details
 
 /**
  * @brief Utility class to handle flags.
@@ -80,9 +77,13 @@ bool operator==(UVTypeWrapper<T> lhs, UVTypeWrapper<T> rhs) {
  */
 template<typename E>
 class Flags final {
+    static_assert(std::is_enum_v<E>);
+
     using InnerType = std::underlying_type_t<E>;
 
-    constexpr InnerType toInnerType(E flag) const noexcept { return static_cast<InnerType>(flag); }
+    constexpr InnerType toInnerType(E flag) const noexcept {
+        return static_cast<InnerType>(flag);
+    }
 
 public:
     using Type = InnerType;
@@ -100,31 +101,35 @@ public:
      * @brief Constructs a Flags object from a value of the enum `E`.
      * @param flag A value of the enum `E`.
      */
-    constexpr Flags(E flag) noexcept: flags{toInnerType(flag)} {}
+    constexpr Flags(E flag) noexcept
+        : flags{toInnerType(flag)} {}
 
     /**
      * @brief Constructs a Flags object from an instance of the underlying type
      * of the enum `E`.
      * @param f An instance of the underlying type of the enum `E`.
      */
-    constexpr Flags(Type f): flags{f} {}
+    constexpr Flags(Type f)
+        : flags{f} {}
 
     /**
      * @brief Constructs an uninitialized Flags object.
      */
-    constexpr Flags(): flags{} {}
+    constexpr Flags()
+        : flags{} {}
 
-    constexpr Flags(const Flags &f) noexcept: flags{f.flags} {  }
-    constexpr Flags(Flags &&f) noexcept: flags{std::move(f.flags)} {  }
+    constexpr Flags(const Flags &f) noexcept
+        : flags{f.flags} {}
 
-    ~Flags() noexcept { static_assert(std::is_enum_v<E>); }
+    constexpr Flags(Flags &&f) noexcept
+        : flags{std::move(f.flags)} {}
 
-    constexpr Flags & operator=(const Flags &f) noexcept {
+    constexpr Flags &operator=(const Flags &f) noexcept {
         flags = f.flags;
         return *this;
     }
 
-    constexpr Flags & operator=(Flags &&f) noexcept {
+    constexpr Flags &operator=(Flags &&f) noexcept {
         flags = std::move(f.flags);
         return *this;
     }
@@ -134,77 +139,86 @@ public:
      * @param f A valid instance of Flags.
      * @return This instance _or-ed_ with `f`.
      */
-    constexpr Flags operator|(const Flags &f) const noexcept { return Flags{flags | f.flags}; }
+    constexpr Flags operator|(const Flags &f) const noexcept {
+        return Flags{flags | f.flags};
+    }
 
     /**
      * @brief Or operator.
      * @param flag A value of the enum `E`.
      * @return This instance _or-ed_ with `flag`.
      */
-    constexpr Flags operator|(E flag) const noexcept { return Flags{flags | toInnerType(flag)}; }
+    constexpr Flags operator|(E flag) const noexcept {
+        return Flags{flags | toInnerType(flag)};
+    }
 
     /**
      * @brief And operator.
      * @param f A valid instance of Flags.
      * @return This instance _and-ed_ with `f`.
      */
-    constexpr Flags operator&(const Flags &f) const noexcept { return Flags{flags & f.flags}; }
+    constexpr Flags operator&(const Flags &f) const noexcept {
+        return Flags{flags & f.flags};
+    }
 
     /**
      * @brief And operator.
      * @param flag A value of the enum `E`.
      * @return This instance _and-ed_ with `flag`.
      */
-    constexpr Flags operator&(E flag) const noexcept { return Flags{flags & toInnerType(flag)}; }
+    constexpr Flags operator&(E flag) const noexcept {
+        return Flags{flags & toInnerType(flag)};
+    }
 
     /**
      * @brief Checks if this instance is initialized.
      * @return False if it's uninitialized, true otherwise.
      */
-    explicit constexpr operator bool() const noexcept { return !(flags == InnerType{}); }
+    explicit constexpr operator bool() const noexcept {
+        return !(flags == InnerType{});
+    }
 
     /**
      * @brief Casts the instance to the underlying type of `E`.
      * @return An integral representation of the contained flags.
      */
-    constexpr operator Type() const noexcept { return flags; }
+    constexpr operator Type() const noexcept {
+        return flags;
+    }
 
 private:
     InnerType flags;
 };
 
-
 /**
  * @brief Windows size representation.
  */
 struct WinSize {
-    int width; /*!< The _width_ of the given window. */
+    int width;  /*!< The _width_ of the given window. */
     int height; /*!< The _height_ of the given window. */
 };
-
 
 using HandleType = details::UVHandleType; /*!< The type of a handle. */
 
 using HandleCategory = details::UVTypeWrapper<uv_handle_type>; /*!< Utility class that wraps an internal handle type. */
-using FileHandle = details::UVTypeWrapper<uv_file>; /*!< Utility class that wraps an internal file handle. */
-using OSSocketHandle = details::UVTypeWrapper<uv_os_sock_t>; /*!< Utility class that wraps an os socket handle. */
-using OSFileDescriptor = details::UVTypeWrapper<uv_os_fd_t>; /*!< Utility class that wraps an os file descriptor. */
-using PidType = details::UVTypeWrapper<uv_pid_t>; /*!< Utility class that wraps a cross platform representation of a pid. */
+using FileHandle = details::UVTypeWrapper<uv_file>;            /*!< Utility class that wraps an internal file handle. */
+using OSSocketHandle = details::UVTypeWrapper<uv_os_sock_t>;   /*!< Utility class that wraps an os socket handle. */
+using OSFileDescriptor = details::UVTypeWrapper<uv_os_fd_t>;   /*!< Utility class that wraps an os file descriptor. */
+using PidType = details::UVTypeWrapper<uv_pid_t>;              /*!< Utility class that wraps a cross platform representation of a pid. */
 
-constexpr FileHandle StdIN{0}; /*!< Placeholder for stdin descriptor. */
+constexpr FileHandle StdIN{0};  /*!< Placeholder for stdin descriptor. */
 constexpr FileHandle StdOUT{1}; /*!< Placeholder for stdout descriptor. */
 constexpr FileHandle StdERR{2}; /*!< Placeholder for stderr descriptor. */
 
 using TimeSpec = uv_timespec_t; /*!< Library equivalent for uv_timespec_t. */
-using Stat = uv_stat_t; /*!< Library equivalent for uv_stat_t. */
-using Statfs = uv_statfs_t; /*!< Library equivalent for uv_statfs_t. */
-using Uid = uv_uid_t; /*!< Library equivalent for uv_uid_t. */
-using Gid = uv_gid_t; /*!< Library equivalent for uv_gid_t. */
+using Stat = uv_stat_t;         /*!< Library equivalent for uv_stat_t. */
+using Statfs = uv_statfs_t;     /*!< Library equivalent for uv_statfs_t. */
+using Uid = uv_uid_t;           /*!< Library equivalent for uv_uid_t. */
+using Gid = uv_gid_t;           /*!< Library equivalent for uv_gid_t. */
 
-using TimeVal = uv_timeval_t; /*!< Library equivalent for uv_timeval_t. */
+using TimeVal = uv_timeval_t;     /*!< Library equivalent for uv_timeval_t. */
 using TimeVal64 = uv_timeval64_t; /*!< Library equivalent for uv_timeval64_t. */
-using RUsage = uv_rusage_t; /*!< Library equivalent for uv_rusage_t. */
-
+using RUsage = uv_rusage_t;       /*!< Library equivalent for uv_rusage_t. */
 
 /**
  * @brief Utility class.
@@ -257,7 +271,6 @@ private:
     std::shared_ptr<uv_passwd_t> passwd;
 };
 
-
 /**
  * @brief Utility class.
  *
@@ -298,14 +311,12 @@ private:
     std::shared_ptr<uv_utsname_t> utsname;
 };
 
-
 /**
  * @brief The IPv4 tag.
  *
  * To be used as template parameter to switch between IPv4 and IPv6.
  */
 struct IPv4 {};
-
 
 /**
  * @brief The IPv6 tag.
@@ -314,15 +325,13 @@ struct IPv4 {};
  */
 struct IPv6 {};
 
-
 /**
  * @brief Address representation.
  */
 struct Addr {
-    std::string ip; /*!< Either an IPv4 or an IPv6. */
+    std::string ip;    /*!< Either an IPv4 or an IPv6. */
     unsigned int port; /*!< A valid service identifier. */
 };
-
 
 /**
  * \brief CPU information.
@@ -331,7 +340,7 @@ struct CPUInfo {
     using CPUTime = decltype(uv_cpu_info_t::cpu_times);
 
     std::string model; /*!< The model of the CPU. */
-    int speed; /*!< The frequency of the CPU. */
+    int speed;         /*!< The frequency of the CPU. */
 
     /**
      * @brief CPU times.
@@ -342,50 +351,51 @@ struct CPUInfo {
     CPUTime times;
 };
 
-
 /**
  * \brief Interface address.
  */
 struct InterfaceAddress {
     std::string name; /*!< The name of the interface (as an example _eth0_). */
     char physical[6]; /*!< The physical address. */
-    bool internal; /*!< True if it is an internal interface (as an example _loopback_), false otherwise. */
-    Addr address; /*!< The address of the given interface. */
-    Addr netmask; /*!< The netmask of the given interface. */
+    bool internal;    /*!< True if it is an internal interface (as an example _loopback_), false otherwise. */
+    Addr address;     /*!< The address of the given interface. */
+    Addr netmask;     /*!< The netmask of the given interface. */
 };
-
 
 namespace details {
 
-
 static constexpr std::size_t DEFAULT_SIZE = 128;
-
 
 template<typename>
 struct IpTraits;
 
-
 template<>
 struct IpTraits<IPv4> {
     using Type = sockaddr_in;
-    using AddrFuncType = int(*)(const char *, int, Type *);
-    using NameFuncType = int(*)(const Type *, char *, std::size_t);
+    using AddrFuncType = int (*)(const char *, int, Type *);
+    using NameFuncType = int (*)(const Type *, char *, std::size_t);
+
     inline static const AddrFuncType addrFunc = &uv_ip4_addr;
     inline static const NameFuncType nameFunc = &uv_ip4_name;
-    static constexpr auto sinPort(const Type *addr) { return addr->sin_port; }
-};
 
+    static constexpr auto sinPort(const Type *addr) {
+        return addr->sin_port;
+    }
+};
 
 template<>
 struct IpTraits<IPv6> {
     using Type = sockaddr_in6;
-    using AddrFuncType = int(*)(const char *, int, Type *);
-    using NameFuncType = int(*)(const Type *, char *, std::size_t);
+    using AddrFuncType = int (*)(const char *, int, Type *);
+    using NameFuncType = int (*)(const Type *, char *, std::size_t);
+
     inline static const AddrFuncType addrFunc = &uv_ip6_addr;
     inline static const NameFuncType nameFunc = &uv_ip6_name;
-    static constexpr auto sinPort(const Type *addr) { return addr->sin6_port; }
-};
 
+    static constexpr auto sinPort(const Type *addr) {
+        return addr->sin6_port;
+    }
+};
 
 template<typename I>
 Addr address(const typename details::IpTraits<I>::Type *aptr) noexcept {
@@ -401,7 +411,6 @@ Addr address(const typename details::IpTraits<I>::Type *aptr) noexcept {
 
     return addr;
 }
-
 
 template<typename I, typename F, typename H>
 Addr address(F &&f, const H *handle) noexcept {
@@ -419,9 +428,8 @@ Addr address(F &&f, const H *handle) noexcept {
     return addr;
 }
 
-
 template<typename F, typename... Args>
-std::string tryRead(F &&f, Args&&... args) noexcept {
+std::string tryRead(F &&f, Args &&...args) noexcept {
     std::size_t size = DEFAULT_SIZE;
     char buf[DEFAULT_SIZE];
     std::string str{};
@@ -441,9 +449,7 @@ std::string tryRead(F &&f, Args&&... args) noexcept {
     return str;
 }
 
-
-}
-
+} // namespace details
 
 /**
  * @brief Miscellaneous utilities.
@@ -451,10 +457,10 @@ std::string tryRead(F &&f, Args&&... args) noexcept {
  * Miscellaneous functions that don’t really belong to any other class.
  */
 struct Utilities {
-    using MallocFuncType = void*(*)(size_t);
-    using ReallocFuncType = void*(*)(void*, size_t);
-    using CallocFuncType = void*(*)(size_t, size_t);
-    using FreeFuncType = void(*)(void*);
+    using MallocFuncType = void *(*)(size_t);
+    using ReallocFuncType = void *(*)(void *, size_t);
+    using CallocFuncType = void *(*)(size_t, size_t);
+    using FreeFuncType = void (*)(void *);
 
     /**
      * @brief OS dedicated utilities.
@@ -729,7 +735,7 @@ struct Utilities {
      *
      * @return Arguments that haven't been consumed internally.
      */
-    static char ** setupArgs(int argc, char** argv);
+    static char **setupArgs(int argc, char **argv);
 
     /**
      * @brief Gets the title of the current process.
@@ -820,7 +826,6 @@ struct Utilities {
     static void sleep(unsigned int msec) noexcept;
 };
 
-
 /**
  * @brief Helper type for visitors.
  * @tparam Func Types of function objects.
@@ -830,7 +835,6 @@ struct Overloaded: Func... {
     using Func::operator()...;
 };
 
-
 /**
  * @brief Deduction guide.
  * @tparam Func Types of function objects.
@@ -838,13 +842,10 @@ struct Overloaded: Func... {
 template<class... Func>
 Overloaded(Func...) -> Overloaded<Func...>;
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "util.cpp"
+#    include "util.cpp"
 #endif
-
 
 #endif // UVW_UTIL_INCLUDE_H

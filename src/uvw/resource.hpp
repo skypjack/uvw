@@ -1,15 +1,12 @@
 #ifndef UVW_RESOURCE_INCLUDE_H
 #define UVW_RESOURCE_INCLUDE_H
 
-
 #include <memory>
 #include <utility>
 #include "emitter.h"
 #include "underlying_type.hpp"
 
-
 namespace uvw {
-
 
 /**
  * @brief Common class for almost all the resources available in `uvw`.
@@ -39,8 +36,7 @@ protected:
 
 public:
     explicit Resource(ConstructorAccess ca, std::shared_ptr<Loop> ref)
-        : UnderlyingType<T, U>{ca, std::move(ref)}
-    {
+        : UnderlyingType<T, U>{ca, std::move(ref)} {
         this->get()->data = this;
     }
 
@@ -66,6 +62,6 @@ private:
     std::shared_ptr<void> sPtr{nullptr};
 };
 
-}
+} // namespace uvw
 
 #endif // UVW_RESOURCE_INCLUDE_H

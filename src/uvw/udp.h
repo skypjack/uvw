@@ -1,20 +1,17 @@
 #ifndef UVW_UDP_INCLUDE_H
 #define UVW_UDP_INCLUDE_H
 
-
-#include <type_traits>
-#include <utility>
 #include <cstddef>
 #include <memory>
 #include <string>
+#include <type_traits>
+#include <utility>
 #include <uv.h>
-#include "request.hpp"
 #include "handle.hpp"
+#include "request.hpp"
 #include "util.h"
 
-
 namespace uvw {
-
 
 /**
  * @brief SendEvent event.
@@ -22,7 +19,6 @@ namespace uvw {
  * It will be emitted by UDPHandle according with its functionalities.
  */
 struct SendEvent {};
-
 
 /**
  * @brief UDPDataEvent event.
@@ -33,16 +29,14 @@ struct UDPDataEvent {
     explicit UDPDataEvent(Addr sndr, std::unique_ptr<char[]> buf, std::size_t len, bool part) noexcept;
 
     std::unique_ptr<char[]> data; /*!< A bunch of data read on the stream. */
-    std::size_t length;  /*!< The amount of data read on the stream. */
-    Addr sender; /*!< A valid instance of Addr. */
-    bool partial; /*!< True if the message was truncated, false otherwise. */
+    std::size_t length;           /*!< The amount of data read on the stream. */
+    Addr sender;                  /*!< A valid instance of Addr. */
+    bool partial;                 /*!< True if the message was truncated, false otherwise. */
 };
-
 
 namespace details {
 
-
-enum class UVUDPFlags: std::underlying_type_t<uv_udp_flags> {
+enum class UVUDPFlags : std::underlying_type_t<uv_udp_flags> {
     IPV6ONLY = UV_UDP_IPV6ONLY,
     UDP_PARTIAL = UV_UDP_PARTIAL,
     REUSEADDR = UV_UDP_REUSEADDR,
@@ -52,29 +46,25 @@ enum class UVUDPFlags: std::underlying_type_t<uv_udp_flags> {
     UDP_RECVMMSG = UV_UDP_RECVMMSG
 };
 
-
-enum class UVMembership: std::underlying_type_t<uv_membership> {
+enum class UVMembership : std::underlying_type_t<uv_membership> {
     LEAVE_GROUP = UV_LEAVE_GROUP,
     JOIN_GROUP = UV_JOIN_GROUP
 };
 
-
 class SendReq final: public Request<SendReq, uv_udp_send_t> {
 public:
-    using Deleter = void(*)(char *);
+    using Deleter = void (*)(char *);
 
     SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len);
 
-    void send(uv_udp_t *handle, const struct sockaddr* addr);
+    void send(uv_udp_t *handle, const struct sockaddr *addr);
 
 private:
     std::unique_ptr<char[], Deleter> data;
     uv_buf_t buf;
 };
 
-
-}
-
+} // namespace details
 
 /**
  * @brief The UDPHandle handle.
@@ -97,7 +87,7 @@ class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
     static void recvCallback(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
         const typename details::IpTraits<I>::Type *aptr = reinterpret_cast<const typename details::IpTraits<I>::Type *>(addr);
 
-        UDPHandle &udp = *(static_cast<UDPHandle*>(handle->data));
+        UDPHandle &udp = *(static_cast<UDPHandle *>(handle->data));
         // data will be destroyed no matter of what the value of nread is
         std::unique_ptr<char[]> data{buf->base};
 
@@ -578,16 +568,18 @@ public:
     size_t sendQueueCount() const noexcept;
 
 private:
-    enum { DEFAULT, FLAGS } tag{DEFAULT};
+    enum {
+        DEFAULT,
+        FLAGS
+    } tag{DEFAULT};
+
     unsigned int flags{};
 };
-
 
 /**
  * @cond TURN_OFF_DOXYGEN
  * Internal details not to be documented.
  */
-
 
 // (extern) explicit instantiations
 #ifdef UVW_AS_LIB
@@ -649,19 +641,15 @@ extern template void UDPHandle::recv<IPv4>();
 extern template void UDPHandle::recv<IPv6>();
 #endif // UVW_AS_LIB
 
-
 /**
  * Internal details not to be documented.
  * @endcond
  */
 
-
-}
-
+} // namespace uvw
 
 #ifndef UVW_AS_LIB
-#include "udp.cpp"
+#    include "udp.cpp"
 #endif
-
 
 #endif // UVW_UDP_INCLUDE_H
