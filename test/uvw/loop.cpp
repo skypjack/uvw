@@ -54,7 +54,6 @@ TEST(Loop, Functionalities) {
     });
 
     ASSERT_TRUE(loop->alive());
-    ASSERT_TRUE(loop->timeout().first);
     ASSERT_NO_THROW(loop->run());
 
     loop->walk([](auto &) { FAIL(); });
