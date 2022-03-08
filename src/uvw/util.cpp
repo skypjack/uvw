@@ -295,4 +295,8 @@ UVW_INLINE void Utilities::sleep(unsigned int msec) noexcept {
     uv_sleep(msec);
 }
 
+UVW_INLINE unsigned int Utilities::availableParallelism() noexcept {
+    return uv_available_parallelism();
+}
+
 } // namespace uvw

@@ -166,4 +166,6 @@ TEST(Util, Utilities) {
     ASSERT_NE(uvw::Utilities::setupArgs(1, &argv), nullptr);
     ASSERT_NE(uvw::Utilities::processTitle(), std::string{});
     ASSERT_TRUE(uvw::Utilities::processTitle(uvw::Utilities::processTitle()));
+
+    ASSERT_NE(uvw::Utilities::availableParallelism(), 0u);
 }

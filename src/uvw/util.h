@@ -824,6 +824,13 @@ struct Utilities {
      * @param msec Number of milliseconds to sleep.
      */
     static void sleep(unsigned int msec) noexcept;
+
+    /**
+     * @brief Returns an estimate of the amount of parallelism a program should
+     * use (always a non-zero value).
+     * @return Estimate of the amount of parallelism a program should use.
+     */
+    static unsigned int availableParallelism() noexcept;
 };
 
 /**
