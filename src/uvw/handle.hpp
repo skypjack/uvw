@@ -5,17 +5,14 @@
 #include <memory>
 #include <utility>
 #include <uv.h>
+#include "config.h"
 #include "resource.hpp"
 #include "util.h"
 
 namespace uvw {
 
-/**
- * @brief CloseEvent event.
- *
- * It will be emitted by the handles according with their functionalities.
- */
-struct CloseEvent {};
+/*! @brief Close event. */
+struct close_event {};
 
 /**
  * @brief Handle base class.
@@ -23,41 +20,25 @@ struct CloseEvent {};
  * Base type for all `uvw` handle types.
  */
 template<typename T, typename U>
-class Handle: public Resource<T, U> {
+class handle: public resource<T, U> {
 protected:
-    static void closeCallback(uv_handle_t *handle) {
-        Handle<T, U> &ref = *(static_cast<T *>(handle->data));
+    static void close_callback(uv_handle_t *hndl) {
+        handle<T, U> &ref = *(static_cast<T *>(hndl->data));
         [[maybe_unused]] auto ptr = ref.shared_from_this();
         ref.reset();
-        ref.publish(CloseEvent{});
+        ref.publish(close_event{});
     }
 
-    static void allocCallback(uv_handle_t *, std::size_t suggested, uv_buf_t *buf) {
-        auto size = static_cast<unsigned int>(suggested);
-        *buf = uv_buf_init(new char[size], size);
+    uv_handle_t *as_uv_handle() {
+        return reinterpret_cast<uv_handle_t *>(this->raw());
     }
 
-    template<typename F, typename... Args>
-    bool initialize(F &&f, Args &&...args) {
-        if(!this->self()) {
-            if(auto err = std::forward<F>(f)(this->parent(), this->get(), std::forward<Args>(args)...); err) {
-                this->publish(ErrorEvent{err});
-            } else {
-                this->leak();
-            }
-        }
-
-        return this->self();
-    }
-
-    template<typename F, typename... Args>
-    void invoke(F &&f, Args &&...args) {
-        auto err = std::forward<F>(f)(std::forward<Args>(args)...);
-        if(err) { Emitter<T>::publish(ErrorEvent{err}); }
+    const uv_handle_t *as_uv_handle() const {
+        return reinterpret_cast<const uv_handle_t *>(this->raw());
     }
 
 public:
-    using Resource<T, U>::Resource;
+    using resource<T, U>::resource;
 
     /**
      * @brief Gets the category of the handle.
@@ -68,8 +49,8 @@ public:
      *
      * @return The actual category of the handle.
      */
-    HandleCategory category() const noexcept {
-        return HandleCategory{this->template get<uv_handle_t>()->type};
+    handle_category category() const UVW_NOEXCEPT {
+        return handle_category{as_uv_handle()->type};
     }
 
     /**
@@ -77,12 +58,12 @@ public:
      *
      * A base handle offers no functionality to promote it to the actual handle
      * type. By means of this function, the type of the underlying handle as
-     * specified by HandleType is made available to the users.
+     * specified by handle_type is made available to the users.
      *
      * @return The actual type of the handle.
      */
-    HandleType type() const noexcept {
-        return Utilities::guessHandle(category());
+    handle_type type() const UVW_NOEXCEPT {
+        return utilities::guess_handle(category());
     }
 
     /**
@@ -90,22 +71,22 @@ public:
      *
      * What _active_ means depends on the type of handle:
      *
-     * * An AsyncHandle handle is always active and cannot be deactivated,
+     * * An async_handle handle is always active and cannot be deactivated,
      * except by closing it with uv_close().
-     * * A PipeHandle, TCPHandle, UDPHandle, etc. handle - basically any handle
-     * that deals with I/O - is active when it is doing something that involves
-     * I/O, like reading, writing, connecting, accepting new connections, etc.
-     * * A CheckHandle, IdleHandle, TimerHandle, etc. handle is active when it
-     * has been started with a call to `start()`.
+     * * A pipe, tcp, udp, etc. handle - basically any handle that deals with
+     * I/O - is active when it is doing something that involves I/O, like
+     * reading, writing, connecting, accepting new connections, etc.
+     * * A check, idle, timer, etc. handle is active when it has been started
+     * with a call to `start()`.
      *
-     * Rule of thumb: if a handle of type `FooHandle` has a `start()` member
+     * Rule of thumb: if a handle of type `foo_handle` has a `start()` member
      * method, then it’s active from the moment that method is called. Likewise,
      * `stop()` deactivates the handle again.
      *
      * @return True if the handle is active, false otherwise.
      */
-    bool active() const noexcept {
-        return !(uv_is_active(this->template get<uv_handle_t>()) == 0);
+    bool active() const UVW_NOEXCEPT {
+        return !(uv_is_active(as_uv_handle()) == 0);
     }
 
     /**
@@ -116,22 +97,22 @@ public:
      *
      * @return True if the handle is closing or closed, false otherwise.
      */
-    bool closing() const noexcept {
-        return !(uv_is_closing(this->template get<uv_handle_t>()) == 0);
+    bool closing() const UVW_NOEXCEPT {
+        return !(uv_is_closing(as_uv_handle()) == 0);
     }
 
     /**
      * @brief Request handle to be closed.
      *
      * This **must** be called on each handle before memory is released.<br/>
-     * In-progress requests are cancelled and this can result in an ErrorEvent
+     * In-progress requests are cancelled and this can result in an error event
      * emitted.
      *
-     * The handle will emit a CloseEvent when finished.
+     * The handle will emit a close event when finished.
      */
-    void close() noexcept {
+    void close() UVW_NOEXCEPT {
         if(!closing()) {
-            uv_close(this->template get<uv_handle_t>(), &Handle<T, U>::closeCallback);
+            uv_close(as_uv_handle(), &handle<T, U>::close_callback);
         }
     }
 
@@ -141,8 +122,8 @@ public:
      * References are idempotent, that is, if a handle is already referenced
      * calling this function again will have no effect.
      */
-    void reference() noexcept {
-        uv_ref(this->template get<uv_handle_t>());
+    void reference() UVW_NOEXCEPT {
+        uv_ref(as_uv_handle());
     }
 
     /**
@@ -151,24 +132,24 @@ public:
      * References are idempotent, that is, if a handle is not referenced calling
      * this function again will have no effect.
      */
-    void unreference() noexcept {
-        uv_unref(this->template get<uv_handle_t>());
+    void unreference() UVW_NOEXCEPT {
+        uv_unref(as_uv_handle());
     }
 
     /**
      * @brief Checks if the given handle referenced.
      * @return True if the handle referenced, false otherwise.
      */
-    bool referenced() const noexcept {
-        return !(uv_has_ref(this->template get<uv_handle_t>()) == 0);
+    bool referenced() const UVW_NOEXCEPT {
+        return !(uv_has_ref(as_uv_handle()) == 0);
     }
 
     /**
      * @brief Returns the size of the underlying handle type.
      * @return The size of the underlying handle type.
      */
-    std::size_t size() const noexcept {
-        return uv_handle_size(this->template get<uv_handle_t>()->type);
+    std::size_t size() const UVW_NOEXCEPT {
+        return uv_handle_size(as_uv_handle()->type);
     }
 
     /**
@@ -176,15 +157,15 @@ public:
      *
      * Gets the size of the send buffer that the operating system uses for the
      * socket.<br/>
-     * This function works for TCPHandle, PipeHandle and UDPHandle handles on
-     * Unix and for TCPHandle and UDPHandle handles on Windows.<br/>
+     * This function works for tcp, pipeand udp handles on Unix and for tcp and
+     * udp handles on Windows.<br/>
      * Note that Linux will return double the size of the original set value.
      *
      * @return The size of the send buffer, 0 in case of errors.
      */
-    int sendBufferSize() {
+    int send_buffer_size() {
         int value = 0;
-        auto err = uv_send_buffer_size(this->template get<uv_handle_t>(), &value);
+        auto err = uv_send_buffer_size(as_uv_handle(), &value);
         return err ? 0 : value;
     }
 
@@ -193,14 +174,14 @@ public:
      *
      * Sets the size of the send buffer that the operating system uses for the
      * socket.<br/>
-     * This function works for TCPHandle, PipeHandle and UDPHandle handles on
-     * Unix and for TCPHandle and UDPHandle handles on Windows.<br/>
+     * This function works for tcp, pipe and udp handles on Unix and for tcp and
+     * udp handles on Windows.<br/>
      * Note that Linux will set double the size.
      *
      * @return True in case of success, false otherwise.
      */
-    bool sendBufferSize(int value) {
-        return (0 == uv_send_buffer_size(this->template get<uv_handle_t>(), &value));
+    bool send_buffer_size(int value) {
+        return (0 == uv_send_buffer_size(as_uv_handle(), &value));
     }
 
     /**
@@ -208,15 +189,15 @@ public:
      *
      * Gets the size of the receive buffer that the operating system uses for
      * the socket.<br/>
-     * This function works for TCPHandle, PipeHandle and UDPHandle handles on
-     * Unix and for TCPHandle and UDPHandle handles on Windows.<br/>
+     * This function works for tcp, pipe and udp handles on Unix and for tcp and
+     * udp handles on Windows.<br/>
      * Note that Linux will return double the size of the original set value.
      *
      * @return The size of the receive buffer, 0 in case of errors.
      */
-    int recvBufferSize() {
+    int recv_buffer_size() {
         int value = 0;
-        auto err = uv_recv_buffer_size(this->template get<uv_handle_t>(), &value);
+        auto err = uv_recv_buffer_size(as_uv_handle(), &value);
         return err ? 0 : value;
     }
 
@@ -225,14 +206,14 @@ public:
      *
      * Sets the size of the receive buffer that the operating system uses for
      * the socket.<br/>
-     * This function works for TCPHandle, PipeHandle and UDPHandle handles on
-     * Unix and for TCPHandle and UDPHandle handles on Windows.<br/>
+     * This function works for tcp, pipe and udp handles on Unix and for tcp and
+     * udp handles on Windows.<br/>
      * Note that Linux will set double the size.
      *
      * @return True in case of success, false otherwise.
      */
-    bool recvBufferSize(int value) {
-        return (0 == uv_recv_buffer_size(this->template get<uv_handle_t>(), &value));
+    bool recv_buffer_size(int value) {
+        return (0 == uv_recv_buffer_size(as_uv_handle(), &value));
     }
 
     /**
@@ -240,15 +221,15 @@ public:
      *
      * Supported handles:
      *
-     * * TCPHandle
-     * * PipeHandle
-     * * TTYHandle
-     * * UDPHandle
-     * * PollHandle
+     * * tcp_handle
+     * * pipe_handle
+     * * tty_handle
+     * * udp_handle
+     * * poll_handle
      *
-     * It will emit an ErrorEvent event if invoked on any other handle.<br/>
+     * It will emit an error event if invoked on any other handle.<br/>
      * If a handle doesn’t have an attached file descriptor yet or the handle
-     * itself has been closed, an ErrorEvent event will be emitted.
+     * itself has been closed, an error event will be emitted.
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/handle.html#c.uv_fileno)
@@ -257,9 +238,9 @@ public:
      * @return The file descriptor attached to the hande or a negative value in
      * case of errors.
      */
-    OSFileDescriptor fd() const {
+    os_file_descriptor fd() const {
         uv_os_fd_t fd;
-        uv_fileno(this->template get<uv_handle_t>(), &fd);
+        uv_fileno(as_uv_handle(), &fd);
         return fd;
     }
 };

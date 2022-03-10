@@ -7,73 +7,70 @@
 #include <type_traits>
 #include <utility>
 #include <uv.h>
+#include "config.h"
+#include "enum.hpp"
 #include "handle.hpp"
 #include "request.hpp"
 #include "util.h"
 
 namespace uvw {
 
-/**
- * @brief SendEvent event.
- *
- * It will be emitted by UDPHandle according with its functionalities.
- */
-struct SendEvent {};
+/*! @brief Send event. */
+struct send_event {};
 
-/**
- * @brief UDPDataEvent event.
- *
- * It will be emitted by UDPHandle according with its functionalities.
- */
-struct UDPDataEvent {
-    explicit UDPDataEvent(Addr sndr, std::unique_ptr<char[]> buf, std::size_t len, bool part) noexcept;
+/*! @brief UDP data event. */
+struct udp_data_event {
+    explicit udp_data_event(socket_address sndr, std::unique_ptr<char[]> buf, std::size_t len, bool part) UVW_NOEXCEPT;
 
     std::unique_ptr<char[]> data; /*!< A bunch of data read on the stream. */
     std::size_t length;           /*!< The amount of data read on the stream. */
-    Addr sender;                  /*!< A valid instance of Addr. */
+    socket_address sender;        /*!< A valid instance of socket_address. */
     bool partial;                 /*!< True if the message was truncated, false otherwise. */
 };
 
 namespace details {
 
-enum class UVUDPFlags : std::underlying_type_t<uv_udp_flags> {
+enum class uvw_udp_flags : std::underlying_type_t<uv_udp_flags> {
     IPV6ONLY = UV_UDP_IPV6ONLY,
     UDP_PARTIAL = UV_UDP_PARTIAL,
     REUSEADDR = UV_UDP_REUSEADDR,
     UDP_MMSG_CHUNK = UV_UDP_MMSG_CHUNK,
     UDP_MMSG_FREE = UV_UDP_MMSG_FREE,
     UDP_LINUX_RECVERR = UV_UDP_LINUX_RECVERR,
-    UDP_RECVMMSG = UV_UDP_RECVMMSG
+    UDP_RECVMMSG = UV_UDP_RECVMMSG,
+    _UVW_ENUM = 0
 };
 
-enum class UVMembership : std::underlying_type_t<uv_membership> {
+enum class uvw_membership : std::underlying_type_t<uv_membership> {
     LEAVE_GROUP = UV_LEAVE_GROUP,
     JOIN_GROUP = UV_JOIN_GROUP
 };
 
-class SendReq final: public Request<SendReq, uv_udp_send_t> {
+class send_req final: public request<send_req, uv_udp_send_t> {
+    static void udp_send_callback(uv_udp_send_t *req, int status);
+
 public:
-    using Deleter = void (*)(char *);
+    using deleter = void (*)(char *);
 
-    SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len);
+    send_req(loop::token token, std::shared_ptr<loop> parent, std::unique_ptr<char[], deleter> dt, unsigned int len);
 
-    void send(uv_udp_t *handle, const struct sockaddr *addr);
+    void send(uv_udp_t *hndl, const struct sockaddr *addr);
 
 private:
-    std::unique_ptr<char[], Deleter> data;
+    std::unique_ptr<char[], deleter> data;
     uv_buf_t buf;
 };
 
 } // namespace details
 
 /**
- * @brief The UDPHandle handle.
+ * @brief The UDP handle.
  *
  * UDP handles encapsulate UDP communication for both clients and servers.<br/>
- * By default, _IPv4_ is used as a template parameter. The handle already
- * supports _IPv6_ out-of-the-box by using `uvw::IPv6`.
+ * By default, _ipv4_ is used as a template parameter. The handle already
+ * supports _IPv6_ out-of-the-box by using `uvw::ipv6`.
  *
- * To create an `UDPHandle` through a `Loop`, arguments follow:
+ * To create an `udp_handle` through a `loop`, arguments follow:
  *
  * * An optional integer value that indicates optional flags used to initialize
  * the socket.
@@ -82,42 +79,22 @@ private:
  * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_init_ex)
  * for further details.
  */
-class UDPHandle final: public Handle<UDPHandle, uv_udp_t> {
-    template<typename I>
-    static void recvCallback(uv_udp_t *handle, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
-        const typename details::IpTraits<I>::Type *aptr = reinterpret_cast<const typename details::IpTraits<I>::Type *>(addr);
-
-        UDPHandle &udp = *(static_cast<UDPHandle *>(handle->data));
-        // data will be destroyed no matter of what the value of nread is
-        std::unique_ptr<char[]> data{buf->base};
-
-        if(nread > 0) {
-            // data available (can be truncated)
-            udp.publish(UDPDataEvent{details::address<I>(aptr), std::move(data), static_cast<std::size_t>(nread), !(0 == (flags & UV_UDP_PARTIAL))});
-        } else if(nread == 0 && addr == nullptr) {
-            // no more data to be read, doing nothing is fine
-        } else if(nread == 0 && addr != nullptr) {
-            // empty udp packet
-            udp.publish(UDPDataEvent{details::address<I>(aptr), std::move(data), static_cast<std::size_t>(nread), false});
-        } else {
-            // transmission error
-            udp.publish(ErrorEvent(nread));
-        }
-    }
+class udp_handle final: public handle<udp_handle, uv_udp_t> {
+    static void recv_callback(uv_udp_t *hndl, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags);
 
 public:
-    using Membership = details::UVMembership;
-    using Bind = details::UVUDPFlags;
-    using IPv4 = uvw::IPv4;
-    using IPv6 = uvw::IPv6;
+    using membership = details::uvw_membership;
+    using udp_flags = details::uvw_udp_flags;
+    using ipv4 = uvw::ipv4;
+    using ipv6 = uvw::ipv6;
 
-    explicit UDPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f = {});
+    explicit udp_handle(loop::token token, std::shared_ptr<loop> ref, unsigned int f = {});
 
     /**
      * @brief Initializes the handle. The actual socket is created lazily.
-     * @return True in case of success, false otherwise.
+     * @return Underlying code in case of errors, 0 otherwise.
      */
-    bool init();
+    int init() final;
 
     /**
      * @brief Opens an existing file descriptor or SOCKET as a UDP handle.
@@ -129,31 +106,10 @@ public:
      * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_open)
      * for further details.
      *
-     * @param socket A valid socket handle (either a file descriptor or a SOCKET).
+     * @param socket A valid socket handle (either a file descriptor or a
+     * SOCKET).
      */
-    void open(OSSocketHandle socket);
-
-    /**
-     * @brief Binds the UDP handle to an IP address and port.
-     *
-     * Available flags are:
-     *
-     * * `UDPHandle::Bind::IPV6ONLY`
-     * * `UDPHandle::Bind::UDP_PARTIAL`
-     * * `UDPHandle::Bind::REUSEADDR`
-     * * `UDPHandle::Bind::UDP_MMSG_CHUNK`
-     * * `UDPHandle::Bind::UDP_MMSG_FREE`
-     * * `UDPHandle::Bind::UDP_LINUX_RECVERR`
-     * * `UDPHandle::Bind::UDP_RECVMMSG`
-     *
-     * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
-     * for further details.
-     *
-     * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
-     * @param opts Optional additional flags.
-     */
-    void bind(const sockaddr &addr, Flags<Bind> opts = Flags<Bind>{});
+    void open(os_socket_handle socket);
 
     /**
      * @brief Associates the handle to a remote address and port (either IPv4 or
@@ -164,7 +120,7 @@ public:
      * Trying to call this function on an already connected handle isn't
      * allowed.
      *
-     * An ErrorEvent event is emitted in case of errors during the connection.
+     * An error event is emitted in case of errors during the connection.
      *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      */
@@ -179,12 +135,11 @@ public:
      * Trying to call this function on an already connected handle isn't
      * allowed.
      *
-     * An ErrorEvent event is emitted in case of errors during the connection.
+     * An error event is emitted in case of errors during the connection.
      *
      * @param ip The address to which to bind.
      * @param port The port to which to bind.
      */
-    template<typename I = IPv4>
     void connect(const std::string &ip, unsigned int port);
 
     /**
@@ -196,41 +151,62 @@ public:
      * Trying to call this function on an already connected handle isn't
      * allowed.
      *
-     * An ErrorEvent event is emitted in case of errors during the connection.
+     * An error event is emitted in case of errors during the connection.
      *
-     * @param addr A valid instance of Addr.
+     * @param addr A valid instance of socket_address.
      */
-    template<typename I = IPv4>
-    void connect(Addr addr);
+    void connect(socket_address addr);
 
     /**
      * @brief Disconnects the handle.
      *
      * Trying to disconnect a handle that is not connected isn't allowed.
      *
-     * An ErrorEvent event is emitted in case of errors.
+     * An error event is emitted in case of errors.
      */
     void disconnect();
 
     /**
      * @brief Gets the remote address to which the handle is connected, if any.
-     * @return A valid instance of Addr, an empty one in case of errors.
+     * @return A valid instance of socket_address, an empty one in case of
+     * errors.
      */
-    template<typename I = IPv4>
-    Addr peer() const noexcept;
+    socket_address peer() const UVW_NOEXCEPT;
 
     /**
      * @brief Binds the UDP handle to an IP address and port.
      *
      * Available flags are:
      *
-     * * `UDPHandle::Bind::IPV6ONLY`
-     * * `UDPHandle::Bind::UDP_PARTIAL`
-     * * `UDPHandle::Bind::REUSEADDR`
-     * * `UDPHandle::Bind::UDP_MMSG_CHUNK`
-     * * `UDPHandle::Bind::UDP_MMSG_FREE`
-     * * `UDPHandle::Bind::UDP_LINUX_RECVERR`
-     * * `UDPHandle::Bind::UDP_RECVMMSG`
+     * * `udp_handle::udp_flags::IPV6ONLY`
+     * * `udp_handle::udp_flags::UDP_PARTIAL`
+     * * `udp_handle::udp_flags::REUSEADDR`
+     * * `udp_handle::udp_flags::UDP_MMSG_CHUNK`
+     * * `udp_handle::udp_flags::UDP_MMSG_FREE`
+     * * `udp_handle::udp_flags::UDP_LINUX_RECVERR`
+     * * `udp_handle::udp_flags::UDP_RECVMMSG`
+     *
+     * See the official
+     * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
+     * for further details.
+     *
+     * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
+     * @param opts Optional additional flags.
+     */
+    void bind(const sockaddr &addr, udp_flags opts = udp_flags::_UVW_ENUM);
+
+    /**
+     * @brief Binds the UDP handle to an IP address and port.
+     *
+     * Available flags are:
+     *
+     * * `udp_handle::udp_flags::IPV6ONLY`
+     * * `udp_handle::udp_flags::UDP_PARTIAL`
+     * * `udp_handle::udp_flags::REUSEADDR`
+     * * `udp_handle::udp_flags::UDP_MMSG_CHUNK`
+     * * `udp_handle::udp_flags::UDP_MMSG_FREE`
+     * * `udp_handle::udp_flags::UDP_LINUX_RECVERR`
+     * * `udp_handle::udp_flags::UDP_RECVMMSG`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
@@ -240,54 +216,51 @@ public:
      * @param port The port to which to bind.
      * @param opts Optional additional flags.
      */
-    template<typename I = IPv4>
-    void bind(const std::string &ip, unsigned int port, Flags<Bind> opts = Flags<Bind>{});
+    void bind(const std::string &ip, unsigned int port, udp_flags opts = udp_flags::_UVW_ENUM);
 
     /**
      * @brief Binds the UDP handle to an IP address and port.
      *
      * Available flags are:
      *
-     * * `UDPHandle::Bind::IPV6ONLY`
-     * * `UDPHandle::Bind::UDP_PARTIAL`
-     * * `UDPHandle::Bind::REUSEADDR`
-     * * `UDPHandle::Bind::UDP_MMSG_CHUNK`
-     * * `UDPHandle::Bind::UDP_MMSG_FREE`
-     * * `UDPHandle::Bind::UDP_LINUX_RECVERR`
-     * * `UDPHandle::Bind::UDP_RECVMMSG`
+     * * `udp_handle::udp_flags::IPV6ONLY`
+     * * `udp_handle::udp_flags::UDP_PARTIAL`
+     * * `udp_handle::udp_flags::REUSEADDR`
+     * * `udp_handle::udp_flags::UDP_MMSG_CHUNK`
+     * * `udp_handle::udp_flags::UDP_MMSG_FREE`
+     * * `udp_handle::udp_flags::UDP_LINUX_RECVERR`
+     * * `udp_handle::udp_flags::UDP_RECVMMSG`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
      * for further details.
      *
-     * @param addr A valid instance of Addr.
+     * @param addr A valid instance of socket_address.
      * @param opts Optional additional flags.
      */
-    template<typename I = IPv4>
-    void bind(Addr addr, Flags<Bind> opts = Flags<Bind>{});
+    void bind(socket_address addr, udp_flags opts = udp_flags::_UVW_ENUM);
 
     /**
      * @brief Get the local IP and port of the UDP handle.
-     * @return A valid instance of Addr, an empty one in case of errors.
+     * @return A valid instance of socket_address, an empty one in case of
+     * errors.
      */
-    template<typename I = IPv4>
-    Addr sock() const noexcept;
+    socket_address sock() const UVW_NOEXCEPT;
 
     /**
      * @brief Sets membership for a multicast address.
      *
-     * Available values for `membership` are:
+     * Available values for `ms` are:
      *
-     * * `UDPHandle::Membership::LEAVE_GROUP`
-     * * `UDPHandle::Membership::JOIN_GROUP`
+     * * `udp_handle::membership::LEAVE_GROUP`
+     * * `udp_handle::membership::JOIN_GROUP`
      *
      * @param multicast Multicast address to set membership for.
      * @param iface Interface address.
-     * @param membership Action to be performed.
+     * @param ms Action to be performed.
      * @return True in case of success, false otherwise.
      */
-    template<typename I = IPv4>
-    bool multicastMembership(const std::string &multicast, const std::string &iface, Membership membership);
+    bool multicast_membership(const std::string &multicast, const std::string &iface, membership ms);
 
     /**
      * @brief Sets IP multicast loop flag.
@@ -297,22 +270,21 @@ public:
      * @param enable True to enable multicast loop, false otherwise.
      * @return True in case of success, false otherwise.
      */
-    bool multicastLoop(bool enable = true);
+    bool multicast_loop(bool enable = true);
 
     /**
      * @brief Sets the multicast ttl.
      * @param val A value in the range `[1, 255]`.
      * @return True in case of success, false otherwise.
      */
-    bool multicastTtl(int val);
+    bool multicast_ttl(int val);
 
     /**
      * @brief Sets the multicast interface to send or receive data on.
      * @param iface Interface address.
      * @return True in case of success, false otherwise.
      */
-    template<typename I = IPv4>
-    bool multicastInterface(const std::string &iface);
+    bool multicast_interface(const std::string &iface);
 
     /**
      * @brief Sets broadcast on or off.
@@ -338,8 +310,8 @@ public:
      * The handle takes the ownership of the data and it is in charge of delete
      * them.
      *
-     * A SendEvent event will be emitted when the data have been sent.<br/>
-     * An ErrorEvent event will be emitted in case of errors.
+     * A send event will be emitted when the data have been sent.<br/>
+     * An error event will be emitted in case of errors.
      *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @param data The data to be sent.
@@ -357,15 +329,14 @@ public:
      * The handle takes the ownership of the data and it is in charge of delete
      * them.
      *
-     * A SendEvent event will be emitted when the data have been sent.<br/>
-     * An ErrorEvent event will be emitted in case of errors.
+     * A send event will be emitted when the data have been sent.<br/>
+     * An error event will be emitted in case of errors.
      *
      * @param ip The address to which to send data.
      * @param port The port to which to send data.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
      */
-    template<typename I = IPv4>
     void send(const std::string &ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len);
 
     /**
@@ -378,15 +349,14 @@ public:
      * The handle takes the ownership of the data and it is in charge of delete
      * them.
      *
-     * A SendEvent event will be emitted when the data have been sent.<br/>
-     * An ErrorEvent event will be emitted in case of errors.
+     * A send event will be emitted when the data have been sent.<br/>
+     * An error event will be emitted in case of errors.
      *
-     * @param addr A valid instance of Addr.
+     * @param addr A valid instance of socket_address.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
      */
-    template<typename I = IPv4>
-    void send(Addr addr, std::unique_ptr<char[]> data, unsigned int len);
+    void send(socket_address addr, std::unique_ptr<char[]> data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -398,8 +368,8 @@ public:
      * The handle doesn't take the ownership of the data. Be sure that their
      * lifetime overcome the one of the request.
      *
-     * A SendEvent event will be emitted when the data have been sent.<br/>
-     * An ErrorEvent event will be emitted in case of errors.
+     * A send event will be emitted when the data have been sent.<br/>
+     * An error event will be emitted in case of errors.
      *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @param data The data to be sent.
@@ -417,15 +387,14 @@ public:
      * The handle doesn't take the ownership of the data. Be sure that their
      * lifetime overcome the one of the request.
      *
-     * A SendEvent event will be emitted when the data have been sent.<br/>
-     * An ErrorEvent event will be emitted in case of errors.
+     * A send event will be emitted when the data have been sent.<br/>
+     * An error event will be emitted in case of errors.
      *
      * @param ip The address to which to send data.
      * @param port The port to which to send data.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
      */
-    template<typename I = IPv4>
     void send(const std::string &ip, unsigned int port, char *data, unsigned int len);
 
     /**
@@ -438,15 +407,14 @@ public:
      * The handle doesn't take the ownership of the data. Be sure that their
      * lifetime overcome the one of the request.
      *
-     * A SendEvent event will be emitted when the data have been sent.<br/>
-     * An ErrorEvent event will be emitted in case of errors.
+     * A send event will be emitted when the data have been sent.<br/>
+     * An error event will be emitted in case of errors.
      *
-     * @param addr A valid instance of Addr.
+     * @param addr A valid instance of socket_address.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
      */
-    template<typename I = IPv4>
-    void send(Addr addr, char *data, unsigned int len);
+    void send(socket_address addr, char *data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -459,8 +427,7 @@ public:
      * @param len The lenght of the submitted data.
      * @return Number of bytes written.
      */
-    template<typename I = IPv4>
-    int trySend(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len);
+    int try_send(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -474,8 +441,7 @@ public:
      * @param len The lenght of the submitted data.
      * @return Number of bytes written.
      */
-    template<typename I = IPv4>
-    int trySend(const std::string &ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len);
+    int try_send(const std::string &ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -483,13 +449,12 @@ public:
      * Same as `send()`, but it won’t queue a send request if it can’t be
      * completed immediately.
      *
-     * @param addr A valid instance of Addr.
+     * @param addr A valid instance of socket_address.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
      * @return Number of bytes written.
      */
-    template<typename I = IPv4>
-    int trySend(Addr addr, std::unique_ptr<char[]> data, unsigned int len);
+    int try_send(socket_address addr, std::unique_ptr<char[]> data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -502,8 +467,7 @@ public:
      * @param len The lenght of the submitted data.
      * @return Number of bytes written.
      */
-    template<typename I = IPv4>
-    int trySend(const sockaddr &addr, char *data, unsigned int len);
+    int try_send(const sockaddr &addr, char *data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -517,8 +481,7 @@ public:
      * @param len The lenght of the submitted data.
      * @return Number of bytes written.
      */
-    template<typename I = IPv4>
-    int trySend(const std::string &ip, unsigned int port, char *data, unsigned int len);
+    int try_send(const std::string &ip, unsigned int port, char *data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -526,13 +489,12 @@ public:
      * Same as `send()`, but it won’t queue a send request if it can’t be
      * completed immediately.
      *
-     * @param addr A valid instance of Addr.
+     * @param addr A valid instance of socket_address.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
      * @return Number of bytes written.
      */
-    template<typename I = IPv4>
-    int trySend(Addr addr, char *data, unsigned int len);
+    int try_send(socket_address addr, char *data, unsigned int len);
 
     /**
      * @brief Prepares for receiving data.
@@ -541,10 +503,9 @@ public:
      * is bound to `0.0.0.0` (the _all interfaces_ IPv4 address) and a random
      * port number.
      *
-     * An UDPDataEvent event will be emitted when the handle receives data.<br/>
-     * An ErrorEvent event will be emitted in case of errors.
+     * An UDP data event will be emitted when the handle receives data.<br/>
+     * An error event will be emitted in case of errors.
      */
-    template<typename I = IPv4>
     void recv();
 
     /**
@@ -559,13 +520,14 @@ public:
      *
      * @return Number of bytes queued for sending.
      */
-    size_t sendQueueSize() const noexcept;
+    size_t send_queue_size() const UVW_NOEXCEPT;
 
     /**
-     * @brief Number of send requests currently in the queue awaiting to be processed.
+     * @brief Number of send requests currently in the queue awaiting to be
+     * processed.
      * @return Number of send requests currently in the queue.
      */
-    size_t sendQueueCount() const noexcept;
+    size_t send_queue_count() const UVW_NOEXCEPT;
 
 private:
     enum {
@@ -575,76 +537,6 @@ private:
 
     unsigned int flags{};
 };
-
-/**
- * @cond TURN_OFF_DOXYGEN
- * Internal details not to be documented.
- */
-
-// (extern) explicit instantiations
-#ifdef UVW_AS_LIB
-extern template void UDPHandle::connect<IPv4>(const std::string &, unsigned int);
-extern template void UDPHandle::connect<IPv6>(const std::string &, unsigned int);
-
-extern template void UDPHandle::connect<IPv4>(Addr);
-extern template void UDPHandle::connect<IPv6>(Addr);
-
-extern template Addr UDPHandle::peer<IPv4>() const noexcept;
-extern template Addr UDPHandle::peer<IPv6>() const noexcept;
-
-extern template void UDPHandle::bind<IPv4>(const std::string &, unsigned int, Flags<Bind>);
-extern template void UDPHandle::bind<IPv6>(const std::string &, unsigned int, Flags<Bind>);
-
-extern template void UDPHandle::bind<IPv4>(Addr, Flags<Bind>);
-extern template void UDPHandle::bind<IPv6>(Addr, Flags<Bind>);
-
-extern template Addr UDPHandle::sock<IPv4>() const noexcept;
-extern template Addr UDPHandle::sock<IPv6>() const noexcept;
-
-extern template bool UDPHandle::multicastMembership<IPv4>(const std::string &, const std::string &, Membership);
-extern template bool UDPHandle::multicastMembership<IPv6>(const std::string &, const std::string &, Membership);
-
-extern template bool UDPHandle::multicastInterface<IPv4>(const std::string &);
-extern template bool UDPHandle::multicastInterface<IPv6>(const std::string &);
-
-extern template void UDPHandle::send<IPv4>(const std::string &, unsigned int, std::unique_ptr<char[]>, unsigned int);
-extern template void UDPHandle::send<IPv6>(const std::string &, unsigned int, std::unique_ptr<char[]>, unsigned int);
-
-extern template void UDPHandle::send<IPv4>(Addr, std::unique_ptr<char[]>, unsigned int);
-extern template void UDPHandle::send<IPv6>(Addr, std::unique_ptr<char[]>, unsigned int);
-
-extern template void UDPHandle::send<IPv4>(const std::string &, unsigned int, char *, unsigned int);
-extern template void UDPHandle::send<IPv6>(const std::string &, unsigned int, char *, unsigned int);
-
-extern template void UDPHandle::send<IPv4>(Addr, char *, unsigned int);
-extern template void UDPHandle::send<IPv6>(Addr, char *, unsigned int);
-
-extern template int UDPHandle::trySend<IPv4>(const sockaddr &, std::unique_ptr<char[]>, unsigned int);
-extern template int UDPHandle::trySend<IPv6>(const sockaddr &, std::unique_ptr<char[]>, unsigned int);
-
-extern template int UDPHandle::trySend<IPv4>(const std::string &, unsigned int, std::unique_ptr<char[]>, unsigned int);
-extern template int UDPHandle::trySend<IPv6>(const std::string &, unsigned int, std::unique_ptr<char[]>, unsigned int);
-
-extern template int UDPHandle::trySend<IPv4>(Addr, std::unique_ptr<char[]>, unsigned int);
-extern template int UDPHandle::trySend<IPv6>(Addr, std::unique_ptr<char[]>, unsigned int);
-
-extern template int UDPHandle::trySend<IPv4>(const sockaddr &, char *, unsigned int);
-extern template int UDPHandle::trySend<IPv6>(const sockaddr &, char *, unsigned int);
-
-extern template int UDPHandle::trySend<IPv4>(const std::string &, unsigned int, char *, unsigned int);
-extern template int UDPHandle::trySend<IPv6>(const std::string &, unsigned int, char *, unsigned int);
-
-extern template int UDPHandle::trySend<IPv4>(Addr, char *, unsigned int);
-extern template int UDPHandle::trySend<IPv6>(Addr, char *, unsigned int);
-
-extern template void UDPHandle::recv<IPv4>();
-extern template void UDPHandle::recv<IPv6>();
-#endif // UVW_AS_LIB
-
-/**
- * Internal details not to be documented.
- * @endcond
- */
 
 } // namespace uvw
 

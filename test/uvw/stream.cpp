@@ -5,11 +5,11 @@ struct fake_stream_t {
     void *data;
 };
 
-struct FakeStreamHandle: uvw::StreamHandle<FakeStreamHandle, fake_stream_t> {
-    using StreamHandle::StreamHandle;
+struct fake_stream_handle: uvw::stream_handle<fake_stream_handle, fake_stream_t> {
+    using stream_handle::stream_handle;
 
     template<typename... Args>
-    bool init(Args &&...) {
-        return true;
+    int init(Args &&...) {
+        return 0;
     }
 };

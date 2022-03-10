@@ -2,14 +2,14 @@
 #include <uvw/async.h>
 
 TEST(Async, Send) {
-    auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::AsyncHandle>();
+    auto loop = uvw::loop::get_default();
+    auto handle = loop->resource<uvw::async_handle>();
 
     bool checkAsyncEvent = false;
 
-    handle->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
+    handle->on<uvw::error_event>([](auto &&...) { FAIL(); });
 
-    handle->on<uvw::AsyncEvent>([&checkAsyncEvent](const auto &, auto &hndl) {
+    handle->on<uvw::async_event>([&checkAsyncEvent](const auto &, auto &hndl) {
         ASSERT_FALSE(checkAsyncEvent);
         checkAsyncEvent = true;
         hndl.close();
@@ -27,11 +27,11 @@ TEST(Async, Send) {
 }
 
 TEST(Async, Fake) {
-    auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::AsyncHandle>();
+    auto loop = uvw::loop::get_default();
+    auto handle = loop->resource<uvw::async_handle>();
 
-    handle->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
-    handle->on<uvw::AsyncEvent>([](auto &&...) { FAIL(); });
+    handle->on<uvw::error_event>([](auto &&...) { FAIL(); });
+    handle->on<uvw::async_event>([](auto &&...) { FAIL(); });
 
     handle->send();
     handle->close();

@@ -7,55 +7,57 @@
 #include <type_traits>
 #include <utility>
 #include <uv.h>
+#include "config.h"
+#include "enum.hpp"
 #include "loop.h"
-#include "underlying_type.hpp"
+#include "uv_type.hpp"
 
 namespace uvw {
 
 namespace details {
 
-enum class UVThreadCreateFlags : std::underlying_type_t<uv_thread_create_flags> {
+enum class uvw_thread_create_flags : std::underlying_type_t<uv_thread_create_flags> {
     THREAD_NO_FLAGS = UV_THREAD_NO_FLAGS,
     THREAD_HAS_STACK_SIZE = UV_THREAD_HAS_STACK_SIZE
 };
 
 }
 
-class Thread;
-class ThreadLocalStorage;
-class Once;
-class Mutex;
-class RWLock;
-class Semaphore;
-class Condition;
-class Barrier;
+class thread;
+class thread_local_storage;
+class once;
+class mutex;
+class rwlock;
+class semaphore;
+class condition;
+class barrier;
 
 /**
- * @brief The Thread wrapper.
+ * @brief The thread wrapper.
  *
- * To create a `Thread` through a `Loop`, arguments follow:
+ * To create a `thread` through a `loop`, arguments follow:
  *
  * * A callback invoked to initialize thread execution. The type must be such
  * that it can be assigned to an `std::function<void(std::shared_ptr<void>)>`.
  * * An optional payload the type of which is `std::shared_ptr<void>`.
  */
-class Thread final: public UnderlyingType<Thread, uv_thread_t> {
-    using InternalTask = std::function<void(std::shared_ptr<void>)>;
+class thread final: public uv_type<uv_thread_t> {
+    using internal_task = std::function<void(std::shared_ptr<void>)>;
 
-    static void createCallback(void *arg);
+    static void create_callback(void *arg);
 
 public:
-    using Options = details::UVThreadCreateFlags;
-    using Task = InternalTask;
-    using Type = uv_thread_t;
+    using create_flags = details::uvw_thread_create_flags;
+    using task = internal_task;
+    using type = uv_thread_t;
 
-    explicit Thread(ConstructorAccess ca, std::shared_ptr<Loop> ref, Task t, std::shared_ptr<void> d = nullptr) noexcept;
+    explicit thread(loop::token token, std::shared_ptr<loop> ref, task t, std::shared_ptr<void> d = nullptr) UVW_NOEXCEPT;
 
     /**
      * @brief Obtains the identifier of the calling thread.
      * @return The identifier of the calling thread.
      */
-    static Type self() noexcept;
+    static type self() UVW_NOEXCEPT;
 
     /**
      * @brief Compares thread by means of their identifiers.
@@ -63,54 +65,54 @@ public:
      * @param tr A valid instance of a thread.
      * @return True if the two threads are the same thread, false otherwise.
      */
-    static bool equal(const Thread &tl, const Thread &tr) noexcept;
+    static bool equal(const thread &tl, const thread &tr) UVW_NOEXCEPT;
 
-    ~Thread() noexcept;
+    ~thread() UVW_NOEXCEPT;
 
     /**
      * @brief Creates a new thread.
      * @return True in case of success, false otherwise.
      */
-    bool run() noexcept;
+    bool run() UVW_NOEXCEPT;
 
     /**
      * @brief Creates a new thread.
      *
      * Available flags are:
      *
-     * * `Thread::Options::THREAD_NO_FLAGS`: no flags set.
-     * * `Thread::Options::THREAD_HAS_STACK_SIZE`: if set, `stack` specifies a
+     * * `thread::create_flags::THREAD_NO_FLAGS`: no flags set.
+     * * `thread::create_flags::THREAD_HAS_STACK_SIZE`: if set, `stack` specifies a
      * stack size for the new thread. 0 indicates that the default value should
      * be used (it behaves as if the flag was not set). Other values will be
      * rounded up to the nearest page boundary.
      *
      * @return True in case of success, false otherwise.
      */
-    bool run(Flags<Options> opts, std::size_t stack = {}) noexcept;
+    bool run(create_flags opts, std::size_t stack = {}) UVW_NOEXCEPT;
 
     /**
      * @brief Joins with a terminated thread.
      * @return True in case of success, false otherwise.
      */
-    bool join() noexcept;
+    bool join() UVW_NOEXCEPT;
 
 private:
     std::shared_ptr<void> data;
-    Task task;
+    task func;
 };
 
 /**
- * @brief The ThreadLocalStorage wrapper.
+ * @brief The thread local storage wrapper.
  *
  * A storage area that can only be accessed by one thread. The variable can be
  * seen as a global variable that is only visible to a particular thread and not
  * the whole program.
  */
-class ThreadLocalStorage final: public UnderlyingType<ThreadLocalStorage, uv_key_t> {
+class thread_local_storage final: public uv_type<uv_key_t> {
 public:
-    explicit ThreadLocalStorage(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept;
+    explicit thread_local_storage(loop::token token, std::shared_ptr<loop> ref) UVW_NOEXCEPT;
 
-    ~ThreadLocalStorage() noexcept;
+    ~thread_local_storage() UVW_NOEXCEPT;
 
     /**
      * @brief Gets the value of a given variable.
@@ -118,8 +120,8 @@ public:
      * @return A pointer to the given variable.
      */
     template<typename T>
-    T *get() noexcept {
-        return static_cast<T *>(uv_key_get(UnderlyingType::get()));
+    T *get() UVW_NOEXCEPT {
+        return static_cast<T *>(uv_key_get(uv_type::raw()));
     }
 
     /**
@@ -128,22 +130,22 @@ public:
      * @param value A valid pointer to the variable to store
      */
     template<typename T>
-    void set(T *value) noexcept {
-        return uv_key_set(UnderlyingType::get(), value);
+    void set(T *value) UVW_NOEXCEPT {
+        return uv_key_set(uv_type::raw(), value);
     }
 };
 
 /**
- * @brief The Once wrapper.
+ * @brief The once wrapper.
  *
  * Runs a function once and only once. Concurrent calls to `once` will block all
  * callers except one (it’s unspecified which one).
  */
-class Once final: public UnderlyingType<Once, uv_once_t> {
-    static uv_once_t *guard() noexcept;
+class once final: public uv_type<uv_once_t> {
+    static uv_once_t *guard() UVW_NOEXCEPT;
 
 public:
-    using UnderlyingType::UnderlyingType;
+    using uv_type::uv_type;
 
     /**
      * @brief Runs a function once and only once.
@@ -155,127 +157,127 @@ public:
      * @param f A valid callback function.
      */
     template<typename F>
-    static void once(F &&f) noexcept {
-        using CallbackType = void (*)(void);
-        static_assert(std::is_convertible_v<F, CallbackType>);
-        CallbackType cb = f;
+    static void run(F &&f) UVW_NOEXCEPT {
+        using callback_type = void (*)(void);
+        static_assert(std::is_convertible_v<F, callback_type>);
+        callback_type cb = f;
         uv_once(guard(), cb);
     }
 };
 
 /**
- * @brief The Mutex wrapper.
+ * @brief The mutex wrapper.
  *
- * To create a `Mutex` through a `Loop`, arguments follow:
+ * To create a `mutex` through a `loop`, arguments follow:
  *
  * * An option boolean that specifies if the mutex is a recursive one. The
  * default value is false, the mutex isn't recursive.
  */
-class Mutex final: public UnderlyingType<Mutex, uv_mutex_t> {
-    friend class Condition;
+class mutex final: public uv_type<uv_mutex_t> {
+    friend class condition;
 
 public:
-    explicit Mutex(ConstructorAccess ca, std::shared_ptr<Loop> ref, bool recursive = false) noexcept;
+    explicit mutex(loop::token token, std::shared_ptr<loop> ref, bool recursive = false) UVW_NOEXCEPT;
 
-    ~Mutex() noexcept;
+    ~mutex() UVW_NOEXCEPT;
 
     /**
      * @brief Locks the mutex.
      */
-    void lock() noexcept;
+    void lock() UVW_NOEXCEPT;
 
     /**
      * @brief Tries to lock the mutex.
      * @return True in case of success, false otherwise.
      */
-    bool tryLock() noexcept;
+    bool try_lock() UVW_NOEXCEPT;
 
     /**
      * @brief Unlocks the mutex.
      */
-    void unlock() noexcept;
+    void unlock() UVW_NOEXCEPT;
 };
 
 /**
- * @brief The RWLock wrapper.
+ * @brief The rwlock wrapper.
  */
-class RWLock final: public UnderlyingType<RWLock, uv_rwlock_t> {
+class rwlock final: public uv_type<uv_rwlock_t> {
 public:
-    explicit RWLock(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept;
+    explicit rwlock(loop::token token, std::shared_ptr<loop> ref) UVW_NOEXCEPT;
 
-    ~RWLock() noexcept;
+    ~rwlock() UVW_NOEXCEPT;
 
     /**
      * @brief Locks a read-write lock object for reading.
      */
-    void rdLock() noexcept;
+    void rdlock() UVW_NOEXCEPT;
 
     /**
      * @brief Tries to lock a read-write lock object for reading.
      * @return True in case of success, false otherwise.
      */
-    bool tryRdLock() noexcept;
+    bool try_rdlock() UVW_NOEXCEPT;
 
     /**
      * @brief Unlocks a read-write lock object previously locked for reading.
      */
-    void rdUnlock() noexcept;
+    void rdunlock() UVW_NOEXCEPT;
 
     /**
      * @brief Locks a read-write lock object for writing.
      */
-    void wrLock() noexcept;
+    void wrlock() UVW_NOEXCEPT;
 
     /**
      * @brief Tries to lock a read-write lock object for writing.
      * @return True in case of success, false otherwise.
      */
-    bool tryWrLock() noexcept;
+    bool try_wrlock() UVW_NOEXCEPT;
 
     /**
      * @brief Unlocks a read-write lock object previously locked for writing.
      */
-    void wrUnlock() noexcept;
+    void wrunlock() UVW_NOEXCEPT;
 };
 
 /**
- * @brief The Semaphore wrapper.
+ * @brief The semaphore wrapper.
  *
- * To create a `Semaphore` through a `Loop`, arguments follow:
+ * To create a `semaphore` through a `loop`, arguments follow:
  *
  * * An unsigned integer that specifies the initial value for the semaphore.
  */
-class Semaphore final: public UnderlyingType<Semaphore, uv_sem_t> {
+class semaphore final: public uv_type<uv_sem_t> {
 public:
-    explicit Semaphore(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int value) noexcept;
+    explicit semaphore(loop::token token, std::shared_ptr<loop> ref, unsigned int value) UVW_NOEXCEPT;
 
-    ~Semaphore() noexcept;
+    ~semaphore() UVW_NOEXCEPT;
 
     /**
      * @brief Unlocks a semaphore.
      */
-    void post() noexcept;
+    void post() UVW_NOEXCEPT;
 
     /**
      * @brief Locks a semaphore.
      */
-    void wait() noexcept;
+    void wait() UVW_NOEXCEPT;
 
     /**
      * @brief Tries to lock a semaphore.
      * @return True in case of success, false otherwise.
      */
-    bool tryWait() noexcept;
+    bool try_wait() UVW_NOEXCEPT;
 };
 
 /**
- * @brief The Condition wrapper.
+ * @brief The condition wrapper.
  */
-class Condition final: public UnderlyingType<Condition, uv_cond_t> {
+class condition final: public uv_type<uv_cond_t> {
 public:
-    explicit Condition(ConstructorAccess ca, std::shared_ptr<Loop> ref) noexcept;
+    explicit condition(loop::token token, std::shared_ptr<loop> ref) UVW_NOEXCEPT;
 
-    ~Condition() noexcept;
+    ~condition() UVW_NOEXCEPT;
 
     /**
      * @brief Signals a condition.
@@ -283,14 +285,14 @@ public:
      * This function shall unblock at least one of the threads that are blocked
      * on the specified condition variable (if any threads are blocked on it).
      */
-    void signal() noexcept;
+    void signal() UVW_NOEXCEPT;
 
     /**
      * @brief Broadcasts a condition.
      *
      * This function shall unblock threads blocked on a condition variable.
      */
-    void broadcast() noexcept;
+    void broadcast() UVW_NOEXCEPT;
 
     /**
      * @brief Waits on a condition.
@@ -298,10 +300,10 @@ public:
      * These function atomically releases the mutex and causes the calling
      * thread to block on the condition variable.
      *
-     * @param mutex A mutex locked by the calling thread, otherwise expect
+     * @param mtx A mutex locked by the calling thread, otherwise expect
      * undefined behavior.
      */
-    void wait(Mutex &mutex) noexcept;
+    void wait(mutex &mtx) UVW_NOEXCEPT;
 
     /**
      * @brief Waits on a condition.
@@ -313,34 +315,34 @@ public:
      * signaled or broadcasted, or if the absolute time specified has already
      * been passed at the time of the call.
      *
-     * @param mutex A mutex locked by the calling thread, otherwise expect
+     * @param mtx A mutex locked by the calling thread, otherwise expect
      * undefined behavior.
      * @param timeout The maximum time to wait before to return.
      * @return True in case of success, false otherwise.
      */
-    bool timedWait(Mutex &mutex, uint64_t timeout) noexcept;
+    bool timed_wait(mutex &mtx, uint64_t timeout) UVW_NOEXCEPT;
 };
 
 /**
- * @brief The Barrier wrapper.
+ * @brief The barrier wrapper.
  *
- * To create a `Barrier` through a `Loop`, arguments follow:
+ * To create a `barrier` through a `loop`, arguments follow:
  *
  * * An unsigned integer that specifies the number of threads that must call
  * `wait` before any of them successfully return from the call. The value
  * specified must be greater than zero.
  */
-class Barrier final: public UnderlyingType<Barrier, uv_barrier_t> {
+class barrier final: public uv_type<uv_barrier_t> {
 public:
-    explicit Barrier(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int count) noexcept;
+    explicit barrier(loop::token token, std::shared_ptr<loop> ref, unsigned int count) UVW_NOEXCEPT;
 
-    ~Barrier() noexcept;
+    ~barrier() UVW_NOEXCEPT;
 
     /**
      * @brief Synchronizes at a barrier.
      * @return True in case of success, false otherwise.
      */
-    bool wait() noexcept;
+    bool wait() UVW_NOEXCEPT;
 };
 
 } // namespace uvw

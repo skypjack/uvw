@@ -4,56 +4,53 @@
 #include <chrono>
 #include <string>
 #include <uv.h>
+#include "config.h"
 #include "handle.hpp"
 #include "loop.h"
 #include "util.h"
 
 namespace uvw {
 
-/**
- * @brief FsPollEvent event.
- *
- * It will be emitted by FsPollHandle according with its functionalities.
- */
-struct FsPollEvent {
-    explicit FsPollEvent(Stat previous, Stat current) noexcept;
+/*! @brief Fs pos event. */
+struct fs_poll_event {
+    explicit fs_poll_event(file_info previous, file_info current) UVW_NOEXCEPT;
 
-    Stat prev; /*!< The old Stat struct. */
-    Stat curr; /*!< The new Stat struct. */
+    file_info prev; /*!< The old file_info struct. */
+    file_info curr; /*!< The new file_info struct. */
 };
 
 /**
- * @brief The FsPollHandle handle.
+ * @brief The fs poll handle.
  *
- * It allows the user to monitor a given path for changes. Unlike FsEventHandle
- * handles, FsPollHandle handles use stat to detect when a file has changed so
- * they can work on file systems where FsEventHandle handles can’t.
+ * It allows users to monitor a given path for changes. Unlike fs_event_handle,
+ * fs_poll_handle uses stat to detect when a file has changed so it can work on
+ * file systems where fs_event_handle handles can’t.
  *
- * To create a `FsPollHandle` through a `Loop`, no arguments are required.
+ * To create a `fs_poll_handle` through a `loop`, no arguments are required.
  */
-class FsPollHandle final: public Handle<FsPollHandle, uv_fs_poll_t> {
-    static void startCallback(uv_fs_poll_t *handle, int status, const uv_stat_t *prev, const uv_stat_t *curr);
+class fs_poll_handle final: public handle<fs_poll_handle, uv_fs_poll_t> {
+    static void start_callback(uv_fs_poll_t *hndl, int status, const uv_stat_t *prev, const uv_stat_t *curr);
 
 public:
-    using Time = std::chrono::duration<unsigned int, std::milli>;
+    using time = std::chrono::duration<unsigned int, std::milli>;
 
-    using Handle::Handle;
+    using handle::handle;
 
     /**
      * @brief Initializes the handle.
-     * @return True in case of success, false otherwise.
+     * @return Underlying code in case of errors, 0 otherwise.
      */
-    bool init();
+    int init() final;
 
     /**
      * @brief Starts the handle.
      *
-     * The handle will start emitting FsPollEvent when needed.
+     * The handle will start emitting fs_poll_event when needed.
      *
      * @param file The path to the file to be checked.
      * @param interval Milliseconds between successive checks.
      */
-    void start(const std::string &file, Time interval);
+    void start(const std::string &file, time interval);
 
     /**
      * @brief Stops the handle.
@@ -65,7 +62,7 @@ public:
      * @return The path being monitored by the handle, an empty string in case
      * of errors.
      */
-    std::string path() noexcept;
+    std::string path() UVW_NOEXCEPT;
 };
 
 } // namespace uvw

@@ -9,20 +9,16 @@
 
 namespace uvw {
 
-/**
- * @brief WorkEvent event.
- *
- * It will be emitted by WorkReq according with its functionalities.
- */
-struct WorkEvent {};
+/*! @brief Work event. */
+struct work_event {};
 
 /**
- * @brief The WorkReq request.
+ * @brief The work request.
  *
  * It runs user code using a thread from the threadpool and gets notified in the
  * loop thread by means of an event.
  *
- * To create a `WorkReq` through a `Loop`, arguments follow:
+ * To create a `work_req` through a `loop`, arguments follow:
  *
  * * A valid instance of a `Task`, that is of type `std::function<void(void)>`.
  *
@@ -30,27 +26,26 @@ struct WorkEvent {};
  * [documentation](http://docs.libuv.org/en/v1.x/threadpool.html)
  * for further details.
  */
-class WorkReq final: public Request<WorkReq, uv_work_t> {
-    using InternalTask = std::function<void(void)>;
-
-    static void workCallback(uv_work_t *req);
+class work_req final: public request<work_req, uv_work_t> {
+    static void work_callback(uv_work_t *req);
+    static void after_work_callback(uv_work_t *req, int status);
 
 public:
-    using Task = InternalTask;
+    using task = std::function<void(void)>;
 
-    explicit WorkReq(ConstructorAccess ca, std::shared_ptr<Loop> ref, InternalTask t);
+    explicit work_req(loop::token token, std::shared_ptr<loop> ref, task t);
 
     /**
      * @brief Runs the given task in a separate thread.
      *
-     * A WorkEvent event will be emitted on the loop thread when the task is
+     * A work event will be emitted on the loop thread when the task is
      * finished.<br/>
      * This request can be cancelled with `cancel()`.
      */
     void queue();
 
 private:
-    Task task{};
+    task func{};
 };
 
 } // namespace uvw

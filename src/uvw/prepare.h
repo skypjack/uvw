@@ -7,40 +7,36 @@
 
 namespace uvw {
 
-/**
- * @brief PrepareEvent event.
- *
- * It will be emitted by PrepareHandle according with its functionalities.
- */
-struct PrepareEvent {};
+/*! @brief Prepare event. */
+struct prepare_event {};
 
 /**
- * @brief The PrepareHandle handle.
+ * @brief The prepare handle.
  *
- * Prepare handles will emit a PrepareEvent event once per loop iteration, right
+ * Prepare handles will emit a prepare event once per loop iteration, right
  * before polling for I/O.
  *
- * To create a `PrepareHandle` through a `Loop`, no arguments are required.
+ * To create a `prepare_handle` through a `loop`, no arguments are required.
  */
-class PrepareHandle final: public Handle<PrepareHandle, uv_prepare_t> {
-    static void startCallback(uv_prepare_t *handle);
+class prepare_handle final: public handle<prepare_handle, uv_prepare_t> {
+    static void start_callback(uv_prepare_t *hndl);
 
 public:
-    using Handle::Handle;
+    using handle::handle;
 
     /**
      * @brief Initializes the handle.
-     * @return True in case of success, false otherwise.
+     * @return Underlying code in case of errors, 0 otherwise.
      */
-    bool init();
+    int init() final;
 
     /**
      * @brief Starts the handle.
      *
-     * A PrepareEvent event will be emitted once per loop iteration, right
-     * before polling for I/O.
+     * A prepare event will be emitted once per loop iteration, right before
+     * polling for I/O.
      *
-     * The handle will start emitting PrepareEvent when needed.
+     * The handle will start emitting prepare events when needed.
      */
     void start();
 

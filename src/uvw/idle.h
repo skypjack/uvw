@@ -7,18 +7,14 @@
 
 namespace uvw {
 
-/**
- * @brief IdleEvent event.
- *
- * It will be emitted by IdleHandle according with its functionalities.
- */
-struct IdleEvent {};
+/*! @brief Idle event. */
+struct idle_event {};
 
 /**
- * @brief The IdleHandle handle.
+ * @brief The idle handle.
  *
- * Idle handles will emit a IdleEvent event once per loop iteration, right
- * before the PrepareHandle handles.
+ * Idle handles will emit a idle event once per loop iteration, right before the
+ * prepare handles.
  *
  * The notable difference with prepare handles is that when there are active
  * idle handles, the loop will perform a zero timeout poll instead of blocking
@@ -28,25 +24,25 @@ struct IdleEvent {};
  * Despite the name, idle handles will emit events on every loop iteration, not
  * when the loop is actually _idle_.
  *
- * To create an `IdleHandle` through a `Loop`, no arguments are required.
+ * To create an `idle_handle` through a `loop`, no arguments are required.
  */
-class IdleHandle final: public Handle<IdleHandle, uv_idle_t> {
-    static void startCallback(uv_idle_t *handle);
+class idle_handle final: public handle<idle_handle, uv_idle_t> {
+    static void start_callback(uv_idle_t *hndl);
 
 public:
-    using Handle::Handle;
+    using handle::handle;
 
     /**
      * @brief Initializes the handle.
-     * @return True in case of success, false otherwise.
+     * @return Underlying code in case of errors, 0 otherwise.
      */
-    bool init();
+    int init() final;
 
     /**
      * @brief Starts the handle.
      *
-     * A IdleEvent event will be emitted once per loop iteration, right before
-     * polling the PrepareHandle handles.
+     * An idle event will be emitted once per loop iteration, right before
+     * polling the prepare handles.
      */
     void start();
 

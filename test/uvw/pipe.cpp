@@ -8,31 +8,31 @@ TEST(Pipe, ReadWrite) {
     const std::string sockname = std::string{TARGET_PIPE_DIR} + std::string{"/test.sock"};
 #endif
 
-    auto loop = uvw::Loop::getDefault();
-    auto server = loop->resource<uvw::PipeHandle>();
-    auto client = loop->resource<uvw::PipeHandle>();
+    auto loop = uvw::loop::get_default();
+    auto server = loop->resource<uvw::pipe_handle>();
+    auto client = loop->resource<uvw::pipe_handle>();
 
-    server->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    client->on<uvw::ErrorEvent>([](const auto &, auto &) {
+    server->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
+    client->on<uvw::error_event>([](const auto &, auto &) {
         FAIL();
     });
 
-    server->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::PipeHandle &handle) {
-        std::shared_ptr<uvw::PipeHandle> socket = handle.loop().resource<uvw::PipeHandle>();
+    server->once<uvw::listen_event>([](const uvw::listen_event &, uvw::pipe_handle &handle) {
+        std::shared_ptr<uvw::pipe_handle> socket = handle.parent().resource<uvw::pipe_handle>();
 
-        socket->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::PipeHandle &) { FAIL(); });
-        socket->on<uvw::CloseEvent>([&handle](const uvw::CloseEvent &, uvw::PipeHandle &) { handle.close(); });
-        socket->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::PipeHandle &sock) { sock.close(); });
+        socket->on<uvw::error_event>([](const uvw::error_event &, uvw::pipe_handle &) { FAIL(); });
+        socket->on<uvw::close_event>([&handle](const uvw::close_event &, uvw::pipe_handle &) { handle.close(); });
+        socket->on<uvw::end_event>([](const uvw::end_event &, uvw::pipe_handle &sock) { sock.close(); });
 
         handle.accept(*socket);
         socket->read();
     });
 
-    client->once<uvw::WriteEvent>([](const uvw::WriteEvent &, uvw::PipeHandle &handle) {
+    client->once<uvw::write_event>([](const uvw::write_event &, uvw::pipe_handle &handle) {
         handle.close();
     });
 
-    client->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::PipeHandle &handle) {
+    client->once<uvw::connect_event>([](const uvw::connect_event &, uvw::pipe_handle &handle) {
         ASSERT_TRUE(handle.writable());
         ASSERT_TRUE(handle.readable());
 
@@ -56,19 +56,19 @@ TEST(Pipe, SockPeer) {
     const auto peername = sockname;
 #endif
 
-    auto loop = uvw::Loop::getDefault();
-    auto server = loop->resource<uvw::PipeHandle>();
-    auto client = loop->resource<uvw::PipeHandle>();
+    auto loop = uvw::loop::get_default();
+    auto server = loop->resource<uvw::pipe_handle>();
+    auto client = loop->resource<uvw::pipe_handle>();
 
-    server->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    client->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    server->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
+    client->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    server->once<uvw::ListenEvent>([&peername](const uvw::ListenEvent &, uvw::PipeHandle &handle) {
-        std::shared_ptr<uvw::PipeHandle> socket = handle.loop().resource<uvw::PipeHandle>();
+    server->once<uvw::listen_event>([&peername](const uvw::listen_event &, uvw::pipe_handle &handle) {
+        std::shared_ptr<uvw::pipe_handle> socket = handle.parent().resource<uvw::pipe_handle>();
 
-        socket->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::PipeHandle &) { FAIL(); });
-        socket->on<uvw::CloseEvent>([&handle](const uvw::CloseEvent &, uvw::PipeHandle &) { handle.close(); });
-        socket->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::PipeHandle &sock) { sock.close(); });
+        socket->on<uvw::error_event>([](const uvw::error_event &, uvw::pipe_handle &) { FAIL(); });
+        socket->on<uvw::close_event>([&handle](const uvw::close_event &, uvw::pipe_handle &) { handle.close(); });
+        socket->on<uvw::end_event>([](const uvw::end_event &, uvw::pipe_handle &sock) { sock.close(); });
 
         handle.accept(*socket);
         socket->read();
@@ -76,7 +76,7 @@ TEST(Pipe, SockPeer) {
         ASSERT_EQ(handle.sock(), peername);
     });
 
-    client->once<uvw::ConnectEvent>([&peername](const uvw::ConnectEvent &, uvw::PipeHandle &handle) {
+    client->once<uvw::connect_event>([&peername](const uvw::connect_event &, uvw::pipe_handle &handle) {
         ASSERT_EQ(handle.peer(), peername);
 
         handle.close();
@@ -98,29 +98,29 @@ TEST(Pipe, Shutdown) {
 
     auto data = std::unique_ptr<char[]>(new char[3]{'a', 'b', 'c'});
 
-    auto loop = uvw::Loop::getDefault();
-    auto server = loop->resource<uvw::PipeHandle>();
-    auto client = loop->resource<uvw::PipeHandle>();
+    auto loop = uvw::loop::get_default();
+    auto server = loop->resource<uvw::pipe_handle>();
+    auto client = loop->resource<uvw::pipe_handle>();
 
-    server->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    client->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    server->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
+    client->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    server->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::PipeHandle &handle) {
-        std::shared_ptr<uvw::PipeHandle> socket = handle.loop().resource<uvw::PipeHandle>();
+    server->once<uvw::listen_event>([](const uvw::listen_event &, uvw::pipe_handle &handle) {
+        std::shared_ptr<uvw::pipe_handle> socket = handle.parent().resource<uvw::pipe_handle>();
 
-        socket->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::PipeHandle &) { FAIL(); });
-        socket->on<uvw::CloseEvent>([&handle](const uvw::CloseEvent &, uvw::PipeHandle &) { handle.close(); });
-        socket->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::PipeHandle &sock) { sock.close(); });
+        socket->on<uvw::error_event>([](const uvw::error_event &, uvw::pipe_handle &) { FAIL(); });
+        socket->on<uvw::close_event>([&handle](const uvw::close_event &, uvw::pipe_handle &) { handle.close(); });
+        socket->on<uvw::end_event>([](const uvw::end_event &, uvw::pipe_handle &sock) { sock.close(); });
 
         handle.accept(*socket);
         socket->read();
     });
 
-    client->once<uvw::ShutdownEvent>([](const uvw::ShutdownEvent &, uvw::PipeHandle &handle) {
+    client->once<uvw::shutdown_event>([](const uvw::shutdown_event &, uvw::pipe_handle &handle) {
         handle.close();
     });
 
-    client->once<uvw::ConnectEvent>([&data](const uvw::ConnectEvent &, uvw::PipeHandle &handle) {
+    client->once<uvw::connect_event>([&data](const uvw::connect_event &, uvw::pipe_handle &handle) {
         handle.write(data.get(), 3);
         handle.shutdown();
     });

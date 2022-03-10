@@ -6,21 +6,20 @@ struct fake_handle_t {
     void *data;
 };
 
-struct FakeHandle: uvw::Handle<FakeHandle, fake_handle_t> {
-    using Handle::Handle;
+struct FakeHandle: uvw::handle<FakeHandle, fake_handle_t> {
+    using handle::handle;
 
-    template<typename... Args>
-    bool init(Args &&...) {
-        return initialize([](auto...) { return true; });
+    int init() override {
+        return 1;
     }
 };
 
 TEST(Handle, Functionalities) {
-    auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::AsyncHandle>();
+    auto loop = uvw::loop::get_default();
+    auto handle = loop->resource<uvw::async_handle>();
 
-    ASSERT_EQ(uvw::Utilities::guessHandle(handle->category()), uvw::HandleType::ASYNC);
-    ASSERT_EQ(handle->type(), uvw::HandleType::ASYNC);
+    ASSERT_EQ(uvw::utilities::guess_handle(handle->category()), uvw::handle_type::ASYNC);
+    ASSERT_EQ(handle->type(), uvw::handle_type::ASYNC);
 
     ASSERT_TRUE(handle->active());
     ASSERT_FALSE(handle->closing());
@@ -38,17 +37,17 @@ TEST(Handle, Functionalities) {
 
     ASSERT_NE(handle->size(), static_cast<decltype(handle->size())>(0));
 
-    ASSERT_EQ(handle->sendBufferSize(), static_cast<decltype(handle->sendBufferSize())>(0));
-    ASSERT_FALSE(handle->sendBufferSize(0));
+    ASSERT_EQ(handle->send_buffer_size(), static_cast<decltype(handle->send_buffer_size())>(0));
+    ASSERT_FALSE(handle->send_buffer_size(0));
 
-    ASSERT_EQ(handle->recvBufferSize(), static_cast<decltype(handle->recvBufferSize())>(0));
-    ASSERT_FALSE(handle->recvBufferSize(0));
+    ASSERT_EQ(handle->recv_buffer_size(), static_cast<decltype(handle->recv_buffer_size())>(0));
+    ASSERT_FALSE(handle->recv_buffer_size(0));
 
     ASSERT_NO_THROW(handle->fd());
 }
 
 TEST(Handle, InitializationFailure) {
-    auto loop = uvw::Loop::getDefault();
+    auto loop = uvw::loop::get_default();
     auto resource = loop->resource<FakeHandle>();
 
     ASSERT_FALSE(static_cast<bool>(resource));

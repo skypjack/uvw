@@ -3,8 +3,9 @@
 
 #include <memory>
 #include <utility>
+#include "config.h"
 #include "emitter.h"
-#include "underlying_type.hpp"
+#include "uv_type.hpp"
 
 namespace uvw {
 
@@ -14,30 +15,28 @@ namespace uvw {
  * This is the base class for handles and requests.
  */
 template<typename T, typename U>
-class Resource: public UnderlyingType<T, U>, public Emitter<T>, public std::enable_shared_from_this<T> {
+class resource: public uv_type<U>, public emitter<T>, public std::enable_shared_from_this<T> {
 protected:
-    using ConstructorAccess = typename UnderlyingType<T, U>::ConstructorAccess;
+    int leak_if(int err) UVW_NOEXCEPT {
+        if(err == 0) {
+            self_ptr = this->shared_from_this();
+        }
 
-    auto parent() const noexcept {
-        return this->loop().loop.get();
+        return err;
     }
 
-    void leak() noexcept {
-        sPtr = this->shared_from_this();
+    void reset() UVW_NOEXCEPT {
+        self_ptr.reset();
     }
 
-    void reset() noexcept {
-        sPtr.reset();
-    }
-
-    bool self() const noexcept {
-        return static_cast<bool>(sPtr);
+    bool self() const UVW_NOEXCEPT {
+        return static_cast<bool>(self_ptr);
     }
 
 public:
-    explicit Resource(ConstructorAccess ca, std::shared_ptr<Loop> ref)
-        : UnderlyingType<T, U>{ca, std::move(ref)} {
-        this->get()->data = this;
+    explicit resource(loop::token token, std::shared_ptr<loop> ref)
+        : uv_type<U>{token, std::move(ref)} {
+        this->raw()->data = this;
     }
 
     /**
@@ -46,20 +45,20 @@ public:
      */
     template<typename R = void>
     std::shared_ptr<R> data() const {
-        return std::static_pointer_cast<R>(userData);
+        return std::static_pointer_cast<R>(user_data);
     }
 
     /**
      * @brief Sets arbitrary data. `uvw` won't use this field in any case.
-     * @param uData User-defined arbitrary data.
+     * @param udata User-defined arbitrary data.
      */
-    void data(std::shared_ptr<void> uData) {
-        userData = std::move(uData);
+    void data(std::shared_ptr<void> udata) {
+        user_data = std::move(udata);
     }
 
 private:
-    std::shared_ptr<void> userData{nullptr};
-    std::shared_ptr<void> sPtr{nullptr};
+    std::shared_ptr<void> user_data{nullptr};
+    std::shared_ptr<void> self_ptr{nullptr};
 };
 
 } // namespace uvw
