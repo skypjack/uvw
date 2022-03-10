@@ -6,6 +6,8 @@
 #include <utility>
 #include <vector>
 #include <uv.h>
+#include "config.h"
+#include "enum.hpp"
 #include "handle.hpp"
 #include "loop.h"
 #include "stream.h"
@@ -15,54 +17,52 @@ namespace uvw {
 
 namespace details {
 
-enum class UVProcessFlags : std::underlying_type_t<uv_process_flags> {
+enum class uvw_process_flags : std::underlying_type_t<uv_process_flags> {
     SETUID = UV_PROCESS_SETUID,
     SETGID = UV_PROCESS_SETGID,
     WINDOWS_VERBATIM_ARGUMENTS = UV_PROCESS_WINDOWS_VERBATIM_ARGUMENTS,
     DETACHED = UV_PROCESS_DETACHED,
     WINDOWS_HIDE = UV_PROCESS_WINDOWS_HIDE,
     WINDOWS_HIDE_CONSOLE = UV_PROCESS_WINDOWS_HIDE_CONSOLE,
-    WINDOWS_HIDE_GUI = UV_PROCESS_WINDOWS_HIDE_GUI
+    WINDOWS_HIDE_GUI = UV_PROCESS_WINDOWS_HIDE_GUI,
+    _UVW_ENUM = 0
 };
 
-enum class UVStdIOFlags : std::underlying_type_t<uv_stdio_flags> {
+enum class uvw_stdio_flags : std::underlying_type_t<uv_stdio_flags> {
     IGNORE_STREAM = UV_IGNORE,
     CREATE_PIPE = UV_CREATE_PIPE,
     INHERIT_FD = UV_INHERIT_FD,
     INHERIT_STREAM = UV_INHERIT_STREAM,
     READABLE_PIPE = UV_READABLE_PIPE,
     WRITABLE_PIPE = UV_WRITABLE_PIPE,
-    OVERLAPPED_PIPE = UV_OVERLAPPED_PIPE
+    OVERLAPPED_PIPE = UV_OVERLAPPED_PIPE,
+    _UVW_ENUM = 0
 };
 
 } // namespace details
 
-/**
- * @brief ExitEvent event.
- *
- * It will be emitted by ProcessHandle according with its functionalities.
- */
-struct ExitEvent {
-    explicit ExitEvent(int64_t code, int sig) noexcept;
+/*! @brief Exit event. */
+struct exit_event {
+    explicit exit_event(int64_t code, int sig) UVW_NOEXCEPT;
 
     int64_t status; /*!< The exit status. */
     int signal;     /*!< The signal that caused the process to terminate, if any. */
 };
 
 /**
- * @brief The ProcessHandle handle.
+ * @brief The process handle.
  *
  * Process handles will spawn a new process and allow the user to control it and
  * establish communication channels with it using streams.
  */
-class ProcessHandle final: public Handle<ProcessHandle, uv_process_t> {
-    static void exitCallback(uv_process_t *handle, int64_t exitStatus, int termSignal);
+class process_handle final: public handle<process_handle, uv_process_t> {
+    static void exit_callback(uv_process_t *hndl, int64_t exit_status, int term_signal);
 
 public:
-    using Process = details::UVProcessFlags;
-    using StdIO = details::UVStdIOFlags;
+    using process_flags = details::uvw_process_flags;
+    using stdio_flags = details::uvw_stdio_flags;
 
-    ProcessHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref);
+    process_handle(loop::token token, std::shared_ptr<loop> ref);
 
     /**
      * @brief Disables inheritance for file descriptors/handles.
@@ -78,7 +78,7 @@ public:
      * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_disable_stdio_inheritance)
      * for further details.
      */
-    static void disableStdIOInheritance() noexcept;
+    static void disable_stdio_inheritance() UVW_NOEXCEPT;
 
     /**
      * @brief kill Sends the specified signal to the given PID.
@@ -86,19 +86,19 @@ public:
      * @param signum A valid signal identifier.
      * @return True in case of success, false otherwise.
      */
-    static bool kill(int pid, int signum) noexcept;
+    static bool kill(int pid, int signum) UVW_NOEXCEPT;
 
     /**
      * @brief Initializes the handle.
-     * @return True in case of success, false otherwise.
+     * @return Underlying code in case of errors, 0 otherwise.
      */
-    bool init();
+    int init() final;
 
     /**
      * @brief spawn Starts the process.
      *
-     * If the process isn't successfully spawned, an ErrorEvent event will be
-     * emitted by the handle.
+     * If the process isn't successfully spawned, an error event will be emitted
+     * by the handle.
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/process.html)
@@ -123,27 +123,27 @@ public:
      *
      * @return The PID of the spawned process.
      */
-    int pid() noexcept;
+    int pid() UVW_NOEXCEPT;
 
     /**
      * @brief Sets the current working directory for the subprocess.
      * @param path The working directory to be used when `spawn()` is invoked.
      * @return A reference to this process handle.
      */
-    ProcessHandle &cwd(const std::string &path) noexcept;
+    process_handle &cwd(const std::string &path) UVW_NOEXCEPT;
 
     /**
      * @brief Sets flags that control how `spawn()` behaves.
      *
      * Available flags are:
      *
-     * * `ProcessHandle::Process::SETUID`
-     * * `ProcessHandle::Process::SETGID`
-     * * `ProcessHandle::Process::WINDOWS_VERBATIM_ARGUMENTS`
-     * * `ProcessHandle::Process::DETACHED`
-     * * `ProcessHandle::Process::WINDOWS_HIDE`
-     * * `ProcessHandle::Process::WINDOWS_HIDE_CONSOLE`
-     * * `ProcessHandle::Process::WINDOWS_HIDE_GUI`
+     * * `process_handle::process_flags::SETUID`
+     * * `process_handle::process_flags::SETGID`
+     * * `process_handle::process_flags::WINDOWS_VERBATIM_ARGUMENTS`
+     * * `process_handle::process_flags::DETACHED`
+     * * `process_handle::process_flags::WINDOWS_HIDE`
+     * * `process_handle::process_flags::WINDOWS_HIDE_CONSOLE`
+     * * `process_handle::process_flags::WINDOWS_HIDE_GUI`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_process_flags)
@@ -152,20 +152,20 @@ public:
      * @param flags A valid set of flags.
      * @return A reference to this process handle.
      */
-    ProcessHandle &flags(Flags<Process> flags) noexcept;
+    process_handle &flags(process_flags flags) UVW_NOEXCEPT;
 
     /**
      * @brief Makes a `stdio` handle available to the child process.
      *
      * Available flags are:
      *
-     * * `ProcessHandle::StdIO::IGNORE_STREAM`
-     * * `ProcessHandle::StdIO::CREATE_PIPE`
-     * * `ProcessHandle::StdIO::INHERIT_FD`
-     * * `ProcessHandle::StdIO::INHERIT_STREAM`
-     * * `ProcessHandle::StdIO::READABLE_PIPE`
-     * * `ProcessHandle::StdIO::WRITABLE_PIPE`
-     * * `ProcessHandle::StdIO::OVERLAPPED_PIPE`
+     * * `process_handle::stdio_flags::IGNORE_STREAM`
+     * * `process_handle::stdio_flags::CREATE_PIPE`
+     * * `process_handle::stdio_flags::INHERIT_FD`
+     * * `process_handle::stdio_flags::INHERIT_STREAM`
+     * * `process_handle::stdio_flags::READABLE_PIPE`
+     * * `process_handle::stdio_flags::WRITABLE_PIPE`
+     * * `process_handle::stdio_flags::OVERLAPPED_PIPE`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_stdio_flags)
@@ -176,12 +176,11 @@ public:
      * @return A reference to this process handle.
      */
     template<typename T, typename U>
-    ProcessHandle &stdio(StreamHandle<T, U> &stream, Flags<StdIO> flags) {
+    process_handle &stdio(stream_handle<T, U> &stream, stdio_flags flags) {
         uv_stdio_container_t container;
-        Flags<StdIO>::Type fgs = flags;
-        container.flags = static_cast<uv_stdio_flags>(fgs);
-        container.data.stream = get<uv_stream_t>(stream);
-        poStreamStdio.push_back(std::move(container));
+        container.flags = static_cast<uv_stdio_flags>(flags);
+        container.data.stream = reinterpret_cast<uv_stream_t *>(stream.raw());
+        po_stream_stdio.push_back(std::move(container));
         return *this;
     }
 
@@ -190,18 +189,18 @@ public:
      *
      * Available flags are:
      *
-     * * `ProcessHandle::StdIO::IGNORE_STREAM`
-     * * `ProcessHandle::StdIO::CREATE_PIPE`
-     * * `ProcessHandle::StdIO::INHERIT_FD`
-     * * `ProcessHandle::StdIO::INHERIT_STREAM`
-     * * `ProcessHandle::StdIO::READABLE_PIPE`
-     * * `ProcessHandle::StdIO::WRITABLE_PIPE`
-     * * `ProcessHandle::StdIO::OVERLAPPED_PIPE`
+     * * `process_handle::stdio_flags::IGNORE_STREAM`
+     * * `process_handle::stdio_flags::CREATE_PIPE`
+     * * `process_handle::stdio_flags::INHERIT_FD`
+     * * `process_handle::stdio_flags::INHERIT_STREAM`
+     * * `process_handle::stdio_flags::READABLE_PIPE`
+     * * `process_handle::stdio_flags::WRITABLE_PIPE`
+     * * `process_handle::stdio_flags::OVERLAPPED_PIPE`
      *
      * Default file descriptors are:
-     *     * `uvw::StdIN` for `stdin`
-     *     * `uvw::StdOUT` for `stdout`
-     *     * `uvw::StdERR` for `stderr`
+     *     * `uvw::std_in` for `stdin`
+     *     * `uvw::std_out` for `stdout`
+     *     * `uvw::std_err` for `stderr`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_stdio_flags)
@@ -211,29 +210,29 @@ public:
      * @param flags A valid set of flags.
      * @return A reference to this process handle.
      */
-    ProcessHandle &stdio(FileHandle fd, Flags<StdIO> flags);
+    process_handle &stdio(file_handle fd, stdio_flags flags);
 
     /**
      * @brief Sets the child process' user id.
      * @param id A valid user id to be used.
      * @return A reference to this process handle.
      */
-    ProcessHandle &uid(Uid id);
+    process_handle &uid(uid_type id);
 
     /**
      * @brief Sets the child process' group id.
      * @param id A valid group id to be used.
      * @return A reference to this process handle.
      */
-    ProcessHandle &gid(Gid id);
+    process_handle &gid(gid_type id);
 
 private:
-    std::string poCwd;
-    Flags<Process> poFlags;
-    std::vector<uv_stdio_container_t> poFdStdio;
-    std::vector<uv_stdio_container_t> poStreamStdio;
-    Uid poUid;
-    Gid poGid;
+    std::string po_cwd;
+    process_flags po_flags;
+    std::vector<uv_stdio_container_t> po_fd_stdio;
+    std::vector<uv_stdio_container_t> po_stream_stdio;
+    uid_type po_uid;
+    gid_type po_gid;
 };
 
 } // namespace uvw

@@ -2,19 +2,19 @@
 #include <uvw/dns.h>
 
 TEST(GetAddrInfo, GetNodeAddrInfo) {
-    auto loop = uvw::Loop::getDefault();
-    auto request = loop->resource<uvw::GetAddrInfoReq>();
+    auto loop = uvw::loop::get_default();
+    auto request = loop->resource<uvw::get_addr_info_req>();
 
     bool checkAddrInfoEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    request->on<uvw::AddrInfoEvent>([&checkAddrInfoEvent](const auto &, auto &) {
+    request->on<uvw::addr_info_event>([&checkAddrInfoEvent](const auto &, auto &) {
         ASSERT_FALSE(checkAddrInfoEvent);
         checkAddrInfoEvent = true;
     });
 
-    request->nodeAddrInfo("irc.freenode.net");
+    request->node_addr_info("irc.freenode.net");
 
     loop->run();
 
@@ -22,27 +22,27 @@ TEST(GetAddrInfo, GetNodeAddrInfo) {
 }
 
 TEST(GetAddrInfo, GetNodeAddrInfoSync) {
-    auto loop = uvw::Loop::getDefault();
-    auto request = loop->resource<uvw::GetAddrInfoReq>();
+    auto loop = uvw::loop::get_default();
+    auto request = loop->resource<uvw::get_addr_info_req>();
 
-    ASSERT_TRUE(request->nodeAddrInfoSync("irc.freenode.net").first);
-    ASSERT_FALSE(request->nodeAddrInfoSync("").first);
+    ASSERT_TRUE(request->node_addr_info_sync("irc.freenode.net").first);
+    ASSERT_FALSE(request->node_addr_info_sync("").first);
 
     loop->run();
 }
 
 TEST(GetAddrInfo, GetServiceAddrInfo) {
-    auto loop = uvw::Loop::getDefault();
-    auto request = loop->resource<uvw::GetAddrInfoReq>();
+    auto loop = uvw::loop::get_default();
+    auto request = loop->resource<uvw::get_addr_info_req>();
 
     bool checkErrorEvent = false;
 
-    request->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &) {
+    request->on<uvw::error_event>([&checkErrorEvent](const auto &, auto &) {
         ASSERT_FALSE(checkErrorEvent);
         checkErrorEvent = true;
     });
 
-    request->serviceAddrInfo("foobar");
+    request->service_addr_info("foobar");
 
     loop->run();
 
@@ -50,28 +50,28 @@ TEST(GetAddrInfo, GetServiceAddrInfo) {
 }
 
 TEST(GetAddrInfo, GetServiceAddrInfoSync) {
-    auto loop = uvw::Loop::getDefault();
-    auto request = loop->resource<uvw::GetAddrInfoReq>();
+    auto loop = uvw::loop::get_default();
+    auto request = loop->resource<uvw::get_addr_info_req>();
 
-    ASSERT_FALSE(request->serviceAddrInfoSync("foobar").first);
+    ASSERT_FALSE(request->service_addr_info_sync("foobar").first);
 
     loop->run();
 }
 
 TEST(GetAddrInfo, GetAddrInfo) {
-    auto loop = uvw::Loop::getDefault();
-    auto request = loop->resource<uvw::GetAddrInfoReq>();
+    auto loop = uvw::loop::get_default();
+    auto request = loop->resource<uvw::get_addr_info_req>();
 
     bool checkAddrInfoEvent = false;
 
-    request->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    request->on<uvw::AddrInfoEvent>([&checkAddrInfoEvent](const auto &, auto &) {
+    request->on<uvw::addr_info_event>([&checkAddrInfoEvent](const auto &, auto &) {
         ASSERT_FALSE(checkAddrInfoEvent);
         checkAddrInfoEvent = true;
     });
 
-    request->addrInfo("irc.freenode.net", "6667");
+    request->addr_info("irc.freenode.net", "6667");
 
     loop->run();
 
@@ -79,35 +79,35 @@ TEST(GetAddrInfo, GetAddrInfo) {
 }
 
 TEST(GetAddrInfo, GetAddrInfoSync) {
-    auto loop = uvw::Loop::getDefault();
-    auto request = loop->resource<uvw::GetAddrInfoReq>();
+    auto loop = uvw::loop::get_default();
+    auto request = loop->resource<uvw::get_addr_info_req>();
 
-    ASSERT_TRUE(request->addrInfoSync("irc.freenode.net", "6667").first);
-    ASSERT_FALSE(request->addrInfoSync("", "").first);
+    ASSERT_TRUE(request->addr_info_sync("irc.freenode.net", "6667").first);
+    ASSERT_FALSE(request->addr_info_sync("", "").first);
 
     loop->run();
 }
 
 TEST(GetNameInfo, GetNameInfo) {
-    auto loop = uvw::Loop::getDefault();
-    auto koRequest = loop->resource<uvw::GetNameInfoReq>();
-    auto okRequest = loop->resource<uvw::GetNameInfoReq>();
+    auto loop = uvw::loop::get_default();
+    auto koRequest = loop->resource<uvw::get_name_info_req>();
+    auto okRequest = loop->resource<uvw::get_name_info_req>();
 
     bool checkErrorEvent = false;
     bool checkNameInfoEvent = false;
 
-    koRequest->on<uvw::ErrorEvent>([&checkErrorEvent](const auto &, auto &) {
+    koRequest->on<uvw::error_event>([&checkErrorEvent](const auto &, auto &) {
         ASSERT_FALSE(checkErrorEvent);
         checkErrorEvent = true;
     });
 
-    okRequest->on<uvw::NameInfoEvent>([&checkNameInfoEvent](const auto &, auto &) {
+    okRequest->on<uvw::name_info_event>([&checkNameInfoEvent](const auto &, auto &) {
         ASSERT_FALSE(checkNameInfoEvent);
         checkNameInfoEvent = true;
     });
 
-    koRequest->nameInfo(uvw::Addr{"", 0}, -1);
-    okRequest->nameInfo("irc.freenode.net", 6667);
+    koRequest->name_info(uvw::socket_address{"", 0}, -1);
+    okRequest->name_info("irc.freenode.net", 6667);
 
     loop->run();
 
@@ -116,11 +116,11 @@ TEST(GetNameInfo, GetNameInfo) {
 }
 
 TEST(GetNameInfo, GetNameInfoSync) {
-    auto loop = uvw::Loop::getDefault();
-    auto request = loop->resource<uvw::GetNameInfoReq>();
+    auto loop = uvw::loop::get_default();
+    auto request = loop->resource<uvw::get_name_info_req>();
 
-    ASSERT_FALSE(request->nameInfoSync(uvw::Addr{"", 0}, -1).first);
-    ASSERT_TRUE(request->nameInfoSync("irc.freenode.net", 6667).first);
+    ASSERT_FALSE(request->name_info_sync(uvw::socket_address{"", 0}, -1).first);
+    ASSERT_TRUE(request->name_info_sync("irc.freenode.net", 6667).first);
 
     loop->run();
 }

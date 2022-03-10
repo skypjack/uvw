@@ -1,9 +1,8 @@
 #ifndef UVW_TYPE_INFO_INCLUDE_HPP
 #define UVW_TYPE_INFO_INCLUDE_HPP
 
-#include <cstddef>
 #include <cstdint>
-#include <string_view>
+#include "config.h"
 
 namespace uvw {
 
@@ -15,7 +14,7 @@ namespace uvw {
 namespace internal {
 
 // Fowler-Noll-Vo hash function v. 1a - the good
-[[nodiscard]] static constexpr std::uint32_t fnv1a(const char *curr) noexcept {
+[[nodiscard]] static constexpr std::uint32_t fnv1a(const char *curr) UVW_NOEXCEPT {
     constexpr std::uint32_t offset = 2166136261;
     constexpr std::uint32_t prime = 16777619;
     auto value = offset;
@@ -27,13 +26,13 @@ namespace internal {
     return value;
 }
 
-[[nodiscard]] static inline std::uint32_t counter() noexcept {
+[[nodiscard]] static inline std::uint32_t counter() UVW_NOEXCEPT {
     static std::uint32_t cnt{};
     return cnt++;
 }
 
 template<typename Type>
-[[nodiscard]] static std::uint32_t fake() noexcept {
+[[nodiscard]] static std::uint32_t fake() UVW_NOEXCEPT {
     static std::uint32_t local = counter();
     return local;
 }
@@ -51,7 +50,7 @@ template<typename Type>
  * @return The numerical identifier of the give type.
  */
 template<typename Type>
-[[nodiscard]] static constexpr std::uint32_t type() noexcept {
+[[nodiscard]] static constexpr std::uint32_t type() UVW_NOEXCEPT {
 #if defined __clang__ || defined __GNUC__
     return internal::fnv1a(__PRETTY_FUNCTION__);
 #elif defined _MSC_VER

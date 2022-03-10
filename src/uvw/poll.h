@@ -4,6 +4,8 @@
 #include <memory>
 #include <type_traits>
 #include <uv.h>
+#include "config.h"
+#include "enum.hpp"
 #include "handle.hpp"
 #include "util.h"
 
@@ -11,108 +13,84 @@ namespace uvw {
 
 namespace details {
 
-enum class UVPollEvent : std::underlying_type_t<uv_poll_event> {
+enum class uvw_poll_event : std::underlying_type_t<uv_poll_event> {
     READABLE = UV_READABLE,
     WRITABLE = UV_WRITABLE,
     DISCONNECT = UV_DISCONNECT,
-    PRIORITIZED = UV_PRIORITIZED
+    PRIORITIZED = UV_PRIORITIZED,
+    _UVW_ENUM = 0
 };
 
 }
 
-/**
- * @brief PollEvent event.
- *
- * It will be emitted by PollHandle according with its functionalities.
- */
-struct PollEvent {
-    explicit PollEvent(Flags<details::UVPollEvent> events) noexcept;
+/*! @brief Poll event. */
+struct poll_event {
+    explicit poll_event(details::uvw_poll_event events) UVW_NOEXCEPT;
 
     /**
      * @brief Detected events all in one.
      *
      * Available flags are:
      *
-     * * `PollHandle::Event::READABLE`
-     * * `PollHandle::Event::WRITABLE`
-     * * `PollHandle::Event::DISCONNECT`
-     * * `PollHandle::Event::PRIORITIZED`
+     * * `poll_handle::event::READABLE`
+     * * `poll_handle::event::WRITABLE`
+     * * `poll_handle::event::DISCONNECT`
+     * * `poll_handle::event::PRIORITIZED`
      */
-    Flags<details::UVPollEvent> flags;
+    details::uvw_poll_event flags;
 };
 
 /**
- * @brief The PollHandle handle.
+ * @brief The poll handle.
  *
  * Poll handles are used to watch file descriptors for readability, writability
  * and disconnection.
  *
- * To create a `PollHandle` through a `Loop`, arguments follow:
+ * To create a `poll_handle` through a `loop`, arguments follow:
  *
  * * A descriptor that can be:
  *     * either an `int` file descriptor
- *     * or a `OSSocketHandle` socket descriptor
+ *     * or a `os_socket_handle` socket descriptor
  *
  * See the official
  * [documentation](http://docs.libuv.org/en/v1.x/poll.html)
  * for further details.
  */
-class PollHandle final: public Handle<PollHandle, uv_poll_t> {
-    static void startCallback(uv_poll_t *handle, int status, int events);
+class poll_handle final: public handle<poll_handle, uv_poll_t> {
+    static void start_callback(uv_poll_t *hndl, int status, int events);
 
 public:
-    using Event = details::UVPollEvent;
+    using poll_event = details::uvw_poll_event;
 
-    explicit PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, int desc);
-    explicit PollHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, OSSocketHandle sock);
+    explicit poll_handle(loop::token token, std::shared_ptr<loop> ref, int desc);
+    explicit poll_handle(loop::token token, std::shared_ptr<loop> ref, os_socket_handle sock);
 
     /**
      * @brief Initializes the handle.
-     * @return True in case of success, false otherwise.
+     * @return Underlying code in case of errors, 0 otherwise.
      */
-    bool init();
+    int init() final;
 
     /**
      * @brief Starts polling the file descriptor.
      *
      * Available flags are:
      *
-     * * `PollHandle::Event::READABLE`
-     * * `PollHandle::Event::WRITABLE`
-     * * `PollHandle::Event::DISCONNECT`
-     * * `PollHandle::Event::PRIORITIZED`
+     * * `poll_handle::event::READABLE`
+     * * `poll_handle::event::WRITABLE`
+     * * `poll_handle::event::DISCONNECT`
+     * * `poll_handle::event::PRIORITIZED`
      *
-     * As soon as an event is detected, a PollEvent is emitted by the
+     * As soon as an event is detected, a poll event is emitted by the
      * handle.<br>
-     * It could happen that ErrorEvent events are emitted while running.
+     * It could happen that error events are emitted while running.
      *
      * Calling more than once this method will update the flags to which the
      * caller is interested.
      *
      * @param flags The events to which the caller is interested.
      */
-    void start(Flags<Event> flags);
-
-    /**
-     * @brief Starts polling the file descriptor.
-     *
-     * Available flags are:
-     *
-     * * `PollHandle::Event::READABLE`
-     * * `PollHandle::Event::WRITABLE`
-     * * `PollHandle::Event::DISCONNECT`
-     * * `PollHandle::Event::PRIORITIZED`
-     *
-     * As soon as an event is detected, a PollEvent is emitted by the
-     * handle.<br>
-     * It could happen that ErrorEvent events are emitted while running.
-     *
-     * Calling more than once this method will update the flags to which the
-     * caller is interested.
-     *
-     * @param event The event to which the caller is interested.
-     */
-    void start(Event event);
+    void start(poll_event flags);
 
     /**
      * @brief Stops polling the file descriptor.
@@ -127,7 +105,7 @@ private:
 
     union {
         int file_desc;
-        OSSocketHandle::Type socket;
+        os_socket_handle socket;
     };
 };
 

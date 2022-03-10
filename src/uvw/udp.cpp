@@ -6,274 +6,237 @@
 
 namespace uvw {
 
-UVW_INLINE UDPDataEvent::UDPDataEvent(Addr sndr, std::unique_ptr<char[]> buf, std::size_t len, bool part) noexcept
-    : data{std::move(buf)}, length{len}, sender{std::move(sndr)}, partial{part} {}
+UVW_INLINE udp_data_event::udp_data_event(socket_address sndr, std::unique_ptr<char[]> buf, std::size_t len, bool part) UVW_NOEXCEPT
+    : data{std::move(buf)},
+      length{len},
+      sender{std::move(sndr)},
+      partial{part} {}
 
-UVW_INLINE details::SendReq::SendReq(ConstructorAccess ca, std::shared_ptr<Loop> loop, std::unique_ptr<char[], Deleter> dt, unsigned int len)
-    : Request<SendReq, uv_udp_send_t>{ca, std::move(loop)},
+UVW_INLINE void details::send_req::udp_send_callback(uv_udp_send_t *req, int status) {
+    if(auto ptr = reserve(req); status) {
+        ptr->publish(error_event{status});
+    } else {
+        ptr->publish(send_event{});
+    }
+}
+
+UVW_INLINE details::send_req::send_req(loop::token token, std::shared_ptr<loop> parent, std::unique_ptr<char[], deleter> dt, unsigned int len)
+    : request<send_req, uv_udp_send_t>{token, std::move(parent)},
       data{std::move(dt)},
       buf{uv_buf_init(data.get(), len)} {}
 
-UVW_INLINE void details::SendReq::send(uv_udp_t *handle, const struct sockaddr *addr) {
-    invoke(&uv_udp_send, get(), handle, &buf, 1, addr, &defaultCallback<SendEvent>);
+UVW_INLINE void details::send_req::send(uv_udp_t *hndl, const struct sockaddr *addr) {
+    if(auto err = this->leak_if(uv_udp_send(raw(), hndl, &buf, 1, addr, &udp_send_callback)); err != 0) {
+        publish(error_event{err});
+    }
 }
 
-UVW_INLINE UDPHandle::UDPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f)
-    : Handle{ca, std::move(ref)}, tag{FLAGS}, flags{f} {}
+UVW_INLINE void udp_handle::recv_callback(uv_udp_t *hndl, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
+    udp_handle &udp = *(static_cast<udp_handle *>(hndl->data));
+    // data will be destroyed no matter of what the value of nread is
+    std::unique_ptr<char[]> data{buf->base};
 
-UVW_INLINE bool UDPHandle::init() {
-    return (tag == FLAGS) ? initialize(&uv_udp_init_ex, flags) : initialize(&uv_udp_init);
+    if(nread > 0) {
+        // data available (can be truncated)
+        udp.publish(udp_data_event{details::sock_addr(*addr), std::move(data), static_cast<std::size_t>(nread), !(0 == (flags & UV_UDP_PARTIAL))});
+    } else if(nread == 0 && addr == nullptr) {
+        // no more data to be read, doing nothing is fine
+    } else if(nread == 0 && addr != nullptr) {
+        // empty udp packet
+        udp.publish(udp_data_event{details::sock_addr(*addr), std::move(data), static_cast<std::size_t>(nread), false});
+    } else {
+        // transmission error
+        udp.publish(error_event(nread));
+    }
 }
 
-UVW_INLINE void UDPHandle::open(OSSocketHandle socket) {
-    invoke(&uv_udp_open, get(), socket);
+UVW_INLINE udp_handle::udp_handle(loop::token token, std::shared_ptr<loop> ref, unsigned int f)
+    : handle{token, std::move(ref)}, tag{FLAGS}, flags{f} {}
+
+UVW_INLINE int udp_handle::init() {
+    if(tag == FLAGS) {
+        return leak_if(uv_udp_init_ex(parent().raw(), raw(), flags));
+    } else {
+        return leak_if(uv_udp_init(parent().raw(), raw()));
+    }
 }
 
-UVW_INLINE void UDPHandle::bind(const sockaddr &addr, Flags<UDPHandle::Bind> opts) {
-    invoke(&uv_udp_bind, get(), &addr, opts);
+UVW_INLINE void udp_handle::open(os_socket_handle socket) {
+    if(auto err = uv_udp_open(raw(), socket); err != 0) {
+        publish(error_event{err});
+    }
 }
 
-UVW_INLINE void UDPHandle::connect(const sockaddr &addr) {
-    invoke(&uv_udp_connect, get(), &addr);
+UVW_INLINE void udp_handle::connect(const sockaddr &addr) {
+    if(auto err = uv_udp_connect(raw(), &addr); err != 0) {
+        publish(error_event{err});
+    }
 }
 
-template<typename I>
-UVW_INLINE void UDPHandle::connect(const std::string &ip, unsigned int port) {
-    typename details::IpTraits<I>::Type addr;
-    details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-    connect(reinterpret_cast<const sockaddr &>(addr));
+UVW_INLINE void udp_handle::connect(const std::string &ip, unsigned int port) {
+    connect(details::ip_addr(ip.data(), port));
 }
 
-template<typename I>
-UVW_INLINE void UDPHandle::connect(Addr addr) {
-    connect<I>(std::move(addr.ip), addr.port);
+UVW_INLINE void udp_handle::connect(socket_address addr) {
+    connect(addr.ip, addr.port);
 }
 
-UVW_INLINE void UDPHandle::disconnect() {
-    invoke(&uv_udp_connect, get(), nullptr);
+UVW_INLINE void udp_handle::disconnect() {
+    if(auto err = uv_udp_connect(raw(), nullptr); err != 0) {
+        publish(error_event{err});
+    }
 }
 
-template<typename I>
-UVW_INLINE Addr UDPHandle::peer() const noexcept {
-    return details::address<I>(&uv_udp_getpeername, get());
+UVW_INLINE socket_address udp_handle::peer() const UVW_NOEXCEPT {
+    sockaddr_storage storage;
+    int len = sizeof(sockaddr_storage);
+    uv_udp_getpeername(raw(), reinterpret_cast<sockaddr *>(&storage), &len);
+    return details::sock_addr(storage);
 }
 
-template<typename I>
-UVW_INLINE void UDPHandle::bind(const std::string &ip, unsigned int port, Flags<Bind> opts) {
-    typename details::IpTraits<I>::Type addr;
-    details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-    bind(reinterpret_cast<const sockaddr &>(addr), std::move(opts));
+UVW_INLINE void udp_handle::bind(const sockaddr &addr, udp_handle::udp_flags opts) {
+    if(auto err = uv_udp_bind(raw(), &addr, static_cast<uv_udp_flags>(opts)); err != 0) {
+        publish(error_event{err});
+    }
 }
 
-template<typename I>
-UVW_INLINE void UDPHandle::bind(Addr addr, Flags<Bind> opts) {
-    bind<I>(std::move(addr.ip), addr.port, std::move(opts));
+UVW_INLINE void udp_handle::bind(const std::string &ip, unsigned int port, udp_flags opts) {
+    bind(details::ip_addr(ip.data(), port), opts);
 }
 
-template<typename I>
-UVW_INLINE Addr UDPHandle::sock() const noexcept {
-    return details::address<I>(&uv_udp_getsockname, get());
+UVW_INLINE void udp_handle::bind(socket_address addr, udp_flags opts) {
+    bind(addr.ip, addr.port, opts);
 }
 
-template<typename I>
-UVW_INLINE bool UDPHandle::multicastMembership(const std::string &multicast, const std::string &iface, Membership membership) {
-    return (0 == uv_udp_set_membership(get(), multicast.data(), iface.data(), static_cast<uv_membership>(membership)));
+UVW_INLINE socket_address udp_handle::sock() const UVW_NOEXCEPT {
+    sockaddr_storage storage;
+    int len = sizeof(sockaddr_storage);
+    uv_udp_getsockname(raw(), reinterpret_cast<sockaddr *>(&storage), &len);
+    return details::sock_addr(storage);
 }
 
-UVW_INLINE bool UDPHandle::multicastLoop(bool enable) {
-    return (0 == uv_udp_set_multicast_loop(get(), enable));
+UVW_INLINE bool udp_handle::multicast_membership(const std::string &multicast, const std::string &iface, membership ms) {
+    return (0 == uv_udp_set_membership(raw(), multicast.data(), iface.data(), static_cast<uv_membership>(ms)));
 }
 
-UVW_INLINE bool UDPHandle::multicastTtl(int val) {
-    return (0 == uv_udp_set_multicast_ttl(get(), val > 255 ? 255 : val));
+UVW_INLINE bool udp_handle::multicast_loop(bool enable) {
+    return (0 == uv_udp_set_multicast_loop(raw(), enable));
 }
 
-template<typename I>
-UVW_INLINE bool UDPHandle::multicastInterface(const std::string &iface) {
-    return (0 == uv_udp_set_multicast_interface(get(), iface.data()));
+UVW_INLINE bool udp_handle::multicast_ttl(int val) {
+    return (0 == uv_udp_set_multicast_ttl(raw(), val > 255 ? 255 : val));
 }
 
-UVW_INLINE bool UDPHandle::broadcast(bool enable) {
-    return (0 == uv_udp_set_broadcast(get(), enable));
+UVW_INLINE bool udp_handle::multicast_interface(const std::string &iface) {
+    return (0 == uv_udp_set_multicast_interface(raw(), iface.data()));
 }
 
-UVW_INLINE bool UDPHandle::ttl(int val) {
-    return (0 == uv_udp_set_ttl(get(), val > 255 ? 255 : val));
+UVW_INLINE bool udp_handle::broadcast(bool enable) {
+    return (0 == uv_udp_set_broadcast(raw(), enable));
 }
 
-UVW_INLINE void UDPHandle::send(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len) {
-    auto req = loop().resource<details::SendReq>(std::unique_ptr<char[], details::SendReq::Deleter>{data.release(), [](char *ptr) { delete[] ptr; }}, len);
+UVW_INLINE bool udp_handle::ttl(int val) {
+    return (0 == uv_udp_set_ttl(raw(), val > 255 ? 255 : val));
+}
+
+UVW_INLINE void udp_handle::send(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len) {
+    auto req = parent().resource<details::send_req>(std::unique_ptr<char[], details::send_req::deleter>{data.release(), [](char *ptr) { delete[] ptr; }}, len);
 
     auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
         ptr->publish(event);
     };
 
-    req->once<ErrorEvent>(listener);
-    req->once<SendEvent>(listener);
-    req->send(get(), &addr);
+    req->once<error_event>(listener);
+    req->once<send_event>(listener);
+    req->send(raw(), &addr);
 }
 
-template<typename I>
-UVW_INLINE void UDPHandle::send(const std::string &ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len) {
-    typename details::IpTraits<I>::Type addr;
-    details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-    send(reinterpret_cast<const sockaddr &>(addr), std::move(data), len);
+UVW_INLINE void udp_handle::send(const std::string &ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len) {
+    send(details::ip_addr(ip.data(), port), std::move(data), len);
 }
 
-template<typename I>
-UVW_INLINE void UDPHandle::send(Addr addr, std::unique_ptr<char[]> data, unsigned int len) {
-    send<I>(std::move(addr.ip), addr.port, std::move(data), len);
+UVW_INLINE void udp_handle::send(socket_address addr, std::unique_ptr<char[]> data, unsigned int len) {
+    send(addr.ip, addr.port, std::move(data), len);
 }
 
-UVW_INLINE void UDPHandle::send(const sockaddr &addr, char *data, unsigned int len) {
-    auto req = loop().resource<details::SendReq>(std::unique_ptr<char[], details::SendReq::Deleter>{data, [](char *) {}}, len);
+UVW_INLINE void udp_handle::send(const sockaddr &addr, char *data, unsigned int len) {
+    auto req = parent().resource<details::send_req>(std::unique_ptr<char[], details::send_req::deleter>{data, [](char *) {}}, len);
 
     auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
         ptr->publish(event);
     };
 
-    req->once<ErrorEvent>(listener);
-    req->once<SendEvent>(listener);
-    req->send(get(), &addr);
+    req->once<error_event>(listener);
+    req->once<send_event>(listener);
+    req->send(raw(), &addr);
 }
 
-template<typename I>
-UVW_INLINE void UDPHandle::send(const std::string &ip, unsigned int port, char *data, unsigned int len) {
-    typename details::IpTraits<I>::Type addr;
-    details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-    send(reinterpret_cast<const sockaddr &>(addr), data, len);
+UVW_INLINE void udp_handle::send(const std::string &ip, unsigned int port, char *data, unsigned int len) {
+    send(details::ip_addr(ip.data(), port), data, len);
 }
 
-template<typename I>
-UVW_INLINE void UDPHandle::send(Addr addr, char *data, unsigned int len) {
-    send<I>(std::move(addr.ip), addr.port, data, len);
+UVW_INLINE void udp_handle::send(socket_address addr, char *data, unsigned int len) {
+    send(addr.ip, addr.port, data, len);
 }
 
-template<typename I>
-UVW_INLINE int UDPHandle::trySend(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len) {
+UVW_INLINE int udp_handle::try_send(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len) {
     uv_buf_t bufs[] = {uv_buf_init(data.get(), len)};
-    auto bw = uv_udp_try_send(get(), bufs, 1, &addr);
+    auto bw = uv_udp_try_send(raw(), bufs, 1, &addr);
 
     if(bw < 0) {
-        publish(ErrorEvent{bw});
+        publish(error_event{bw});
         bw = 0;
     }
 
     return bw;
 }
 
-template<typename I>
-UVW_INLINE int UDPHandle::trySend(const std::string &ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len) {
-    typename details::IpTraits<I>::Type addr;
-    details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-    return trySend(reinterpret_cast<const sockaddr &>(addr), std::move(data), len);
+UVW_INLINE int udp_handle::try_send(const std::string &ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len) {
+    return try_send(details::ip_addr(ip.data(), port), std::move(data), len);
 }
 
-template<typename I>
-UVW_INLINE int UDPHandle::trySend(Addr addr, std::unique_ptr<char[]> data, unsigned int len) {
-    return trySend<I>(std::move(addr.ip), addr.port, std::move(data), len);
+UVW_INLINE int udp_handle::try_send(socket_address addr, std::unique_ptr<char[]> data, unsigned int len) {
+    return try_send(addr.ip, addr.port, std::move(data), len);
 }
 
-template<typename I>
-UVW_INLINE int UDPHandle::trySend(const sockaddr &addr, char *data, unsigned int len) {
+UVW_INLINE int udp_handle::try_send(const sockaddr &addr, char *data, unsigned int len) {
     uv_buf_t bufs[] = {uv_buf_init(data, len)};
-    auto bw = uv_udp_try_send(get(), bufs, 1, &addr);
+    auto bw = uv_udp_try_send(raw(), bufs, 1, &addr);
 
     if(bw < 0) {
-        publish(ErrorEvent{bw});
+        publish(error_event{bw});
         bw = 0;
     }
 
     return bw;
 }
 
-template<typename I>
-UVW_INLINE int UDPHandle::trySend(const std::string &ip, unsigned int port, char *data, unsigned int len) {
-    typename details::IpTraits<I>::Type addr;
-    details::IpTraits<I>::addrFunc(ip.data(), port, &addr);
-    return trySend(reinterpret_cast<const sockaddr &>(addr), data, len);
+UVW_INLINE int udp_handle::try_send(const std::string &ip, unsigned int port, char *data, unsigned int len) {
+    return try_send(details::ip_addr(ip.data(), port), data, len);
 }
 
-template<typename I>
-UVW_INLINE int UDPHandle::trySend(Addr addr, char *data, unsigned int len) {
-    return trySend<I>(std::move(addr.ip), addr.port, data, len);
+UVW_INLINE int udp_handle::try_send(socket_address addr, char *data, unsigned int len) {
+    return try_send(addr.ip, addr.port, data, len);
 }
 
-template<typename I>
-UVW_INLINE void UDPHandle::recv() {
-    invoke(&uv_udp_recv_start, get(), &allocCallback, &recvCallback<I>);
+UVW_INLINE void udp_handle::recv() {
+    if(auto err = uv_udp_recv_start(raw(), &details::common_alloc_callback, &recv_callback); err != 0) {
+        publish(error_event{err});
+    }
 }
 
-UVW_INLINE void UDPHandle::stop() {
-    invoke(&uv_udp_recv_stop, get());
+UVW_INLINE void udp_handle::stop() {
+    if(auto err = uv_udp_recv_stop(raw()); err != 0) {
+        publish(error_event{err});
+    }
 }
 
-UVW_INLINE size_t UDPHandle::sendQueueSize() const noexcept {
-    return uv_udp_get_send_queue_size(get());
+UVW_INLINE size_t udp_handle::send_queue_size() const UVW_NOEXCEPT {
+    return uv_udp_get_send_queue_size(raw());
 }
 
-UVW_INLINE size_t UDPHandle::sendQueueCount() const noexcept {
-    return uv_udp_get_send_queue_count(get());
+UVW_INLINE size_t udp_handle::send_queue_count() const UVW_NOEXCEPT {
+    return uv_udp_get_send_queue_count(raw());
 }
-
-// explicit instantiations
-#ifdef UVW_AS_LIB
-template void UDPHandle::connect<IPv4>(const std::string &, unsigned int);
-template void UDPHandle::connect<IPv6>(const std::string &, unsigned int);
-
-template void UDPHandle::connect<IPv4>(Addr);
-template void UDPHandle::connect<IPv6>(Addr);
-
-template Addr UDPHandle::peer<IPv4>() const noexcept;
-template Addr UDPHandle::peer<IPv6>() const noexcept;
-
-template void UDPHandle::bind<IPv4>(const std::string &, unsigned int, Flags<Bind>);
-template void UDPHandle::bind<IPv6>(const std::string &, unsigned int, Flags<Bind>);
-
-template void UDPHandle::bind<IPv4>(Addr, Flags<Bind>);
-template void UDPHandle::bind<IPv6>(Addr, Flags<Bind>);
-
-template Addr UDPHandle::sock<IPv4>() const noexcept;
-template Addr UDPHandle::sock<IPv6>() const noexcept;
-
-template bool UDPHandle::multicastMembership<IPv4>(const std::string &, const std::string &, Membership);
-template bool UDPHandle::multicastMembership<IPv6>(const std::string &, const std::string &, Membership);
-
-template bool UDPHandle::multicastInterface<IPv4>(const std::string &);
-template bool UDPHandle::multicastInterface<IPv6>(const std::string &);
-
-template void UDPHandle::send<IPv4>(const std::string &, unsigned int, std::unique_ptr<char[]>, unsigned int);
-template void UDPHandle::send<IPv6>(const std::string &, unsigned int, std::unique_ptr<char[]>, unsigned int);
-
-template void UDPHandle::send<IPv4>(Addr, std::unique_ptr<char[]>, unsigned int);
-template void UDPHandle::send<IPv6>(Addr, std::unique_ptr<char[]>, unsigned int);
-
-template void UDPHandle::send<IPv4>(const std::string &, unsigned int, char *, unsigned int);
-template void UDPHandle::send<IPv6>(const std::string &, unsigned int, char *, unsigned int);
-
-template void UDPHandle::send<IPv4>(Addr, char *, unsigned int);
-template void UDPHandle::send<IPv6>(Addr, char *, unsigned int);
-
-template int UDPHandle::trySend<IPv4>(const sockaddr &, std::unique_ptr<char[]>, unsigned int);
-template int UDPHandle::trySend<IPv6>(const sockaddr &, std::unique_ptr<char[]>, unsigned int);
-
-template int UDPHandle::trySend<IPv4>(const std::string &, unsigned int, std::unique_ptr<char[]>, unsigned int);
-template int UDPHandle::trySend<IPv6>(const std::string &, unsigned int, std::unique_ptr<char[]>, unsigned int);
-
-template int UDPHandle::trySend<IPv4>(Addr, std::unique_ptr<char[]>, unsigned int);
-template int UDPHandle::trySend<IPv6>(Addr, std::unique_ptr<char[]>, unsigned int);
-
-template int UDPHandle::trySend<IPv4>(const sockaddr &, char *, unsigned int);
-template int UDPHandle::trySend<IPv6>(const sockaddr &, char *, unsigned int);
-
-template int UDPHandle::trySend<IPv4>(const std::string &, unsigned int, char *, unsigned int);
-template int UDPHandle::trySend<IPv6>(const std::string &, unsigned int, char *, unsigned int);
-
-template int UDPHandle::trySend<IPv4>(Addr, char *, unsigned int);
-template int UDPHandle::trySend<IPv6>(Addr, char *, unsigned int);
-
-template void UDPHandle::recv<IPv4>();
-template void UDPHandle::recv<IPv6>();
-#endif // UVW_AS_LIB
 
 } // namespace uvw

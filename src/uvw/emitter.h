@@ -11,18 +11,19 @@
 #include <unordered_map>
 #include <utility>
 #include <uv.h>
+#include "config.h"
 #include "type_info.hpp"
 
 namespace uvw {
 
 /**
- * @brief The ErrorEvent event.
+ * @brief Error event.
  *
  * Custom wrapper around error constants of `libuv`.
  */
-struct ErrorEvent {
+struct error_event {
     template<typename U, typename = std::enable_if_t<std::is_integral_v<U>>>
-    explicit ErrorEvent(U val) noexcept
+    explicit error_event(U val) UVW_NOEXCEPT
         : ec{static_cast<int>(val)} {}
 
     /**
@@ -37,7 +38,7 @@ struct ErrorEvent {
      * @param sys A platform dependent error code.
      * @return The `libuv` error code equivalent to the given platform dependent error code.
      */
-    static int translate(int sys) noexcept;
+    static int translate(int sys) UVW_NOEXCEPT;
 
     /**
      * @brief Returns the error message for the given error code.
@@ -46,7 +47,7 @@ struct ErrorEvent {
      *
      * @return The error message for the given error code.
      */
-    const char *what() const noexcept;
+    const char *what() const UVW_NOEXCEPT;
 
     /**
      * @brief Returns the error name for the given error code.
@@ -55,19 +56,19 @@ struct ErrorEvent {
      *
      * @return The error name for the given error code.
      */
-    const char *name() const noexcept;
+    const char *name() const UVW_NOEXCEPT;
 
     /**
      * @brief Gets the underlying error code, that is an error constant of `libuv`.
      * @return The underlying error code.
      */
-    int code() const noexcept;
+    int code() const UVW_NOEXCEPT;
 
     /**
      * @brief Checks if the event contains a valid error code.
      * @return True in case of success, false otherwise.
      */
-    explicit operator bool() const noexcept;
+    explicit operator bool() const UVW_NOEXCEPT;
 
 private:
     const int ec;
@@ -80,88 +81,86 @@ private:
  * This is the base class from which resources and loops inherit.
  */
 template<typename T>
-class Emitter {
-    struct BaseHandler {
-        virtual ~BaseHandler() noexcept = default;
-        virtual bool empty() const noexcept = 0;
-        virtual void clear() noexcept = 0;
+class emitter {
+    struct base_handler {
+        virtual ~base_handler() UVW_NOEXCEPT = default;
+        virtual bool empty() const UVW_NOEXCEPT = 0;
+        virtual void clear() UVW_NOEXCEPT = 0;
     };
 
     template<typename E>
-    struct Handler final: BaseHandler {
-        using Listener = std::function<void(E &, T &)>;
-        using Element = std::pair<bool, Listener>;
-        using ListenerList = std::list<Element>;
-        using Connection = typename ListenerList::iterator;
+    struct event_handler final: base_handler {
+        using listener = std::function<void(E &, T &)>;
+        using listener_list = std::list<std::pair<bool, listener>>;
+        using connection = typename listener_list::iterator;
 
-        bool empty() const noexcept override {
-            auto pred = [](auto &&element) { return element.first; };
-
-            return std::all_of(onceL.cbegin(), onceL.cend(), pred) && std::all_of(onL.cbegin(), onL.cend(), pred);
+        bool empty() const UVW_NOEXCEPT override {
+            auto pred = [](auto &&elem) { return elem.first; };
+            return std::all_of(once_list.cbegin(), once_list.cend(), pred) && std::all_of(on_list.cbegin(), on_list.cend(), pred);
         }
 
-        void clear() noexcept override {
+        void clear() UVW_NOEXCEPT override {
             if(publishing) {
-                auto func = [](auto &&element) { element.first = true; };
-                std::for_each(onceL.begin(), onceL.end(), func);
-                std::for_each(onL.begin(), onL.end(), func);
+                auto func = [](auto &&elem) { elem.first = true; };
+                std::for_each(once_list.begin(), once_list.end(), func);
+                std::for_each(on_list.begin(), on_list.end(), func);
             } else {
-                onceL.clear();
-                onL.clear();
+                once_list.clear();
+                on_list.clear();
             }
         }
 
-        Connection once(Listener f) {
-            return onceL.emplace(onceL.cend(), false, std::move(f));
+        connection once(listener f) {
+            return once_list.emplace(once_list.cend(), false, std::move(f));
         }
 
-        Connection on(Listener f) {
-            return onL.emplace(onL.cend(), false, std::move(f));
+        connection on(listener f) {
+            return on_list.emplace(on_list.cend(), false, std::move(f));
         }
 
-        void erase(Connection conn) noexcept {
+        void erase(connection conn) UVW_NOEXCEPT {
             conn->first = true;
 
             if(!publishing) {
-                auto pred = [](auto &&element) { return element.first; };
-                onceL.remove_if(pred);
-                onL.remove_if(pred);
+                auto pred = [](auto &&elem) { return elem.first; };
+                once_list.remove_if(pred);
+                on_list.remove_if(pred);
             }
         }
 
         void publish(E event, T &ref) {
-            ListenerList currentL;
-            onceL.swap(currentL);
+            listener_list curr;
+            once_list.swap(curr);
 
-            auto func = [&event, &ref](auto &&element) {
-                return element.first ? void() : element.second(event, ref);
+            auto func = [&event, &ref](auto &&elem) {
+                return elem.first ? void() : elem.second(event, ref);
             };
 
             publishing = true;
 
-            std::for_each(onL.rbegin(), onL.rend(), func);
-            std::for_each(currentL.rbegin(), currentL.rend(), func);
+            std::for_each(on_list.rbegin(), on_list.rend(), func);
+            std::for_each(curr.rbegin(), curr.rend(), func);
 
             publishing = false;
 
-            onL.remove_if([](auto &&element) { return element.first; });
+            on_list.remove_if([](auto &&elem) { return elem.first; });
         }
 
     private:
         bool publishing{false};
-        ListenerList onceL{};
-        ListenerList onL{};
+        listener_list once_list{};
+        listener_list on_list{};
     };
 
     template<typename E>
-    Handler<E> &handler() noexcept {
-        auto id = type<E>();
+    event_handler<E> &handler() UVW_NOEXCEPT {
+        const auto id = type<E>();
 
         if(!handlers.count(id)) {
-            handlers[id] = std::make_unique<Handler<E>>();
+            handlers[id] = std::make_unique<event_handler<E>>();
         }
 
-        return static_cast<Handler<E> &>(*handlers.at(id));
+        return static_cast<event_handler<E> &>(*handlers.at(id));
     }
 
 protected:
@@ -172,33 +171,33 @@ protected:
 
 public:
     template<typename E>
-    using Listener = typename Handler<E>::Listener;
+    using listener = typename event_handler<E>::listener;
 
     /**
      * @brief Connection type for a given event type.
      *
-     * Given an event type `E`, `Connection<E>` is the type of the connection
+     * Given an event type `E`, `connection<E>` is the type of the connection
      * object returned by the event emitter whenever a listener for the given
      * type is registered.
      */
     template<typename E>
-    struct Connection: private Handler<E>::Connection {
+    struct connection: private event_handler<E>::connection {
         template<typename>
-        friend class Emitter;
+        friend class emitter;
 
-        Connection() = default;
-        Connection(const Connection &) = default;
-        Connection(Connection &&) = default;
+        connection() = default;
+        connection(const connection &) = default;
+        connection(connection &&) = default;
 
-        Connection(typename Handler<E>::Connection conn)
-            : Handler<E>::Connection{std::move(conn)} {}
+        connection(typename event_handler<E>::connection conn)
+            : event_handler<E>::connection{std::move(conn)} {}
 
-        Connection &operator=(const Connection &) = default;
-        Connection &operator=(Connection &&) = default;
+        connection &operator=(const connection &) = default;
+        connection &operator=(connection &&) = default;
     };
 
-    virtual ~Emitter() noexcept {
-        static_assert(std::is_base_of_v<Emitter<T>, T>);
+    virtual ~emitter() UVW_NOEXCEPT {
+        static_assert(std::is_base_of_v<emitter<T>, T>);
     }
 
     /**
@@ -206,10 +205,10 @@ public:
      *
      * This method can be used to register a listener that is meant to be
      * invoked more than once for the given event type.<br/>
-     * The Connection object returned by the method can be freely discarded. It
+     * The connection object returned by the method can be freely discarded. It
      * can be used later to disconnect the listener, if needed.
      *
-     * Listener is usually defined as a callable object assignable to a
+     * A listener is usually defined as a callable object assignable to a
      * `std::function<void(const E &, T &)`, where `E` is the type of the event
      * and `T` is the type of the resource.
      *
@@ -217,7 +216,7 @@ public:
      * @return Connection object to be used later to disconnect the listener.
      */
     template<typename E>
-    Connection<E> on(Listener<E> f) {
+    connection<E> on(listener<E> f) {
         return handler<E>().on(std::move(f));
     }
 
@@ -226,10 +225,10 @@ public:
      *
      * This method can be used to register a listener that is meant to be
      * invoked only once for the given event type.<br/>
-     * The Connection object returned by the method can be freely discarded. It
+     * The connection object returned by the method can be freely discarded. It
      * can be used later to disconnect the listener, if needed.
      *
-     * Listener is usually defined as a callable object assignable to a
+     * a listener is usually defined as a callable object assignable to a
      * `std::function<void(const E &, T &)`, where `E` is the type of the event
      * and `T` is the type of the resource.
      *
@@ -237,16 +236,16 @@ public:
      * @return Connection object to be used later to disconnect the listener.
      */
     template<typename E>
-    Connection<E> once(Listener<E> f) {
+    connection<E> once(listener<E> f) {
         return handler<E>().once(std::move(f));
     }
 
     /**
      * @brief Disconnects a listener from the event emitter.
-     * @param conn A valid Connection object
+     * @param conn A valid connection object
      */
     template<typename E>
-    void erase(Connection<E> conn) noexcept {
+    void erase(connection<E> conn) UVW_NOEXCEPT {
         handler<E>().erase(std::move(conn));
     }
 
@@ -254,14 +253,14 @@ public:
      * @brief Disconnects all the listeners for the given event type.
      */
     template<typename E>
-    void clear() noexcept {
+    void clear() UVW_NOEXCEPT {
         handler<E>().clear();
     }
 
     /**
      * @brief Disconnects all the listeners.
      */
-    void clear() noexcept {
+    void clear() UVW_NOEXCEPT {
         std::for_each(handlers.begin(), handlers.end(), [](auto &&hdlr) { if(hdlr.second) { hdlr.second->clear(); } });
     }
 
@@ -271,10 +270,9 @@ public:
      * false otherwise.
      */
     template<typename E>
-    bool empty() const noexcept {
-        auto id = type<E>();
-
-        return (!handlers.count(id) || static_cast<Handler<E> &>(*handlers.at(id)).empty());
+    bool empty() const UVW_NOEXCEPT {
+        const auto id = type<E>();
+        return (!handlers.count(id) || static_cast<event_handler<E> &>(*handlers.at(id)).empty());
     }
 
     /**
@@ -282,12 +280,12 @@ public:
      * @return True if there are no listeners registered with the event emitter,
      * false otherwise.
      */
-    bool empty() const noexcept {
+    bool empty() const UVW_NOEXCEPT {
         return std::all_of(handlers.cbegin(), handlers.cend(), [](auto &&hdlr) { return !hdlr.second || hdlr.second->empty(); });
     }
 
 private:
-    std::unordered_map<std::uint32_t, std::unique_ptr<BaseHandler>> handlers{};
+    std::unordered_map<std::uint32_t, std::unique_ptr<base_handler>> handlers{};
 };
 
 } // namespace uvw

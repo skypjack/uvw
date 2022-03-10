@@ -3,44 +3,43 @@
 #endif
 
 #include <utility>
-
 #include "config.h"
 
 namespace uvw {
 
-UVW_INLINE details::ResetModeMemo::~ResetModeMemo() {
+UVW_INLINE details::reset_mode_memo::~reset_mode_memo() {
     uv_tty_reset_mode();
 }
 
-UVW_INLINE TTYHandle::TTYHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, FileHandle desc, bool readable)
-    : StreamHandle{ca, std::move(ref)},
-      memo{resetModeMemo()},
+UVW_INLINE tty_handle::tty_handle(loop::token token, std::shared_ptr<loop> ref, file_handle desc, bool readable)
+    : stream_handle{token, std::move(ref)},
+      memo{mode_memo_handler()},
       fd{desc},
       rw{readable} {}
 
-UVW_INLINE std::shared_ptr<details::ResetModeMemo> TTYHandle::resetModeMemo() {
-    static std::weak_ptr<details::ResetModeMemo> weak;
+UVW_INLINE std::shared_ptr<details::reset_mode_memo> tty_handle::mode_memo_handler() {
+    static std::weak_ptr<details::reset_mode_memo> weak;
     auto shared = weak.lock();
-    if(!shared) { weak = shared = std::make_shared<details::ResetModeMemo>(); }
+    if(!shared) { weak = shared = std::make_shared<details::reset_mode_memo>(); }
     return shared;
 };
 
-UVW_INLINE bool TTYHandle::init() {
-    return initialize(&uv_tty_init, fd, rw);
+UVW_INLINE int tty_handle::init() {
+    return leak_if(uv_tty_init(parent().raw(), raw(), fd, rw));
 }
 
-UVW_INLINE bool TTYHandle::mode(TTYHandle::Mode m) {
-    return (0 == uv_tty_set_mode(get(), static_cast<std::underlying_type_t<Mode>>(m)));
+UVW_INLINE bool tty_handle::mode(tty_handle::tty_mode m) {
+    return (0 == uv_tty_set_mode(raw(), static_cast<uv_tty_mode_t>(m)));
 }
 
-UVW_INLINE bool TTYHandle::reset() noexcept {
+UVW_INLINE bool tty_handle::reset() UVW_NOEXCEPT {
     return (0 == uv_tty_reset_mode());
 }
 
-UVW_INLINE WinSize TTYHandle::getWinSize() {
-    WinSize size;
+UVW_INLINE win_size tty_handle::get_win_size() {
+    win_size size;
 
-    if(0 != uv_tty_get_winsize(get(), &size.width, &size.height)) {
+    if(0 != uv_tty_get_winsize(raw(), &size.width, &size.height)) {
         size.width = -1;
         size.height = -1;
     }
@@ -48,21 +47,21 @@ UVW_INLINE WinSize TTYHandle::getWinSize() {
     return size;
 }
 
-UVW_INLINE void TTYHandle::vtermState(TTYHandle::VTermState s) const noexcept {
+UVW_INLINE void tty_handle::vterm_state(tty_handle::tty_vtermstate s) const UVW_NOEXCEPT {
     switch(s) {
-    case VTermState::SUPPORTED:
+    case tty_vtermstate::SUPPORTED:
         uv_tty_set_vterm_state(uv_tty_vtermstate_t::UV_TTY_SUPPORTED);
         break;
-    case VTermState::UNSUPPORTED:
+    case tty_vtermstate::UNSUPPORTED:
         uv_tty_set_vterm_state(uv_tty_vtermstate_t::UV_TTY_UNSUPPORTED);
         break;
     }
 }
 
-UVW_INLINE TTYHandle::VTermState TTYHandle::vtermState() const noexcept {
+UVW_INLINE tty_handle::tty_vtermstate tty_handle::vterm_state() const UVW_NOEXCEPT {
     uv_tty_vtermstate_t state;
     uv_tty_get_vterm_state(&state);
-    return VTermState{state};
+    return tty_vtermstate{state};
 }
 
 } // namespace uvw

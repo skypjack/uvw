@@ -3,8 +3,8 @@
 #include <uvw/process.h>
 
 TEST(Process, Pid) {
-    auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::ProcessHandle>();
+    auto loop = uvw::loop::get_default();
+    auto handle = loop->resource<uvw::process_handle>();
 
     ASSERT_EQ(handle->pid(), 0);
 
@@ -12,8 +12,8 @@ TEST(Process, Pid) {
 }
 
 TEST(Process, Cwd) {
-    auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::ProcessHandle>();
+    auto loop = uvw::loop::get_default();
+    auto handle = loop->resource<uvw::process_handle>();
 
     handle->cwd(".");
 
@@ -21,15 +21,15 @@ TEST(Process, Cwd) {
 }
 
 TEST(Process, StdIO) {
-    auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::ProcessHandle>();
-    auto pipe = loop->resource<uvw::PipeHandle>();
+    auto loop = uvw::loop::get_default();
+    auto handle = loop->resource<uvw::process_handle>();
+    auto pipe = loop->resource<uvw::pipe_handle>();
 
-    uvw::ProcessHandle::disableStdIOInheritance();
-    handle->stdio(*pipe, uvw::Flags<uvw::ProcessHandle::StdIO>::from<uvw::ProcessHandle::StdIO::CREATE_PIPE, uvw::ProcessHandle::StdIO::READABLE_PIPE>());
-    handle->stdio(uvw::StdIN, uvw::ProcessHandle::StdIO::IGNORE_STREAM);
-    handle->stdio(uvw::StdOUT, uvw::ProcessHandle::StdIO::IGNORE_STREAM);
-    handle->stdio(uvw::StdOUT, uvw::ProcessHandle::StdIO::INHERIT_FD);
+    uvw::process_handle::disable_stdio_inheritance();
+    handle->stdio(*pipe, uvw::process_handle::stdio_flags::CREATE_PIPE | uvw::process_handle::stdio_flags::READABLE_PIPE);
+    handle->stdio(uvw::std_in, uvw::process_handle::stdio_flags::IGNORE_STREAM);
+    handle->stdio(uvw::std_out, uvw::process_handle::stdio_flags::IGNORE_STREAM);
+    handle->stdio(uvw::std_out, uvw::process_handle::stdio_flags::INHERIT_FD);
 
     pipe->close();
     loop->run();

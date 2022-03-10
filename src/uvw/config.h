@@ -7,4 +7,10 @@
 #    define UVW_INLINE
 #endif
 
+#if defined(UVW_NOEXCEPTION)
+#    define UVW_NOEXCEPT
+#else
+#    define UVW_NOEXCEPT noexcept
+#endif
+
 #endif

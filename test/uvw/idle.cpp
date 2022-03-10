@@ -2,14 +2,14 @@
 #include <uvw/idle.h>
 
 TEST(Idle, StartAndStop) {
-    auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::IdleHandle>();
+    auto loop = uvw::loop::get_default();
+    auto handle = loop->resource<uvw::idle_handle>();
 
     bool checkIdleEvent = false;
 
-    handle->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
+    handle->on<uvw::error_event>([](auto &&...) { FAIL(); });
 
-    handle->on<uvw::IdleEvent>([&checkIdleEvent](const auto &, auto &hndl) {
+    handle->on<uvw::idle_event>([&checkIdleEvent](const auto &, auto &hndl) {
         ASSERT_FALSE(checkIdleEvent);
         checkIdleEvent = true;
         hndl.stop();
@@ -28,11 +28,11 @@ TEST(Idle, StartAndStop) {
 }
 
 TEST(Idle, Fake) {
-    auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::IdleHandle>();
+    auto loop = uvw::loop::get_default();
+    auto handle = loop->resource<uvw::idle_handle>();
 
-    handle->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
-    handle->on<uvw::IdleEvent>([](auto &&...) { FAIL(); });
+    handle->on<uvw::error_event>([](auto &&...) { FAIL(); });
+    handle->on<uvw::idle_event>([](auto &&...) { FAIL(); });
 
     handle->start();
     handle->close();

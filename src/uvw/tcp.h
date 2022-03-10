@@ -7,6 +7,8 @@
 #include <type_traits>
 #include <utility>
 #include <uv.h>
+#include "config.h"
+#include "enum.hpp"
 #include "request.hpp"
 #include "stream.h"
 #include "util.h"
@@ -15,20 +17,21 @@ namespace uvw {
 
 namespace details {
 
-enum class UVTCPFlags : std::underlying_type_t<uv_tcp_flags> {
-    IPV6ONLY = UV_TCP_IPV6ONLY
+enum class uvw_tcp_flags : std::underlying_type_t<uv_tcp_flags> {
+    IPV6ONLY = UV_TCP_IPV6ONLY,
+    _UVW_ENUM = 0
 };
 
 }
 
 /**
- * @brief The TCPHandle handle.
+ * @brief The TCP handle.
  *
  * TCP handles are used to represent both TCP streams and servers.<br/>
- * By default, _IPv4_ is used as a template parameter. The handle already
- * supports _IPv6_ out-of-the-box by using `uvw::IPv6`.
+ * By default, _ipv4_ is used as a template parameter. The handle already
+ * supports _IPv6_ out-of-the-box by using `uvw::ipv6`.
  *
- * To create a `TCPHandle` through a `Loop`, arguments follow:
+ * To create a `tcp_handle` through a `loop`, arguments follow:
  *
  * * An optional integer value that indicates the flags used to initialize
  * the socket.
@@ -37,20 +40,20 @@ enum class UVTCPFlags : std::underlying_type_t<uv_tcp_flags> {
  * [documentation](http://docs.libuv.org/en/v1.x/tcp.html#c.uv_tcp_init_ex)
  * for further details.
  */
-class TCPHandle final: public StreamHandle<TCPHandle, uv_tcp_t> {
+class tcp_handle final: public stream_handle<tcp_handle, uv_tcp_t> {
 public:
-    using Time = std::chrono::duration<unsigned int>;
-    using Bind = details::UVTCPFlags;
-    using IPv4 = uvw::IPv4;
-    using IPv6 = uvw::IPv6;
+    using time = std::chrono::duration<unsigned int>;
+    using tcp_flags = details::uvw_tcp_flags;
+    using ipv4 = uvw::ipv4;
+    using ipv6 = uvw::ipv6;
 
-    explicit TCPHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, unsigned int f = {});
+    explicit tcp_handle(loop::token token, std::shared_ptr<loop> ref, unsigned int f = {});
 
     /**
      * @brief Initializes the handle. No socket is created as of yet.
-     * @return True in case of success, false otherwise.
+     * @return Underlying code in case of errors, 0 otherwise.
      */
-    bool init();
+    int init() final;
 
     /**
      * @brief Opens an existing file descriptor or SOCKET as a TCP handle.
@@ -58,25 +61,26 @@ public:
      * The passed file descriptor or SOCKET is not checked for its type, but
      * it’s required that it represents a valid stream socket.
      *
-     * @param socket A valid socket handle (either a file descriptor or a SOCKET).
+     * @param socket A valid socket handle (either a file descriptor or a
+     * SOCKET).
      */
-    void open(OSSocketHandle socket);
+    void open(os_socket_handle socket);
 
     /**
      * @brief Enables/Disables Nagle’s algorithm.
      * @param value True to enable it, false otherwise.
      * @return True in case of success, false otherwise.
      */
-    bool noDelay(bool value = false);
+    bool no_delay(bool value = false);
 
     /**
      * @brief Enables/Disables TCP keep-alive.
      * @param enable True to enable it, false otherwise.
-     * @param time Initial delay in seconds (use
+     * @param val Initial delay in seconds (use
      * `std::chrono::duration<unsigned int>`).
      * @return True in case of success, false otherwise.
      */
-    bool keepAlive(bool enable = false, Time time = Time{0});
+    bool keep_alive(bool enable = false, time val = time{0});
 
     /**
      * @brief Enables/Disables simultaneous asynchronous accept requests.
@@ -92,78 +96,76 @@ public:
      * @param enable True to enable it, false otherwise.
      * @return True in case of success, false otherwise.
      */
-    bool simultaneousAccepts(bool enable = true);
+    bool simultaneous_accepts(bool enable = true);
 
     /**
      * @brief Binds the handle to an address and port.
      *
      * A successful call to this function does not guarantee that the call to
      * `listen()` or `connect()` will work properly.<br/>
-     * ErrorEvent events can be emitted because of either this function or the
-     * ones mentioned above.
+     * Error events can be emitted because of either this function or the ones
+     * mentioned above.
      *
      * Available flags are:
      *
-     * * `TCPHandle::Bind::IPV6ONLY`: it disables dual-stack support and only
-     * IPv6 is used.
+     * * `tcp_handle::tcp_flags::IPV6ONLY`: it disables dual-stack support and
+     * only IPv6 is used.
      *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @param opts Optional additional flags.
      */
-    void bind(const sockaddr &addr, Flags<Bind> opts = Flags<Bind>{});
+    void bind(const sockaddr &addr, tcp_flags opts = tcp_flags::_UVW_ENUM);
 
     /**
      * @brief Binds the handle to an address and port.
      *
      * A successful call to this function does not guarantee that the call to
      * `listen()` or `connect()` will work properly.<br/>
-     * ErrorEvent events can be emitted because of either this function or the
-     * ones mentioned above.
+     * Error events can be emitted because of either this function or the ones
+     * mentioned above.
      *
      * Available flags are:
      *
-     * * `TCPHandle::Bind::IPV6ONLY`: it disables dual-stack support and only
-     * IPv6 is used.
+     * * `tcp_handle::tcp_flags::IPV6ONLY`: it disables dual-stack support and
+     * only IPv6 is used.
      *
      * @param ip The address to which to bind.
      * @param port The port to which to bind.
      * @param opts Optional additional flags.
      */
-    template<typename I = IPv4>
-    void bind(const std::string &ip, unsigned int port, Flags<Bind> opts = Flags<Bind>{});
+    void bind(const std::string &ip, unsigned int port, tcp_flags opts = tcp_flags::_UVW_ENUM);
 
     /**
      * @brief Binds the handle to an address and port.
      *
      * A successful call to this function does not guarantee that the call to
      * `listen()` or `connect()` will work properly.<br/>
-     * ErrorEvent events can be emitted because of either this function or the
-     * ones mentioned above.
+     * Error events can be emitted because of either this function or the ones
+     * mentioned above.
      *
      * Available flags are:
      *
-     * * `TCPHandle::Bind::IPV6ONLY`: it disables dual-stack support and only
-     * IPv6 is used.
+     * * `tcp_handle::tcp_flags::IPV6ONLY`: it disables dual-stack support and
+     * only IPv6 is used.
      *
-     * @param addr A valid instance of Addr.
+     * @param addr A valid instance of socket_address.
      * @param opts Optional additional flags.
      */
-    template<typename I = IPv4>
-    void bind(Addr addr, Flags<Bind> opts = Flags<Bind>{});
+    void bind(socket_address addr, tcp_flags opts = tcp_flags::_UVW_ENUM);
 
     /**
      * @brief Gets the current address to which the handle is bound.
-     * @return A valid instance of Addr, an empty one in case of errors.
+     * @return A valid instance of socket_address, an empty one in case of
+     * errors.
      */
-    template<typename I = IPv4>
-    Addr sock() const noexcept;
+    socket_address sock() const UVW_NOEXCEPT;
 
     /**
      * @brief Gets the address of the peer connected to the handle.
-     * @return A valid instance of Addr, an empty one in case of errors.
+     * @return A valid instance of socket_address, an empty one in case of
+     * errors.
      */
-    template<typename I = IPv4>
-    Addr peer() const noexcept;
+    socket_address peer() const UVW_NOEXCEPT;
 
     /**
      * @brief Establishes an IPv4 or IPv6 TCP connection.
@@ -172,9 +174,8 @@ public:
      * (`0.0.0.0` or `::`) it will be changed to point to localhost. This is
      * done to match the behavior of Linux systems.
      *
-     * A ConnectEvent event is emitted when the connection has been
-     * established.<br/>
-     * An ErrorEvent event is emitted in case of errors during the connection.
+     * A connect event is emitted when the connection has been established.<br/>
+     * An error event is emitted in case of errors during the connection.
      *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      */
@@ -183,27 +184,23 @@ public:
     /**
      * @brief Establishes an IPv4 or IPv6 TCP connection.
      *
-     * A ConnectEvent event is emitted when the connection has been
-     * established.<br/>
-     * An ErrorEvent event is emitted in case of errors during the connection.
+     * A connect event is emitted when the connection has been established.<br/>
+     * An error event is emitted in case of errors during the connection.
      *
      * @param ip The address to which to bind.
      * @param port The port to which to bind.
      */
-    template<typename I = IPv4>
     void connect(const std::string &ip, unsigned int port);
 
     /**
      * @brief Establishes an IPv4 or IPv6 TCP connection.
      *
-     * A ConnectEvent event is emitted when the connection has been
-     * established.<br/>
-     * An ErrorEvent event is emitted in case of errors during the connection.
+     * A connect event is emitted when the connection has been established.<br/>
+     * An error event is emitted in case of errors during the connection.
      *
-     * @param addr A valid instance of Addr.
+     * @param addr A valid instance of socket_address.
      */
-    template<typename I = IPv4>
-    void connect(Addr addr);
+    void connect(socket_address addr);
 
     /**
      * @brief Resets a TCP connection by sending a RST packet.
@@ -211,12 +208,12 @@ public:
      * This is accomplished by setting the `SO_LINGER` socket option with a
      * linger interval of zero and then calling `close`.<br/>
      * Due to some platform inconsistencies, mixing of `shutdown` and
-     * `closeReset` calls is not allowed.
+     * `close_reset` calls is not allowed.
      *
-     * A CloseEvent event is emitted when the connection has been reset.<br/>
-     * An ErrorEvent event is emitted in case of errors.
+     * A close event is emitted when the connection has been reset.<br/>
+     * An error event is emitted in case of errors.
      */
-    void closeReset();
+    void close_reset();
 
 private:
     enum {
@@ -226,37 +223,6 @@ private:
 
     unsigned int flags;
 };
-
-/**
- * @cond TURN_OFF_DOXYGEN
- * Internal details not to be documented.
- */
-
-// (extern) explicit instantiations
-#ifdef UVW_AS_LIB
-extern template void TCPHandle::bind<IPv4>(const std::string &, unsigned int, Flags<Bind>);
-extern template void TCPHandle::bind<IPv6>(const std::string &, unsigned int, Flags<Bind>);
-
-extern template void TCPHandle::bind<IPv4>(Addr, Flags<Bind>);
-extern template void TCPHandle::bind<IPv6>(Addr, Flags<Bind>);
-
-extern template Addr TCPHandle::sock<IPv4>() const noexcept;
-extern template Addr TCPHandle::sock<IPv6>() const noexcept;
-
-extern template Addr TCPHandle::peer<IPv4>() const noexcept;
-extern template Addr TCPHandle::peer<IPv6>() const noexcept;
-
-extern template void TCPHandle::connect<IPv4>(const std::string &, unsigned int);
-extern template void TCPHandle::connect<IPv6>(const std::string &, unsigned int);
-
-extern template void TCPHandle::connect<IPv4>(Addr addr);
-extern template void TCPHandle::connect<IPv6>(Addr addr);
-#endif // UVW_AS_LIB
-
-/**
- * Internal details not to be documented.
- * @endcond
- */
 
 } // namespace uvw
 

@@ -6,17 +6,19 @@
 
 namespace uvw {
 
-UVW_INLINE void AsyncHandle::sendCallback(uv_async_t *handle) {
-    AsyncHandle &async = *(static_cast<AsyncHandle *>(handle->data));
-    async.publish(AsyncEvent{});
+UVW_INLINE void async_handle::send_callback(uv_async_t *hndl) {
+    async_handle &async = *(static_cast<async_handle *>(hndl->data));
+    async.publish(async_event{});
 }
 
-UVW_INLINE bool AsyncHandle::init() {
-    return initialize(&uv_async_init, &sendCallback);
+UVW_INLINE int async_handle::init() {
+    return leak_if(uv_async_init(parent().raw(), raw(), &send_callback));
 }
 
-UVW_INLINE void AsyncHandle::send() {
-    invoke(&uv_async_send, get());
+UVW_INLINE void async_handle::send() {
+    if(auto err = uv_async_send(raw()); err != 0) {
+        publish(error_event{err});
+    }
 }
 
 } // namespace uvw

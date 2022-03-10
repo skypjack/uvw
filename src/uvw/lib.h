@@ -5,28 +5,29 @@
 #include <string>
 #include <type_traits>
 #include <uv.h>
+#include "config.h"
 #include "loop.h"
-#include "underlying_type.hpp"
+#include "uv_type.hpp"
 
 namespace uvw {
 
 /**
- * @brief The SharedLib class.
+ * @brief The shared lib class.
  *
  * `uvw` provides cross platform utilities for loading shared libraries and
  * retrieving symbols from them, by means of the API offered by `libuv`.
  */
-class SharedLib final: public UnderlyingType<SharedLib, uv_lib_t> {
+class shared_lib final: public uv_type<uv_lib_t> {
 public:
-    explicit SharedLib(ConstructorAccess ca, std::shared_ptr<Loop> ref, const std::string &filename) noexcept;
+    explicit shared_lib(loop::token token, std::shared_ptr<loop> ref, const std::string &filename) UVW_NOEXCEPT;
 
-    ~SharedLib() noexcept;
+    ~shared_lib() UVW_NOEXCEPT;
 
     /**
      * @brief Checks if the library has been correctly opened.
      * @return True if the library is opened, false otherwise.
      */
-    explicit operator bool() const noexcept;
+    explicit operator bool() const UVW_NOEXCEPT;
 
     /**
      * @brief Retrieves a data pointer from a dynamic library.
@@ -41,7 +42,7 @@ public:
     F *sym(const std::string &name) {
         static_assert(std::is_function_v<F>);
         F *func;
-        auto err = uv_dlsym(get(), name.data(), reinterpret_cast<void **>(&func));
+        auto err = uv_dlsym(raw(), name.data(), reinterpret_cast<void **>(&func));
         if(err) { func = nullptr; }
         return func;
     }
@@ -50,7 +51,7 @@ public:
      * @brief Returns the last error message, if any.
      * @return The last error message, if any.
      */
-    const char *error() const noexcept;
+    const char *error() const UVW_NOEXCEPT;
 
 private:
     bool opened;

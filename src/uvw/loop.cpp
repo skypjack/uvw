@@ -6,120 +6,107 @@
 
 namespace uvw {
 
-UVW_INLINE Loop::Loop(std::unique_ptr<uv_loop_t, Deleter> ptr) noexcept
-    : loop{std::move(ptr)} {}
+UVW_INLINE loop::loop(std::unique_ptr<uv_loop_t, deleter> ptr) UVW_NOEXCEPT
+    : uv_loop{std::move(ptr)} {}
 
-UVW_INLINE std::shared_ptr<Loop> Loop::create() {
-    auto ptr = std::unique_ptr<uv_loop_t, Deleter>{new uv_loop_t, [](uv_loop_t *l) {
-                                                       delete l;
-                                                   }};
+UVW_INLINE std::shared_ptr<loop> loop::create() {
+    auto ptr = std::unique_ptr<uv_loop_t, deleter>{new uv_loop_t, [](uv_loop_t *l) { delete l; }};
+    auto curr = std::shared_ptr<loop>{new loop{std::move(ptr)}};
 
-    auto loop = std::shared_ptr<Loop>{new Loop{std::move(ptr)}};
-
-    if(uv_loop_init(loop->loop.get())) {
-        loop = nullptr;
+    if(uv_loop_init(curr->uv_loop.get())) {
+        curr = nullptr;
     }
 
-    return loop;
+    return curr;
 }
 
-UVW_INLINE std::shared_ptr<Loop> Loop::create(uv_loop_t *loop) {
-    auto ptr = std::unique_ptr<uv_loop_t, Deleter>{loop, [](uv_loop_t *) {}};
-    return std::shared_ptr<Loop>{new Loop{std::move(ptr)}};
+UVW_INLINE std::shared_ptr<loop> loop::create(uv_loop_t *res) {
+    auto ptr = std::unique_ptr<uv_loop_t, deleter>{res, [](uv_loop_t *) {}};
+    return std::shared_ptr<loop>{new loop{std::move(ptr)}};
 }
 
-UVW_INLINE std::shared_ptr<Loop> Loop::getDefault() {
-    static std::weak_ptr<Loop> ref;
-    std::shared_ptr<Loop> loop;
+UVW_INLINE std::shared_ptr<loop> loop::get_default() {
+    static std::weak_ptr<loop> ref;
+    std::shared_ptr<loop> curr;
 
     if(ref.expired()) {
         auto def = uv_default_loop();
 
         if(def) {
-            auto ptr = std::unique_ptr<uv_loop_t, Deleter>(def, [](uv_loop_t *) {});
-            loop = std::shared_ptr<Loop>{new Loop{std::move(ptr)}};
+            auto ptr = std::unique_ptr<uv_loop_t, deleter>(def, [](uv_loop_t *) {});
+            curr = std::shared_ptr<loop>{new loop{std::move(ptr)}};
         }
 
-        ref = loop;
+        ref = curr;
     } else {
-        loop = ref.lock();
+        curr = ref.lock();
     }
 
-    return loop;
+    return curr;
 }
 
-UVW_INLINE Loop::~Loop() noexcept {
-    if(loop) {
+UVW_INLINE loop::~loop() UVW_NOEXCEPT {
+    if(uv_loop) {
         close();
     }
 }
 
-UVW_INLINE void Loop::close() {
-    auto err = uv_loop_close(loop.get());
-    return err ? publish(ErrorEvent{err}) : loop.reset();
+UVW_INLINE void loop::close() {
+    auto err = uv_loop_close(uv_loop.get());
+    return err ? publish(error_event{err}) : uv_loop.reset();
 }
 
-template<Loop::Mode mode>
-bool Loop::run() noexcept {
-    auto utm = static_cast<std::underlying_type_t<Mode>>(mode);
-    auto uvrm = static_cast<uv_run_mode>(utm);
-    return (uv_run(loop.get(), uvrm) == 0);
+bool loop::run(run_mode mode) UVW_NOEXCEPT {
+    return (uv_run(uv_loop.get(), static_cast<uv_run_mode>(mode)) == 0);
 }
 
-UVW_INLINE bool Loop::alive() const noexcept {
-    return !(uv_loop_alive(loop.get()) == 0);
+UVW_INLINE bool loop::alive() const UVW_NOEXCEPT {
+    return !(uv_loop_alive(uv_loop.get()) == 0);
 }
 
-UVW_INLINE void Loop::stop() noexcept {
-    uv_stop(loop.get());
+UVW_INLINE void loop::stop() UVW_NOEXCEPT {
+    uv_stop(uv_loop.get());
 }
 
-UVW_INLINE int Loop::descriptor() const noexcept {
-    return uv_backend_fd(loop.get());
+UVW_INLINE int loop::descriptor() const UVW_NOEXCEPT {
+    return uv_backend_fd(uv_loop.get());
 }
 
-UVW_INLINE std::pair<bool, Loop::Time> Loop::timeout() const noexcept {
-    auto to = uv_backend_timeout(loop.get());
-    return std::make_pair(to == -1, Time{to});
+UVW_INLINE std::pair<bool, loop::time> loop::timeout() const UVW_NOEXCEPT {
+    auto to = uv_backend_timeout(uv_loop.get());
+    return std::make_pair(to == -1, time{to});
 }
 
-UVW_INLINE Loop::Time Loop::idleTime() const noexcept {
-    return Time{uv_metrics_idle_time(loop.get())};
+UVW_INLINE loop::time loop::idle_time() const UVW_NOEXCEPT {
+    return time{uv_metrics_idle_time(uv_loop.get())};
 }
 
-UVW_INLINE Loop::Time Loop::now() const noexcept {
-    return Time{uv_now(loop.get())};
+UVW_INLINE loop::time loop::now() const UVW_NOEXCEPT {
+    return time{uv_now(uv_loop.get())};
 }
 
-UVW_INLINE void Loop::update() const noexcept {
-    return uv_update_time(loop.get());
+UVW_INLINE void loop::update() const UVW_NOEXCEPT {
+    return uv_update_time(uv_loop.get());
 }
 
-UVW_INLINE void Loop::fork() noexcept {
-    auto err = uv_loop_fork(loop.get());
+UVW_INLINE void loop::fork() UVW_NOEXCEPT {
+    auto err = uv_loop_fork(uv_loop.get());
 
     if(err) {
-        publish(ErrorEvent{err});
+        publish(error_event{err});
     }
 }
 
-UVW_INLINE void Loop::data(std::shared_ptr<void> uData) {
-    userData = std::move(uData);
+UVW_INLINE void loop::data(std::shared_ptr<void> ud) {
+    user_data = std::move(ud);
 }
 
-UVW_INLINE const uv_loop_t *Loop::raw() const noexcept {
-    return loop.get();
+UVW_INLINE const uv_loop_t *loop::raw() const UVW_NOEXCEPT {
+    return uv_loop.get();
 }
 
-UVW_INLINE uv_loop_t *Loop::raw() noexcept {
-    return const_cast<uv_loop_t *>(const_cast<const Loop *>(this)->raw());
+UVW_INLINE uv_loop_t *loop::raw() UVW_NOEXCEPT {
+    return const_cast<uv_loop_t *>(const_cast<const loop *>(this)->raw());
 }
-
-// explicit instantiations
-#ifdef UVW_AS_LIB
-template bool Loop::run<Loop::Mode::DEFAULT>() noexcept;
-template bool Loop::run<Loop::Mode::ONCE>() noexcept;
-template bool Loop::run<Loop::Mode::NOWAIT>() noexcept;
-#endif // UVW_AS_LIB
 
 } // namespace uvw

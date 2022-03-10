@@ -2,7 +2,7 @@
 #include <uvw/thread.h>
 
 TEST(Thread, Run) {
-    auto loop = uvw::Loop::getDefault();
+    auto loop = uvw::loop::get_default();
     auto has_run = std::make_shared<bool>();
     auto cb = [](std::shared_ptr<void> data) {
         if(auto has_run = std::static_pointer_cast<bool>(data); has_run) {
@@ -10,7 +10,7 @@ TEST(Thread, Run) {
         }
     };
 
-    auto handle = loop->resource<uvw::Thread>(cb, has_run);
+    auto handle = loop->resource<uvw::thread>(cb, has_run);
 
     ASSERT_TRUE(handle->run());
     ASSERT_TRUE(handle->join());
@@ -20,8 +20,8 @@ TEST(Thread, Run) {
 }
 
 TEST(ThreadLocalStorage, SetGet) {
-    auto loop = uvw::Loop::getDefault();
-    auto localStorage = loop->resource<uvw::ThreadLocalStorage>();
+    auto loop = uvw::loop::get_default();
+    auto localStorage = loop->resource<uvw::thread_local_storage>();
     auto flag{true};
 
     localStorage->set<bool>(&flag);
@@ -31,26 +31,26 @@ TEST(ThreadLocalStorage, SetGet) {
 }
 
 TEST(Mutex, LockUnlock) {
-    auto loop = uvw::Loop::getDefault();
-    auto mtx = loop->resource<uvw::Mutex>();
+    auto loop = uvw::loop::get_default();
+    auto mtx = loop->resource<uvw::mutex>();
 
     mtx->lock();
 
 #ifdef _MSC_VER
     // this is allowed by libuv on Windows
-    ASSERT_TRUE(mtx->tryLock());
+    ASSERT_TRUE(mtx->try_lock());
 #else
-    ASSERT_FALSE(mtx->tryLock());
+    ASSERT_FALSE(mtx->try_lock());
 #endif
 
     mtx->unlock();
-    ASSERT_TRUE(mtx->tryLock());
+    ASSERT_TRUE(mtx->try_lock());
 
 #ifdef _MSC_VER
     // this is allowed by libuv on Windows
-    ASSERT_TRUE(mtx->tryLock());
+    ASSERT_TRUE(mtx->try_lock());
 #else
-    ASSERT_FALSE(mtx->tryLock());
+    ASSERT_FALSE(mtx->try_lock());
 #endif
 
     mtx->unlock();
@@ -59,14 +59,14 @@ TEST(Mutex, LockUnlock) {
 }
 
 TEST(Mutex, RecursiveLockUnlock) {
-    auto loop = uvw::Loop::getDefault();
-    auto recursive_mtx = loop->resource<uvw::Mutex>(true);
+    auto loop = uvw::loop::get_default();
+    auto recursive_mtx = loop->resource<uvw::mutex>(true);
 
     recursive_mtx->lock();
     recursive_mtx->unlock();
 
     recursive_mtx->lock();
-    ASSERT_TRUE(recursive_mtx->tryLock());
+    ASSERT_TRUE(recursive_mtx->try_lock());
     recursive_mtx->unlock();
     recursive_mtx->unlock();
 

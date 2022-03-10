@@ -9,47 +9,43 @@
 
 namespace uvw {
 
-/**
- * @brief TimerEvent event.
- *
- * It will be emitted by TimerHandle according with its functionalities.
- */
-struct TimerEvent {};
+/*! @brief Timer event. */
+struct timer_event {};
 
 /**
- * @brief The TimerHandle handle.
+ * @brief The timer handle.
  *
  * Timer handles are used to schedule events to be emitted in the future.
  *
- * To create a `TimerHandle` through a `Loop`, no arguments are required.
+ * To create a `timer_handle` through a `loop`, no arguments are required.
  */
-class TimerHandle final: public Handle<TimerHandle, uv_timer_t> {
-    static void startCallback(uv_timer_t *handle);
+class timer_handle final: public handle<timer_handle, uv_timer_t> {
+    static void start_callback(uv_timer_t *hndl);
 
 public:
-    using Time = std::chrono::duration<uint64_t, std::milli>;
+    using time = std::chrono::duration<uint64_t, std::milli>;
 
-    using Handle::Handle;
+    using handle::handle;
 
     /**
      * @brief Initializes the handle.
-     * @return True in case of success, false otherwise.
+     * @return Underlying code in case of errors, 0 otherwise.
      */
-    bool init();
+    int init() final;
 
     /**
      * @brief Starts the timer.
      *
-     * If timeout is zero, a TimerEvent event is emitted on the next event loop
-     * iteration. If repeat is non-zero, a TimerEvent event is emitted first
-     * after timeout milliseconds and then repeatedly after repeat milliseconds.
+     * If timeout is zero, a timer event is emitted on the next event loop
+     * iteration. If repeat is non-zero, a timer event is emitted first after
+     * timeout milliseconds and then repeatedly after repeat milliseconds.
      *
      * @param timeout Milliseconds before to emit an event (use
      * `std::chrono::duration<uint64_t, std::milli>`).
      * @param repeat Milliseconds between successive events (use
      * `std::chrono::duration<uint64_t, std::milli>`).
      */
-    void start(Time timeout, Time repeat);
+    void start(time timeout, time repeat);
 
     /**
      * @brief Stops the handle.
@@ -61,7 +57,7 @@ public:
      *
      * Stop the timer, and if it is repeating restart it using the repeat value
      * as the timeout.<br/>
-     * If the timer has never been started before it emits an ErrorEvent event.
+     * If the timer has never been started before it emits an error event.
      */
     void again();
 
@@ -83,23 +79,23 @@ public:
      * @param repeat Repeat interval in milliseconds (use
      * `std::chrono::duration<uint64_t, std::milli>`).
      */
-    void repeat(Time repeat);
+    void repeat(time repeat);
 
     /**
      * @brief Gets the timer repeat value.
      * @return Timer repeat value in milliseconds (as a
      * `std::chrono::duration<uint64_t, std::milli>`).
      */
-    Time repeat();
+    time repeat();
 
     /**
      * @brief Gets the timer due value.
      *
-     * The time is relative to `Loop::now()`.
+     * The time is relative to `loop::now()`.
      *
      * @return The timer due value or 0 if it has expired.
      */
-    Time dueIn();
+    time due_in();
 };
 
 } // namespace uvw

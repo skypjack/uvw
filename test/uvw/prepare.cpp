@@ -2,14 +2,14 @@
 #include <uvw/prepare.h>
 
 TEST(Prepare, StartAndStop) {
-    auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::PrepareHandle>();
+    auto loop = uvw::loop::get_default();
+    auto handle = loop->resource<uvw::prepare_handle>();
 
     bool checkPrepareEvent = false;
 
-    handle->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
+    handle->on<uvw::error_event>([](auto &&...) { FAIL(); });
 
-    handle->on<uvw::PrepareEvent>([&checkPrepareEvent](const auto &, auto &hndl) {
+    handle->on<uvw::prepare_event>([&checkPrepareEvent](const auto &, auto &hndl) {
         ASSERT_FALSE(checkPrepareEvent);
         checkPrepareEvent = true;
         hndl.stop();
@@ -28,11 +28,11 @@ TEST(Prepare, StartAndStop) {
 }
 
 TEST(Prepare, Fake) {
-    auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::PrepareHandle>();
+    auto loop = uvw::loop::get_default();
+    auto handle = loop->resource<uvw::prepare_handle>();
 
-    handle->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
-    handle->on<uvw::PrepareEvent>([](auto &&...) { FAIL(); });
+    handle->on<uvw::error_event>([](auto &&...) { FAIL(); });
+    handle->on<uvw::prepare_event>([](auto &&...) { FAIL(); });
 
     handle->start();
     handle->close();

@@ -11,34 +11,35 @@
 #include <type_traits>
 #include <utility>
 #include <uv.h>
+#include "config.h"
 #include "emitter.h"
 #include "util.h"
 
 namespace uvw {
 
-class AsyncHandle;
-class CheckHandle;
-class FsEventHandle;
-class FsPollHandle;
-class IdleHandle;
-class PipeHandle;
-class PollHandle;
-class PrepareHandle;
-class ProcessHandle;
-class SignalHandle;
-class TCPHandle;
-class TimerHandle;
-class TTYHandle;
-class UDPHandle;
+class async_handle;
+class check_handle;
+class fs_event_handle;
+class fs_poll_handle;
+class idle_handle;
+class pipe_handle;
+class poll_handle;
+class prepare_handle;
+class process_handle;
+class signal_handle;
+class tcp_handle;
+class timer_handle;
+class tty_handle;
+class udp_handle;
 
 namespace details {
 
-enum class UVLoopOption : std::underlying_type_t<uv_loop_option> {
+enum class uvw_loop_option : std::underlying_type_t<uv_loop_option> {
     BLOCK_SIGNAL = UV_LOOP_BLOCK_SIGNAL,
     IDLE_TIME = UV_METRICS_IDLE_TIME
 };
 
-enum class UVRunMode : std::underlying_type_t<uv_run_mode> {
+enum class uvw_run_mode : std::underlying_type_t<uv_run_mode> {
     DEFAULT = UV_RUN_DEFAULT,
     ONCE = UV_RUN_ONCE,
     NOWAIT = UV_RUN_NOWAIT
@@ -47,55 +48,49 @@ enum class UVRunMode : std::underlying_type_t<uv_run_mode> {
 } // namespace details
 
 /**
- * @brief The Loop class.
+ * @brief The loop class.
  *
  * The event loop is the central part of `uvw`'s functionalities, as well as
  * `libuv`'s ones.<br/>
  * It takes care of polling for I/O and scheduling callbacks to be run based on
  * different sources of events.
  */
-class Loop final: public Emitter<Loop>, public std::enable_shared_from_this<Loop> {
-    using Deleter = void (*)(uv_loop_t *);
+class loop final: public emitter<loop>, public std::enable_shared_from_this<loop> {
+    using deleter = void (*)(uv_loop_t *);
 
     template<typename, typename>
-    friend class Resource;
+    friend class resource;
 
-    template<typename R, typename... Args>
-    auto create_resource(int, Args &&...args) -> decltype(std::declval<R>().init(), std::shared_ptr<R>{}) {
-        auto ptr = R::create(shared_from_this(), std::forward<Args>(args)...);
-        ptr = ptr->init() ? ptr : nullptr;
-        return ptr;
-    }
+    class uv_token {
+        friend class loop;
+        explicit uv_token(int) {}
+    };
 
-    template<typename R, typename... Args>
-    std::shared_ptr<R> create_resource(char, Args &&...args) {
-        return R::create(shared_from_this(), std::forward<Args>(args)...);
-    }
-
-    Loop(std::unique_ptr<uv_loop_t, Deleter> ptr) noexcept;
+    loop(std::unique_ptr<uv_loop_t, deleter> ptr) UVW_NOEXCEPT;
 
 public:
-    using Time = std::chrono::duration<uint64_t, std::milli>;
-    using Configure = details::UVLoopOption;
-    using Mode = details::UVRunMode;
+    using token = uv_token;
+    using time = std::chrono::duration<uint64_t, std::milli>;
+    using option = details::uvw_loop_option;
+    using run_mode = details::uvw_run_mode;
 
     /**
-     * @brief Initializes a new Loop instance.
+     * @brief Initializes a new loop instance.
      * @return A pointer to the newly created loop.
      */
-    static std::shared_ptr<Loop> create();
+    static std::shared_ptr<loop> create();
 
     /**
-     * @brief Initializes a new Loop instance from an existing resource.
+     * @brief Initializes a new loop instance from an existing resource.
      *
      * The lifetime of the resource must exceed that of the instance to which
      * it's associated. Management of the memory associated with the resource is
      * in charge of the user.
      *
-     * @param loop A valid pointer to a correctly initialized resource.
+     * @param res A valid pointer to a correctly initialized resource.
      * @return A pointer to the newly created loop.
      */
-    static std::shared_ptr<Loop> create(uv_loop_t *loop);
+    static std::shared_ptr<loop> create(uv_loop_t *res);
 
     /**
      * @brief Gets the initialized default loop.
@@ -109,15 +104,15 @@ public:
      *
      * @return The initialized default loop.
      */
-    static std::shared_ptr<Loop> getDefault();
+    static std::shared_ptr<loop> get_default();
 
-    Loop(const Loop &) = delete;
-    Loop(Loop &&other) = delete;
+    loop(const loop &) = delete;
+    loop(loop &&other) = delete;
 
-    Loop &operator=(const Loop &) = delete;
-    Loop &operator=(Loop &&other) = delete;
+    loop &operator=(const loop &) = delete;
+    loop &operator=(loop &&other) = delete;
 
-    ~Loop() noexcept;
+    ~loop() UVW_NOEXCEPT;
 
     /**
      * @brief Sets additional loop options.
@@ -126,23 +121,22 @@ public:
      * mentioned otherwise.<br/>
      * Supported options:
      *
-     * * `Loop::Configure::BLOCK_SIGNAL`: Block a signal when polling for new
+     * * `loop::option::BLOCK_SIGNAL`: Block a signal when polling for new
      * events. A second argument is required and it is the signal number.
-     * * `Loop::Configure::IDLE_TIME`: Accumulate the amount of idle time the
-     * event loop spends in the event provider. This option is necessary to use
-     * `idleTime()`.
+     * * `loop::option::IDLE_TIME`: Accumulate the amount of idle time the event
+     * loop spends in the event provider. This option is necessary to use
+     * `idle_time()`.
      *
-     * An ErrorEvent will be emitted in case of errors.
+     * An error event will be emitted in case of errors.
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_configure)
      * for further details.
      */
     template<typename... Args>
-    void configure(Configure flag, Args &&...args) {
-        auto option = static_cast<std::underlying_type_t<Configure>>(flag);
-        auto err = uv_loop_configure(loop.get(), static_cast<uv_loop_option>(option), std::forward<Args>(args)...);
-        if(err) { publish(ErrorEvent{err}); }
+    void configure(option flag, Args &&...args) {
+        auto err = uv_loop_configure(uv_loop.get(), static_cast<uv_loop_option>(flag), std::forward<Args>(args)...);
+        if(err) { publish(error_event{err}); }
     }
 
     /**
@@ -151,13 +145,24 @@ public:
      * This should be used as a default method to create resources.<br/>
      * The arguments are the ones required for the specific resource.
      *
-     * Use it as `loop->resource<uvw::TimerHandle>()`.
+     * Use it as `loop->resource<uvw::timer_handle>()`.
      *
      * @return A pointer to the newly created resource.
      */
     template<typename R, typename... Args>
     std::shared_ptr<R> resource(Args &&...args) {
-        return create_resource<R>(0, std::forward<Args>(args)...);
+        auto ptr = uninitialized_resource<R>(std::forward<Args>(args)...);
+        ptr = (ptr->init() == 0) ? ptr : nullptr;
+        return ptr;
+    }
+
+    /**
+     * @brief Creates uninitialized resources of any type.
+     * @return A pointer to the newly created resource.
+     */
+    template<typename R, typename... Args>
+    std::shared_ptr<R> uninitialized_resource(Args &&...args) {
+        return std::make_shared<R>(token{0}, shared_from_this(), std::forward<Args>(args)...);
     }
 
     /**
@@ -166,7 +171,7 @@ public:
      * Call this function only when the loop has finished executing and all open
      * handles and requests have been closed, or the loop will emit an error.
      *
-     * An ErrorEvent will be emitted in case of errors.
+     * An error event will be emitted in case of errors.
      */
     void close();
 
@@ -175,12 +180,12 @@ public:
      *
      * Available modes are:
      *
-     * * `Loop::Mode::DEFAULT`: Runs the event loop until there are no more
+     * * `loop::run_mode::DEFAULT`: Runs the event loop until there are no more
      * active and referenced handles or requests.
-     * * `Loop::Mode::ONCE`: Poll for i/o once. Note that this function blocks
-     * if there are no pending callbacks.
-     * * `Loop::Mode::NOWAIT`: Poll for i/o once but don’t block if there are no
-     * pending callbacks.
+     * * `loop::run_mode::ONCE`: Poll for i/o once. Note that this function
+     * blocks if there are no pending callbacks.
+     * * `loop::run_mode::NOWAIT`: Poll for i/o once but don’t block if there
+     * are no pending callbacks.
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/loop.html#c.uv_run)
@@ -188,14 +193,13 @@ public:
      *
      * @return True when done, false in all other cases.
      */
-    template<Mode mode = Mode::DEFAULT>
-    bool run() noexcept;
+    bool run(run_mode mode = run_mode::DEFAULT) UVW_NOEXCEPT;
 
     /**
      * @brief Checks if there are active resources.
      * @return True if there are active resources in the loop.
      */
-    bool alive() const noexcept;
+    bool alive() const UVW_NOEXCEPT;
 
     /**
      * @brief Stops the event loop.
@@ -205,18 +209,18 @@ public:
      * If this function was called before blocking for I/O, the loop won’t block
      * for I/O on this iteration.
      */
-    void stop() noexcept;
+    void stop() UVW_NOEXCEPT;
 
     /**
      * @brief Get backend file descriptor.
      *
      * Only kqueue, epoll and event ports are supported.<br/>
-     * This can be used in conjunction with `run<Loop::Mode::NOWAIT>()` to poll
-     * in one thread and run the event loop’s callbacks in another.
+     * This can be used in conjunction with `run(loop::run_mode::NOWAIT)` to
+     * poll in one thread and run the event loop’s callbacks in another.
      *
      * @return The backend file descriptor.
      */
-    int descriptor() const noexcept;
+    int descriptor() const UVW_NOEXCEPT;
 
     /**
      * @brief Gets the poll timeout.
@@ -224,14 +228,14 @@ public:
      * * A boolean value that is true in case of valid timeout, false otherwise.
      * * Milliseconds (`std::chrono::duration<uint64_t, std::milli>`).
      */
-    std::pair<bool, Time> timeout() const noexcept;
+    std::pair<bool, time> timeout() const UVW_NOEXCEPT;
 
     /**
      * @brief Returns the amount of time the event loop has been idle. The call
      * is thread safe.
      * @return The accumulated time spent idle.
      */
-    Time idleTime() const noexcept;
+    time idle_time() const UVW_NOEXCEPT;
 
     /**
      * @brief Returns the current timestamp in milliseconds.
@@ -245,7 +249,7 @@ public:
      * @return The current timestamp in milliseconds (actual type is
      * `std::chrono::duration<uint64_t, std::milli>`).
      */
-    Time now() const noexcept;
+    time now() const UVW_NOEXCEPT;
 
     /**
      * @brief Updates the event loop’s concept of _now_.
@@ -256,7 +260,7 @@ public:
      * that block the event loop for longer periods of time, where _longer_ is
      * somewhat subjective but probably on the order of a millisecond or more.
      */
-    void update() const noexcept;
+    void update() const UVW_NOEXCEPT;
 
     /**
      * @brief Walks the list of handles.
@@ -267,52 +271,52 @@ public:
      */
     template<typename Func>
     void walk(Func callback) {
-        auto func = [](uv_handle_t *handle, void *func) {
-            if(handle->data) {
+        auto func = [](uv_handle_t *hndl, void *func) {
+            if(hndl->data) {
                 auto &cb = *static_cast<Func *>(func);
 
-                switch(Utilities::guessHandle(HandleCategory{handle->type})) {
-                case HandleType::ASYNC:
-                    cb(*static_cast<AsyncHandle *>(handle->data));
+                switch(utilities::guess_handle(handle_category{hndl->type})) {
+                case handle_type::ASYNC:
+                    cb(*static_cast<async_handle *>(hndl->data));
                     break;
-                case HandleType::CHECK:
-                    cb(*static_cast<CheckHandle *>(handle->data));
+                case handle_type::CHECK:
+                    cb(*static_cast<check_handle *>(hndl->data));
                     break;
-                case HandleType::FS_EVENT:
-                    cb(*static_cast<FsEventHandle *>(handle->data));
+                case handle_type::FS_EVENT:
+                    cb(*static_cast<fs_event_handle *>(hndl->data));
                     break;
-                case HandleType::FS_POLL:
-                    cb(*static_cast<FsPollHandle *>(handle->data));
+                case handle_type::FS_POLL:
+                    cb(*static_cast<fs_poll_handle *>(hndl->data));
                     break;
-                case HandleType::IDLE:
-                    cb(*static_cast<IdleHandle *>(handle->data));
+                case handle_type::IDLE:
+                    cb(*static_cast<idle_handle *>(hndl->data));
                     break;
-                case HandleType::PIPE:
-                    cb(*static_cast<PipeHandle *>(handle->data));
+                case handle_type::PIPE:
+                    cb(*static_cast<pipe_handle *>(hndl->data));
                     break;
-                case HandleType::POLL:
-                    cb(*static_cast<PollHandle *>(handle->data));
+                case handle_type::POLL:
+                    cb(*static_cast<poll_handle *>(hndl->data));
                     break;
-                case HandleType::PREPARE:
-                    cb(*static_cast<PrepareHandle *>(handle->data));
+                case handle_type::PREPARE:
+                    cb(*static_cast<prepare_handle *>(hndl->data));
                     break;
-                case HandleType::PROCESS:
-                    cb(*static_cast<ProcessHandle *>(handle->data));
+                case handle_type::PROCESS:
+                    cb(*static_cast<process_handle *>(hndl->data));
                     break;
-                case HandleType::SIGNAL:
-                    cb(*static_cast<SignalHandle *>(handle->data));
+                case handle_type::SIGNAL:
+                    cb(*static_cast<signal_handle *>(hndl->data));
                     break;
-                case HandleType::TCP:
-                    cb(*static_cast<TCPHandle *>(handle->data));
+                case handle_type::TCP:
+                    cb(*static_cast<tcp_handle *>(hndl->data));
                     break;
-                case HandleType::TIMER:
-                    cb(*static_cast<TimerHandle *>(handle->data));
+                case handle_type::TIMER:
+                    cb(*static_cast<timer_handle *>(hndl->data));
                     break;
-                case HandleType::TTY:
-                    cb(*static_cast<TTYHandle *>(handle->data));
+                case handle_type::TTY:
+                    cb(*static_cast<tty_handle *>(hndl->data));
                     break;
-                case HandleType::UDP:
-                    cb(*static_cast<UDPHandle *>(handle->data));
+                case handle_type::UDP:
+                    cb(*static_cast<udp_handle *>(hndl->data));
                     break;
                 default:
                     // this handle isn't managed by uvw, let it be...
@@ -321,7 +325,7 @@ public:
             }
         };
 
-        uv_walk(loop.get(), func, &callback);
+        uv_walk(uv_loop.get(), func, &callback);
     }
 
     /**
@@ -348,13 +352,13 @@ public:
      * bugs, and is subject to change or removal. API and ABI stability is not
      * guaranteed.
      *
-     * An ErrorEvent will be emitted in case of errors.
+     * An error event will be emitted in case of errors.
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_fork)
      * for further details.
      */
-    void fork() noexcept;
+    void fork() UVW_NOEXCEPT;
 
     /**
      * @brief Gets user-defined data. `uvw` won't use this field in any case.
@@ -362,14 +366,14 @@ public:
      */
     template<typename R = void>
     std::shared_ptr<R> data() const {
-        return std::static_pointer_cast<R>(userData);
+        return std::static_pointer_cast<R>(user_data);
     }
 
     /**
      * @brief Sets arbitrary data. `uvw` won't use this field in any case.
-     * @param uData User-defined arbitrary data.
+     * @param ud User-defined arbitrary data.
      */
-    void data(std::shared_ptr<void> uData);
+    void data(std::shared_ptr<void> ud);
 
     /**
      * @brief Gets the underlying raw data structure.
@@ -386,7 +390,7 @@ public:
      *
      * @return The underlying raw data structure.
      */
-    const uv_loop_t *raw() const noexcept;
+    const uv_loop_t *raw() const UVW_NOEXCEPT;
 
     /**
      * @brief Gets the underlying raw data structure.
@@ -403,19 +407,12 @@ public:
      *
      * @return The underlying raw data structure.
      */
-    uv_loop_t *raw() noexcept;
+    uv_loop_t *raw() UVW_NOEXCEPT;
 
 private:
-    std::unique_ptr<uv_loop_t, Deleter> loop;
-    std::shared_ptr<void> userData{nullptr};
+    std::unique_ptr<uv_loop_t, deleter> uv_loop;
+    std::shared_ptr<void> user_data{nullptr};
 };
-
-// (extern) explicit instantiations
-#ifdef UVW_AS_LIB
-extern template bool Loop::run<Loop::Mode::DEFAULT>() noexcept;
-extern template bool Loop::run<Loop::Mode::ONCE>() noexcept;
-extern template bool Loop::run<Loop::Mode::NOWAIT>() noexcept;
-#endif // UVW_AS_LIB
 
 } // namespace uvw
 
