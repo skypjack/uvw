@@ -17,7 +17,7 @@ endif()
 #
 set(UVW_VERSION_MAJOR 2)
 set(UVW_VERSION_MINOR 12)
-set(UVW_VERSION_PATCH 0)
+set(UVW_VERSION_PATCH 1)
 
 project(
     uvw
@@ -68,7 +68,7 @@ endif()
 
 
 # Required minimal libuv version
-set(LIBUV_VERSION 1.44.0)
+set(LIBUV_VERSION 1.44.1)
 
 function(fetch_libuv)
     if (FETCH_LIBUV)
