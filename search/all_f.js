@@ -18,6 +18,7 @@ var searchData=
   ['prepareevent_214',['PrepareEvent',['../structuvw_1_1PrepareEvent.html',1,'uvw']]],
   ['preparehandle_215',['PrepareHandle',['../classuvw_1_1PrepareHandle.html',1,'uvw']]],
   ['prev_216',['prev',['../structuvw_1_1FsPollEvent.html#a8862ebc6d1164205248981b7b368450a',1,'uvw::FsPollEvent']]],
-  ['processhandle_217',['ProcessHandle',['../classuvw_1_1ProcessHandle.html',1,'uvw']]],
-  ['processtitle_218',['processTitle',['../structuvw_1_1Utilities.html#a08d83152d4f1baaf56802b26e9881508',1,'uvw::Utilities::processTitle()'],['../structuvw_1_1Utilities.html#aa458641d7fd674501b913e6da43c897a',1,'uvw::Utilities::processTitle(const std::string &amp;title)']]]
+  ['priority_217',['priority',['../structuvw_1_1Utilities_1_1OS.html#a575a3a0b2fe7294aae2ec098d8646c75',1,'uvw::Utilities::OS::priority(PidType pid)'],['../structuvw_1_1Utilities_1_1OS.html#ae14af441cc2401a9d96cc5f41b0b3fda',1,'uvw::Utilities::OS::priority(PidType pid, int prio)']]],
+  ['processhandle_218',['ProcessHandle',['../classuvw_1_1ProcessHandle.html',1,'uvw']]],
+  ['processtitle_219',['processTitle',['../structuvw_1_1Utilities.html#a08d83152d4f1baaf56802b26e9881508',1,'uvw::Utilities::processTitle()'],['../structuvw_1_1Utilities.html#aa458641d7fd674501b913e6da43c897a',1,'uvw::Utilities::processTitle(const std::string &amp;title)']]]
 ];

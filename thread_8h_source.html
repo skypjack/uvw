@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">2.10.0</span>
+   &#160;<span id="projectnumber">2.12.1</span>
    </div>
   </td>
  </tr>
@@ -73,212 +73,196 @@ $(function() {
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef UVW_THREAD_INCLUDE_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define UVW_THREAD_INCLUDE_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;cstddef&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;cstddef&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;type_traits&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;utility&gt;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;uv.h&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;loop.h&quot;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;underlying_type.hpp&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;type_traits&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;utility&gt;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;uv.h&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;loop.h&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;underlying_type.hpp&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceuvw.html">uvw</a> {</div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceuvw.html">uvw</a> {</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">namespace </span>details {</div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">namespace </span>details {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">enum class</span> UVThreadCreateFlags: std::underlying_type_t&lt;uv_thread_create_flags&gt; {</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    THREAD_NO_FLAGS = UV_THREAD_NO_FLAGS,</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    THREAD_HAS_STACK_SIZE = UV_THREAD_HAS_STACK_SIZE</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;};</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;}</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">class </span>Thread;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">class </span>ThreadLocalStorage;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">class </span>Once;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keyword">class </span>Mutex;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">class </span>RWLock;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">class </span>Semaphore;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">class </span>Condition;</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">class </span>Barrier;</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="classuvw_1_1Thread.html">   49</a></span>&#160;<span class="keyword">class </span><a class="code" href="classuvw_1_1Thread.html">Thread</a> final: <span class="keyword">public</span> <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;Thread, uv_thread_t&gt; {</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keyword">using</span> InternalTask = std::function&lt;void(std::shared_ptr&lt;void&gt;)&gt;;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keyword">enum class</span> UVThreadCreateFlags : std::underlying_type_t&lt;uv_thread_create_flags&gt; {</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;    THREAD_NO_FLAGS = UV_THREAD_NO_FLAGS,</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    THREAD_HAS_STACK_SIZE = UV_THREAD_HAS_STACK_SIZE</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;};</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;}</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">class </span>Thread;</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">class </span>ThreadLocalStorage;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">class </span>Once;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="keyword">class </span>Mutex;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">class </span>RWLock;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">class </span>Semaphore;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">class </span>Condition;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">class </span>Barrier;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classuvw_1_1Thread.html">   42</a></span>&#160;<span class="keyword">class </span><a class="code" href="classuvw_1_1Thread.html">Thread</a> final: <span class="keyword">public</span> <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;Thread, uv_thread_t&gt; {</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">using</span> InternalTask = std::function&lt;void(std::shared_ptr&lt;void&gt;)&gt;;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> createCallback(<span class="keywordtype">void</span> *arg);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">using</span> Options = details::UVThreadCreateFlags;</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keyword">using</span> Task = InternalTask;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keyword">using</span> Type = uv_thread_t;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> createCallback(<span class="keywordtype">void</span> *arg);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1Thread.html">Thread</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref, Task t, std::shared_ptr&lt;void&gt; d = <span class="keyword">nullptr</span>) noexcept;</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">using</span> Options = details::UVThreadCreateFlags;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keyword">using</span> Task = InternalTask;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keyword">using</span> Type = uv_thread_t;</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1Thread.html">Thread</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref, Task t, std::shared_ptr&lt;void&gt; d = <span class="keyword">nullptr</span>) noexcept;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="classuvw_1_1Thread.html#aef9fde2f8a565f90b9f80dfbfd9e8650">   65</a></span>&#160;    <span class="keyword">static</span> Type <span class="keyword">self</span>() noexcept;</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="classuvw_1_1Thread.html#a5a6d1d004cdb0130f90fbf3f5a83860d">   73</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1Thread.html#a5a6d1d004cdb0130f90fbf3f5a83860d">equal</a>(<span class="keyword">const</span> <a class="code" href="classuvw_1_1Thread.html">Thread</a> &amp;tl, <span class="keyword">const</span> <a class="code" href="classuvw_1_1Thread.html">Thread</a> &amp;tr) noexcept;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    ~<a class="code" href="classuvw_1_1Thread.html">Thread</a>() noexcept;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="classuvw_1_1Thread.html#aa2d9ff80741e0c724c30b7b2260182b6">   81</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1Thread.html#aa2d9ff80741e0c724c30b7b2260182b6">run</a>() noexcept;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="classuvw_1_1Thread.html#af2733e7b2ce1e4503c32f658a5555aa2">   96</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1Thread.html#aa2d9ff80741e0c724c30b7b2260182b6">run</a>(<a class="code" href="classuvw_1_1Flags.html">Flags</a>&lt;Options&gt; opts, std::<span class="keywordtype">size_t</span> stack = {}) noexcept;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00102"></a><span class="lineno"><a class="line" href="classuvw_1_1Thread.html#a722ed957709dad00e29eb5f405c70de8">  102</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1Thread.html#a722ed957709dad00e29eb5f405c70de8">join</a>() noexcept;</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;private:</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    std::shared_ptr&lt;<span class="keywordtype">void</span>&gt; data;</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    Task task;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;};</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
-<div class="line"><a name="l00117"></a><span class="lineno"><a class="line" href="classuvw_1_1ThreadLocalStorage.html">  117</a></span>&#160;class <a class="code" href="classuvw_1_1ThreadLocalStorage.html">ThreadLocalStorage</a> final: public <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;<a class="code" href="classuvw_1_1ThreadLocalStorage.html">ThreadLocalStorage</a>, uv_key_t&gt; {</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1ThreadLocalStorage.html">ThreadLocalStorage</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref) noexcept;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    ~<a class="code" href="classuvw_1_1ThreadLocalStorage.html">ThreadLocalStorage</a>() noexcept;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00129"></a><span class="lineno"><a class="line" href="classuvw_1_1ThreadLocalStorage.html#a9a254fec9e362bdf91fbbae04dd07b0c">  129</a></span>&#160;    T* <a class="code" href="classuvw_1_1ThreadLocalStorage.html#a9a254fec9e362bdf91fbbae04dd07b0c">get</a>() noexcept {</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span>T*<span class="keyword">&gt;</span>(uv_key_get(UnderlyingType::get()));</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    }</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00139"></a><span class="lineno"><a class="line" href="classuvw_1_1ThreadLocalStorage.html#a4036520c1b369de5d21f2f6cb4cf7ef1">  139</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1ThreadLocalStorage.html#a4036520c1b369de5d21f2f6cb4cf7ef1">set</a>(T *value) noexcept {</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;        <span class="keywordflow">return</span> uv_key_set(UnderlyingType::get(), value);</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    }</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;};</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
+<div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="classuvw_1_1Thread.html#aef9fde2f8a565f90b9f80dfbfd9e8650">   58</a></span>&#160;    <span class="keyword">static</span> Type <span class="keyword">self</span>() noexcept;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00066"></a><span class="lineno"><a class="line" href="classuvw_1_1Thread.html#a5a6d1d004cdb0130f90fbf3f5a83860d">   66</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1Thread.html#a5a6d1d004cdb0130f90fbf3f5a83860d">equal</a>(<span class="keyword">const</span> <a class="code" href="classuvw_1_1Thread.html">Thread</a> &amp;tl, <span class="keyword">const</span> <a class="code" href="classuvw_1_1Thread.html">Thread</a> &amp;tr) noexcept;</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    ~<a class="code" href="classuvw_1_1Thread.html">Thread</a>() noexcept;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classuvw_1_1Thread.html#aa2d9ff80741e0c724c30b7b2260182b6">   74</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1Thread.html#aa2d9ff80741e0c724c30b7b2260182b6">run</a>() noexcept;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
+<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="classuvw_1_1Thread.html#af2733e7b2ce1e4503c32f658a5555aa2">   89</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1Thread.html#aa2d9ff80741e0c724c30b7b2260182b6">run</a>(<a class="code" href="classuvw_1_1Flags.html">Flags</a>&lt;Options&gt; opts, std::<span class="keywordtype">size_t</span> stack = {}) noexcept;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="classuvw_1_1Thread.html#a722ed957709dad00e29eb5f405c70de8">   95</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1Thread.html#a722ed957709dad00e29eb5f405c70de8">join</a>() noexcept;</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;private:</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    std::shared_ptr&lt;<span class="keywordtype">void</span>&gt; data;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    Task task;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;};</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="classuvw_1_1ThreadLocalStorage.html">  109</a></span>&#160;class <a class="code" href="classuvw_1_1ThreadLocalStorage.html">ThreadLocalStorage</a> final: public <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;<a class="code" href="classuvw_1_1ThreadLocalStorage.html">ThreadLocalStorage</a>, uv_key_t&gt; {</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1ThreadLocalStorage.html">ThreadLocalStorage</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref) noexcept;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    ~<a class="code" href="classuvw_1_1ThreadLocalStorage.html">ThreadLocalStorage</a>() noexcept;</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00121"></a><span class="lineno"><a class="line" href="classuvw_1_1ThreadLocalStorage.html#a9a254fec9e362bdf91fbbae04dd07b0c">  121</a></span>&#160;    T *<a class="code" href="classuvw_1_1ThreadLocalStorage.html#a9a254fec9e362bdf91fbbae04dd07b0c">get</a>() noexcept {</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">static_cast&lt;</span>T *<span class="keyword">&gt;</span>(uv_key_get(UnderlyingType::get()));</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    }</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00131"></a><span class="lineno"><a class="line" href="classuvw_1_1ThreadLocalStorage.html#a4036520c1b369de5d21f2f6cb4cf7ef1">  131</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1ThreadLocalStorage.html#a4036520c1b369de5d21f2f6cb4cf7ef1">set</a>(T *value) noexcept {</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        <span class="keywordflow">return</span> uv_key_set(UnderlyingType::get(), value);</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    }</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;};</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
+<div class="line"><a name="l00142"></a><span class="lineno"><a class="line" href="classuvw_1_1Once.html">  142</a></span>&#160;<span class="keyword">class </span><a class="code" href="classuvw_1_1Once.html">Once</a> final: <span class="keyword">public</span> <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;Once, uv_once_t&gt; {</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keyword">static</span> uv_once_t *guard() noexcept;</div>
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
-<div class="line"><a name="l00151"></a><span class="lineno"><a class="line" href="classuvw_1_1Once.html">  151</a></span>&#160;<span class="keyword">class </span><a class="code" href="classuvw_1_1Once.html">Once</a> final: <span class="keyword">public</span> <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;Once, uv_once_t&gt; {</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="keyword">static</span> uv_once_t* guard() noexcept;</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keyword">using</span> UnderlyingType::UnderlyingType;</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> F&gt;</div>
-<div class="line"><a name="l00167"></a><span class="lineno"><a class="line" href="classuvw_1_1Once.html#ad04006354fc517294befdc17cbb63d86">  167</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1Once.html#ad04006354fc517294befdc17cbb63d86">once</a>(F &amp;&amp;f) noexcept {</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        <span class="keyword">using</span> CallbackType = void(*)(void);</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;        static_assert(std::is_convertible_v&lt;F, CallbackType&gt;);</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;        CallbackType cb = f;</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;        uv_once(guard(), cb);</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    }</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;};</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
-<div class="line"><a name="l00184"></a><span class="lineno"><a class="line" href="classuvw_1_1Mutex.html">  184</a></span>&#160;<span class="keyword">class </span><a class="code" href="classuvw_1_1Mutex.html">Mutex</a> final: <span class="keyword">public</span> <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;Mutex, uv_mutex_t&gt; {</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classuvw_1_1Condition.html">Condition</a>;</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    <span class="keyword">using</span> UnderlyingType::UnderlyingType;</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> F&gt;</div>
+<div class="line"><a name="l00158"></a><span class="lineno"><a class="line" href="classuvw_1_1Once.html#ad04006354fc517294befdc17cbb63d86">  158</a></span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1Once.html#ad04006354fc517294befdc17cbb63d86">once</a>(F &amp;&amp;f) noexcept {</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        <span class="keyword">using</span> CallbackType = void (*)(void);</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;        static_assert(std::is_convertible_v&lt;F, CallbackType&gt;);</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;        CallbackType cb = f;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;        uv_once(guard(), cb);</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    }</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;};</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
+<div class="line"><a name="l00174"></a><span class="lineno"><a class="line" href="classuvw_1_1Mutex.html">  174</a></span>&#160;<span class="keyword">class </span><a class="code" href="classuvw_1_1Mutex.html">Mutex</a> final: <span class="keyword">public</span> <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;Mutex, uv_mutex_t&gt; {</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="keyword">friend</span> <span class="keyword">class </span><a class="code" href="classuvw_1_1Condition.html">Condition</a>;</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1Mutex.html">Mutex</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref, <span class="keywordtype">bool</span> recursive = <span class="keyword">false</span>) noexcept;</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    ~<a class="code" href="classuvw_1_1Mutex.html">Mutex</a>() noexcept;</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160; </div>
+<div class="line"><a name="l00185"></a><span class="lineno"><a class="line" href="classuvw_1_1Mutex.html#a0e3992255cc4fc911428089a99ec19fb">  185</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1Mutex.html#a0e3992255cc4fc911428089a99ec19fb">lock</a>() noexcept;</div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1Mutex.html">Mutex</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref, <span class="keywordtype">bool</span> recursive = <span class="keyword">false</span>) noexcept;</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160; </div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    ~<a class="code" href="classuvw_1_1Mutex.html">Mutex</a>() noexcept;</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160; </div>
-<div class="line"><a name="l00195"></a><span class="lineno"><a class="line" href="classuvw_1_1Mutex.html#a0e3992255cc4fc911428089a99ec19fb">  195</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1Mutex.html#a0e3992255cc4fc911428089a99ec19fb">lock</a>() noexcept;</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160; </div>
-<div class="line"><a name="l00201"></a><span class="lineno"><a class="line" href="classuvw_1_1Mutex.html#a9a3039055a81c002afd75912762cebff">  201</a></span>&#160;    <span class="keywordtype">bool</span> tryLock() noexcept;</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
-<div class="line"><a name="l00206"></a><span class="lineno"><a class="line" href="classuvw_1_1Mutex.html#a380b35d56534b4967049902ff34e9c45">  206</a></span>&#160;    <span class="keywordtype">void</span> unlock() noexcept;</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;};</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160; </div>
-<div class="line"><a name="l00213"></a><span class="lineno"><a class="line" href="classuvw_1_1RWLock.html">  213</a></span>&#160;class <a class="code" href="classuvw_1_1RWLock.html">RWLock</a> final: public <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;<a class="code" href="classuvw_1_1RWLock.html">RWLock</a>, uv_rwlock_t&gt; {</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1RWLock.html">RWLock</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref) noexcept;</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160; </div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;    ~<a class="code" href="classuvw_1_1RWLock.html">RWLock</a>() noexcept;</div>
+<div class="line"><a name="l00191"></a><span class="lineno"><a class="line" href="classuvw_1_1Mutex.html#a9a3039055a81c002afd75912762cebff">  191</a></span>&#160;    <span class="keywordtype">bool</span> tryLock() noexcept;</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160; </div>
+<div class="line"><a name="l00196"></a><span class="lineno"><a class="line" href="classuvw_1_1Mutex.html#a380b35d56534b4967049902ff34e9c45">  196</a></span>&#160;    <span class="keywordtype">void</span> unlock() noexcept;</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;};</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160; </div>
+<div class="line"><a name="l00202"></a><span class="lineno"><a class="line" href="classuvw_1_1RWLock.html">  202</a></span>&#160;class <a class="code" href="classuvw_1_1RWLock.html">RWLock</a> final: public <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;<a class="code" href="classuvw_1_1RWLock.html">RWLock</a>, uv_rwlock_t&gt; {</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1RWLock.html">RWLock</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref) noexcept;</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160; </div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    ~<a class="code" href="classuvw_1_1RWLock.html">RWLock</a>() noexcept;</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160; </div>
+<div class="line"><a name="l00211"></a><span class="lineno"><a class="line" href="classuvw_1_1RWLock.html#af8c7e7d7ad2f7155cbf7cda4b7c1a7e4">  211</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1RWLock.html#af8c7e7d7ad2f7155cbf7cda4b7c1a7e4">rdLock</a>() noexcept;</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160; </div>
+<div class="line"><a name="l00217"></a><span class="lineno"><a class="line" href="classuvw_1_1RWLock.html#ab275d29234e62aca7baa48d3d76f0889">  217</a></span>&#160;    <span class="keywordtype">bool</span> tryRdLock() noexcept;</div>
 <div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160; </div>
-<div class="line"><a name="l00222"></a><span class="lineno"><a class="line" href="classuvw_1_1RWLock.html#af8c7e7d7ad2f7155cbf7cda4b7c1a7e4">  222</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1RWLock.html#af8c7e7d7ad2f7155cbf7cda4b7c1a7e4">rdLock</a>() noexcept;</div>
+<div class="line"><a name="l00222"></a><span class="lineno"><a class="line" href="classuvw_1_1RWLock.html#af78035a7e64f552c727865b7f064dae5">  222</a></span>&#160;    <span class="keywordtype">void</span> rdUnlock() noexcept;</div>
 <div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160; </div>
-<div class="line"><a name="l00228"></a><span class="lineno"><a class="line" href="classuvw_1_1RWLock.html#ab275d29234e62aca7baa48d3d76f0889">  228</a></span>&#160;    <span class="keywordtype">bool</span> tryRdLock() noexcept;</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160; </div>
-<div class="line"><a name="l00233"></a><span class="lineno"><a class="line" href="classuvw_1_1RWLock.html#af78035a7e64f552c727865b7f064dae5">  233</a></span>&#160;    <span class="keywordtype">void</span> rdUnlock() noexcept;</div>
+<div class="line"><a name="l00227"></a><span class="lineno"><a class="line" href="classuvw_1_1RWLock.html#ae6df18f53b57ddab1e47b846c02c8d21">  227</a></span>&#160;    <span class="keywordtype">void</span> wrLock() noexcept;</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160; </div>
+<div class="line"><a name="l00233"></a><span class="lineno"><a class="line" href="classuvw_1_1RWLock.html#a06106cba6aabeb88bf6f9b002c05692e">  233</a></span>&#160;    <span class="keywordtype">bool</span> tryWrLock() noexcept;</div>
 <div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160; </div>
-<div class="line"><a name="l00238"></a><span class="lineno"><a class="line" href="classuvw_1_1RWLock.html#ae6df18f53b57ddab1e47b846c02c8d21">  238</a></span>&#160;    <span class="keywordtype">void</span> wrLock() noexcept;</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160; </div>
-<div class="line"><a name="l00244"></a><span class="lineno"><a class="line" href="classuvw_1_1RWLock.html#a06106cba6aabeb88bf6f9b002c05692e">  244</a></span>&#160;    <span class="keywordtype">bool</span> tryWrLock() noexcept;</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160; </div>
-<div class="line"><a name="l00249"></a><span class="lineno"><a class="line" href="classuvw_1_1RWLock.html#ad993a2f8ec9b9adec82be99241f62a74">  249</a></span>&#160;    <span class="keywordtype">void</span> wrUnlock() noexcept;</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;};</div>
+<div class="line"><a name="l00238"></a><span class="lineno"><a class="line" href="classuvw_1_1RWLock.html#ad993a2f8ec9b9adec82be99241f62a74">  238</a></span>&#160;    <span class="keywordtype">void</span> wrUnlock() noexcept;</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;};</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160; </div>
+<div class="line"><a name="l00248"></a><span class="lineno"><a class="line" href="classuvw_1_1Semaphore.html">  248</a></span>&#160;class <a class="code" href="classuvw_1_1Semaphore.html">Semaphore</a> final: public <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;<a class="code" href="classuvw_1_1Semaphore.html">Semaphore</a>, uv_sem_t&gt; {</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1Semaphore.html">Semaphore</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> value) noexcept;</div>
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160; </div>
-<div class="line"><a name="l00260"></a><span class="lineno"><a class="line" href="classuvw_1_1Semaphore.html">  260</a></span>&#160;class <a class="code" href="classuvw_1_1Semaphore.html">Semaphore</a> final: public <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;<a class="code" href="classuvw_1_1Semaphore.html">Semaphore</a>, uv_sem_t&gt; {</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1Semaphore.html">Semaphore</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> value) noexcept;</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;    ~<a class="code" href="classuvw_1_1Semaphore.html">Semaphore</a>() noexcept;</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160; </div>
+<div class="line"><a name="l00257"></a><span class="lineno"><a class="line" href="classuvw_1_1Semaphore.html#a2813b99fb2666d78c77045a384acc7c1">  257</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1Semaphore.html#a2813b99fb2666d78c77045a384acc7c1">post</a>() noexcept;</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160; </div>
+<div class="line"><a name="l00262"></a><span class="lineno"><a class="line" href="classuvw_1_1Semaphore.html#a55b1d23d00707882e3aba55e33f80263">  262</a></span>&#160;    <span class="keywordtype">void</span> wait() noexcept;</div>
 <div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160; </div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    ~<a class="code" href="classuvw_1_1Semaphore.html">Semaphore</a>() noexcept;</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160; </div>
-<div class="line"><a name="l00269"></a><span class="lineno"><a class="line" href="classuvw_1_1Semaphore.html#a2813b99fb2666d78c77045a384acc7c1">  269</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1Semaphore.html#a2813b99fb2666d78c77045a384acc7c1">post</a>() noexcept;</div>
+<div class="line"><a name="l00268"></a><span class="lineno"><a class="line" href="classuvw_1_1Semaphore.html#a75aaa79f5cb47685b8e3f35a303b5a2f">  268</a></span>&#160;    <span class="keywordtype">bool</span> tryWait() noexcept;</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;};</div>
 <div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160; </div>
-<div class="line"><a name="l00274"></a><span class="lineno"><a class="line" href="classuvw_1_1Semaphore.html#a55b1d23d00707882e3aba55e33f80263">  274</a></span>&#160;    <span class="keywordtype">void</span> wait() noexcept;</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160; </div>
-<div class="line"><a name="l00280"></a><span class="lineno"><a class="line" href="classuvw_1_1Semaphore.html#a75aaa79f5cb47685b8e3f35a303b5a2f">  280</a></span>&#160;    <span class="keywordtype">bool</span> tryWait() noexcept;</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;};</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160; </div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160; </div>
-<div class="line"><a name="l00287"></a><span class="lineno"><a class="line" href="classuvw_1_1Condition.html">  287</a></span>&#160;class <a class="code" href="classuvw_1_1Condition.html">Condition</a> final: public <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;<a class="code" href="classuvw_1_1Condition.html">Condition</a>, uv_cond_t&gt; {</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1Condition.html">Condition</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref) noexcept;</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160; </div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;    ~<a class="code" href="classuvw_1_1Condition.html">Condition</a>() noexcept;</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160; </div>
-<div class="line"><a name="l00299"></a><span class="lineno"><a class="line" href="classuvw_1_1Condition.html#ac0712b26f9ed0e817d800739ab956f67">  299</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1Condition.html#ac0712b26f9ed0e817d800739ab956f67">signal</a>() noexcept;</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160; </div>
-<div class="line"><a name="l00306"></a><span class="lineno"><a class="line" href="classuvw_1_1Condition.html#a367cdb31e67aeb87b17cb602172fd9f9">  306</a></span>&#160;    <span class="keywordtype">void</span> broadcast() noexcept;</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160; </div>
-<div class="line"><a name="l00317"></a><span class="lineno"><a class="line" href="classuvw_1_1Condition.html#aac165dc2ad16c589ac51b2550814875f">  317</a></span>&#160;    <span class="keywordtype">void</span> wait(<a class="code" href="classuvw_1_1Mutex.html">Mutex</a> &amp;mutex) noexcept;</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160; </div>
-<div class="line"><a name="l00334"></a><span class="lineno"><a class="line" href="classuvw_1_1Condition.html#afea23c026793301fadc8defc5d1990c5">  334</a></span>&#160;    <span class="keywordtype">bool</span> timedWait(<a class="code" href="classuvw_1_1Mutex.html">Mutex</a> &amp;mutex, uint64_t timeout) noexcept;</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;};</div>
+<div class="line"><a name="l00274"></a><span class="lineno"><a class="line" href="classuvw_1_1Condition.html">  274</a></span>&#160;class <a class="code" href="classuvw_1_1Condition.html">Condition</a> final: public <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;<a class="code" href="classuvw_1_1Condition.html">Condition</a>, uv_cond_t&gt; {</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1Condition.html">Condition</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref) noexcept;</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160; </div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    ~<a class="code" href="classuvw_1_1Condition.html">Condition</a>() noexcept;</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160; </div>
+<div class="line"><a name="l00286"></a><span class="lineno"><a class="line" href="classuvw_1_1Condition.html#ac0712b26f9ed0e817d800739ab956f67">  286</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1Condition.html#ac0712b26f9ed0e817d800739ab956f67">signal</a>() noexcept;</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160; </div>
+<div class="line"><a name="l00293"></a><span class="lineno"><a class="line" href="classuvw_1_1Condition.html#a367cdb31e67aeb87b17cb602172fd9f9">  293</a></span>&#160;    <span class="keywordtype">void</span> broadcast() noexcept;</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160; </div>
+<div class="line"><a name="l00304"></a><span class="lineno"><a class="line" href="classuvw_1_1Condition.html#aac165dc2ad16c589ac51b2550814875f">  304</a></span>&#160;    <span class="keywordtype">void</span> wait(<a class="code" href="classuvw_1_1Mutex.html">Mutex</a> &amp;mutex) noexcept;</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160; </div>
+<div class="line"><a name="l00321"></a><span class="lineno"><a class="line" href="classuvw_1_1Condition.html#afea23c026793301fadc8defc5d1990c5">  321</a></span>&#160;    <span class="keywordtype">bool</span> timedWait(<a class="code" href="classuvw_1_1Mutex.html">Mutex</a> &amp;mutex, uint64_t timeout) noexcept;</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;};</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160; </div>
+<div class="line"><a name="l00333"></a><span class="lineno"><a class="line" href="classuvw_1_1Barrier.html">  333</a></span>&#160;class <a class="code" href="classuvw_1_1Barrier.html">Barrier</a> final: public <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;<a class="code" href="classuvw_1_1Barrier.html">Barrier</a>, uv_barrier_t&gt; {</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1Barrier.html">Barrier</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> count) noexcept;</div>
 <div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160; </div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160; </div>
-<div class="line"><a name="l00347"></a><span class="lineno"><a class="line" href="classuvw_1_1Barrier.html">  347</a></span>&#160;class <a class="code" href="classuvw_1_1Barrier.html">Barrier</a> final: public <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;<a class="code" href="classuvw_1_1Barrier.html">Barrier</a>, uv_barrier_t&gt; {</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1Barrier.html">Barrier</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> count) noexcept;</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160; </div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    ~<a class="code" href="classuvw_1_1Barrier.html">Barrier</a>() noexcept;</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160; </div>
-<div class="line"><a name="l00357"></a><span class="lineno"><a class="line" href="classuvw_1_1Barrier.html#af49ffff6be0c0e430adbafde3d89156f">  357</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1Barrier.html#af49ffff6be0c0e430adbafde3d89156f">wait</a>() noexcept;</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;};</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160; </div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160; </div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;}</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160; </div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160; </div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;<span class="preprocessor">#ifndef UVW_AS_LIB</span></div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;<span class="preprocessor">#include &quot;thread.cpp&quot;</span></div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160; </div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// UVW_THREAD_INCLUDE_H</span></div>
-<div class="ttc" id="aclassuvw_1_1Barrier_html"><div class="ttname"><a href="classuvw_1_1Barrier.html">uvw::Barrier</a></div><div class="ttdoc">The Barrier wrapper.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00347">thread.h:347</a></div></div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    ~<a class="code" href="classuvw_1_1Barrier.html">Barrier</a>() noexcept;</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160; </div>
+<div class="line"><a name="l00343"></a><span class="lineno"><a class="line" href="classuvw_1_1Barrier.html#af49ffff6be0c0e430adbafde3d89156f">  343</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1Barrier.html#af49ffff6be0c0e430adbafde3d89156f">wait</a>() noexcept;</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;};</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160; </div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;} <span class="comment">// namespace uvw</span></div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160; </div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;<span class="preprocessor">#ifndef UVW_AS_LIB</span></div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;<span class="preprocessor">#    include &quot;thread.cpp&quot;</span></div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160; </div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// UVW_THREAD_INCLUDE_H</span></div>
+<div class="ttc" id="aclassuvw_1_1Barrier_html"><div class="ttname"><a href="classuvw_1_1Barrier.html">uvw::Barrier</a></div><div class="ttdoc">The Barrier wrapper.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00333">thread.h:333</a></div></div>
 <div class="ttc" id="aclassuvw_1_1Barrier_html_af49ffff6be0c0e430adbafde3d89156f"><div class="ttname"><a href="classuvw_1_1Barrier.html#af49ffff6be0c0e430adbafde3d89156f">uvw::Barrier::wait</a></div><div class="ttdeci">bool wait() noexcept</div><div class="ttdoc">Synchronizes at a barrier.</div></div>
-<div class="ttc" id="aclassuvw_1_1Condition_html"><div class="ttname"><a href="classuvw_1_1Condition.html">uvw::Condition</a></div><div class="ttdoc">The Condition wrapper.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00287">thread.h:287</a></div></div>
+<div class="ttc" id="aclassuvw_1_1Condition_html"><div class="ttname"><a href="classuvw_1_1Condition.html">uvw::Condition</a></div><div class="ttdoc">The Condition wrapper.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00274">thread.h:274</a></div></div>
 <div class="ttc" id="aclassuvw_1_1Condition_html_ac0712b26f9ed0e817d800739ab956f67"><div class="ttname"><a href="classuvw_1_1Condition.html#ac0712b26f9ed0e817d800739ab956f67">uvw::Condition::signal</a></div><div class="ttdeci">void signal() noexcept</div><div class="ttdoc">Signals a condition.</div></div>
-<div class="ttc" id="aclassuvw_1_1Flags_html"><div class="ttname"><a href="classuvw_1_1Flags.html">uvw::Flags</a></div><div class="ttdoc">Utility class to handle flags.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00082">util.h:82</a></div></div>
-<div class="ttc" id="aclassuvw_1_1Mutex_html"><div class="ttname"><a href="classuvw_1_1Mutex.html">uvw::Mutex</a></div><div class="ttdoc">The Mutex wrapper.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00184">thread.h:184</a></div></div>
+<div class="ttc" id="aclassuvw_1_1Flags_html"><div class="ttname"><a href="classuvw_1_1Flags.html">uvw::Flags</a></div><div class="ttdoc">Utility class to handle flags.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00079">util.h:79</a></div></div>
+<div class="ttc" id="aclassuvw_1_1Mutex_html"><div class="ttname"><a href="classuvw_1_1Mutex.html">uvw::Mutex</a></div><div class="ttdoc">The Mutex wrapper.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00174">thread.h:174</a></div></div>
 <div class="ttc" id="aclassuvw_1_1Mutex_html_a0e3992255cc4fc911428089a99ec19fb"><div class="ttname"><a href="classuvw_1_1Mutex.html#a0e3992255cc4fc911428089a99ec19fb">uvw::Mutex::lock</a></div><div class="ttdeci">void lock() noexcept</div><div class="ttdoc">Locks the mutex.</div></div>
-<div class="ttc" id="aclassuvw_1_1Once_html"><div class="ttname"><a href="classuvw_1_1Once.html">uvw::Once</a></div><div class="ttdoc">The Once wrapper.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00151">thread.h:151</a></div></div>
-<div class="ttc" id="aclassuvw_1_1Once_html_ad04006354fc517294befdc17cbb63d86"><div class="ttname"><a href="classuvw_1_1Once.html#ad04006354fc517294befdc17cbb63d86">uvw::Once::once</a></div><div class="ttdeci">static void once(F &amp;&amp;f) noexcept</div><div class="ttdoc">Runs a function once and only once.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00167">thread.h:167</a></div></div>
-<div class="ttc" id="aclassuvw_1_1RWLock_html"><div class="ttname"><a href="classuvw_1_1RWLock.html">uvw::RWLock</a></div><div class="ttdoc">The RWLock wrapper.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00213">thread.h:213</a></div></div>
+<div class="ttc" id="aclassuvw_1_1Once_html"><div class="ttname"><a href="classuvw_1_1Once.html">uvw::Once</a></div><div class="ttdoc">The Once wrapper.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00142">thread.h:142</a></div></div>
+<div class="ttc" id="aclassuvw_1_1Once_html_ad04006354fc517294befdc17cbb63d86"><div class="ttname"><a href="classuvw_1_1Once.html#ad04006354fc517294befdc17cbb63d86">uvw::Once::once</a></div><div class="ttdeci">static void once(F &amp;&amp;f) noexcept</div><div class="ttdoc">Runs a function once and only once.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00158">thread.h:158</a></div></div>
+<div class="ttc" id="aclassuvw_1_1RWLock_html"><div class="ttname"><a href="classuvw_1_1RWLock.html">uvw::RWLock</a></div><div class="ttdoc">The RWLock wrapper.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00202">thread.h:202</a></div></div>
 <div class="ttc" id="aclassuvw_1_1RWLock_html_af8c7e7d7ad2f7155cbf7cda4b7c1a7e4"><div class="ttname"><a href="classuvw_1_1RWLock.html#af8c7e7d7ad2f7155cbf7cda4b7c1a7e4">uvw::RWLock::rdLock</a></div><div class="ttdeci">void rdLock() noexcept</div><div class="ttdoc">Locks a read-write lock object for reading.</div></div>
-<div class="ttc" id="aclassuvw_1_1Semaphore_html"><div class="ttname"><a href="classuvw_1_1Semaphore.html">uvw::Semaphore</a></div><div class="ttdoc">The Semaphore wrapper.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00260">thread.h:260</a></div></div>
+<div class="ttc" id="aclassuvw_1_1Semaphore_html"><div class="ttname"><a href="classuvw_1_1Semaphore.html">uvw::Semaphore</a></div><div class="ttdoc">The Semaphore wrapper.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00248">thread.h:248</a></div></div>
 <div class="ttc" id="aclassuvw_1_1Semaphore_html_a2813b99fb2666d78c77045a384acc7c1"><div class="ttname"><a href="classuvw_1_1Semaphore.html#a2813b99fb2666d78c77045a384acc7c1">uvw::Semaphore::post</a></div><div class="ttdeci">void post() noexcept</div><div class="ttdoc">Unlocks a semaphore.</div></div>
-<div class="ttc" id="aclassuvw_1_1ThreadLocalStorage_html"><div class="ttname"><a href="classuvw_1_1ThreadLocalStorage.html">uvw::ThreadLocalStorage</a></div><div class="ttdoc">The ThreadLocalStorage wrapper.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00117">thread.h:117</a></div></div>
-<div class="ttc" id="aclassuvw_1_1ThreadLocalStorage_html_a4036520c1b369de5d21f2f6cb4cf7ef1"><div class="ttname"><a href="classuvw_1_1ThreadLocalStorage.html#a4036520c1b369de5d21f2f6cb4cf7ef1">uvw::ThreadLocalStorage::set</a></div><div class="ttdeci">void set(T *value) noexcept</div><div class="ttdoc">Sets the value of a given variable.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00139">thread.h:139</a></div></div>
-<div class="ttc" id="aclassuvw_1_1ThreadLocalStorage_html_a9a254fec9e362bdf91fbbae04dd07b0c"><div class="ttname"><a href="classuvw_1_1ThreadLocalStorage.html#a9a254fec9e362bdf91fbbae04dd07b0c">uvw::ThreadLocalStorage::get</a></div><div class="ttdeci">T * get() noexcept</div><div class="ttdoc">Gets the value of a given variable.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00129">thread.h:129</a></div></div>
-<div class="ttc" id="aclassuvw_1_1Thread_html"><div class="ttname"><a href="classuvw_1_1Thread.html">uvw::Thread</a></div><div class="ttdoc">The Thread wrapper.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00049">thread.h:49</a></div></div>
+<div class="ttc" id="aclassuvw_1_1ThreadLocalStorage_html"><div class="ttname"><a href="classuvw_1_1ThreadLocalStorage.html">uvw::ThreadLocalStorage</a></div><div class="ttdoc">The ThreadLocalStorage wrapper.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00109">thread.h:109</a></div></div>
+<div class="ttc" id="aclassuvw_1_1ThreadLocalStorage_html_a4036520c1b369de5d21f2f6cb4cf7ef1"><div class="ttname"><a href="classuvw_1_1ThreadLocalStorage.html#a4036520c1b369de5d21f2f6cb4cf7ef1">uvw::ThreadLocalStorage::set</a></div><div class="ttdeci">void set(T *value) noexcept</div><div class="ttdoc">Sets the value of a given variable.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00131">thread.h:131</a></div></div>
+<div class="ttc" id="aclassuvw_1_1ThreadLocalStorage_html_a9a254fec9e362bdf91fbbae04dd07b0c"><div class="ttname"><a href="classuvw_1_1ThreadLocalStorage.html#a9a254fec9e362bdf91fbbae04dd07b0c">uvw::ThreadLocalStorage::get</a></div><div class="ttdeci">T * get() noexcept</div><div class="ttdoc">Gets the value of a given variable.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00121">thread.h:121</a></div></div>
+<div class="ttc" id="aclassuvw_1_1Thread_html"><div class="ttname"><a href="classuvw_1_1Thread.html">uvw::Thread</a></div><div class="ttdoc">The Thread wrapper.</div><div class="ttdef"><b>Definition:</b> <a href="thread_8h_source.html#l00042">thread.h:42</a></div></div>
 <div class="ttc" id="aclassuvw_1_1Thread_html_a5a6d1d004cdb0130f90fbf3f5a83860d"><div class="ttname"><a href="classuvw_1_1Thread.html#a5a6d1d004cdb0130f90fbf3f5a83860d">uvw::Thread::equal</a></div><div class="ttdeci">static bool equal(const Thread &amp;tl, const Thread &amp;tr) noexcept</div><div class="ttdoc">Compares thread by means of their identifiers.</div></div>
 <div class="ttc" id="aclassuvw_1_1Thread_html_a722ed957709dad00e29eb5f405c70de8"><div class="ttname"><a href="classuvw_1_1Thread.html#a722ed957709dad00e29eb5f405c70de8">uvw::Thread::join</a></div><div class="ttdeci">bool join() noexcept</div><div class="ttdoc">Joins with a terminated thread.</div></div>
 <div class="ttc" id="aclassuvw_1_1Thread_html_aa2d9ff80741e0c724c30b7b2260182b6"><div class="ttname"><a href="classuvw_1_1Thread.html#aa2d9ff80741e0c724c30b7b2260182b6">uvw::Thread::run</a></div><div class="ttdeci">bool run() noexcept</div><div class="ttdoc">Creates a new thread.</div></div>
-<div class="ttc" id="aclassuvw_1_1UnderlyingType_html"><div class="ttname"><a href="classuvw_1_1UnderlyingType.html">uvw::UnderlyingType</a></div><div class="ttdoc">Wrapper class for underlying types.</div><div class="ttdef"><b>Definition:</b> <a href="underlying__type_8hpp_source.html#l00020">underlying_type.hpp:20</a></div></div>
-<div class="ttc" id="anamespaceuvw_html"><div class="ttname"><a href="namespaceuvw.html">uvw</a></div><div class="ttdoc">uvw default namespace.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00010">async.h:10</a></div></div>
+<div class="ttc" id="aclassuvw_1_1UnderlyingType_html"><div class="ttname"><a href="classuvw_1_1UnderlyingType.html">uvw::UnderlyingType</a></div><div class="ttdoc">Wrapper class for underlying types.</div><div class="ttdef"><b>Definition:</b> <a href="underlying__type_8hpp_source.html#l00017">underlying_type.hpp:17</a></div></div>
+<div class="ttc" id="anamespaceuvw_html"><div class="ttname"><a href="namespaceuvw.html">uvw</a></div><div class="ttdoc">uvw default namespace.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00008">async.h:8</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

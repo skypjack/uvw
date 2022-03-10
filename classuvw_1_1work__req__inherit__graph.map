@@ -1,0 +1,7 @@
+<map id="uvw::work_req" name="uvw::work_req">
+<area shape="rect" id="node1" title="The work request." alt="" coords="104,259,207,285"/>
+<area shape="rect" id="node2" href="$classuvw_1_1request.html" title=" " alt="" coords="89,169,222,211"/>
+<area shape="rect" id="node3" href="$classuvw_1_1resource.html" title="Common class for almost all the resources available in uvw." alt="" coords="81,95,230,121"/>
+<area shape="rect" id="node4" href="$classuvw_1_1underlying__type.html" title="Wrapper class for underlying types." alt="" coords="5,5,148,47"/>
+<area shape="rect" id="node5" href="$classuvw_1_1emitter.html" title="Event emitter base class." alt="" coords="173,13,295,39"/>
+</map>

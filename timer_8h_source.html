@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">2.10.0</span>
+   &#160;<span id="projectnumber">2.12.1</span>
    </div>
   </td>
  </tr>
@@ -73,53 +73,47 @@ $(function() {
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef UVW_TIMER_INCLUDE_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define UVW_TIMER_INCLUDE_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;chrono&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;uv.h&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;handle.hpp&quot;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;loop.h&quot;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;chrono&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;uv.h&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;handle.hpp&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;loop.h&quot;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceuvw.html">uvw</a> {</div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceuvw.html">uvw</a> {</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="structuvw_1_1TimerEvent.html">   19</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structuvw_1_1TimerEvent.html">TimerEvent</a> {};</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classuvw_1_1TimerHandle.html">   29</a></span>&#160;<span class="keyword">class </span><a class="code" href="classuvw_1_1TimerHandle.html">TimerHandle</a> final: <span class="keyword">public</span> <a class="code" href="classuvw_1_1Handle.html">Handle</a>&lt;TimerHandle, uv_timer_t&gt; {</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> startCallback(uv_timer_t *handle);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keyword">using</span> Time = std::chrono::duration&lt;uint64_t, std::milli&gt;;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keyword">using</span> Handle::Handle;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classuvw_1_1TimerHandle.html#af810fe73763e651884aa47bd86818dc4">   41</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1TimerHandle.html#af810fe73763e651884aa47bd86818dc4">init</a>();</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classuvw_1_1TimerHandle.html#aa3df1b355aaf0f87e13e00037109991d">   55</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TimerHandle.html#aa3df1b355aaf0f87e13e00037109991d">start</a>(Time timeout, Time <a class="code" href="classuvw_1_1TimerHandle.html#acfaaf46d6fe0009df9dd45f70abe314f">repeat</a>);</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classuvw_1_1TimerHandle.html#a008fcb3e5212d2bb6649644a8fff78ba">   60</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TimerHandle.html#a008fcb3e5212d2bb6649644a8fff78ba">stop</a>();</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="classuvw_1_1TimerHandle.html#a5bdda2de41ca55f4a54741c02e53c390">   69</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TimerHandle.html#a5bdda2de41ca55f4a54741c02e53c390">again</a>();</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno"><a class="line" href="classuvw_1_1TimerHandle.html#a1775eedcc2a75f04a5b4bba61584a881">   89</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TimerHandle.html#a1775eedcc2a75f04a5b4bba61584a881">repeat</a>(Time <a class="code" href="classuvw_1_1TimerHandle.html#acfaaf46d6fe0009df9dd45f70abe314f">repeat</a>);</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="classuvw_1_1TimerHandle.html#acfaaf46d6fe0009df9dd45f70abe314f">   96</a></span>&#160;    Time <a class="code" href="classuvw_1_1TimerHandle.html#acfaaf46d6fe0009df9dd45f70abe314f">repeat</a>();</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno"><a class="line" href="classuvw_1_1TimerHandle.html#a6917943888bb2e2a18804e537ab841c3">  105</a></span>&#160;    Time <a class="code" href="classuvw_1_1TimerHandle.html#a6917943888bb2e2a18804e537ab841c3">dueIn</a>();</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;};</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;}</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="preprocessor">#ifndef UVW_AS_LIB</span></div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="preprocessor">#include &quot;timer.cpp&quot;</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// UVW_TIMER_INCLUDE_H</span></div>
-<div class="ttc" id="aclassuvw_1_1Handle_html"><div class="ttname"><a href="classuvw_1_1Handle.html">uvw::Handle</a></div><div class="ttdoc">Handle base class.</div><div class="ttdef"><b>Definition:</b> <a href="handle_8hpp_source.html#l00030">handle.hpp:30</a></div></div>
-<div class="ttc" id="aclassuvw_1_1TimerHandle_html"><div class="ttname"><a href="classuvw_1_1TimerHandle.html">uvw::TimerHandle</a></div><div class="ttdoc">The TimerHandle handle.</div><div class="ttdef"><b>Definition:</b> <a href="timer_8h_source.html#l00029">timer.h:29</a></div></div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="structuvw_1_1TimerEvent.html">   16</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structuvw_1_1TimerEvent.html">TimerEvent</a> {};</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="classuvw_1_1TimerHandle.html">   25</a></span>&#160;<span class="keyword">class </span><a class="code" href="classuvw_1_1TimerHandle.html">TimerHandle</a> final: <span class="keyword">public</span> <a class="code" href="classuvw_1_1Handle.html">Handle</a>&lt;TimerHandle, uv_timer_t&gt; {</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> startCallback(uv_timer_t *handle);</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keyword">using</span> Time = std::chrono::duration&lt;uint64_t, std::milli&gt;;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keyword">using</span> Handle::Handle;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="classuvw_1_1TimerHandle.html#af810fe73763e651884aa47bd86818dc4">   37</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1TimerHandle.html#af810fe73763e651884aa47bd86818dc4">init</a>();</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classuvw_1_1TimerHandle.html#aa3df1b355aaf0f87e13e00037109991d">   51</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TimerHandle.html#aa3df1b355aaf0f87e13e00037109991d">start</a>(Time timeout, Time <a class="code" href="classuvw_1_1TimerHandle.html#acfaaf46d6fe0009df9dd45f70abe314f">repeat</a>);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classuvw_1_1TimerHandle.html#a008fcb3e5212d2bb6649644a8fff78ba">   56</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TimerHandle.html#a008fcb3e5212d2bb6649644a8fff78ba">stop</a>();</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="classuvw_1_1TimerHandle.html#a5bdda2de41ca55f4a54741c02e53c390">   65</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TimerHandle.html#a5bdda2de41ca55f4a54741c02e53c390">again</a>();</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="classuvw_1_1TimerHandle.html#a1775eedcc2a75f04a5b4bba61584a881">   85</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TimerHandle.html#a1775eedcc2a75f04a5b4bba61584a881">repeat</a>(Time <a class="code" href="classuvw_1_1TimerHandle.html#acfaaf46d6fe0009df9dd45f70abe314f">repeat</a>);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno"><a class="line" href="classuvw_1_1TimerHandle.html#acfaaf46d6fe0009df9dd45f70abe314f">   92</a></span>&#160;    Time <a class="code" href="classuvw_1_1TimerHandle.html#acfaaf46d6fe0009df9dd45f70abe314f">repeat</a>();</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00101"></a><span class="lineno"><a class="line" href="classuvw_1_1TimerHandle.html#a6917943888bb2e2a18804e537ab841c3">  101</a></span>&#160;    Time <a class="code" href="classuvw_1_1TimerHandle.html#a6917943888bb2e2a18804e537ab841c3">dueIn</a>();</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;};</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;} <span class="comment">// namespace uvw</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="preprocessor">#ifndef UVW_AS_LIB</span></div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="preprocessor">#    include &quot;timer.cpp&quot;</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// UVW_TIMER_INCLUDE_H</span></div>
+<div class="ttc" id="aclassuvw_1_1Handle_html"><div class="ttname"><a href="classuvw_1_1Handle.html">uvw::Handle</a></div><div class="ttdoc">Handle base class.</div><div class="ttdef"><b>Definition:</b> <a href="handle_8hpp_source.html#l00026">handle.hpp:26</a></div></div>
+<div class="ttc" id="aclassuvw_1_1TimerHandle_html"><div class="ttname"><a href="classuvw_1_1TimerHandle.html">uvw::TimerHandle</a></div><div class="ttdoc">The TimerHandle handle.</div><div class="ttdef"><b>Definition:</b> <a href="timer_8h_source.html#l00025">timer.h:25</a></div></div>
 <div class="ttc" id="aclassuvw_1_1TimerHandle_html_a008fcb3e5212d2bb6649644a8fff78ba"><div class="ttname"><a href="classuvw_1_1TimerHandle.html#a008fcb3e5212d2bb6649644a8fff78ba">uvw::TimerHandle::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">Stops the handle.</div></div>
 <div class="ttc" id="aclassuvw_1_1TimerHandle_html_a1775eedcc2a75f04a5b4bba61584a881"><div class="ttname"><a href="classuvw_1_1TimerHandle.html#a1775eedcc2a75f04a5b4bba61584a881">uvw::TimerHandle::repeat</a></div><div class="ttdeci">void repeat(Time repeat)</div><div class="ttdoc">Sets the repeat interval value.</div></div>
 <div class="ttc" id="aclassuvw_1_1TimerHandle_html_a5bdda2de41ca55f4a54741c02e53c390"><div class="ttname"><a href="classuvw_1_1TimerHandle.html#a5bdda2de41ca55f4a54741c02e53c390">uvw::TimerHandle::again</a></div><div class="ttdeci">void again()</div><div class="ttdoc">Stops the timer and restarts it if it was repeating.</div></div>
@@ -127,8 +121,8 @@ $(function() {
 <div class="ttc" id="aclassuvw_1_1TimerHandle_html_aa3df1b355aaf0f87e13e00037109991d"><div class="ttname"><a href="classuvw_1_1TimerHandle.html#aa3df1b355aaf0f87e13e00037109991d">uvw::TimerHandle::start</a></div><div class="ttdeci">void start(Time timeout, Time repeat)</div><div class="ttdoc">Starts the timer.</div></div>
 <div class="ttc" id="aclassuvw_1_1TimerHandle_html_acfaaf46d6fe0009df9dd45f70abe314f"><div class="ttname"><a href="classuvw_1_1TimerHandle.html#acfaaf46d6fe0009df9dd45f70abe314f">uvw::TimerHandle::repeat</a></div><div class="ttdeci">Time repeat()</div><div class="ttdoc">Gets the timer repeat value.</div></div>
 <div class="ttc" id="aclassuvw_1_1TimerHandle_html_af810fe73763e651884aa47bd86818dc4"><div class="ttname"><a href="classuvw_1_1TimerHandle.html#af810fe73763e651884aa47bd86818dc4">uvw::TimerHandle::init</a></div><div class="ttdeci">bool init()</div><div class="ttdoc">Initializes the handle.</div></div>
-<div class="ttc" id="anamespaceuvw_html"><div class="ttname"><a href="namespaceuvw.html">uvw</a></div><div class="ttdoc">uvw default namespace.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00010">async.h:10</a></div></div>
-<div class="ttc" id="astructuvw_1_1TimerEvent_html"><div class="ttname"><a href="structuvw_1_1TimerEvent.html">uvw::TimerEvent</a></div><div class="ttdoc">TimerEvent event.</div><div class="ttdef"><b>Definition:</b> <a href="timer_8h_source.html#l00019">timer.h:19</a></div></div>
+<div class="ttc" id="anamespaceuvw_html"><div class="ttname"><a href="namespaceuvw.html">uvw</a></div><div class="ttdoc">uvw default namespace.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00008">async.h:8</a></div></div>
+<div class="ttc" id="astructuvw_1_1TimerEvent_html"><div class="ttname"><a href="structuvw_1_1TimerEvent.html">uvw::TimerEvent</a></div><div class="ttdoc">TimerEvent event.</div><div class="ttdef"><b>Definition:</b> <a href="timer_8h_source.html#l00016">timer.h:16</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

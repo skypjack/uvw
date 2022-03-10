@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">2.10.0</span>
+   &#160;<span id="projectnumber">2.12.1</span>
    </div>
   </td>
  </tr>
@@ -112,11 +112,17 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a9d2504b52c450da8620741a835eae70b"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structuvw_1_1Passwd.html">Passwd</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1Utilities_1_1OS.html#a9d2504b52c450da8620741a835eae70b">passwd</a> () noexcept</td></tr>
 <tr class="memdesc:a9d2504b52c450da8620741a835eae70b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets a subset of the password file entry.  <a href="structuvw_1_1Utilities_1_1OS.html#a9d2504b52c450da8620741a835eae70b">More...</a><br /></td></tr>
 <tr class="separator:a9d2504b52c450da8620741a835eae70b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a575a3a0b2fe7294aae2ec098d8646c75"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1Utilities_1_1OS.html#a575a3a0b2fe7294aae2ec098d8646c75">priority</a> (<a class="el" href="namespaceuvw.html#aad24ed8fb712caa655da6e3d7cb95bdd">PidType</a> <a class="el" href="structuvw_1_1Utilities_1_1OS.html#a60f780bc1b7778d64706cb6a4877795c">pid</a>)</td></tr>
+<tr class="memdesc:a575a3a0b2fe7294aae2ec098d8646c75"><td class="mdescLeft">&#160;</td><td class="mdescRight">Retrieves the scheduling priority of a process.  <a href="structuvw_1_1Utilities_1_1OS.html#a575a3a0b2fe7294aae2ec098d8646c75">More...</a><br /></td></tr>
+<tr class="separator:a575a3a0b2fe7294aae2ec098d8646c75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae14af441cc2401a9d96cc5f41b0b3fda"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1Utilities_1_1OS.html#ae14af441cc2401a9d96cc5f41b0b3fda">priority</a> (<a class="el" href="namespaceuvw.html#aad24ed8fb712caa655da6e3d7cb95bdd">PidType</a> <a class="el" href="structuvw_1_1Utilities_1_1OS.html#a60f780bc1b7778d64706cb6a4877795c">pid</a>, int prio)</td></tr>
+<tr class="memdesc:ae14af441cc2401a9d96cc5f41b0b3fda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the scheduling priority of a process.  <a href="structuvw_1_1Utilities_1_1OS.html#ae14af441cc2401a9d96cc5f41b0b3fda">More...</a><br /></td></tr>
+<tr class="separator:ae14af441cc2401a9d96cc5f41b0b3fda"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p><a class="el" href="structuvw_1_1Utilities_1_1OS.html" title="OS dedicated utilities.">OS</a> dedicated utilities. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00462">462</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00468">468</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a973646ae5f6c0cd5b079bb8e201357f5"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a973646ae5f6c0cd5b079bb8e201357f5">&#9670;&nbsp;</a></span>env() <span class="overload">[1/3]</span></h2>
@@ -242,7 +248,7 @@ template&lt;typename Func &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00540">540</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00546">546</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 
 </div>
 </div>
@@ -388,6 +394,91 @@ template&lt;typename Func &gt; </div>
 <p>Returns the current process id. </p>
 <p>See the official <a href="http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_getpid">documentation</a> for further details.</p>
 <dl class="section return"><dt>Returns</dt><dd>The current process id. </dd></dl>
+
+</div>
+</div>
+<a id="a575a3a0b2fe7294aae2ec098d8646c75"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a575a3a0b2fe7294aae2ec098d8646c75">&#9670;&nbsp;</a></span>priority() <span class="overload">[1/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int uvw::Utilities::OS::priority </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespaceuvw.html#aad24ed8fb712caa655da6e3d7cb95bdd">PidType</a>&#160;</td>
+          <td class="paramname"><em>pid</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Retrieves the scheduling priority of a process. </p>
+<p>The returned value is between -20 (high priority) and 19 (low priority). A value that is out of range is returned in case of errors.</p>
+<dl class="section note"><dt>Note</dt><dd>On Windows, the result won't equal necessarily the exact value of the priority because of a mapping to a Windows priority class.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pid</td><td>A valid process id. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The scheduling priority of the process. </dd></dl>
+
+</div>
+</div>
+<a id="ae14af441cc2401a9d96cc5f41b0b3fda"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae14af441cc2401a9d96cc5f41b0b3fda">&#9670;&nbsp;</a></span>priority() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool uvw::Utilities::OS::priority </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespaceuvw.html#aad24ed8fb712caa655da6e3d7cb95bdd">PidType</a>&#160;</td>
+          <td class="paramname"><em>pid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>prio</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the scheduling priority of a process. </p>
+<p>The returned value range is between -20 (high priority) and 19 (low priority).</p>
+<dl class="section note"><dt>Note</dt><dd>On Windows, the priority is mapped to a Windows priority class. When retrieving the process priority, the result won't equal necessarily the exact value of the priority.</dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pid</td><td>A valid process id. </td></tr>
+    <tr><td class="paramname">prio</td><td>The scheduling priority to set to the process. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True in case of success, false otherwise. </dd></dl>
 
 </div>
 </div>

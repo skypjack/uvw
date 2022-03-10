@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">2.10.0</span>
+   &#160;<span id="projectnumber">2.12.1</span>
    </div>
   </td>
  </tr>
@@ -73,115 +73,109 @@ $(function() {
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef UVW_TCP_INCLUDE_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define UVW_TCP_INCLUDE_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;type_traits&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;utility&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;chrono&gt;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;uv.h&gt;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;request.hpp&quot;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;stream.h&quot;</span></div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &quot;util.h&quot;</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;chrono&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;type_traits&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;utility&gt;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &lt;uv.h&gt;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;request.hpp&quot;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;stream.h&quot;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;util.h&quot;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceuvw.html">uvw</a> {</div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceuvw.html">uvw</a> {</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keyword">namespace </span>details {</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">namespace </span>details {</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">enum class</span> UVTCPFlags : std::underlying_type_t&lt;uv_tcp_flags&gt; {</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    IPV6ONLY = UV_TCP_IPV6ONLY</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;};</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">enum class</span> UVTCPFlags: std::underlying_type_t&lt;uv_tcp_flags&gt; {</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    IPV6ONLY = UV_TCP_IPV6ONLY</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;};</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;}</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00046"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html">   46</a></span>&#160;<span class="keyword">class </span><a class="code" href="classuvw_1_1TCPHandle.html">TCPHandle</a> final: <span class="keyword">public</span> <a class="code" href="classuvw_1_1StreamHandle.html">StreamHandle</a>&lt;TCPHandle, uv_tcp_t&gt; {</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keyword">using</span> Time = std::chrono::duration&lt;unsigned int&gt;;</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keyword">using</span> Bind = details::UVTCPFlags;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keyword">using</span> <a class="code" href="structuvw_1_1IPv4.html">IPv4</a> = <a class="code" href="structuvw_1_1IPv4.html">uvw::IPv4</a>;</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">using</span> <a class="code" href="structuvw_1_1IPv6.html">IPv6</a> = <a class="code" href="structuvw_1_1IPv6.html">uvw::IPv6</a>;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1TCPHandle.html">TCPHandle</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> f = {});</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;}</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html">   40</a></span>&#160;<span class="keyword">class </span><a class="code" href="classuvw_1_1TCPHandle.html">TCPHandle</a> final: <span class="keyword">public</span> <a class="code" href="classuvw_1_1StreamHandle.html">StreamHandle</a>&lt;TCPHandle, uv_tcp_t&gt; {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">using</span> Time = std::chrono::duration&lt;unsigned int&gt;;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">using</span> Bind = details::UVTCPFlags;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">using</span> <a class="code" href="structuvw_1_1IPv4.html">IPv4</a> = <a class="code" href="structuvw_1_1IPv4.html">uvw::IPv4</a>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">using</span> <a class="code" href="structuvw_1_1IPv6.html">IPv6</a> = <a class="code" href="structuvw_1_1IPv6.html">uvw::IPv6</a>;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1TCPHandle.html">TCPHandle</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> f = {});</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a1e4b789c4071720ba05fd89adfcb4e41">   53</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1TCPHandle.html#a1e4b789c4071720ba05fd89adfcb4e41">init</a>();</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a1e4b789c4071720ba05fd89adfcb4e41">   59</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1TCPHandle.html#a1e4b789c4071720ba05fd89adfcb4e41">init</a>();</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a32fc3f653d1d920fffeae485b3237281">   69</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TCPHandle.html#a32fc3f653d1d920fffeae485b3237281">open</a>(<a class="code" href="namespaceuvw.html#a2df38e5bba10fc959ef37074cf580097">OSSocketHandle</a> socket);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a3837999138b3450036f3631b009b2c71">   76</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1TCPHandle.html#a3837999138b3450036f3631b009b2c71">noDelay</a>(<span class="keywordtype">bool</span> value = <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a37b628dd0ccddf127860e3c7ee5b3c18">   85</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1TCPHandle.html#a37b628dd0ccddf127860e3c7ee5b3c18">keepAlive</a>(<span class="keywordtype">bool</span> enable = <span class="keyword">false</span>, Time time = Time{0});</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00101"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a5a6615582d687d7405b4b6930598ab5a">  101</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1TCPHandle.html#a5a6615582d687d7405b4b6930598ab5a">simultaneousAccepts</a>(<span class="keywordtype">bool</span> enable = <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00119"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#aca5c2a058049bfd064dd75b55c3ab94e">  119</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TCPHandle.html#aca5c2a058049bfd064dd75b55c3ab94e">bind</a>(<span class="keyword">const</span> sockaddr &amp;addr, <a class="code" href="classuvw_1_1Flags.html">Flags&lt;Bind&gt;</a> opts = <a class="code" href="classuvw_1_1Flags.html">Flags&lt;Bind&gt;</a>{});</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> I = IPv4&gt;</div>
-<div class="line"><a name="l00139"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a657ac1c0f888e9c1f64fec4133b69f5d">  139</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TCPHandle.html#a657ac1c0f888e9c1f64fec4133b69f5d">bind</a>(<span class="keyword">const</span> std::string &amp;ip, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> port, <a class="code" href="classuvw_1_1Flags.html">Flags&lt;Bind&gt;</a> opts = <a class="code" href="classuvw_1_1Flags.html">Flags&lt;Bind&gt;</a>{});</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> I = IPv4&gt;</div>
-<div class="line"><a name="l00158"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a93739ba347c4c095e11005c247c55ec4">  158</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TCPHandle.html#a93739ba347c4c095e11005c247c55ec4">bind</a>(<a class="code" href="structuvw_1_1Addr.html">Addr</a> addr, <a class="code" href="classuvw_1_1Flags.html">Flags&lt;Bind&gt;</a> opts = <a class="code" href="classuvw_1_1Flags.html">Flags&lt;Bind&gt;</a>{});</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> I = IPv4&gt;</div>
-<div class="line"><a name="l00165"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a2c1f12926ca9e108749b33cee9a6bcdf">  165</a></span>&#160;    <a class="code" href="structuvw_1_1Addr.html">Addr</a> <a class="code" href="classuvw_1_1TCPHandle.html#a2c1f12926ca9e108749b33cee9a6bcdf">sock</a>() const noexcept;</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160; </div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    template&lt;typename I = <a class="code" href="structuvw_1_1IPv4.html">IPv4</a>&gt;</div>
-<div class="line"><a name="l00172"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a495c52e8e0b5210d21c0cdbdc2cf1579">  172</a></span>&#160;    <a class="code" href="structuvw_1_1Addr.html">Addr</a> <a class="code" href="classuvw_1_1TCPHandle.html#a495c52e8e0b5210d21c0cdbdc2cf1579">peer</a>() const noexcept;</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
-<div class="line"><a name="l00187"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#ab6d3dc1999fb93d9fd6f7cc59e0946ef">  187</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TCPHandle.html#ab6d3dc1999fb93d9fd6f7cc59e0946ef">connect</a>(const sockaddr &amp;addr);</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160; </div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    template&lt;typename I = <a class="code" href="structuvw_1_1IPv4.html">IPv4</a>&gt;</div>
-<div class="line"><a name="l00200"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a97c38f0335c7898389db891b723dae7e">  200</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TCPHandle.html#ab6d3dc1999fb93d9fd6f7cc59e0946ef">connect</a>(const std::<span class="keywordtype">string</span> &amp;ip, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> port);</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    template&lt;typename I = <a class="code" href="structuvw_1_1IPv4.html">IPv4</a>&gt;</div>
-<div class="line"><a name="l00212"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#ad686cdcb361f426c60788c6f6fa48d44">  212</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TCPHandle.html#ab6d3dc1999fb93d9fd6f7cc59e0946ef">connect</a>(<a class="code" href="structuvw_1_1Addr.html">Addr</a> addr);</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160; </div>
-<div class="line"><a name="l00225"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a2f9f427c131fd74d716036b04883926d">  225</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TCPHandle.html#a2f9f427c131fd74d716036b04883926d">closeReset</a>();</div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a32fc3f653d1d920fffeae485b3237281">   63</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TCPHandle.html#a32fc3f653d1d920fffeae485b3237281">open</a>(<a class="code" href="namespaceuvw.html#a2df38e5bba10fc959ef37074cf580097">OSSocketHandle</a> socket);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a3837999138b3450036f3631b009b2c71">   70</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1TCPHandle.html#a3837999138b3450036f3631b009b2c71">noDelay</a>(<span class="keywordtype">bool</span> value = <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a37b628dd0ccddf127860e3c7ee5b3c18">   79</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1TCPHandle.html#a37b628dd0ccddf127860e3c7ee5b3c18">keepAlive</a>(<span class="keywordtype">bool</span> enable = <span class="keyword">false</span>, Time time = Time{0});</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a5a6615582d687d7405b4b6930598ab5a">   95</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1TCPHandle.html#a5a6615582d687d7405b4b6930598ab5a">simultaneousAccepts</a>(<span class="keywordtype">bool</span> enable = <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#aca5c2a058049bfd064dd75b55c3ab94e">  113</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TCPHandle.html#aca5c2a058049bfd064dd75b55c3ab94e">bind</a>(<span class="keyword">const</span> sockaddr &amp;addr, <a class="code" href="classuvw_1_1Flags.html">Flags&lt;Bind&gt;</a> opts = <a class="code" href="classuvw_1_1Flags.html">Flags&lt;Bind&gt;</a>{});</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> I = IPv4&gt;</div>
+<div class="line"><a name="l00133"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a657ac1c0f888e9c1f64fec4133b69f5d">  133</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TCPHandle.html#a657ac1c0f888e9c1f64fec4133b69f5d">bind</a>(<span class="keyword">const</span> std::string &amp;ip, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> port, <a class="code" href="classuvw_1_1Flags.html">Flags&lt;Bind&gt;</a> opts = <a class="code" href="classuvw_1_1Flags.html">Flags&lt;Bind&gt;</a>{});</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> I = IPv4&gt;</div>
+<div class="line"><a name="l00152"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a93739ba347c4c095e11005c247c55ec4">  152</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TCPHandle.html#a93739ba347c4c095e11005c247c55ec4">bind</a>(<a class="code" href="structuvw_1_1Addr.html">Addr</a> addr, <a class="code" href="classuvw_1_1Flags.html">Flags&lt;Bind&gt;</a> opts = <a class="code" href="classuvw_1_1Flags.html">Flags&lt;Bind&gt;</a>{});</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <span class="keyword">template</span>&lt;<span class="keyword">typename</span> I = IPv4&gt;</div>
+<div class="line"><a name="l00159"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a2c1f12926ca9e108749b33cee9a6bcdf">  159</a></span>&#160;    <a class="code" href="structuvw_1_1Addr.html">Addr</a> <a class="code" href="classuvw_1_1TCPHandle.html#a2c1f12926ca9e108749b33cee9a6bcdf">sock</a>() const noexcept;</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    template&lt;typename I = <a class="code" href="structuvw_1_1IPv4.html">IPv4</a>&gt;</div>
+<div class="line"><a name="l00166"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a495c52e8e0b5210d21c0cdbdc2cf1579">  166</a></span>&#160;    <a class="code" href="structuvw_1_1Addr.html">Addr</a> <a class="code" href="classuvw_1_1TCPHandle.html#a495c52e8e0b5210d21c0cdbdc2cf1579">peer</a>() const noexcept;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160; </div>
+<div class="line"><a name="l00181"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#ab6d3dc1999fb93d9fd6f7cc59e0946ef">  181</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TCPHandle.html#ab6d3dc1999fb93d9fd6f7cc59e0946ef">connect</a>(const sockaddr &amp;addr);</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160; </div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    template&lt;typename I = <a class="code" href="structuvw_1_1IPv4.html">IPv4</a>&gt;</div>
+<div class="line"><a name="l00194"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a97c38f0335c7898389db891b723dae7e">  194</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TCPHandle.html#ab6d3dc1999fb93d9fd6f7cc59e0946ef">connect</a>(const std::<span class="keywordtype">string</span> &amp;ip, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> port);</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    template&lt;typename I = <a class="code" href="structuvw_1_1IPv4.html">IPv4</a>&gt;</div>
+<div class="line"><a name="l00206"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#ad686cdcb361f426c60788c6f6fa48d44">  206</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TCPHandle.html#ab6d3dc1999fb93d9fd6f7cc59e0946ef">connect</a>(<a class="code" href="structuvw_1_1Addr.html">Addr</a> addr);</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160; </div>
+<div class="line"><a name="l00219"></a><span class="lineno"><a class="line" href="classuvw_1_1TCPHandle.html#a2f9f427c131fd74d716036b04883926d">  219</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1TCPHandle.html#a2f9f427c131fd74d716036b04883926d">closeReset</a>();</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160; </div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;private:</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;    enum {</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;        DEFAULT,</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;        FLAGS</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    } tag;</div>
 <div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160; </div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;private:</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    enum { DEFAULT, FLAGS } tag;</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> flags;</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;};</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160; </div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160; </div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="comment">// (extern) explicit instantiations</span></div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;<span class="preprocessor">#ifdef UVW_AS_LIB</span></div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="keyword">extern</span> <span class="keyword">template</span> <span class="keywordtype">void</span> TCPHandle::bind&lt;IPv4&gt;(<span class="keyword">const</span> std::string &amp;, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>, Flags&lt;Bind&gt;);</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;<span class="keyword">extern</span> <span class="keyword">template</span> <span class="keywordtype">void</span> TCPHandle::bind&lt;IPv6&gt;(<span class="keyword">const</span> std::string &amp;, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>, Flags&lt;Bind&gt;);</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160; </div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="keyword">extern</span> <span class="keyword">template</span> <span class="keywordtype">void</span> TCPHandle::bind&lt;IPv4&gt;(Addr, Flags&lt;Bind&gt;);</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="keyword">extern</span> <span class="keyword">template</span> <span class="keywordtype">void</span> TCPHandle::bind&lt;IPv6&gt;(Addr, Flags&lt;Bind&gt;);</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="keyword">extern</span> <span class="keyword">template</span> Addr TCPHandle::sock&lt;IPv4&gt;() const noexcept;</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;extern template Addr TCPHandle::sock&lt;IPv6&gt;() const noexcept;</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160; </div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;extern template Addr TCPHandle::peer&lt;IPv4&gt;() const noexcept;</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;extern template Addr TCPHandle::peer&lt;IPv6&gt;() const noexcept;</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160; </div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;extern template <span class="keywordtype">void</span> TCPHandle::connect&lt;IPv4&gt;(const std::<span class="keywordtype">string</span> &amp;, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>);</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;extern template <span class="keywordtype">void</span> TCPHandle::connect&lt;IPv6&gt;(const std::<span class="keywordtype">string</span> &amp;, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>);</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> flags;</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;};</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160; </div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;<span class="comment">// (extern) explicit instantiations</span></div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;<span class="preprocessor">#ifdef UVW_AS_LIB</span></div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;<span class="keyword">extern</span> <span class="keyword">template</span> <span class="keywordtype">void</span> TCPHandle::bind&lt;IPv4&gt;(<span class="keyword">const</span> std::string &amp;, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>, Flags&lt;Bind&gt;);</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="keyword">extern</span> <span class="keyword">template</span> <span class="keywordtype">void</span> TCPHandle::bind&lt;IPv6&gt;(<span class="keyword">const</span> std::string &amp;, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>, Flags&lt;Bind&gt;);</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160; </div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;<span class="keyword">extern</span> <span class="keyword">template</span> <span class="keywordtype">void</span> TCPHandle::bind&lt;IPv4&gt;(Addr, Flags&lt;Bind&gt;);</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="keyword">extern</span> <span class="keyword">template</span> <span class="keywordtype">void</span> TCPHandle::bind&lt;IPv6&gt;(Addr, Flags&lt;Bind&gt;);</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160; </div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="keyword">extern</span> <span class="keyword">template</span> Addr TCPHandle::sock&lt;IPv4&gt;() const noexcept;</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;extern template Addr TCPHandle::sock&lt;IPv6&gt;() const noexcept;</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160; </div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;extern template Addr TCPHandle::peer&lt;IPv4&gt;() const noexcept;</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;extern template Addr TCPHandle::peer&lt;IPv6&gt;() const noexcept;</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160; </div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;extern template <span class="keywordtype">void</span> TCPHandle::connect&lt;IPv4&gt;(const std::<span class="keywordtype">string</span> &amp;, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>);</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;extern template <span class="keywordtype">void</span> TCPHandle::connect&lt;IPv6&gt;(const std::<span class="keywordtype">string</span> &amp;, <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span>);</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;extern template <span class="keywordtype">void</span> TCPHandle::connect&lt;IPv4&gt;(Addr addr);</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;extern template <span class="keywordtype">void</span> TCPHandle::connect&lt;IPv6&gt;(Addr addr);</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// UVW_AS_LIB</span></div>
 <div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160; </div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;extern template <span class="keywordtype">void</span> TCPHandle::connect&lt;IPv4&gt;(Addr addr);</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;extern template <span class="keywordtype">void</span> TCPHandle::connect&lt;IPv6&gt;(Addr addr);</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// UVW_AS_LIB</span></div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160; </div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160; </div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;}</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160; </div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160; </div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;<span class="preprocessor">#ifndef UVW_AS_LIB</span></div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;<span class="preprocessor">#include &quot;tcp.cpp&quot;</span></div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160; </div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160; </div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// UVW_TCP_INCLUDE_H</span></div>
-<div class="ttc" id="aclassuvw_1_1Flags_html"><div class="ttname"><a href="classuvw_1_1Flags.html">uvw::Flags</a></div><div class="ttdoc">Utility class to handle flags.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00082">util.h:82</a></div></div>
-<div class="ttc" id="aclassuvw_1_1StreamHandle_html"><div class="ttname"><a href="classuvw_1_1StreamHandle.html">uvw::StreamHandle</a></div><div class="ttdoc">The StreamHandle handle.</div><div class="ttdef"><b>Definition:</b> <a href="stream_8h_source.html#l00128">stream.h:128</a></div></div>
-<div class="ttc" id="aclassuvw_1_1TCPHandle_html"><div class="ttname"><a href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a></div><div class="ttdoc">The TCPHandle handle.</div><div class="ttdef"><b>Definition:</b> <a href="tcp_8h_source.html#l00046">tcp.h:46</a></div></div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;} <span class="comment">// namespace uvw</span></div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160; </div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;<span class="preprocessor">#ifndef UVW_AS_LIB</span></div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;<span class="preprocessor">#    include &quot;tcp.cpp&quot;</span></div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160; </div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// UVW_TCP_INCLUDE_H</span></div>
+<div class="ttc" id="aclassuvw_1_1Flags_html"><div class="ttname"><a href="classuvw_1_1Flags.html">uvw::Flags</a></div><div class="ttdoc">Utility class to handle flags.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00079">util.h:79</a></div></div>
+<div class="ttc" id="aclassuvw_1_1StreamHandle_html"><div class="ttname"><a href="classuvw_1_1StreamHandle.html">uvw::StreamHandle</a></div><div class="ttdoc">The StreamHandle handle.</div><div class="ttdef"><b>Definition:</b> <a href="stream_8h_source.html#l00113">stream.h:113</a></div></div>
+<div class="ttc" id="aclassuvw_1_1TCPHandle_html"><div class="ttname"><a href="classuvw_1_1TCPHandle.html">uvw::TCPHandle</a></div><div class="ttdoc">The TCPHandle handle.</div><div class="ttdef"><b>Definition:</b> <a href="tcp_8h_source.html#l00040">tcp.h:40</a></div></div>
 <div class="ttc" id="aclassuvw_1_1TCPHandle_html_a1e4b789c4071720ba05fd89adfcb4e41"><div class="ttname"><a href="classuvw_1_1TCPHandle.html#a1e4b789c4071720ba05fd89adfcb4e41">uvw::TCPHandle::init</a></div><div class="ttdeci">bool init()</div><div class="ttdoc">Initializes the handle. No socket is created as of yet.</div></div>
 <div class="ttc" id="aclassuvw_1_1TCPHandle_html_a2c1f12926ca9e108749b33cee9a6bcdf"><div class="ttname"><a href="classuvw_1_1TCPHandle.html#a2c1f12926ca9e108749b33cee9a6bcdf">uvw::TCPHandle::sock</a></div><div class="ttdeci">Addr sock() const noexcept</div><div class="ttdoc">Gets the current address to which the handle is bound.</div></div>
 <div class="ttc" id="aclassuvw_1_1TCPHandle_html_a2f9f427c131fd74d716036b04883926d"><div class="ttname"><a href="classuvw_1_1TCPHandle.html#a2f9f427c131fd74d716036b04883926d">uvw::TCPHandle::closeReset</a></div><div class="ttdeci">void closeReset()</div><div class="ttdoc">Resets a TCP connection by sending a RST packet.</div></div>
@@ -194,11 +188,11 @@ $(function() {
 <div class="ttc" id="aclassuvw_1_1TCPHandle_html_a93739ba347c4c095e11005c247c55ec4"><div class="ttname"><a href="classuvw_1_1TCPHandle.html#a93739ba347c4c095e11005c247c55ec4">uvw::TCPHandle::bind</a></div><div class="ttdeci">void bind(Addr addr, Flags&lt; Bind &gt; opts=Flags&lt; Bind &gt;{})</div><div class="ttdoc">Binds the handle to an address and port.</div></div>
 <div class="ttc" id="aclassuvw_1_1TCPHandle_html_ab6d3dc1999fb93d9fd6f7cc59e0946ef"><div class="ttname"><a href="classuvw_1_1TCPHandle.html#ab6d3dc1999fb93d9fd6f7cc59e0946ef">uvw::TCPHandle::connect</a></div><div class="ttdeci">void connect(const sockaddr &amp;addr)</div><div class="ttdoc">Establishes an IPv4 or IPv6 TCP connection.</div></div>
 <div class="ttc" id="aclassuvw_1_1TCPHandle_html_aca5c2a058049bfd064dd75b55c3ab94e"><div class="ttname"><a href="classuvw_1_1TCPHandle.html#aca5c2a058049bfd064dd75b55c3ab94e">uvw::TCPHandle::bind</a></div><div class="ttdeci">void bind(const sockaddr &amp;addr, Flags&lt; Bind &gt; opts=Flags&lt; Bind &gt;{})</div><div class="ttdoc">Binds the handle to an address and port.</div></div>
-<div class="ttc" id="anamespaceuvw_html"><div class="ttname"><a href="namespaceuvw.html">uvw</a></div><div class="ttdoc">uvw default namespace.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00010">async.h:10</a></div></div>
-<div class="ttc" id="anamespaceuvw_html_a2df38e5bba10fc959ef37074cf580097"><div class="ttname"><a href="namespaceuvw.html#a2df38e5bba10fc959ef37074cf580097">uvw::OSSocketHandle</a></div><div class="ttdeci">details::UVTypeWrapper&lt; uv_os_sock_t &gt; OSSocketHandle</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00190">util.h:190</a></div></div>
-<div class="ttc" id="astructuvw_1_1Addr_html"><div class="ttname"><a href="structuvw_1_1Addr.html">uvw::Addr</a></div><div class="ttdoc">Address representation.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00321">util.h:321</a></div></div>
-<div class="ttc" id="astructuvw_1_1IPv4_html"><div class="ttname"><a href="structuvw_1_1IPv4.html">uvw::IPv4</a></div><div class="ttdoc">The IPv4 tag.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00307">util.h:307</a></div></div>
-<div class="ttc" id="astructuvw_1_1IPv6_html"><div class="ttname"><a href="structuvw_1_1IPv6.html">uvw::IPv6</a></div><div class="ttdoc">The IPv6 tag.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00315">util.h:315</a></div></div>
+<div class="ttc" id="anamespaceuvw_html"><div class="ttname"><a href="namespaceuvw.html">uvw</a></div><div class="ttdoc">uvw default namespace.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00008">async.h:8</a></div></div>
+<div class="ttc" id="anamespaceuvw_html_a2df38e5bba10fc959ef37074cf580097"><div class="ttname"><a href="namespaceuvw.html#a2df38e5bba10fc959ef37074cf580097">uvw::OSSocketHandle</a></div><div class="ttdeci">details::UVTypeWrapper&lt; uv_os_sock_t &gt; OSSocketHandle</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00205">util.h:205</a></div></div>
+<div class="ttc" id="astructuvw_1_1Addr_html"><div class="ttname"><a href="structuvw_1_1Addr.html">uvw::Addr</a></div><div class="ttdoc">Address representation.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00331">util.h:331</a></div></div>
+<div class="ttc" id="astructuvw_1_1IPv4_html"><div class="ttname"><a href="structuvw_1_1IPv4.html">uvw::IPv4</a></div><div class="ttdoc">The IPv4 tag.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00319">util.h:319</a></div></div>
+<div class="ttc" id="astructuvw_1_1IPv6_html"><div class="ttname"><a href="structuvw_1_1IPv6.html">uvw::IPv6</a></div><div class="ttdoc">The IPv6 tag.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00326">util.h:326</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

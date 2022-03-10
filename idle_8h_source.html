@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">2.10.0</span>
+   &#160;<span id="projectnumber">2.12.1</span>
    </div>
   </td>
  </tr>
@@ -73,47 +73,41 @@ $(function() {
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef UVW_IDLE_INCLUDE_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define UVW_IDLE_INCLUDE_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;uv.h&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;handle.hpp&quot;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;loop.h&quot;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;uv.h&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;handle.hpp&quot;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;loop.h&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceuvw.html">uvw</a> {</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceuvw.html">uvw</a> {</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="structuvw_1_1IdleEvent.html">   18</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structuvw_1_1IdleEvent.html">IdleEvent</a> {};</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="classuvw_1_1IdleHandle.html">   37</a></span>&#160;<span class="keyword">class </span><a class="code" href="classuvw_1_1IdleHandle.html">IdleHandle</a> final: <span class="keyword">public</span> <a class="code" href="classuvw_1_1Handle.html">Handle</a>&lt;IdleHandle, uv_idle_t&gt; {</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> startCallback(uv_idle_t *handle);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="keyword">using</span> Handle::Handle;</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno"><a class="line" href="classuvw_1_1IdleHandle.html#a87fe3f5bc5cb5ecfb00d5f1cd0acb10a">   47</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1IdleHandle.html#a87fe3f5bc5cb5ecfb00d5f1cd0acb10a">init</a>();</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classuvw_1_1IdleHandle.html#acc0e4a71b3916ef0d3a2bab54fab4897">   55</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1IdleHandle.html#acc0e4a71b3916ef0d3a2bab54fab4897">start</a>();</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classuvw_1_1IdleHandle.html#a9e4beebe3eb6193a5387a526eac53a9f">   60</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1IdleHandle.html#a9e4beebe3eb6193a5387a526eac53a9f">stop</a>();</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;};</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#ifndef UVW_AS_LIB</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor">#include &quot;idle.cpp&quot;</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// UVW_IDLE_INCLUDE_H</span></div>
-<div class="ttc" id="aclassuvw_1_1Handle_html"><div class="ttname"><a href="classuvw_1_1Handle.html">uvw::Handle</a></div><div class="ttdoc">Handle base class.</div><div class="ttdef"><b>Definition:</b> <a href="handle_8hpp_source.html#l00030">handle.hpp:30</a></div></div>
-<div class="ttc" id="aclassuvw_1_1IdleHandle_html"><div class="ttname"><a href="classuvw_1_1IdleHandle.html">uvw::IdleHandle</a></div><div class="ttdoc">The IdleHandle handle.</div><div class="ttdef"><b>Definition:</b> <a href="idle_8h_source.html#l00037">idle.h:37</a></div></div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="structuvw_1_1IdleEvent.html">   15</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structuvw_1_1IdleEvent.html">IdleEvent</a> {};</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="classuvw_1_1IdleHandle.html">   33</a></span>&#160;<span class="keyword">class </span><a class="code" href="classuvw_1_1IdleHandle.html">IdleHandle</a> final: <span class="keyword">public</span> <a class="code" href="classuvw_1_1Handle.html">Handle</a>&lt;IdleHandle, uv_idle_t&gt; {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> startCallback(uv_idle_t *handle);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keyword">using</span> Handle::Handle;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="classuvw_1_1IdleHandle.html#a87fe3f5bc5cb5ecfb00d5f1cd0acb10a">   43</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1IdleHandle.html#a87fe3f5bc5cb5ecfb00d5f1cd0acb10a">init</a>();</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00051"></a><span class="lineno"><a class="line" href="classuvw_1_1IdleHandle.html#acc0e4a71b3916ef0d3a2bab54fab4897">   51</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1IdleHandle.html#acc0e4a71b3916ef0d3a2bab54fab4897">start</a>();</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classuvw_1_1IdleHandle.html#a9e4beebe3eb6193a5387a526eac53a9f">   56</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1IdleHandle.html#a9e4beebe3eb6193a5387a526eac53a9f">stop</a>();</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;};</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;} <span class="comment">// namespace uvw</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#ifndef UVW_AS_LIB</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#    include &quot;idle.cpp&quot;</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// UVW_IDLE_INCLUDE_H</span></div>
+<div class="ttc" id="aclassuvw_1_1Handle_html"><div class="ttname"><a href="classuvw_1_1Handle.html">uvw::Handle</a></div><div class="ttdoc">Handle base class.</div><div class="ttdef"><b>Definition:</b> <a href="handle_8hpp_source.html#l00026">handle.hpp:26</a></div></div>
+<div class="ttc" id="aclassuvw_1_1IdleHandle_html"><div class="ttname"><a href="classuvw_1_1IdleHandle.html">uvw::IdleHandle</a></div><div class="ttdoc">The IdleHandle handle.</div><div class="ttdef"><b>Definition:</b> <a href="idle_8h_source.html#l00033">idle.h:33</a></div></div>
 <div class="ttc" id="aclassuvw_1_1IdleHandle_html_a87fe3f5bc5cb5ecfb00d5f1cd0acb10a"><div class="ttname"><a href="classuvw_1_1IdleHandle.html#a87fe3f5bc5cb5ecfb00d5f1cd0acb10a">uvw::IdleHandle::init</a></div><div class="ttdeci">bool init()</div><div class="ttdoc">Initializes the handle.</div></div>
 <div class="ttc" id="aclassuvw_1_1IdleHandle_html_a9e4beebe3eb6193a5387a526eac53a9f"><div class="ttname"><a href="classuvw_1_1IdleHandle.html#a9e4beebe3eb6193a5387a526eac53a9f">uvw::IdleHandle::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">Stops the handle.</div></div>
 <div class="ttc" id="aclassuvw_1_1IdleHandle_html_acc0e4a71b3916ef0d3a2bab54fab4897"><div class="ttname"><a href="classuvw_1_1IdleHandle.html#acc0e4a71b3916ef0d3a2bab54fab4897">uvw::IdleHandle::start</a></div><div class="ttdeci">void start()</div><div class="ttdoc">Starts the handle.</div></div>
-<div class="ttc" id="anamespaceuvw_html"><div class="ttname"><a href="namespaceuvw.html">uvw</a></div><div class="ttdoc">uvw default namespace.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00010">async.h:10</a></div></div>
-<div class="ttc" id="astructuvw_1_1IdleEvent_html"><div class="ttname"><a href="structuvw_1_1IdleEvent.html">uvw::IdleEvent</a></div><div class="ttdoc">IdleEvent event.</div><div class="ttdef"><b>Definition:</b> <a href="idle_8h_source.html#l00018">idle.h:18</a></div></div>
+<div class="ttc" id="anamespaceuvw_html"><div class="ttname"><a href="namespaceuvw.html">uvw</a></div><div class="ttdoc">uvw default namespace.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00008">async.h:8</a></div></div>
+<div class="ttc" id="astructuvw_1_1IdleEvent_html"><div class="ttname"><a href="structuvw_1_1IdleEvent.html">uvw::IdleEvent</a></div><div class="ttdoc">IdleEvent event.</div><div class="ttdef"><b>Definition:</b> <a href="idle_8h_source.html#l00015">idle.h:15</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">2.10.0</span>
+   &#160;<span id="projectnumber">2.12.1</span>
    </div>
   </td>
  </tr>
@@ -73,56 +73,50 @@ $(function() {
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef UVW_LIB_INCLUDE_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define UVW_LIB_INCLUDE_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;type_traits&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;uv.h&gt;</span></div>
-<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;loop.h&quot;</span></div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;underlying_type.hpp&quot;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;memory&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;type_traits&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;uv.h&gt;</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &quot;loop.h&quot;</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="preprocessor">#include &quot;underlying_type.hpp&quot;</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceuvw.html">uvw</a> {</div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceuvw.html">uvw</a> {</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="classuvw_1_1SharedLib.html">   22</a></span>&#160;<span class="keyword">class </span><a class="code" href="classuvw_1_1SharedLib.html">SharedLib</a> final: <span class="keyword">public</span> <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;SharedLib, uv_lib_t&gt; {</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1SharedLib.html">SharedLib</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref, <span class="keyword">const</span> std::string &amp;filename) noexcept;</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    ~<a class="code" href="classuvw_1_1SharedLib.html">SharedLib</a>() noexcept;</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="classuvw_1_1SharedLib.html#a709aa1a5fabce70e1c29e5ee541ab04f">   32</a></span>&#160;    <span class="keyword">explicit</span> <span class="keyword">operator</span> bool() const noexcept;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    template&lt;typename F&gt;</div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classuvw_1_1SharedLib.html#ab74f45444ea6b6f4e699814ac5213c4e">   44</a></span>&#160;    F * <a class="code" href="classuvw_1_1SharedLib.html#ab74f45444ea6b6f4e699814ac5213c4e">sym</a>(const std::<span class="keywordtype">string</span> &amp;name) {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        static_assert(std::is_function_v&lt;F&gt;);</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        F *func;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keyword">auto</span> err = uv_dlsym(get(), name.data(), <span class="keyword">reinterpret_cast&lt;</span><span class="keywordtype">void</span>**<span class="keyword">&gt;</span>(&amp;func));</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        <span class="keywordflow">if</span>(err) { func = <span class="keyword">nullptr</span>; }</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordflow">return</span> func;</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    }</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno"><a class="line" href="classuvw_1_1SharedLib.html#abeebf1af0f31f12c2900ce7d1e0bc761">   56</a></span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> * <a class="code" href="classuvw_1_1SharedLib.html#abeebf1af0f31f12c2900ce7d1e0bc761">error</a>() const noexcept;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;private:</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    <span class="keywordtype">bool</span> opened;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;};</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;}</div>
+<div class="line"><a name="l00019"></a><span class="lineno"><a class="line" href="classuvw_1_1SharedLib.html">   19</a></span>&#160;<span class="keyword">class </span><a class="code" href="classuvw_1_1SharedLib.html">SharedLib</a> final: <span class="keyword">public</span> <a class="code" href="classuvw_1_1UnderlyingType.html">UnderlyingType</a>&lt;SharedLib, uv_lib_t&gt; {</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classuvw_1_1SharedLib.html">SharedLib</a>(ConstructorAccess ca, std::shared_ptr&lt;Loop&gt; ref, <span class="keyword">const</span> std::string &amp;filename) noexcept;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;    ~<a class="code" href="classuvw_1_1SharedLib.html">SharedLib</a>() noexcept;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="classuvw_1_1SharedLib.html#a709aa1a5fabce70e1c29e5ee541ab04f">   29</a></span>&#160;    <span class="keyword">explicit</span> <span class="keyword">operator</span> bool() const noexcept;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    template&lt;typename F&gt;</div>
+<div class="line"><a name="l00041"></a><span class="lineno"><a class="line" href="classuvw_1_1SharedLib.html#ab74f45444ea6b6f4e699814ac5213c4e">   41</a></span>&#160;    F *<a class="code" href="classuvw_1_1SharedLib.html#ab74f45444ea6b6f4e699814ac5213c4e">sym</a>(const std::<span class="keywordtype">string</span> &amp;name) {</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        static_assert(std::is_function_v&lt;F&gt;);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        F *func;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keyword">auto</span> err = uv_dlsym(get(), name.data(), <span class="keyword">reinterpret_cast&lt;</span><span class="keywordtype">void</span> **<span class="keyword">&gt;</span>(&amp;func));</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;        <span class="keywordflow">if</span>(err) { func = <span class="keyword">nullptr</span>; }</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        <span class="keywordflow">return</span> func;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    }</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="classuvw_1_1SharedLib.html#abeebf1af0f31f12c2900ce7d1e0bc761">   53</a></span>&#160;    <span class="keyword">const</span> <span class="keywordtype">char</span> *<a class="code" href="classuvw_1_1SharedLib.html#abeebf1af0f31f12c2900ce7d1e0bc761">error</a>() const noexcept;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;private:</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    <span class="keywordtype">bool</span> opened;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;};</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;} <span class="comment">// namespace uvw</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="preprocessor">#ifndef UVW_AS_LIB</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#    include &quot;lib.cpp&quot;</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">#ifndef UVW_AS_LIB</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">#include &quot;lib.cpp&quot;</span></div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// UVW_LIB_INCLUDE_H</span></div>
-<div class="ttc" id="aclassuvw_1_1SharedLib_html"><div class="ttname"><a href="classuvw_1_1SharedLib.html">uvw::SharedLib</a></div><div class="ttdoc">The SharedLib class.</div><div class="ttdef"><b>Definition:</b> <a href="lib_8h_source.html#l00022">lib.h:22</a></div></div>
-<div class="ttc" id="aclassuvw_1_1SharedLib_html_ab74f45444ea6b6f4e699814ac5213c4e"><div class="ttname"><a href="classuvw_1_1SharedLib.html#ab74f45444ea6b6f4e699814ac5213c4e">uvw::SharedLib::sym</a></div><div class="ttdeci">F * sym(const std::string &amp;name)</div><div class="ttdoc">Retrieves a data pointer from a dynamic library.</div><div class="ttdef"><b>Definition:</b> <a href="lib_8h_source.html#l00044">lib.h:44</a></div></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// UVW_LIB_INCLUDE_H</span></div>
+<div class="ttc" id="aclassuvw_1_1SharedLib_html"><div class="ttname"><a href="classuvw_1_1SharedLib.html">uvw::SharedLib</a></div><div class="ttdoc">The SharedLib class.</div><div class="ttdef"><b>Definition:</b> <a href="lib_8h_source.html#l00019">lib.h:19</a></div></div>
+<div class="ttc" id="aclassuvw_1_1SharedLib_html_ab74f45444ea6b6f4e699814ac5213c4e"><div class="ttname"><a href="classuvw_1_1SharedLib.html#ab74f45444ea6b6f4e699814ac5213c4e">uvw::SharedLib::sym</a></div><div class="ttdeci">F * sym(const std::string &amp;name)</div><div class="ttdoc">Retrieves a data pointer from a dynamic library.</div><div class="ttdef"><b>Definition:</b> <a href="lib_8h_source.html#l00041">lib.h:41</a></div></div>
 <div class="ttc" id="aclassuvw_1_1SharedLib_html_abeebf1af0f31f12c2900ce7d1e0bc761"><div class="ttname"><a href="classuvw_1_1SharedLib.html#abeebf1af0f31f12c2900ce7d1e0bc761">uvw::SharedLib::error</a></div><div class="ttdeci">const char * error() const noexcept</div><div class="ttdoc">Returns the last error message, if any.</div></div>
-<div class="ttc" id="aclassuvw_1_1UnderlyingType_html"><div class="ttname"><a href="classuvw_1_1UnderlyingType.html">uvw::UnderlyingType</a></div><div class="ttdoc">Wrapper class for underlying types.</div><div class="ttdef"><b>Definition:</b> <a href="underlying__type_8hpp_source.html#l00020">underlying_type.hpp:20</a></div></div>
-<div class="ttc" id="anamespaceuvw_html"><div class="ttname"><a href="namespaceuvw.html">uvw</a></div><div class="ttdoc">uvw default namespace.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00010">async.h:10</a></div></div>
+<div class="ttc" id="aclassuvw_1_1UnderlyingType_html"><div class="ttname"><a href="classuvw_1_1UnderlyingType.html">uvw::UnderlyingType</a></div><div class="ttdoc">Wrapper class for underlying types.</div><div class="ttdef"><b>Definition:</b> <a href="underlying__type_8hpp_source.html#l00017">underlying_type.hpp:17</a></div></div>
+<div class="ttc" id="anamespaceuvw_html"><div class="ttname"><a href="namespaceuvw.html">uvw</a></div><div class="ttdoc">uvw default namespace.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00008">async.h:8</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

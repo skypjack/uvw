@@ -12,5 +12,6 @@ var searchData=
   ['again_9',['again',['../classuvw_1_1TimerHandle.html#a5bdda2de41ca55f4a54741c02e53c390',1,'uvw::TimerHandle']]],
   ['alive_10',['alive',['../classuvw_1_1Loop.html#adf73136457c892dad414342c8648e6c1',1,'uvw::Loop']]],
   ['asyncevent_11',['AsyncEvent',['../structuvw_1_1AsyncEvent.html',1,'uvw']]],
-  ['asynchandle_12',['AsyncHandle',['../classuvw_1_1AsyncHandle.html',1,'uvw']]]
+  ['asynchandle_12',['AsyncHandle',['../classuvw_1_1AsyncHandle.html',1,'uvw']]],
+  ['availableparallelism_13',['availableParallelism',['../structuvw_1_1Utilities.html#a3f928a0719525331ff6664212a7983b5',1,'uvw::Utilities']]]
 ];

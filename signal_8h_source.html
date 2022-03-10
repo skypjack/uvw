@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">uvw
-   &#160;<span id="projectnumber">2.10.0</span>
+   &#160;<span id="projectnumber">2.12.1</span>
    </div>
   </td>
  </tr>
@@ -73,58 +73,52 @@ $(function() {
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef UVW_SIGNAL_INCLUDE_H</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define UVW_SIGNAL_INCLUDE_H</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;uv.h&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;handle.hpp&quot;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &quot;loop.h&quot;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;uv.h&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &quot;handle.hpp&quot;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &quot;loop.h&quot;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceuvw.html">uvw</a> {</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceuvw.html">uvw</a> {</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="structuvw_1_1SignalEvent.html">   18</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structuvw_1_1SignalEvent.html">SignalEvent</a> {</div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="structuvw_1_1SignalEvent.html">SignalEvent</a>(<span class="keywordtype">int</span> sig) noexcept;</div>
+<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="structuvw_1_1SignalEvent.html">   15</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structuvw_1_1SignalEvent.html">SignalEvent</a> {</div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="structuvw_1_1SignalEvent.html">SignalEvent</a>(<span class="keywordtype">int</span> sig) noexcept;</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
+<div class="line"><a name="l00018"></a><span class="lineno"><a class="line" href="structuvw_1_1SignalEvent.html#aeb617f81e5d21573efe573bead953b30">   18</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structuvw_1_1SignalEvent.html#aeb617f81e5d21573efe573bead953b30">signum</a>; </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;};</div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="structuvw_1_1SignalEvent.html#aeb617f81e5d21573efe573bead953b30">   21</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="structuvw_1_1SignalEvent.html#aeb617f81e5d21573efe573bead953b30">signum</a>; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;};</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno"><a class="line" href="classuvw_1_1SignalHandle.html">   38</a></span>&#160;<span class="keyword">class </span><a class="code" href="classuvw_1_1SignalHandle.html">SignalHandle</a> final: <span class="keyword">public</span> <a class="code" href="classuvw_1_1Handle.html">Handle</a>&lt;SignalHandle, uv_signal_t&gt; {</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> startCallback(uv_signal_t *handle, <span class="keywordtype">int</span> signum);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">public</span>:</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keyword">using</span> Handle::Handle;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classuvw_1_1SignalHandle.html#a5f7346f0e4bde15d020f4ae1204a88cd">   48</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1SignalHandle.html#a5f7346f0e4bde15d020f4ae1204a88cd">init</a>();</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno"><a class="line" href="classuvw_1_1SignalHandle.html#a236d5bf6c23ce6acc6561ca33f9eae49">   57</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1SignalHandle.html#a236d5bf6c23ce6acc6561ca33f9eae49">start</a>(<span class="keywordtype">int</span> signum);</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="classuvw_1_1SignalHandle.html#a89d80659d9c2eb4c0aeb6399dfd460f5">   67</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1SignalHandle.html#a89d80659d9c2eb4c0aeb6399dfd460f5">oneShot</a>(<span class="keywordtype">int</span> signum);</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="classuvw_1_1SignalHandle.html#a44e5d43add12cfe3eec4022ced109b2a">   72</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1SignalHandle.html#a44e5d43add12cfe3eec4022ced109b2a">stop</a>();</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="classuvw_1_1SignalHandle.html#ad4072db6ae4afe0a8ad8b4115a232b0a">   78</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classuvw_1_1SignalHandle.html#ad4072db6ae4afe0a8ad8b4115a232b0a">signal</a>() const noexcept;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;};</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;}</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="preprocessor">#ifndef UVW_AS_LIB</span></div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="preprocessor">#include &quot;signal.cpp&quot;</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// UVW_SIGNAL_INCLUDE_H</span></div>
-<div class="ttc" id="aclassuvw_1_1Handle_html"><div class="ttname"><a href="classuvw_1_1Handle.html">uvw::Handle</a></div><div class="ttdoc">Handle base class.</div><div class="ttdef"><b>Definition:</b> <a href="handle_8hpp_source.html#l00030">handle.hpp:30</a></div></div>
-<div class="ttc" id="aclassuvw_1_1SignalHandle_html"><div class="ttname"><a href="classuvw_1_1SignalHandle.html">uvw::SignalHandle</a></div><div class="ttdoc">The SignalHandle handle.</div><div class="ttdef"><b>Definition:</b> <a href="signal_8h_source.html#l00038">signal.h:38</a></div></div>
+<div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classuvw_1_1SignalHandle.html">   34</a></span>&#160;<span class="keyword">class </span><a class="code" href="classuvw_1_1SignalHandle.html">SignalHandle</a> final: <span class="keyword">public</span> <a class="code" href="classuvw_1_1Handle.html">Handle</a>&lt;SignalHandle, uv_signal_t&gt; {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keyword">static</span> <span class="keywordtype">void</span> startCallback(uv_signal_t *handle, <span class="keywordtype">int</span> signum);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">public</span>:</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">using</span> Handle::Handle;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classuvw_1_1SignalHandle.html#a5f7346f0e4bde15d020f4ae1204a88cd">   44</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classuvw_1_1SignalHandle.html#a5f7346f0e4bde15d020f4ae1204a88cd">init</a>();</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno"><a class="line" href="classuvw_1_1SignalHandle.html#a236d5bf6c23ce6acc6561ca33f9eae49">   53</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1SignalHandle.html#a236d5bf6c23ce6acc6561ca33f9eae49">start</a>(<span class="keywordtype">int</span> signum);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno"><a class="line" href="classuvw_1_1SignalHandle.html#a89d80659d9c2eb4c0aeb6399dfd460f5">   63</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1SignalHandle.html#a89d80659d9c2eb4c0aeb6399dfd460f5">oneShot</a>(<span class="keywordtype">int</span> signum);</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="classuvw_1_1SignalHandle.html#a44e5d43add12cfe3eec4022ced109b2a">   68</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classuvw_1_1SignalHandle.html#a44e5d43add12cfe3eec4022ced109b2a">stop</a>();</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00074"></a><span class="lineno"><a class="line" href="classuvw_1_1SignalHandle.html#ad4072db6ae4afe0a8ad8b4115a232b0a">   74</a></span>&#160;    <span class="keywordtype">int</span> <a class="code" href="classuvw_1_1SignalHandle.html#ad4072db6ae4afe0a8ad8b4115a232b0a">signal</a>() const noexcept;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;};</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;} <span class="comment">// namespace uvw</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="preprocessor">#ifndef UVW_AS_LIB</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#    include &quot;signal.cpp&quot;</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="preprocessor">#endif </span><span class="comment">// UVW_SIGNAL_INCLUDE_H</span></div>
+<div class="ttc" id="aclassuvw_1_1Handle_html"><div class="ttname"><a href="classuvw_1_1Handle.html">uvw::Handle</a></div><div class="ttdoc">Handle base class.</div><div class="ttdef"><b>Definition:</b> <a href="handle_8hpp_source.html#l00026">handle.hpp:26</a></div></div>
+<div class="ttc" id="aclassuvw_1_1SignalHandle_html"><div class="ttname"><a href="classuvw_1_1SignalHandle.html">uvw::SignalHandle</a></div><div class="ttdoc">The SignalHandle handle.</div><div class="ttdef"><b>Definition:</b> <a href="signal_8h_source.html#l00034">signal.h:34</a></div></div>
 <div class="ttc" id="aclassuvw_1_1SignalHandle_html_a236d5bf6c23ce6acc6561ca33f9eae49"><div class="ttname"><a href="classuvw_1_1SignalHandle.html#a236d5bf6c23ce6acc6561ca33f9eae49">uvw::SignalHandle::start</a></div><div class="ttdeci">void start(int signum)</div><div class="ttdoc">Starts the handle.</div></div>
 <div class="ttc" id="aclassuvw_1_1SignalHandle_html_a44e5d43add12cfe3eec4022ced109b2a"><div class="ttname"><a href="classuvw_1_1SignalHandle.html#a44e5d43add12cfe3eec4022ced109b2a">uvw::SignalHandle::stop</a></div><div class="ttdeci">void stop()</div><div class="ttdoc">Stops the handle.</div></div>
 <div class="ttc" id="aclassuvw_1_1SignalHandle_html_a5f7346f0e4bde15d020f4ae1204a88cd"><div class="ttname"><a href="classuvw_1_1SignalHandle.html#a5f7346f0e4bde15d020f4ae1204a88cd">uvw::SignalHandle::init</a></div><div class="ttdeci">bool init()</div><div class="ttdoc">Initializes the handle.</div></div>
 <div class="ttc" id="aclassuvw_1_1SignalHandle_html_a89d80659d9c2eb4c0aeb6399dfd460f5"><div class="ttname"><a href="classuvw_1_1SignalHandle.html#a89d80659d9c2eb4c0aeb6399dfd460f5">uvw::SignalHandle::oneShot</a></div><div class="ttdeci">void oneShot(int signum)</div><div class="ttdoc">Starts the handle.</div></div>
 <div class="ttc" id="aclassuvw_1_1SignalHandle_html_ad4072db6ae4afe0a8ad8b4115a232b0a"><div class="ttname"><a href="classuvw_1_1SignalHandle.html#ad4072db6ae4afe0a8ad8b4115a232b0a">uvw::SignalHandle::signal</a></div><div class="ttdeci">int signal() const noexcept</div><div class="ttdoc">Gets the signal being monitored.</div></div>
-<div class="ttc" id="anamespaceuvw_html"><div class="ttname"><a href="namespaceuvw.html">uvw</a></div><div class="ttdoc">uvw default namespace.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00010">async.h:10</a></div></div>
-<div class="ttc" id="astructuvw_1_1SignalEvent_html"><div class="ttname"><a href="structuvw_1_1SignalEvent.html">uvw::SignalEvent</a></div><div class="ttdoc">SignalEvent event.</div><div class="ttdef"><b>Definition:</b> <a href="signal_8h_source.html#l00018">signal.h:18</a></div></div>
-<div class="ttc" id="astructuvw_1_1SignalEvent_html_aeb617f81e5d21573efe573bead953b30"><div class="ttname"><a href="structuvw_1_1SignalEvent.html#aeb617f81e5d21573efe573bead953b30">uvw::SignalEvent::signum</a></div><div class="ttdeci">int signum</div><div class="ttdef"><b>Definition:</b> <a href="signal_8h_source.html#l00021">signal.h:21</a></div></div>
+<div class="ttc" id="anamespaceuvw_html"><div class="ttname"><a href="namespaceuvw.html">uvw</a></div><div class="ttdoc">uvw default namespace.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00008">async.h:8</a></div></div>
+<div class="ttc" id="astructuvw_1_1SignalEvent_html"><div class="ttname"><a href="structuvw_1_1SignalEvent.html">uvw::SignalEvent</a></div><div class="ttdoc">SignalEvent event.</div><div class="ttdef"><b>Definition:</b> <a href="signal_8h_source.html#l00015">signal.h:15</a></div></div>
+<div class="ttc" id="astructuvw_1_1SignalEvent_html_aeb617f81e5d21573efe573bead953b30"><div class="ttname"><a href="structuvw_1_1SignalEvent.html#aeb617f81e5d21573efe573bead953b30">uvw::SignalEvent::signum</a></div><div class="ttdeci">int signum</div><div class="ttdef"><b>Definition:</b> <a href="signal_8h_source.html#l00018">signal.h:18</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
