@@ -787,9 +787,7 @@ TEST(FsReq, Chown) {
             checkFsChownEvent = true;
             break;
         case uvw::fs_req::fs_type::STAT:
-            auto uid = static_cast<uvw::uid_type>(event.stat.st_uid);
-            auto gid = static_cast<uvw::uid_type>(event.stat.st_gid);
-            req.chown(filename, uid, gid);
+            req.chown(filename, static_cast<uvw::uid_type>(event.stat.st_uid), static_cast<uvw::uid_type>(event.stat.st_gid));
             break;
         default:
             // nothing to do here
@@ -859,9 +857,7 @@ TEST(FsReq, Lchown) {
             checkFsLChownEvent = true;
             break;
         case uvw::fs_req::fs_type::STAT:
-            auto uid = static_cast<uvw::uid_type>(event.stat.st_uid);
-            auto gid = static_cast<uvw::uid_type>(event.stat.st_gid);
-            req.lchown(filename, uid, gid);
+            req.lchown(filename, static_cast<uvw::uid_type>(event.stat.st_uid), static_cast<uvw::uid_type>(event.stat.st_gid));
             break;
         default:
             // nothing to do here
