@@ -1,5 +1,4 @@
 * Make all tests pass on all platforms
-* Review fs_event, maybe we can make it work without creating N specializations? All fs_*_callback(s) would go as well
 * Pass the events to the emitter, avoid allocations for the map and the handlers (use an std::tuple<handler<T>...>)
 * Reduce compile-time, use clang ftime and whatnot
 * add iwyu and clean up everything

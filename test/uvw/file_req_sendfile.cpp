@@ -20,20 +20,27 @@ TEST(FileReq, SendFile) {
     dstReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
     srcReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    dstReq->on<uvw::fs_event<uvw::file_req::fs_type::OPEN>>([&srcReq](const auto &, auto &req) {
-        srcReq->sendfile(static_cast<uvw::file_handle>(req), 0, 0);
+    dstReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
+        switch(event.type) {
+        case uvw::fs_req::fs_type::OPEN:
+            srcReq->sendfile(static_cast<uvw::file_handle>(req), 0, 0);
+            break;
+        }
     });
 
-    srcReq->on<uvw::fs_event<uvw::file_req::fs_type::SENDFILE>>([&checkFileSendFileEvent, &dstReq](const auto &, auto &req) {
-        ASSERT_FALSE(checkFileSendFileEvent);
-        checkFileSendFileEvent = true;
-        dstReq->close();
-        req.close();
-    });
-
-    srcReq->on<uvw::fs_event<uvw::file_req::fs_type::OPEN>>([&dstFilename, &dstReq](const auto &, auto &) {
-        auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::WRONLY | uvw::file_req::file_open_flags::TRUNC;
-        dstReq->open(dstFilename, flags, 0644);
+    srcReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
+        switch(event.type) {
+        case uvw::fs_req::fs_type::SENDFILE:
+            ASSERT_FALSE(checkFileSendFileEvent);
+            checkFileSendFileEvent = true;
+            dstReq->close();
+            req.close();
+            break;
+        case uvw::fs_req::fs_type::OPEN:
+            auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::WRONLY | uvw::file_req::file_open_flags::TRUNC;
+            dstReq->open(dstFilename, flags, 0644);
+            break;
+        }
     });
 
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDONLY | uvw::file_req::file_open_flags::TRUNC;
