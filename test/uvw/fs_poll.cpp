@@ -29,6 +29,8 @@ TEST(FsPoll, Functionalities) {
             req.close();
             break;
         default:
+            // nothing to do here
+            break;
         };
     });
 

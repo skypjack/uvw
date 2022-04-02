@@ -73,6 +73,8 @@ TEST(FileReq, OpenAndClose) {
             req.close();
             break;
         default:
+            // nothing to do here
+            break;
         };
     });
 
@@ -126,6 +128,8 @@ TEST(FileReq, RWChecked) {
             req.read(0, 1);
             break;
         default:
+            // nothing to do here
+            break;
         };
     });
 
@@ -167,6 +171,8 @@ TEST(FileReq, RWUnchecked) {
             req.read(0, 1);
             break;
         default:
+            // nothing to do here
+            break;
         };
     });
 
@@ -224,6 +230,8 @@ TEST(FileReq, Stat) {
             req.close();
             break;
         default:
+            // nothing to do here
+            break;
         };
     });
 
@@ -273,6 +281,8 @@ TEST(FileReq, Sync) {
             req.sync();
             break;
         default:
+            // nothing to do here
+            break;
         };
     });
 
@@ -319,6 +329,8 @@ TEST(FileReq, Datasync) {
             req.datasync();
             break;
         default:
+            // nothing to do here
+            break;
         };
     });
 
@@ -365,6 +377,8 @@ TEST(FileReq, Truncate) {
             req.truncate(0);
             break;
         default:
+            // nothing to do here
+            break;
         };
     });
 
@@ -411,6 +425,8 @@ TEST(FileReq, Chmod) {
             req.chmod(0644);
             break;
         default:
+            // nothing to do here
+            break;
         };
     });
 
@@ -459,6 +475,8 @@ TEST(FileReq, Futime) {
             req.futime(value, value);
             break;
         default:
+            // nothing to do here
+            break;
         };
     });
 
@@ -514,6 +532,8 @@ TEST(FileReq, Chown) {
             req.stat();
             break;
         default:
+            // nothing to do here
+            break;
         };
     });
 
