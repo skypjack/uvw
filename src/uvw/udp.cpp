@@ -146,8 +146,8 @@ UVW_INLINE void udp_handle::send(const sockaddr &addr, std::unique_ptr<char[]> d
         ptr->publish(event);
     };
 
-    req->once<error_event>(listener);
-    req->once<send_event>(listener);
+    req->on<error_event>(listener);
+    req->on<send_event>(listener);
     req->send(raw(), &addr);
 }
 
@@ -166,8 +166,8 @@ UVW_INLINE void udp_handle::send(const sockaddr &addr, char *data, unsigned int 
         ptr->publish(event);
     };
 
-    req->once<error_event>(listener);
-    req->once<send_event>(listener);
+    req->on<error_event>(listener);
+    req->on<send_event>(listener);
     req->send(raw(), &addr);
 }
 

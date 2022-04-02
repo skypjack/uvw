@@ -24,125 +24,40 @@ TEST(ErrorEvent, Functionalities) {
     ASSERT_TRUE(static_cast<bool>(uvw::error_event{ecode}));
 }
 
-TEST(Emitter, EmptyAndClear) {
+TEST(Emitter, Functionalities) {
     TestEmitter emitter{};
-
-    ASSERT_TRUE(emitter.empty());
 
     emitter.on<uvw::error_event>([](const auto &, auto &) {});
 
-    ASSERT_FALSE(emitter.empty());
-    ASSERT_FALSE(emitter.empty<uvw::error_event>());
-    ASSERT_TRUE(emitter.empty<FakeEvent>());
+    ASSERT_TRUE(emitter.has<uvw::error_event>());
+    ASSERT_FALSE(emitter.has<FakeEvent>());
 
-    emitter.clear<FakeEvent>();
+    emitter.reset<FakeEvent>();
 
-    ASSERT_FALSE(emitter.empty());
-    ASSERT_FALSE(emitter.empty<uvw::error_event>());
-    ASSERT_TRUE(emitter.empty<FakeEvent>());
+    ASSERT_TRUE(emitter.has<uvw::error_event>());
+    ASSERT_FALSE(emitter.has<FakeEvent>());
 
-    emitter.clear<uvw::error_event>();
+    emitter.reset<uvw::error_event>();
 
-    ASSERT_TRUE(emitter.empty());
-    ASSERT_TRUE(emitter.empty<uvw::error_event>());
-    ASSERT_TRUE(emitter.empty<FakeEvent>());
+    ASSERT_FALSE(emitter.has<uvw::error_event>());
+    ASSERT_FALSE(emitter.has<FakeEvent>());
 
+    bool sentinel = false;
     emitter.on<uvw::error_event>([](const auto &, auto &) {});
-    emitter.on<FakeEvent>([](const auto &, auto &) {});
+    emitter.on<FakeEvent>([&](const auto &, auto &) { sentinel = true; });
 
-    ASSERT_FALSE(emitter.empty());
-    ASSERT_FALSE(emitter.empty<uvw::error_event>());
-    ASSERT_FALSE(emitter.empty<FakeEvent>());
-
-    emitter.clear();
-
-    ASSERT_TRUE(emitter.empty());
-    ASSERT_TRUE(emitter.empty<uvw::error_event>());
-    ASSERT_TRUE(emitter.empty<FakeEvent>());
-}
-
-TEST(Emitter, On) {
-    TestEmitter emitter{};
-
-    emitter.on<FakeEvent>([](const auto &, auto &) {});
-
-    ASSERT_FALSE(emitter.empty());
-    ASSERT_FALSE(emitter.empty<FakeEvent>());
+    ASSERT_FALSE(sentinel);
+    ASSERT_TRUE(emitter.has<uvw::error_event>());
+    ASSERT_TRUE(emitter.has<FakeEvent>());
 
     emitter.emit();
 
-    ASSERT_FALSE(emitter.empty());
-    ASSERT_FALSE(emitter.empty<FakeEvent>());
-}
+    ASSERT_TRUE(sentinel);
+    ASSERT_TRUE(emitter.has<uvw::error_event>());
+    ASSERT_TRUE(emitter.has<FakeEvent>());
 
-TEST(Emitter, Once) {
-    TestEmitter emitter{};
+    emitter.reset();
 
-    emitter.once<FakeEvent>([](const auto &, auto &) {});
-
-    ASSERT_FALSE(emitter.empty());
-    ASSERT_FALSE(emitter.empty<FakeEvent>());
-
-    emitter.emit();
-
-    ASSERT_TRUE(emitter.empty());
-    ASSERT_TRUE(emitter.empty<FakeEvent>());
-}
-
-TEST(Emitter, OnceAndErase) {
-    TestEmitter emitter{};
-
-    auto conn = emitter.once<FakeEvent>([](const auto &, auto &) {});
-
-    ASSERT_FALSE(emitter.empty());
-    ASSERT_FALSE(emitter.empty<FakeEvent>());
-
-    emitter.erase(conn);
-
-    ASSERT_TRUE(emitter.empty());
-    ASSERT_TRUE(emitter.empty<FakeEvent>());
-}
-
-TEST(Emitter, OnAndErase) {
-    TestEmitter emitter{};
-
-    auto conn = emitter.on<FakeEvent>([](const auto &, auto &) {});
-
-    ASSERT_FALSE(emitter.empty());
-    ASSERT_FALSE(emitter.empty<FakeEvent>());
-
-    emitter.erase(conn);
-
-    ASSERT_TRUE(emitter.empty());
-    ASSERT_TRUE(emitter.empty<FakeEvent>());
-}
-
-TEST(Emitter, CallbackClear) {
-    TestEmitter emitter{};
-
-    emitter.on<FakeEvent>([](const auto &, auto &ref) {
-        ref.template on<FakeEvent>([](const auto &, auto &) {});
-        ref.clear();
-    });
-
-    ASSERT_FALSE(emitter.empty());
-    ASSERT_FALSE(emitter.empty<FakeEvent>());
-
-    emitter.emit();
-
-    ASSERT_TRUE(emitter.empty());
-    ASSERT_TRUE(emitter.empty<FakeEvent>());
-
-    emitter.on<FakeEvent>([](const auto &, auto &ref) {
-        ref.clear();
-        ref.template on<FakeEvent>([](const auto &, auto &) {});
-    });
-
-    ASSERT_FALSE(emitter.empty());
-    ASSERT_FALSE(emitter.empty<FakeEvent>());
-
-    emitter.emit();
-
-    ASSERT_FALSE(emitter.empty());
-    ASSERT_FALSE(emitter.empty<FakeEvent>());
+    ASSERT_FALSE(emitter.has<uvw::error_event>());
+    ASSERT_FALSE(emitter.has<FakeEvent>());
 }
