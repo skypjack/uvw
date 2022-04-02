@@ -332,10 +332,10 @@ No need to keep track of them.
 
 ## The event-based approach
 
-`uvw` offers an event-based approach, so resources are small event emitters
-to which listeners can be attached.<br/>
-Attaching a listener to a resource is the recommended way to be notified about
-changes.<br/>
+`uvw` offers an event-based approach where resources are small event emitters to
+which listeners are attached.<br/>
+Attaching listeners to resources is the recommended way to receive notifications
+about their operations.<br/>
 Listeners are callable objects of type `void(event_type &, resource_type &)`,
 where:
 
@@ -349,24 +349,18 @@ It means that the following function types are all valid:
 * `void(event_type &, const resource_type &)`
 * `void(const event_type &, const resource_type &)`
 
-Please note that there is no need to keep around references to the resources:
-they will pass themselves as an argument whenever an event is published.
+Please note that there is no need to keep around references to the resources,
+since they pass themselves as an argument whenever an event is published.<br/>
+The `on` member function is the way to go to register long-running listeners:
 
-There exist two methods to attach a listener to a resource:
+```cpp
+resource.on<event_type>(listener)
+```
 
-* `resource.once<event_type>(listener)`: the listener will be automatically
-  removed after the first event of the given type.
-* `resource.on<event_type>(listener)`: to be used for long-running listeners.
-
-Both of them return an object of type `resource_type::connection` (as an
-example, `tcp_handle::connection`).<br/>
-A connection object can be used later as an argument to the `erase` member
-function of the resource to remove the listener.<br/>
-There exists also the `clear` member function to drop all the listeners at once.
-Note that `clear` should only be invoked on non-active handles. The handles
-exploit the same event mechanism made available to users to satisfy pending
-requests. Invoking `clear` on an active handle, for example with requests still
-in progress, risks leading to memory leaks or unexpected behavior.
+To know if a listener exists for a given type, the class offers a `has` function
+template. Similarly, the `reset` function template is be used to reset and thus
+disconnect listeners, if any. A non-template version of `reset` also exists to
+clear an emitter as a whole.
 
 Almost all the resources emit `error_event` in case of errors.<br/>
 All the other events are specific for the given resource and documented in the
@@ -382,7 +376,7 @@ tcp->on<uvw::error_event>([](const uvw::error_event &, uvw::tcp_handle &) { /* s
 
 tcp->on<uvw::listen_event>([](const uvw::listen_event &, uvw::tcp_handle &srv) {
     std::shared_ptr<uvw::tcp_handle> client = srv.parent().resource<uvw::tcp_handle>();
-    client->once<uvw::end_event>([](const uvw::end_event &, uvw::tcp_handle &client) { client.close(); });
+    client->on<uvw::end_event>([](const uvw::end_event &, uvw::tcp_handle &client) { client.close(); });
     client->on<uvw::data_event>([](const uvw::data_event &, uvw::tcp_handle &) { /* data received */ });
     srv.accept(*client);
     client->read();

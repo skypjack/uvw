@@ -24,7 +24,7 @@ TEST(TCP, ReadWrite) {
     server->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
     client->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    server->once<uvw::listen_event>([](const uvw::listen_event &, uvw::tcp_handle &handle) {
+    server->on<uvw::listen_event>([](const uvw::listen_event &, uvw::tcp_handle &handle) {
         std::shared_ptr<uvw::tcp_handle> socket = handle.parent().resource<uvw::tcp_handle>();
 
         socket->on<uvw::error_event>([](const uvw::error_event &, uvw::tcp_handle &) { FAIL(); });
@@ -35,11 +35,11 @@ TEST(TCP, ReadWrite) {
         socket->read();
     });
 
-    client->once<uvw::write_event>([](const uvw::write_event &, uvw::tcp_handle &handle) {
+    client->on<uvw::write_event>([](const uvw::write_event &, uvw::tcp_handle &handle) {
         handle.close();
     });
 
-    client->once<uvw::connect_event>([](const uvw::connect_event &, uvw::tcp_handle &handle) {
+    client->on<uvw::connect_event>([](const uvw::connect_event &, uvw::tcp_handle &handle) {
         ASSERT_TRUE(handle.writable());
         ASSERT_TRUE(handle.readable());
 
@@ -67,7 +67,7 @@ TEST(TCP, SockPeer) {
     server->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
     client->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    server->once<uvw::listen_event>([&address](const uvw::listen_event &, uvw::tcp_handle &handle) {
+    server->on<uvw::listen_event>([&address](const uvw::listen_event &, uvw::tcp_handle &handle) {
         std::shared_ptr<uvw::tcp_handle> socket = handle.parent().resource<uvw::tcp_handle>();
 
         socket->on<uvw::error_event>([](const uvw::error_event &, uvw::tcp_handle &) { FAIL(); });
@@ -82,7 +82,7 @@ TEST(TCP, SockPeer) {
         ASSERT_EQ(addr.ip, address);
     });
 
-    client->once<uvw::connect_event>([&address](const uvw::connect_event &, uvw::tcp_handle &handle) {
+    client->on<uvw::connect_event>([&address](const uvw::connect_event &, uvw::tcp_handle &handle) {
         uvw::socket_address addr = handle.peer();
 
         ASSERT_EQ(addr.ip, address);
@@ -108,7 +108,7 @@ TEST(TCP, Shutdown) {
     server->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
     client->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    server->once<uvw::listen_event>([](const uvw::listen_event &, uvw::tcp_handle &handle) {
+    server->on<uvw::listen_event>([](const uvw::listen_event &, uvw::tcp_handle &handle) {
         std::shared_ptr<uvw::tcp_handle> socket = handle.parent().resource<uvw::tcp_handle>();
 
         socket->on<uvw::error_event>([](const uvw::error_event &, uvw::tcp_handle &) { FAIL(); });
@@ -119,11 +119,11 @@ TEST(TCP, Shutdown) {
         socket->read();
     });
 
-    client->once<uvw::shutdown_event>([](const uvw::shutdown_event &, uvw::tcp_handle &handle) {
+    client->on<uvw::shutdown_event>([](const uvw::shutdown_event &, uvw::tcp_handle &handle) {
         handle.close();
     });
 
-    client->once<uvw::connect_event>([](const uvw::connect_event &, uvw::tcp_handle &handle) {
+    client->on<uvw::connect_event>([](const uvw::connect_event &, uvw::tcp_handle &handle) {
         handle.shutdown();
     });
 
@@ -144,13 +144,13 @@ TEST(TCP, WriteError) {
     bool checkTryWriteNakedPtrErrorEvent = false;
 
     handle->close();
-    handle->once<uvw::error_event>([&checkWriteSmartPtrErrorEvent](const auto &, auto &) { checkWriteSmartPtrErrorEvent = true; });
+    handle->on<uvw::error_event>([&checkWriteSmartPtrErrorEvent](const auto &, auto &) { checkWriteSmartPtrErrorEvent = true; });
     handle->write(std::unique_ptr<char[]>{}, 0);
-    handle->once<uvw::error_event>([&checkWriteNakedPtrErrorEvent](const auto &, auto &) { checkWriteNakedPtrErrorEvent = true; });
+    handle->on<uvw::error_event>([&checkWriteNakedPtrErrorEvent](const auto &, auto &) { checkWriteNakedPtrErrorEvent = true; });
     handle->write(nullptr, 0);
-    handle->once<uvw::error_event>([&checkTryWriteSmartPtrErrorEvent](const auto &, auto &) { checkTryWriteSmartPtrErrorEvent = true; });
+    handle->on<uvw::error_event>([&checkTryWriteSmartPtrErrorEvent](const auto &, auto &) { checkTryWriteSmartPtrErrorEvent = true; });
     handle->try_write(std::unique_ptr<char[]>{}, 0);
-    handle->once<uvw::error_event>([&checkTryWriteNakedPtrErrorEvent](const auto &, auto &) { checkTryWriteNakedPtrErrorEvent = true; });
+    handle->on<uvw::error_event>([&checkTryWriteNakedPtrErrorEvent](const auto &, auto &) { checkTryWriteNakedPtrErrorEvent = true; });
     handle->try_write(nullptr, 0);
 
     loop->run();

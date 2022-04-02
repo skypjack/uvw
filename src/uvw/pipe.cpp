@@ -32,8 +32,8 @@ UVW_INLINE void pipe_handle::connect(const std::string &name) {
     };
 
     auto connect = parent().resource<details::connect_req>();
-    connect->once<error_event>(listener);
-    connect->once<connect_event>(listener);
+    connect->on<error_event>(listener);
+    connect->on<connect_event>(listener);
     connect->connect(&uv_pipe_connect, raw(), name.data());
 }
 

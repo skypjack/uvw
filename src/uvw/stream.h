@@ -175,8 +175,8 @@ public:
         };
 
         auto shutdown = this->parent().template resource<details::shutdown_req>();
-        shutdown->template once<error_event>(listener);
-        shutdown->template once<shutdown_event>(listener);
+        shutdown->template on<error_event>(listener);
+        shutdown->template on<shutdown_event>(listener);
         shutdown->shutdown(as_uv_stream());
     }
 
@@ -265,8 +265,8 @@ public:
             ptr->publish(event);
         };
 
-        req->template once<error_event>(listener);
-        req->template once<write_event>(listener);
+        req->template on<error_event>(listener);
+        req->template on<write_event>(listener);
         req->write(as_uv_stream());
     }
 
@@ -288,8 +288,8 @@ public:
             ptr->publish(event);
         };
 
-        req->template once<error_event>(listener);
-        req->template once<write_event>(listener);
+        req->template on<error_event>(listener);
+        req->template on<write_event>(listener);
         req->write(as_uv_stream());
     }
 
@@ -319,8 +319,8 @@ public:
             ptr->publish(event);
         };
 
-        req->template once<error_event>(listener);
-        req->template once<write_event>(listener);
+        req->template on<error_event>(listener);
+        req->template on<write_event>(listener);
         req->write(as_uv_stream(), send.as_uv_stream());
     }
 
@@ -350,8 +350,8 @@ public:
             ptr->publish(event);
         };
 
-        req->template once<error_event>(listener);
-        req->template once<write_event>(listener);
+        req->template on<error_event>(listener);
+        req->template on<write_event>(listener);
         req->write(as_uv_stream(), send.as_uv_stream());
     }
 

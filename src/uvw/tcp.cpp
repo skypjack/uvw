@@ -77,8 +77,8 @@ UVW_INLINE void tcp_handle::connect(const sockaddr &addr) {
     };
 
     auto req = parent().resource<details::connect_req>();
-    req->once<error_event>(listener);
-    req->once<connect_event>(listener);
+    req->on<error_event>(listener);
+    req->on<connect_event>(listener);
     req->connect(&uv_tcp_connect, raw(), &addr);
 }
 

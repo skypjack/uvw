@@ -47,7 +47,7 @@ TEST(UDP, ReadTrySend) {
     server->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
     client->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    server->once<uvw::udp_data_event>([&client](const uvw::udp_data_event &, uvw::udp_handle &handle) {
+    server->on<uvw::udp_data_event>([&client](const uvw::udp_data_event &, uvw::udp_handle &handle) {
         client->close();
         handle.close();
     });
@@ -77,11 +77,11 @@ TEST(UDP, ReadSend) {
     server->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
     client->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    server->once<uvw::udp_data_event>([](const uvw::udp_data_event &, uvw::udp_handle &handle) {
+    server->on<uvw::udp_data_event>([](const uvw::udp_data_event &, uvw::udp_handle &handle) {
         handle.close();
     });
 
-    client->once<uvw::send_event>([](const uvw::send_event &, uvw::udp_handle &handle) {
+    client->on<uvw::send_event>([](const uvw::send_event &, uvw::udp_handle &handle) {
         handle.close();
     });
 

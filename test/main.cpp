@@ -8,7 +8,7 @@ void listen(uvw::loop &loop) {
     std::shared_ptr<uvw::tcp_handle> tcp = loop.resource<uvw::tcp_handle>();
     tcp->on<uvw::error_event>([](const uvw::error_event &, uvw::tcp_handle &) { assert(false); });
 
-    tcp->once<uvw::listen_event>([](const uvw::listen_event &, uvw::tcp_handle &srv) {
+    tcp->on<uvw::listen_event>([](const uvw::listen_event &, uvw::tcp_handle &srv) {
         std::cout << "listen" << std::endl;
 
         std::shared_ptr<uvw::tcp_handle> client = srv.parent().resource<uvw::tcp_handle>();
@@ -43,7 +43,7 @@ void listen(uvw::loop &loop) {
         client->read();
     });
 
-    tcp->once<uvw::close_event>([](const uvw::close_event &, uvw::tcp_handle &) {
+    tcp->on<uvw::close_event>([](const uvw::close_event &, uvw::tcp_handle &) {
         std::cout << "close" << std::endl;
     });
 
@@ -55,12 +55,12 @@ void conn(uvw::loop &loop) {
     auto tcp = loop.resource<uvw::tcp_handle>();
     tcp->on<uvw::error_event>([](const uvw::error_event &, uvw::tcp_handle &) { assert(false); });
 
-    tcp->once<uvw::write_event>([](const uvw::write_event &, uvw::tcp_handle &handle) {
+    tcp->on<uvw::write_event>([](const uvw::write_event &, uvw::tcp_handle &handle) {
         std::cout << "write" << std::endl;
         handle.close();
     });
 
-    tcp->once<uvw::connect_event>([](const uvw::connect_event &, uvw::tcp_handle &handle) {
+    tcp->on<uvw::connect_event>([](const uvw::connect_event &, uvw::tcp_handle &handle) {
         std::cout << "connect" << std::endl;
 
         auto dataTryWrite = std::unique_ptr<char[]>(new char[1]{'a'});
@@ -71,7 +71,7 @@ void conn(uvw::loop &loop) {
         handle.write(std::move(dataWrite), 2);
     });
 
-    tcp->once<uvw::close_event>([](const uvw::close_event &, uvw::tcp_handle &) {
+    tcp->on<uvw::close_event>([](const uvw::close_event &, uvw::tcp_handle &) {
         std::cout << "close" << std::endl;
     });
 
