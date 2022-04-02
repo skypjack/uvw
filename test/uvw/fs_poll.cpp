@@ -23,8 +23,12 @@ TEST(FsPoll, Functionalities) {
         ASSERT_TRUE(hndl.closing());
     });
 
-    request->on<uvw::fs_event<uvw::file_req::fs_type::WRITE>>([](const auto &, auto &req) {
-        req.close();
+    request->on<uvw::fs_event>([&](const auto &event, auto &req) {
+        switch(event.type) {
+        case uvw::fs_req::fs_type::WRITE:
+            req.close();
+            break;
+        };
     });
 
     request->open_sync(filename, uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC, 0755);

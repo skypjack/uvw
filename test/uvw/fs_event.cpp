@@ -23,12 +23,15 @@ TEST(FsEvent, Functionalities) {
         ASSERT_TRUE(hndl.closing());
     });
 
-    request->on<uvw::fs_event<uvw::file_req::fs_type::WRITE>>([](const auto &, auto &req) {
-        req.close();
-    });
-
-    request->on<uvw::fs_event<uvw::file_req::fs_type::OPEN>>([](const auto &, auto &req) {
-        req.write(std::unique_ptr<char[]>{new char[1]{42}}, 1, 0);
+    request->on<uvw::fs_event>([&](const auto &event, auto &req) {
+        switch(event.type) {
+        case uvw::fs_req::fs_type::WRITE:
+            req.close();
+            break;
+        case uvw::fs_req::fs_type::OPEN:
+            req.write(std::unique_ptr<char[]>{new char[1]{42}}, 1, 0);
+            break;
+        }
     });
 
     handle->start(std::string{TARGET_FS_EVENT_DIR}, uvw::fs_event_handle::event_flags::RECURSIVE);

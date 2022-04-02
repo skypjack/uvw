@@ -13,7 +13,7 @@ UVW_INLINE void file_req::fs_open_callback(uv_fs_t *req) {
         ptr->publish(error_event{req->result});
     } else {
         ptr->file = static_cast<uv_file>(req->result);
-        ptr->publish(fs_event<fs_type::OPEN>{req->path});
+        ptr->publish(fs_event{*req});
     }
 }
 
@@ -24,7 +24,7 @@ UVW_INLINE void file_req::fs_close_callback(uv_fs_t *req) {
         ptr->publish(error_event{req->result});
     } else {
         ptr->file = BAD_FD;
-        ptr->publish(fs_event<fs_type::CLOSE>{req->path});
+        ptr->publish(fs_event{*req});
     }
 }
 
@@ -34,7 +34,7 @@ UVW_INLINE void file_req::fs_read_callback(uv_fs_t *req) {
     if(req->result < 0) {
         ptr->publish(error_event{req->result});
     } else {
-        ptr->publish(fs_event<fs_type::READ>{req->path, std::move(ptr->current), static_cast<std::size_t>(req->result)});
+        ptr->publish(fs_event{*req, std::move(ptr->current)});
     }
 }
 
@@ -101,13 +101,13 @@ UVW_INLINE void file_req::write(std::unique_ptr<char[]> buf, unsigned int len, i
     current = std::move(buf);
     uv_buf_t bufs[] = {uv_buf_init(current.get(), len)};
     uv_fs_req_cleanup(this->raw());
-    uv_fs_write(parent().raw(), raw(), file, bufs, 1, offset, &fs_result_callback<fs_type::WRITE>);
+    uv_fs_write(parent().raw(), raw(), file, bufs, 1, offset, &fs_request_callback);
 }
 
 UVW_INLINE void file_req::write(char *buf, unsigned int len, int64_t offset) {
     uv_buf_t bufs[] = {uv_buf_init(buf, len)};
     uv_fs_req_cleanup(this->raw());
-    uv_fs_write(parent().raw(), raw(), file, bufs, 1, offset, &fs_result_callback<fs_type::WRITE>);
+    uv_fs_write(parent().raw(), raw(), file, bufs, 1, offset, &fs_request_callback);
 }
 
 UVW_INLINE std::pair<bool, std::size_t> file_req::write_sync(std::unique_ptr<char[]> buf, unsigned int len, int64_t offset) {
@@ -122,7 +122,7 @@ UVW_INLINE std::pair<bool, std::size_t> file_req::write_sync(std::unique_ptr<cha
 
 UVW_INLINE void file_req::stat() {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_fstat(parent().raw(), raw(), file, &fs_stat_callback<fs_type::FSTAT>);
+    uv_fs_fstat(parent().raw(), raw(), file, &fs_request_callback);
 }
 
 UVW_INLINE std::pair<bool, file_info> file_req::stat_sync() {
@@ -134,7 +134,7 @@ UVW_INLINE std::pair<bool, file_info> file_req::stat_sync() {
 
 UVW_INLINE void file_req::sync() {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_fsync(parent().raw(), raw(), file, &fs_generic_callback<fs_type::FSYNC>);
+    uv_fs_fsync(parent().raw(), raw(), file, &fs_request_callback);
 }
 
 UVW_INLINE bool file_req::sync_sync() {
@@ -146,7 +146,7 @@ UVW_INLINE bool file_req::sync_sync() {
 
 UVW_INLINE void file_req::datasync() {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_fdatasync(parent().raw(), raw(), file, &fs_generic_callback<fs_type::FDATASYNC>);
+    uv_fs_fdatasync(parent().raw(), raw(), file, &fs_request_callback);
 }
 
 UVW_INLINE bool file_req::datasync_sync() {
@@ -158,7 +158,7 @@ UVW_INLINE bool file_req::datasync_sync() {
 
 UVW_INLINE void file_req::truncate(int64_t offset) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_ftruncate(parent().raw(), raw(), file, offset, &fs_generic_callback<fs_type::FTRUNCATE>);
+    uv_fs_ftruncate(parent().raw(), raw(), file, offset, &fs_request_callback);
 }
 
 UVW_INLINE bool file_req::truncate_sync(int64_t offset) {
@@ -170,7 +170,7 @@ UVW_INLINE bool file_req::truncate_sync(int64_t offset) {
 
 UVW_INLINE void file_req::sendfile(file_handle out, int64_t offset, std::size_t length) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_sendfile(parent().raw(), raw(), out, file, offset, length, &fs_result_callback<fs_type::SENDFILE>);
+    uv_fs_sendfile(parent().raw(), raw(), out, file, offset, length, &fs_request_callback);
 }
 
 UVW_INLINE std::pair<bool, std::size_t> file_req::sendfile_sync(file_handle out, int64_t offset, std::size_t length) {
@@ -183,7 +183,7 @@ UVW_INLINE std::pair<bool, std::size_t> file_req::sendfile_sync(file_handle out,
 
 UVW_INLINE void file_req::chmod(int mode) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_fchmod(parent().raw(), raw(), file, mode, &fs_generic_callback<fs_type::FCHMOD>);
+    uv_fs_fchmod(parent().raw(), raw(), file, mode, &fs_request_callback);
 }
 
 UVW_INLINE bool file_req::chmod_sync(int mode) {
@@ -195,7 +195,7 @@ UVW_INLINE bool file_req::chmod_sync(int mode) {
 
 UVW_INLINE void file_req::futime(fs_request::time atime, fs_request::time mtime) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_futime(parent().raw(), raw(), file, atime.count(), mtime.count(), &fs_generic_callback<fs_type::FUTIME>);
+    uv_fs_futime(parent().raw(), raw(), file, atime.count(), mtime.count(), &fs_request_callback);
 }
 
 UVW_INLINE bool file_req::futime_sync(fs_request::time atime, fs_request::time mtime) {
@@ -207,7 +207,7 @@ UVW_INLINE bool file_req::futime_sync(fs_request::time atime, fs_request::time m
 
 UVW_INLINE void file_req::chown(uid_type uid, gid_type gid) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_fchown(parent().raw(), raw(), file, uid, gid, &fs_generic_callback<fs_type::FCHOWN>);
+    uv_fs_fchown(parent().raw(), raw(), file, uid, gid, &fs_request_callback);
 }
 
 UVW_INLINE bool file_req::chown_sync(uid_type uid, gid_type gid) {
@@ -221,34 +221,13 @@ UVW_INLINE file_req::operator file_handle() const UVW_NOEXCEPT {
     return file;
 }
 
-UVW_INLINE void fs_req::fs_readlink_callback(uv_fs_t *req) {
-    auto ptr = reserve(req);
-
-    if(req->result < 0) {
-        ptr->publish(error_event{req->result});
-    } else {
-        ptr->publish(fs_event<fs_type::READLINK>{req->path, static_cast<char *>(req->ptr), static_cast<std::size_t>(req->result)});
-    }
-}
-
-UVW_INLINE void fs_req::fs_readdir_callback(uv_fs_t *req) {
-    auto ptr = reserve(req);
-
-    if(req->result < 0) {
-        ptr->publish(error_event{req->result});
-    } else {
-        auto *dir = static_cast<uv_dir_t *>(req->ptr);
-        ptr->publish(fs_event<fs_type::READDIR>{dir->dirents[0].name, static_cast<entry_type>(dir->dirents[0].type), !req->result});
-    }
-}
-
 UVW_INLINE fs_req::~fs_req() UVW_NOEXCEPT {
     uv_fs_req_cleanup(raw());
 }
 
 UVW_INLINE void fs_req::unlink(const std::string &path) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_unlink(parent().raw(), raw(), path.data(), &fs_generic_callback<fs_type::UNLINK>);
+    uv_fs_unlink(parent().raw(), raw(), path.data(), &fs_request_callback);
 }
 
 UVW_INLINE bool fs_req::unlink_sync(const std::string &path) {
@@ -260,7 +239,7 @@ UVW_INLINE bool fs_req::unlink_sync(const std::string &path) {
 
 UVW_INLINE void fs_req::mkdir(const std::string &path, int mode) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_mkdir(parent().raw(), raw(), path.data(), mode, &fs_generic_callback<fs_type::MKDIR>);
+    uv_fs_mkdir(parent().raw(), raw(), path.data(), mode, &fs_request_callback);
 }
 
 UVW_INLINE bool fs_req::mkdir_sync(const std::string &path, int mode) {
@@ -272,7 +251,7 @@ UVW_INLINE bool fs_req::mkdir_sync(const std::string &path, int mode) {
 
 UVW_INLINE void fs_req::mkdtemp(const std::string &tpl) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_mkdtemp(parent().raw(), raw(), tpl.data(), &fs_generic_callback<fs_type::MKDTEMP>);
+    uv_fs_mkdtemp(parent().raw(), raw(), tpl.data(), &fs_request_callback);
 }
 
 UVW_INLINE std::pair<bool, const char *> fs_req::mkdtemp_sync(const std::string &tpl) {
@@ -284,7 +263,7 @@ UVW_INLINE std::pair<bool, const char *> fs_req::mkdtemp_sync(const std::string 
 
 UVW_INLINE void fs_req::mkstemp(const std::string &tpl) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_mkstemp(parent().raw(), raw(), tpl.data(), &fs_result_callback<fs_type::MKSTEMP>);
+    uv_fs_mkstemp(parent().raw(), raw(), tpl.data(), &fs_request_callback);
 }
 
 UVW_INLINE std::pair<bool, std::pair<std::string, std::size_t>> fs_req::mkstemp_sync(const std::string &tpl) {
@@ -304,7 +283,7 @@ UVW_INLINE std::pair<bool, std::pair<std::string, std::size_t>> fs_req::mkstemp_
 
 UVW_INLINE void fs_req::lutime(const std::string &path, time atime, time mtime) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_lutime(parent().raw(), raw(), path.data(), atime.count(), mtime.count(), &fs_generic_callback<fs_type::LUTIME>);
+    uv_fs_lutime(parent().raw(), raw(), path.data(), atime.count(), mtime.count(), &fs_request_callback);
 }
 
 UVW_INLINE bool fs_req::lutime_sync(const std::string &path, time atime, time mtime) {
@@ -316,7 +295,7 @@ UVW_INLINE bool fs_req::lutime_sync(const std::string &path, time atime, time mt
 
 UVW_INLINE void fs_req::rmdir(const std::string &path) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_rmdir(parent().raw(), raw(), path.data(), &fs_generic_callback<fs_type::RMDIR>);
+    uv_fs_rmdir(parent().raw(), raw(), path.data(), &fs_request_callback);
 }
 
 UVW_INLINE bool fs_req::rmdir_sync(const std::string &path) {
@@ -328,7 +307,7 @@ UVW_INLINE bool fs_req::rmdir_sync(const std::string &path) {
 
 UVW_INLINE void fs_req::scandir(const std::string &path, int flags) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_scandir(parent().raw(), raw(), path.data(), flags, &fs_result_callback<fs_type::SCANDIR>);
+    uv_fs_scandir(parent().raw(), raw(), path.data(), flags, &fs_request_callback);
 }
 
 UVW_INLINE std::pair<bool, std::size_t> fs_req::scandir_sync(const std::string &path, int flags) {
@@ -356,7 +335,7 @@ UVW_INLINE std::pair<bool, std::pair<fs_req::entry_type, const char *>> fs_req::
 
 UVW_INLINE void fs_req::stat(const std::string &path) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_stat(parent().raw(), raw(), path.data(), &fs_stat_callback<fs_type::STAT>);
+    uv_fs_stat(parent().raw(), raw(), path.data(), &fs_request_callback);
 }
 
 UVW_INLINE std::pair<bool, file_info> fs_req::stat_sync(const std::string &path) {
@@ -368,7 +347,7 @@ UVW_INLINE std::pair<bool, file_info> fs_req::stat_sync(const std::string &path)
 
 UVW_INLINE void fs_req::lstat(const std::string &path) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_lstat(parent().raw(), raw(), path.data(), &fs_stat_callback<fs_type::LSTAT>);
+    uv_fs_lstat(parent().raw(), raw(), path.data(), &fs_request_callback);
 }
 
 UVW_INLINE std::pair<bool, file_info> fs_req::lstat_sync(const std::string &path) {
@@ -380,7 +359,7 @@ UVW_INLINE std::pair<bool, file_info> fs_req::lstat_sync(const std::string &path
 
 UVW_INLINE void fs_req::statfs(const std::string &path) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_statfs(parent().raw(), raw(), path.data(), &fs_statfs_callback);
+    uv_fs_statfs(parent().raw(), raw(), path.data(), &fs_request_callback);
 }
 
 UVW_INLINE std::pair<bool, fs_info> fs_req::statfs_sync(const std::string &path) {
@@ -392,7 +371,7 @@ UVW_INLINE std::pair<bool, fs_info> fs_req::statfs_sync(const std::string &path)
 
 UVW_INLINE void fs_req::rename(const std::string &old, const std::string &path) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_rename(parent().raw(), raw(), old.data(), path.data(), &fs_generic_callback<fs_type::RENAME>);
+    uv_fs_rename(parent().raw(), raw(), old.data(), path.data(), &fs_request_callback);
 }
 
 UVW_INLINE bool fs_req::rename_sync(const std::string &old, const std::string &path) {
@@ -404,7 +383,7 @@ UVW_INLINE bool fs_req::rename_sync(const std::string &old, const std::string &p
 
 UVW_INLINE void fs_req::copyfile(const std::string &old, const std::string &path, copy_file_flags flags) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_copyfile(parent().raw(), raw(), old.data(), path.data(), static_cast<int>(flags), &fs_generic_callback<fs_type::COPYFILE>);
+    uv_fs_copyfile(parent().raw(), raw(), old.data(), path.data(), static_cast<int>(flags), &fs_request_callback);
 }
 
 UVW_INLINE bool fs_req::copyfile_sync(const std::string &old, const std::string &path, copy_file_flags flags) {
@@ -416,7 +395,7 @@ UVW_INLINE bool fs_req::copyfile_sync(const std::string &old, const std::string 
 
 UVW_INLINE void fs_req::access(const std::string &path, int mode) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_access(parent().raw(), raw(), path.data(), mode, &fs_generic_callback<fs_type::ACCESS>);
+    uv_fs_access(parent().raw(), raw(), path.data(), mode, &fs_request_callback);
 }
 
 UVW_INLINE bool fs_req::access_sync(const std::string &path, int mode) {
@@ -428,7 +407,7 @@ UVW_INLINE bool fs_req::access_sync(const std::string &path, int mode) {
 
 UVW_INLINE void fs_req::chmod(const std::string &path, int mode) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_chmod(parent().raw(), raw(), path.data(), mode, &fs_generic_callback<fs_type::CHMOD>);
+    uv_fs_chmod(parent().raw(), raw(), path.data(), mode, &fs_request_callback);
 }
 
 UVW_INLINE bool fs_req::chmod_sync(const std::string &path, int mode) {
@@ -440,7 +419,7 @@ UVW_INLINE bool fs_req::chmod_sync(const std::string &path, int mode) {
 
 UVW_INLINE void fs_req::utime(const std::string &path, fs_request::time atime, fs_request::time mtime) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_utime(parent().raw(), raw(), path.data(), atime.count(), mtime.count(), &fs_generic_callback<fs_type::UTIME>);
+    uv_fs_utime(parent().raw(), raw(), path.data(), atime.count(), mtime.count(), &fs_request_callback);
 }
 
 UVW_INLINE bool fs_req::utime_sync(const std::string &path, fs_request::time atime, fs_request::time mtime) {
@@ -452,7 +431,7 @@ UVW_INLINE bool fs_req::utime_sync(const std::string &path, fs_request::time ati
 
 UVW_INLINE void fs_req::link(const std::string &old, const std::string &path) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_link(parent().raw(), raw(), old.data(), path.data(), &fs_generic_callback<fs_type::LINK>);
+    uv_fs_link(parent().raw(), raw(), old.data(), path.data(), &fs_request_callback);
 }
 
 UVW_INLINE bool fs_req::link_sync(const std::string &old, const std::string &path) {
@@ -464,7 +443,7 @@ UVW_INLINE bool fs_req::link_sync(const std::string &old, const std::string &pat
 
 UVW_INLINE void fs_req::symlink(const std::string &old, const std::string &path, symlink_flags flags) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_symlink(parent().raw(), raw(), old.data(), path.data(), static_cast<int>(flags), &fs_generic_callback<fs_type::SYMLINK>);
+    uv_fs_symlink(parent().raw(), raw(), old.data(), path.data(), static_cast<int>(flags), &fs_request_callback);
 }
 
 UVW_INLINE bool fs_req::symlink_sync(const std::string &old, const std::string &path, symlink_flags flags) {
@@ -476,7 +455,7 @@ UVW_INLINE bool fs_req::symlink_sync(const std::string &old, const std::string &
 
 UVW_INLINE void fs_req::readlink(const std::string &path) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_readlink(parent().raw(), raw(), path.data(), &fs_readlink_callback);
+    uv_fs_readlink(parent().raw(), raw(), path.data(), &fs_request_callback);
 }
 
 UVW_INLINE std::pair<bool, std::pair<const char *, std::size_t>> fs_req::readlink_sync(const std::string &path) {
@@ -489,7 +468,7 @@ UVW_INLINE std::pair<bool, std::pair<const char *, std::size_t>> fs_req::readlin
 
 UVW_INLINE void fs_req::realpath(const std::string &path) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_realpath(parent().raw(), raw(), path.data(), &fs_generic_callback<fs_type::REALPATH>);
+    uv_fs_realpath(parent().raw(), raw(), path.data(), &fs_request_callback);
 }
 
 UVW_INLINE std::pair<bool, const char *> fs_req::realpath_sync(const std::string &path) {
@@ -501,7 +480,7 @@ UVW_INLINE std::pair<bool, const char *> fs_req::realpath_sync(const std::string
 
 UVW_INLINE void fs_req::chown(const std::string &path, uid_type uid, gid_type gid) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_chown(parent().raw(), raw(), path.data(), uid, gid, &fs_generic_callback<fs_type::CHOWN>);
+    uv_fs_chown(parent().raw(), raw(), path.data(), uid, gid, &fs_request_callback);
 }
 
 UVW_INLINE bool fs_req::chown_sync(const std::string &path, uid_type uid, gid_type gid) {
@@ -513,7 +492,7 @@ UVW_INLINE bool fs_req::chown_sync(const std::string &path, uid_type uid, gid_ty
 
 UVW_INLINE void fs_req::lchown(const std::string &path, uid_type uid, gid_type gid) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_lchown(parent().raw(), raw(), path.data(), uid, gid, &fs_generic_callback<fs_type::LCHOWN>);
+    uv_fs_lchown(parent().raw(), raw(), path.data(), uid, gid, &fs_request_callback);
 }
 
 UVW_INLINE bool fs_req::lchown_sync(const std::string &path, uid_type uid, gid_type gid) {
@@ -525,7 +504,7 @@ UVW_INLINE bool fs_req::lchown_sync(const std::string &path, uid_type uid, gid_t
 
 UVW_INLINE void fs_req::opendir(const std::string &path) {
     uv_fs_req_cleanup(this->raw());
-    uv_fs_opendir(parent().raw(), raw(), path.data(), &fs_generic_callback<fs_type::OPENDIR>);
+    uv_fs_opendir(parent().raw(), raw(), path.data(), &fs_request_callback);
 }
 
 UVW_INLINE bool fs_req::opendir_sync(const std::string &path) {
@@ -539,7 +518,7 @@ UVW_INLINE void fs_req::closedir() {
     auto req = raw();
     auto *dir = static_cast<uv_dir_t *>(req->ptr);
     uv_fs_req_cleanup(this->raw());
-    uv_fs_closedir(parent().raw(), req, dir, &fs_generic_callback<fs_type::CLOSEDIR>);
+    uv_fs_closedir(parent().raw(), req, dir, &fs_request_callback);
 }
 
 UVW_INLINE bool fs_req::closedir_sync() {
@@ -556,7 +535,7 @@ UVW_INLINE void fs_req::readdir() {
     dir->dirents = dirents;
     dir->nentries = 1;
     uv_fs_req_cleanup(this->raw());
-    uv_fs_readdir(parent().raw(), req, dir, &fs_readdir_callback);
+    uv_fs_readdir(parent().raw(), req, dir, &fs_request_callback);
 }
 
 UVW_INLINE std::pair<bool, std::pair<fs_req::entry_type, const char *>> fs_req::readdir_sync() {

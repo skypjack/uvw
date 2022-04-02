@@ -110,7 +110,7 @@ enum class uvw_symlink_flags : int {
 } // namespace details
 
 /**
- * @brief Default fs event.
+ * @brief Common fs event.
  *
  * Available types are:
  *
@@ -157,127 +157,62 @@ enum class uvw_symlink_flags : int {
  * [documentation](http://docs.libuv.org/en/v1.x/fs.html#c.uv_fs_type)
  * for further details.
  */
-template<details::uvw_fs_type e>
 struct fs_event {
-    fs_event(const char *pathname) UVW_NOEXCEPT
-        : path{pathname} {}
-
-    const char *path; /*!< The path affecting the request. */
-};
-
-/*! @brief Specialization for `fs_request::fs_type::READ`. */
-template<>
-struct fs_event<details::uvw_fs_type::READ> {
-    fs_event(const char *pathname, std::unique_ptr<const char[]> buf, std::size_t sz) UVW_NOEXCEPT
-        : path{pathname}, data{std::move(buf)}, size{sz} {}
-
-    const char *path;                   /*!< The path affecting the request. */
-    std::unique_ptr<const char[]> data; /*!< A bunch of data read from the given path. */
-    std::size_t size;                   /*!< The amount of data read from the given path. */
-};
-
-/*! @brief Specialization for `fs_request::fs_type::WRITE`. */
-template<>
-struct fs_event<details::uvw_fs_type::WRITE> {
-    fs_event(const char *pathname, std::size_t sz) UVW_NOEXCEPT
-        : path{pathname}, size{sz} {}
-
-    const char *path; /*!< The path affecting the request. */
-    std::size_t size; /*!< The amount of data written to the given path. */
-};
-
-/*! @brief Specialization for `fs_request::fs_type::SENDFILE`. */
-template<>
-struct fs_event<details::uvw_fs_type::SENDFILE> {
-    fs_event(const char *pathname, std::size_t sz) UVW_NOEXCEPT
-        : path{pathname}, size{sz} {}
-
-    const char *path; /*!< The path affecting the request. */
-    std::size_t size; /*!< The amount of data transferred. */
-};
-
-/*! @brief Specialization for `fs_request::fs_type::STAT`. */
-template<>
-struct fs_event<details::uvw_fs_type::STAT> {
-    fs_event(const char *pathname, file_info curr) UVW_NOEXCEPT
-        : path{pathname}, stat{std::move(curr)} {}
-
-    const char *path; /*!< The path affecting the request. */
-    file_info stat;   /*!< An initialized instance of file_info. */
-};
-
-/*! @brief Specialization for `fs_request::fs_type::FSTAT`. */
-template<>
-struct fs_event<details::uvw_fs_type::FSTAT> {
-    fs_event(const char *pathname, file_info curr) UVW_NOEXCEPT
-        : path{pathname}, stat{std::move(curr)} {}
-
-    const char *path; /*!< The path affecting the request. */
-    file_info stat;   /*!< An initialized instance of file_info. */
-};
-
-/*! @brief Specialization for `fs_request::fs_type::LSTAT`. */
-template<>
-struct fs_event<details::uvw_fs_type::LSTAT> {
-    fs_event(const char *pathname, file_info curr) UVW_NOEXCEPT
-        : path{pathname}, stat{std::move(curr)} {}
-
-    const char *path; /*!< The path affecting the request. */
-    file_info stat;   /*!< An initialized instance of file_info. */
-};
-
-/*! @brief Specialization for `fs_request::fs_type::STATFS`. */
-template<>
-struct fs_event<details::uvw_fs_type::STATFS> {
-    fs_event(const char *pathname, fs_info curr) UVW_NOEXCEPT
-        : path{pathname}, statfs{std::move(curr)} {}
-
-    const char *path; /*!< The path affecting the request. */
-    fs_info statfs;   /*!< An initialized instance of fs_info. */
-};
-
-/*! @brief Specialization for `fs_request::fs_type::MKSTEMP`. */
-template<>
-struct fs_event<details::uvw_fs_type::MKSTEMP> {
-    fs_event(const char *pathname, std::size_t desc) UVW_NOEXCEPT
-        : path{pathname}, descriptor{desc} {}
-
-    const char *path;       /*!< The created file path. */
-    std::size_t descriptor; /*!< The file descriptor as an integer. */
-};
-
-/*! @brief Specialization for `fs_request::fs_type::SCANDIR`. */
-template<>
-struct fs_event<details::uvw_fs_type::SCANDIR> {
-    fs_event(const char *pathname, std::size_t sz) UVW_NOEXCEPT
-        : path{pathname}, size{sz} {}
-
-    const char *path; /*!< The path affecting the request. */
-    std::size_t size; /*!< The number of directory entries selected. */
-};
-
-/*! @brief Specialization for `fs_request::fs_type::READLINK`. */
-template<>
-struct fs_event<details::uvw_fs_type::READLINK> {
-    explicit fs_event(const char *pathname, const char *buf, std::size_t sz) UVW_NOEXCEPT
-        : path{pathname}, data{buf}, size{sz} {}
-
-    const char *path; /*!< The path affecting the request. */
-    const char *data; /*!< A bunch of data read from the given path. */
-    std::size_t size; /*!< The amount of data read from the given path. */
-};
-
-/*! @brief Specialization for `fs_request::fs_type::READDIR`. */
-template<>
-struct fs_event<details::uvw_fs_type::READDIR> {
+    using fs_type = details::uvw_fs_type;
     using entry_type = details::uvw_dirent_type_t;
 
-    fs_event(const char *name, entry_type type, bool eos) UVW_NOEXCEPT
-        : name{name}, type{type}, eos{eos} {}
+    fs_event(const uv_fs_t &req, std::unique_ptr<const char[]> data)
+        : fs_event{req} {
+        read.data = std::move(data);
+    }
 
-    const char *name; /*!< The name of the last entry. */
-    entry_type type;  /*!< The entry type. */
-    bool eos;         /*!< True if there a no more entries to read. */
+    fs_event(const uv_fs_t &req)
+        : type{req.fs_type},
+          path{req.path},
+          result{static_cast<std::size_t>(req.result)} {
+        switch(type) {
+        case fs_type::STAT:
+        case fs_type::LSTAT:
+        case fs_type::FSTAT:
+            stat = *static_cast<file_info *>(req.ptr);
+            break;
+        case fs_type::READLINK:
+            readlink.data = static_cast<char *>(req.ptr);
+            break;
+        case fs_type::READDIR:
+            dirent.name = static_cast<uv_dir_t *>(req.ptr)->dirents[0].name;
+            dirent.type = static_cast<entry_type>(static_cast<uv_dir_t *>(req.ptr)->dirents[0].type);
+            dirent.eos = !req.result;
+            break;
+        case fs_type::STATFS:
+            statfs = *static_cast<fs_info *>(req.ptr);
+            break;
+        default:
+            // nothing to do here
+            break;
+        }
+    }
+
+    fs_type type;       /*!< Actual event type. */
+    const char *path;   /*!< The path affecting the request. */
+    std::size_t result; /*!< Result value for the specific type. */
+
+    struct {
+        std::unique_ptr<const char[]> data; /*!< A bunch of data read from the given path. */
+    } read;
+
+    struct {
+        const char *data; /*!< The content of a symbolic link. */
+    } readlink;
+
+    file_info stat; /*!< An initialized instance of file_info. */
+    fs_info statfs; /*!< An initialized instance of fs_info. */
+
+    struct {
+        const char *name; /*!< The name of the last entry. */
+        entry_type type;  /*!< The entry type. */
+        bool eos;         /*!< True if there a no more entries to read. */
+    } dirent;
 };
 
 /**
@@ -288,38 +223,20 @@ struct fs_event<details::uvw_fs_type::READDIR> {
 template<typename T>
 class fs_request: public request<T, uv_fs_t> {
 protected:
+    static void fs_request_callback(uv_fs_t *req) {
+        if(auto ptr = request<T, uv_fs_t>::reserve(req); req->result < 0) {
+            ptr->publish(error_event{req->result});
+        } else {
+            ptr->publish(fs_event{*req});
+        }
+    }
+
     template<details::uvw_fs_type e>
     static void fs_generic_callback(uv_fs_t *req) {
         if(auto ptr = request<T, uv_fs_t>::reserve(req); req->result < 0) {
             ptr->publish(error_event{req->result});
         } else {
             ptr->publish(fs_event<e>{req->path});
-        }
-    }
-
-    template<details::uvw_fs_type e>
-    static void fs_result_callback(uv_fs_t *req) {
-        if(auto ptr = request<T, uv_fs_t>::reserve(req); req->result < 0) {
-            ptr->publish(error_event{req->result});
-        } else {
-            ptr->publish(fs_event<e>{req->path, static_cast<std::size_t>(req->result)});
-        }
-    }
-
-    template<details::uvw_fs_type e>
-    static void fs_stat_callback(uv_fs_t *req) {
-        if(auto ptr = request<T, uv_fs_t>::reserve(req); req->result < 0) {
-            ptr->publish(error_event{req->result});
-        } else {
-            ptr->publish(fs_event<e>{req->path, req->statbuf});
-        }
-    }
-
-    static void fs_statfs_callback(uv_fs_t *req) {
-        if(auto ptr = request<T, uv_fs_t>::reserve(req); req->result < 0) {
-            ptr->publish(error_event{req->result});
-        } else {
-            ptr->publish(fs_event<fs_type::STATFS>{req->path, *static_cast<fs_info *>(req->ptr)});
         }
     }
 
@@ -360,7 +277,7 @@ public:
     /**
      * @brief Async [close](http://linux.die.net/man/2/close).
      *
-     * Emit a `fs_event<file_req::fs_type::CLOSE>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      */
     void close();
@@ -374,7 +291,7 @@ public:
     /**
      * @brief Async [open](http://linux.die.net/man/2/open).
      *
-     * Emit a `fs_event<file_req::fs_type::OPEN>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * Available flags are:
@@ -454,7 +371,7 @@ public:
     /**
      * @brief Async [read](http://linux.die.net/man/2/preadv).
      *
-     * Emit a `fs_event<file_req::fs_type::READ>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param offset Offset, as described in the official documentation.
@@ -482,7 +399,7 @@ public:
      * The request takes the ownership of the data and it is in charge of delete
      * them.
      *
-     * Emit a `fs_event<file_req::fs_type::WRITE>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param buf The data to be written.
@@ -497,7 +414,7 @@ public:
      * The request doesn't take the ownership of the data. Be sure that their
      * lifetime overcome the one of the request.
      *
-     * Emit a `fs_event<file_req::fs_type::WRITE>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param buf The data to be written.
@@ -522,7 +439,7 @@ public:
     /**
      * @brief Async [fstat](http://linux.die.net/man/2/fstat).
      *
-     * Emit a `fs_event<file_req::fs_type::FSTAT>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      */
     void stat();
@@ -539,7 +456,7 @@ public:
     /**
      * @brief Async [fsync](http://linux.die.net/man/2/fsync).
      *
-     * Emit a `fs_event<file_req::fs_type::FSYNC>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      */
     void sync();
@@ -553,7 +470,7 @@ public:
     /**
      * @brief Async [fdatasync](http://linux.die.net/man/2/fdatasync).
      *
-     * Emit a `fs_event<file_req::fs_type::FDATASYNC>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      */
     void datasync();
@@ -567,7 +484,7 @@ public:
     /**
      * @brief Async [ftruncate](http://linux.die.net/man/2/ftruncate).
      *
-     * Emit a `fs_event<file_req::fs_type::FTRUNCATE>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param offset Offset, as described in the official documentation.
@@ -584,7 +501,7 @@ public:
     /**
      * @brief Async [sendfile](http://linux.die.net/man/2/sendfile).
      *
-     * Emit a `fs_event<file_req::fs_type::SENDFILE>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param out A valid instance of file_handle.
@@ -609,7 +526,7 @@ public:
     /**
      * @brief Async [fchmod](http://linux.die.net/man/2/fchmod).
      *
-     * Emit a `fs_event<file_req::fs_type::FCHMOD>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param mode Mode, as described in the official documentation.
@@ -626,7 +543,7 @@ public:
     /**
      * @brief Async [futime](http://linux.die.net/man/3/futimes).
      *
-     * Emit a `fs_event<file_req::fs_type::FUTIME>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param atime `std::chrono::duration<double>`, having the same meaning as
@@ -649,7 +566,7 @@ public:
     /**
      * @brief Async [fchown](http://linux.die.net/man/2/fchown).
      *
-     * Emit a `fs_event<file_req::fs_type::FCHOWN>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param uid UID, as described in the official documentation.
@@ -694,9 +611,6 @@ private:
  * for further details.
  */
 class fs_req final: public fs_request<fs_req> {
-    static void fs_readlink_callback(uv_fs_t *req);
-    static void fs_readdir_callback(uv_fs_t *req);
-
 public:
     using copy_file_flags = details::uvw_copy_file_flags;
     using symlink_flags = details::uvw_symlink_flags;
@@ -708,7 +622,7 @@ public:
     /**
      * @brief Async [unlink](http://linux.die.net/man/2/unlink).
      *
-     * Emit a `fs_event<fs_req::fs_type::UNLINK>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -725,7 +639,7 @@ public:
     /**
      * @brief Async [mkdir](http://linux.die.net/man/2/mkdir).
      *
-     * Emit a `fs_event<fs_req::fs_type::MKDIR>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -744,7 +658,7 @@ public:
     /**
      * @brief Async [mktemp](http://linux.die.net/man/3/mkdtemp).
      *
-     * Emit a `fs_event<fs_req::fs_type::MKDTEMP>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param tpl Template, as described in the official documentation.
@@ -765,7 +679,7 @@ public:
     /**
      * @brief Async [mkstemp](https://linux.die.net/man/3/mkstemp).
      *
-     * Emit a `fs_event<fs_req::fs_type::MKSTEMP>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param tpl Template, as described in the official documentation.
@@ -797,7 +711,7 @@ public:
     /**
      * @brief Async [lutime](http://linux.die.net/man/3/lutimes).
      *
-     * Emit a `fs_event<fs_req::fs_type::UTIME>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -822,7 +736,7 @@ public:
     /**
      * @brief Async [rmdir](http://linux.die.net/man/2/rmdir).
      *
-     * Emit a `fs_event<fs_req::fs_type::RMDIR>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -839,7 +753,7 @@ public:
     /**
      * @brief Async [scandir](http://linux.die.net/man/3/scandir).
      *
-     * Emit a `fs_event<fs_req::fs_type::SCANDIR>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -893,7 +807,7 @@ public:
     /**
      * @brief Async [stat](http://linux.die.net/man/2/stat).
      *
-     * Emit a `fs_event<fs_req::fs_type::STAT>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -914,7 +828,7 @@ public:
     /**
      * @brief Async [lstat](http://linux.die.net/man/2/lstat).
      *
-     * Emit a `fs_event<fs_req::fs_type::LSTAT>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -935,7 +849,7 @@ public:
     /**
      * @brief Async [statfs](http://linux.die.net/man/2/statfs).
      *
-     * Emit a `fs_event<fs_req::fs_type::STATFS>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * Any fields in the resulting object that are not supported by the
@@ -962,7 +876,7 @@ public:
     /**
      * @brief Async [rename](http://linux.die.net/man/2/rename).
      *
-     * Emit a `fs_event<fs_req::fs_type::RENAME>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param old Old path, as described in the official documentation.
@@ -981,7 +895,7 @@ public:
     /**
      * @brief Copies a file asynchronously from a path to a new one.
      *
-     * Emit a `fs_event<fs_req::fs_type::UV_FS_COPYFILE>` event when
+     * Emit a `fs_event` event when
      * completed.<br/>
      * Emit an error event in case of errors.
      *
@@ -1033,7 +947,7 @@ public:
     /**
      * @brief Async [access](http://linux.die.net/man/2/access).
      *
-     * Emit a `fs_event<fs_req::fs_type::ACCESS>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -1052,7 +966,7 @@ public:
     /**
      * @brief Async [chmod](http://linux.die.net/man/2/chmod).
      *
-     * Emit a `fs_event<fs_req::fs_type::CHMOD>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -1071,7 +985,7 @@ public:
     /**
      * @brief Async [utime](http://linux.die.net/man/2/utime).
      *
-     * Emit a `fs_event<fs_req::fs_type::UTIME>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -1096,7 +1010,7 @@ public:
     /**
      * @brief Async [link](http://linux.die.net/man/2/link).
      *
-     * Emit a `fs_event<fs_req::fs_type::LINK>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param old Old path, as described in the official documentation.
@@ -1115,7 +1029,7 @@ public:
     /**
      * @brief Async [symlink](http://linux.die.net/man/2/symlink).
      *
-     * Emit a `fs_event<fs_req::fs_type::SYMLINK>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * Available flags are:
@@ -1151,7 +1065,7 @@ public:
     /**
      * @brief Async [readlink](http://linux.die.net/man/2/readlink).
      *
-     * Emit a `fs_event<fs_req::fs_type::READLINK>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -1174,7 +1088,7 @@ public:
     /**
      * @brief Async [realpath](http://linux.die.net/man/3/realpath).
      *
-     * Emit a `fs_event<fs_req::fs_type::REALPATH>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -1195,7 +1109,7 @@ public:
     /**
      * @brief Async [chown](http://linux.die.net/man/2/chown).
      *
-     * Emit a `fs_event<fs_req::fs_type::CHOWN>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -1216,7 +1130,7 @@ public:
     /**
      * @brief Async [lchown](https://linux.die.net/man/2/lchown).
      *
-     * Emit a `fs_event<fs_req::fs_type::LCHOWN>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * @param path Path, as described in the official documentation.
@@ -1237,7 +1151,7 @@ public:
     /**
      * @brief Opens a path asynchronously as a directory stream.
      *
-     * Emit a `fs_event<fs_req::fs_type::OPENDIR>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * The contents of the directory can be iterated over by means of the
@@ -1263,7 +1177,7 @@ public:
     /**
      * @brief Closes asynchronously a directory stream.
      *
-     * Emit a `fs_event<fs_req::fs_type::CLOSEDIR>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * It frees also the memory allocated internally when a path has been opened
@@ -1285,7 +1199,7 @@ public:
      * @brief Iterates asynchronously over a directory stream one entry at a
      * time.
      *
-     * Emit a `fs_event<fs_req::fs_type::READDIR>` event when completed.<br/>
+     * Emit a `fs_event` event when completed.<br/>
      * Emit an error event in case of errors.
      *
      * This function isn't thread safe. Moreover, it doesn't return the `.` and
