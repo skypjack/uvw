@@ -28,6 +28,7 @@ TEST(FsPoll, Functionalities) {
         case uvw::fs_req::fs_type::WRITE:
             req.close();
             break;
+        default:
         };
     });
 
