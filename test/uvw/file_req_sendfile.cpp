@@ -26,6 +26,8 @@ TEST(FileReq, SendFile) {
             srcReq->sendfile(static_cast<uvw::file_handle>(req), 0, 0);
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -42,6 +44,8 @@ TEST(FileReq, SendFile) {
             dstReq->open(dstFilename, flags, 0644);
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 

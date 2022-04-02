@@ -32,6 +32,8 @@ TEST(FsEvent, Functionalities) {
             req.write(std::unique_ptr<char[]>{new char[1]{42}}, 1, 0);
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 

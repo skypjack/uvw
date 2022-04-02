@@ -30,6 +30,8 @@ TEST(FsReq, MkdirAndRmdir) {
             checkFsRmdirEvent = true;
             break;
         default:
+            // nothing to do here
+            break;
         };
     });
 
@@ -77,6 +79,8 @@ TEST(FsReq, MkdtempAndRmdir) {
             checkFsRmdirEvent = true;
             break;
         default:
+            // nothing to do here
+            break;
         };
     });
 
@@ -122,6 +126,8 @@ TEST(FsReq, Stat) {
             checkFsStatEvent = true;
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -134,6 +140,8 @@ TEST(FsReq, Stat) {
             req.close();
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -182,6 +190,8 @@ TEST(FsReq, Lstat) {
             checkFsLstatEvent = true;
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -194,6 +204,8 @@ TEST(FsReq, Lstat) {
             req.close();
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -243,6 +255,8 @@ TEST(FsReq, Rename) {
             checkFsRenameEvent = true;
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -255,6 +269,8 @@ TEST(FsReq, Rename) {
             req.close();
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -301,6 +317,8 @@ TEST(FsReq, Access) {
             checkFsAccessEvent = true;
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -313,6 +331,8 @@ TEST(FsReq, Access) {
             req.close();
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -358,6 +378,8 @@ TEST(FsReq, Chmod) {
             checkFsChmodEvent = true;
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -370,6 +392,8 @@ TEST(FsReq, Chmod) {
             req.close();
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -415,6 +439,8 @@ TEST(FsReq, Utime) {
             checkFsUtimeEvent = true;
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -429,6 +455,8 @@ TEST(FsReq, Utime) {
             req.close();
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -486,6 +514,8 @@ TEST(FsReq, LinkAndUnlink) {
             checkFsUnlinkEvent = true;
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -498,6 +528,8 @@ TEST(FsReq, LinkAndUnlink) {
             req.close();
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -553,6 +585,8 @@ TEST(FsReq, SymlinkAndUnlink) {
             checkFsUnlinkEvent = true;
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -565,6 +599,8 @@ TEST(FsReq, SymlinkAndUnlink) {
             req.close();
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -618,6 +654,8 @@ TEST(FsReq, Readlink) {
             req.readlink(linkname);
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -630,6 +668,8 @@ TEST(FsReq, Readlink) {
             req.close();
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -682,6 +722,8 @@ TEST(FsReq, Realpath) {
             checkFsRealpathEvent = true;
             break;
         default:
+            // nothing to do here
+            break;
         };
     });
 
@@ -694,6 +736,8 @@ TEST(FsReq, Realpath) {
             req.close();
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -748,6 +792,8 @@ TEST(FsReq, Chown) {
             req.chown(filename, uid, gid);
             break;
         default:
+            // nothing to do here
+            break;
         };
     });
 
@@ -760,6 +806,8 @@ TEST(FsReq, Chown) {
             req.close();
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -816,6 +864,8 @@ TEST(FsReq, Lchown) {
             req.lchown(filename, uid, gid);
             break;
         default:
+            // nothing to do here
+            break;
         };
     });
 
@@ -828,6 +878,8 @@ TEST(FsReq, Lchown) {
             req.close();
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
@@ -893,6 +945,8 @@ TEST(FsReq, ReadDir) {
             }
             break;
         default:
+            // nothing to do here
+            break;
         }
     });
 
