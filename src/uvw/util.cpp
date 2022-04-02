@@ -2,7 +2,6 @@
 #    include "util.h"
 #endif
 
-#include <algorithm>
 #include "config.h"
 
 namespace uvw {
@@ -220,9 +219,9 @@ UVW_INLINE std::vector<cpu_info> utilities::cpu() UVW_NOEXCEPT {
     int count;
 
     if(0 == uv_cpu_info(&infos, &count)) {
-        std::for_each(infos, infos + count, [&cpuinfos](const auto &info) {
-            cpuinfos.push_back({info.model, info.speed, info.cpu_times});
-        });
+        for (int next = 0; next < count; ++next) {
+            cpuinfos.push_back({infos[next].model, infos[next].speed, infos[next].cpu_times});
+        }
 
         uv_free_cpu_info(infos, count);
     }
@@ -237,23 +236,23 @@ UVW_INLINE std::vector<interface_address> utilities::interface_addresses() UVW_N
     int count{0};
 
     if(0 == uv_interface_addresses(&ifaces, &count)) {
-        std::for_each(ifaces, ifaces + count, [&interfaces](const auto &iface) {
+        for(int next = 0; next < count; ++next) {
             interface_address iface_addr;
 
-            iface_addr.name = iface.name;
-            std::copy(iface.phys_addr, (iface.phys_addr + 6), iface_addr.physical);
-            iface_addr.internal = iface.is_internal == 0 ? false : true;
+            iface_addr.name = ifaces[next].name;
+            std::copy(ifaces[next].phys_addr, (ifaces[next].phys_addr + 6), iface_addr.physical);
+            iface_addr.internal = ifaces[next].is_internal == 0 ? false : true;
 
-            if(iface.address.address4.sin_family == AF_INET) {
-                iface_addr.address = details::sock_addr(iface.address.address4);
-                iface_addr.netmask = details::sock_addr(iface.netmask.netmask4);
-            } else if(iface.address.address4.sin_family == AF_INET6) {
-                iface_addr.address = details::sock_addr(iface.address.address6);
-                iface_addr.netmask = details::sock_addr(iface.netmask.netmask6);
+            if(ifaces[next].address.address4.sin_family == AF_INET) {
+                iface_addr.address = details::sock_addr(ifaces[next].address.address4);
+                iface_addr.netmask = details::sock_addr(ifaces[next].netmask.netmask4);
+            } else if(ifaces[next].address.address4.sin_family == AF_INET6) {
+                iface_addr.address = details::sock_addr(ifaces[next].address.address6);
+                iface_addr.netmask = details::sock_addr(ifaces[next].netmask.netmask6);
             }
 
             interfaces.push_back(std::move(iface_addr));
-        });
+        }
 
         uv_free_interface_addresses(ifaces, count);
     }
