@@ -29,6 +29,7 @@ TEST(FsReq, MkdirAndRmdir) {
             ASSERT_FALSE(checkFsRmdirEvent);
             checkFsRmdirEvent = true;
             break;
+        default:
         };
     });
 
@@ -75,6 +76,7 @@ TEST(FsReq, MkdtempAndRmdir) {
             ASSERT_FALSE(checkFsRmdirEvent);
             checkFsRmdirEvent = true;
             break;
+        default:
         };
     });
 
@@ -119,6 +121,7 @@ TEST(FsReq, Stat) {
             ASSERT_FALSE(checkFsStatEvent);
             checkFsStatEvent = true;
             break;
+        default:
         }
     });
 
@@ -130,6 +133,7 @@ TEST(FsReq, Stat) {
         case uvw::fs_req::fs_type::OPEN:
             req.close();
             break;
+        default:
         }
     });
 
@@ -177,6 +181,7 @@ TEST(FsReq, Lstat) {
             ASSERT_FALSE(checkFsLstatEvent);
             checkFsLstatEvent = true;
             break;
+        default:
         }
     });
 
@@ -188,6 +193,7 @@ TEST(FsReq, Lstat) {
         case uvw::fs_req::fs_type::OPEN:
             req.close();
             break;
+        default:
         }
     });
 
@@ -236,6 +242,7 @@ TEST(FsReq, Rename) {
             ASSERT_FALSE(checkFsRenameEvent);
             checkFsRenameEvent = true;
             break;
+        default:
         }
     });
 
@@ -247,6 +254,7 @@ TEST(FsReq, Rename) {
         case uvw::fs_req::fs_type::OPEN:
             req.close();
             break;
+        default:
         }
     });
 
@@ -292,6 +300,7 @@ TEST(FsReq, Access) {
             ASSERT_FALSE(checkFsAccessEvent);
             checkFsAccessEvent = true;
             break;
+        default:
         }
     });
 
@@ -303,6 +312,7 @@ TEST(FsReq, Access) {
         case uvw::fs_req::fs_type::OPEN:
             req.close();
             break;
+        default:
         }
     });
 
@@ -347,6 +357,7 @@ TEST(FsReq, Chmod) {
             ASSERT_FALSE(checkFsChmodEvent);
             checkFsChmodEvent = true;
             break;
+        default:
         }
     });
 
@@ -358,6 +369,7 @@ TEST(FsReq, Chmod) {
         case uvw::fs_req::fs_type::OPEN:
             req.close();
             break;
+        default:
         }
     });
 
@@ -402,6 +414,7 @@ TEST(FsReq, Utime) {
             ASSERT_FALSE(checkFsUtimeEvent);
             checkFsUtimeEvent = true;
             break;
+        default:
         }
     });
 
@@ -415,6 +428,7 @@ TEST(FsReq, Utime) {
         case uvw::fs_req::fs_type::OPEN:
             req.close();
             break;
+        default:
         }
     });
 
@@ -471,6 +485,7 @@ TEST(FsReq, LinkAndUnlink) {
             ASSERT_FALSE(checkFsUnlinkEvent);
             checkFsUnlinkEvent = true;
             break;
+        default:
         }
     });
 
@@ -482,6 +497,7 @@ TEST(FsReq, LinkAndUnlink) {
         case uvw::fs_req::fs_type::OPEN:
             req.close();
             break;
+        default:
         }
     });
 
@@ -536,6 +552,7 @@ TEST(FsReq, SymlinkAndUnlink) {
             ASSERT_FALSE(checkFsUnlinkEvent);
             checkFsUnlinkEvent = true;
             break;
+        default:
         }
     });
 
@@ -547,6 +564,7 @@ TEST(FsReq, SymlinkAndUnlink) {
         case uvw::fs_req::fs_type::OPEN:
             req.close();
             break;
+        default:
         }
     });
 
@@ -599,6 +617,7 @@ TEST(FsReq, Readlink) {
         case uvw::fs_req::fs_type::SYMLINK:
             req.readlink(linkname);
             break;
+        default:
         }
     });
 
@@ -610,6 +629,7 @@ TEST(FsReq, Readlink) {
         case uvw::fs_req::fs_type::OPEN:
             req.close();
             break;
+        default:
         }
     });
 
@@ -661,6 +681,7 @@ TEST(FsReq, Realpath) {
             ASSERT_NE(event.path, nullptr);
             checkFsRealpathEvent = true;
             break;
+        default:
         };
     });
 
@@ -672,6 +693,7 @@ TEST(FsReq, Realpath) {
         case uvw::fs_req::fs_type::OPEN:
             req.close();
             break;
+        default:
         }
     });
 
@@ -725,6 +747,7 @@ TEST(FsReq, Chown) {
             auto gid = static_cast<uvw::uid_type>(event.stat.st_gid);
             req.chown(filename, uid, gid);
             break;
+        default:
         };
     });
 
@@ -736,6 +759,7 @@ TEST(FsReq, Chown) {
         case uvw::fs_req::fs_type::OPEN:
             req.close();
             break;
+        default:
         }
     });
 
@@ -791,6 +815,7 @@ TEST(FsReq, Lchown) {
             auto gid = static_cast<uvw::uid_type>(event.stat.st_gid);
             req.lchown(filename, uid, gid);
             break;
+        default:
         };
     });
 
@@ -802,6 +827,7 @@ TEST(FsReq, Lchown) {
         case uvw::fs_req::fs_type::OPEN:
             req.close();
             break;
+        default:
         }
     });
 
@@ -866,6 +892,7 @@ TEST(FsReq, ReadDir) {
                 req.closedir();
             }
             break;
+        default:
         }
     });
 

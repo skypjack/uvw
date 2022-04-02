@@ -72,6 +72,7 @@ TEST(FileReq, OpenAndClose) {
             checkFileOpenEvent = true;
             req.close();
             break;
+        default:
         };
     });
 
@@ -124,6 +125,7 @@ TEST(FileReq, RWChecked) {
             checkFileWriteEvent = true;
             req.read(0, 1);
             break;
+        default:
         };
     });
 
@@ -164,6 +166,7 @@ TEST(FileReq, RWUnchecked) {
             checkFileWriteEvent = true;
             req.read(0, 1);
             break;
+        default:
         };
     });
 
@@ -220,6 +223,7 @@ TEST(FileReq, Stat) {
             checkFileStatEvent = true;
             req.close();
             break;
+        default:
         };
     });
 
@@ -268,6 +272,7 @@ TEST(FileReq, Sync) {
         case uvw::fs_req::fs_type::OPEN:
             req.sync();
             break;
+        default:
         };
     });
 
@@ -313,6 +318,7 @@ TEST(FileReq, Datasync) {
         case uvw::fs_req::fs_type::OPEN:
             req.datasync();
             break;
+        default:
         };
     });
 
@@ -358,6 +364,7 @@ TEST(FileReq, Truncate) {
         case uvw::fs_req::fs_type::OPEN:
             req.truncate(0);
             break;
+        default:
         };
     });
 
@@ -403,6 +410,7 @@ TEST(FileReq, Chmod) {
         case uvw::fs_req::fs_type::OPEN:
             req.chmod(0644);
             break;
+        default:
         };
     });
 
@@ -450,6 +458,7 @@ TEST(FileReq, Futime) {
         case uvw::fs_req::fs_type::OPEN:
             req.futime(value, value);
             break;
+        default:
         };
     });
 
@@ -504,6 +513,7 @@ TEST(FileReq, Chown) {
         case uvw::fs_req::fs_type::OPEN:
             req.stat();
             break;
+        default:
         };
     });
 

@@ -25,6 +25,7 @@ TEST(FileReq, SendFile) {
         case uvw::fs_req::fs_type::OPEN:
             srcReq->sendfile(static_cast<uvw::file_handle>(req), 0, 0);
             break;
+        default:
         }
     });
 
@@ -40,6 +41,7 @@ TEST(FileReq, SendFile) {
             auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::WRONLY | uvw::file_req::file_open_flags::TRUNC;
             dstReq->open(dstFilename, flags, 0644);
             break;
+        default:
         }
     });
 
