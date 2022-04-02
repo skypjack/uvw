@@ -231,15 +231,6 @@ protected:
         }
     }
 
-    template<details::uvw_fs_type e>
-    static void fs_generic_callback(uv_fs_t *req) {
-        if(auto ptr = request<T, uv_fs_t>::reserve(req); req->result < 0) {
-            ptr->publish(error_event{req->result});
-        } else {
-            ptr->publish(fs_event<e>{req->path});
-        }
-    }
-
 public:
     using time = std::chrono::duration<double>;
     using fs_type = details::uvw_fs_type;
