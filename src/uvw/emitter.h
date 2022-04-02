@@ -1,7 +1,6 @@
 #ifndef UVW_EMITTER_INCLUDE_H
 #define UVW_EMITTER_INCLUDE_H
 
-#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 #include <functional>
@@ -95,15 +94,29 @@ class emitter {
         using connection = typename listener_list::iterator;
 
         bool empty() const UVW_NOEXCEPT override {
-            auto pred = [](auto &&elem) { return elem.first; };
-            return std::all_of(once_list.cbegin(), once_list.cend(), pred) && std::all_of(on_list.cbegin(), on_list.cend(), pred);
+            for(auto &&curr: once_list) {
+                if(!curr.first) {
+                    return false;
+                }
+            }
+
+            for(auto &&curr: on_list) {
+                if(!curr.first) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         void clear() UVW_NOEXCEPT override {
             if(publishing) {
-                auto func = [](auto &&elem) { elem.first = true; };
-                std::for_each(once_list.begin(), once_list.end(), func);
-                std::for_each(on_list.begin(), on_list.end(), func);
+                for(auto &&curr: once_list) {
+                    curr.first = true;
+                }
+
+                for(auto &&curr: on_list) {
+                    curr.first = true;
+                }
             } else {
                 once_list.clear();
                 on_list.clear();
@@ -132,14 +145,19 @@ class emitter {
             listener_list curr;
             once_list.swap(curr);
 
-            auto func = [&event, &ref](auto &&elem) {
-                return elem.first ? void() : elem.second(event, ref);
-            };
-
             publishing = true;
 
-            std::for_each(on_list.rbegin(), on_list.rend(), func);
-            std::for_each(curr.rbegin(), curr.rend(), func);
+            for(auto first = on_list.rbegin(), last = on_list.rend(); first != last; ++first) {
+                if(!first->first) {
+                    first->second(event, ref);
+                }
+            }
+
+            for(auto first = curr.rbegin(), last = curr.rend(); first != last; ++first) {
+                if(!first->first) {
+                    first->second(event, ref);
+                }
+            }
 
             publishing = false;
 
@@ -261,7 +279,9 @@ public:
      * @brief Disconnects all the listeners.
      */
     void clear() UVW_NOEXCEPT {
-        std::for_each(handlers.begin(), handlers.end(), [](auto &&hdlr) { if(hdlr.second) { hdlr.second->clear(); } });
+        for(auto &&curr: handlers) {
+            curr.second->clear();
+        }
     }
 
     /**
@@ -281,7 +301,13 @@ public:
      * false otherwise.
      */
     bool empty() const UVW_NOEXCEPT {
-        return std::all_of(handlers.cbegin(), handlers.cend(), [](auto &&hdlr) { return !hdlr.second || hdlr.second->empty(); });
+        for(auto &&curr: handlers) {
+            if(!curr.second->empty()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 private:
