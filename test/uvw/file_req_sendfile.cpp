@@ -40,8 +40,7 @@ TEST(FileReq, SendFile) {
             req.close();
             break;
         case uvw::fs_req::fs_type::OPEN:
-            auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::WRONLY | uvw::file_req::file_open_flags::TRUNC;
-            dstReq->open(dstFilename, flags, 0644);
+            dstReq->open(dstFilename, uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::WRONLY | uvw::file_req::file_open_flags::TRUNC, 0644);
             break;
         default:
             // nothing to do here
