@@ -62,7 +62,7 @@ function(ADD_UVW_TEST TEST_NAME TEST_SOURCE)
         ${TEST_NAME}
         PRIVATE
             $<$<NOT:$<PLATFORM_ID:Windows>>:-Wall>
-            $<$<PLATFORM_ID:Windows>:/EHsc -ftime-trace>
+            $<$<PLATFORM_ID:Windows>:/EHsc>
     )
 
     target_compile_definitions(${TEST_NAME} PRIVATE $<$<NOT:$<TARGET_EXISTS:uvw::uvw>>:UVW_AS_LIB>)
