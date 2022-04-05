@@ -27,7 +27,7 @@ TEST(ErrorEvent, Functionalities) {
 TEST(Emitter, Functionalities) {
     TestEmitter emitter{};
 
-    emitter.on<uvw::error_event>([](const uvw::error_event &, TestEmitter &) {});
+    emitter.on<uvw::error_event>([](const auto &, auto &) {});
 
     ASSERT_TRUE(emitter.has<uvw::error_event>());
     ASSERT_FALSE(emitter.has<FakeEvent>());
