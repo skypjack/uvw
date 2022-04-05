@@ -86,10 +86,9 @@ public:
     using listener_t = std::function<void(U &, T &)>;
 
 private:
-
     template<typename U>
     auto &handler() const UVW_NOEXCEPT {
-        static_assert((std::is_same_v<U, E> || ...), "U is not a supported event type for this emitter");
+        static_assert(std::is_same_v<U, error_event> || (std::is_same_v<U, E> || ...), "U is not a supported event type for this emitter");
         return std::get<listener_t<U>>(handlers);
     }
 
@@ -102,7 +101,7 @@ private:
 protected:
     template<typename U>
     void publish(U event) {
-        if (auto& listener = handler<U>(); listener) {
+        if(auto &listener = handler<U>(); listener) {
             listener(event, *static_cast<T *>(this));
         }
     }
@@ -139,6 +138,7 @@ public:
      * @brief Disconnects all listeners.
      */
     void reset() UVW_NOEXCEPT {
+        reset<error_event>();
         (reset<E>(), ...);
     }
 
@@ -149,7 +149,7 @@ public:
      */
     template<typename U>
     bool has() const UVW_NOEXCEPT {
-        if constexpr((std::is_same_v<U, E> || ...)) {
+        if constexpr(std::is_same_v<U, error_event> || (std::is_same_v<U, E> || ...)) {
             return static_cast<bool>(handler<U>());
         } else {
             return false;
