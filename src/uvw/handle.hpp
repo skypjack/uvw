@@ -19,11 +19,11 @@ struct close_event {};
  *
  * Base type for all `uvw` handle types.
  */
-template<typename T, typename U>
-class handle: public resource<T, U> {
+template<typename T, typename U, typename... E>
+class handle: public resource<T, U, close_event, E...> {
 protected:
     static void close_callback(uv_handle_t *hndl) {
-        handle<T, U> &ref = *(static_cast<T *>(hndl->data));
+        handle<T, U, E...> &ref = *(static_cast<T *>(hndl->data));
         [[maybe_unused]] auto ptr = ref.shared_from_this();
         ref.reset();
         ref.publish(close_event{});
@@ -38,7 +38,7 @@ protected:
     }
 
 public:
-    using resource<T, U>::resource;
+    using resource<T, U, close_event, E...>::resource;
 
     /**
      * @brief Gets the category of the handle.
@@ -112,7 +112,7 @@ public:
      */
     void close() UVW_NOEXCEPT {
         if(!closing()) {
-            uv_close(as_uv_handle(), &handle<T, U>::close_callback);
+            uv_close(as_uv_handle(), &handle<T, U, E...>::close_callback);
         }
     }
 

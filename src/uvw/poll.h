@@ -56,7 +56,7 @@ struct poll_event {
  * [documentation](http://docs.libuv.org/en/v1.x/poll.html)
  * for further details.
  */
-class poll_handle final: public handle<poll_handle, uv_poll_t> {
+class poll_handle final: public handle<poll_handle, uv_poll_t, details::uvw_poll_event> {
     static void start_callback(uv_poll_t *hndl, int status, int events);
 
 public:

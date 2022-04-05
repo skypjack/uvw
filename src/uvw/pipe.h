@@ -35,7 +35,7 @@ enum class uvw_chmod_flags : std::underlying_type_t<uv_poll_event> {
  * * An optional boolean value that indicates if this pipe will be used for
  * handle passing between processes.
  */
-class pipe_handle final: public stream_handle<pipe_handle, uv_pipe_t> {
+class pipe_handle final: public stream_handle<pipe_handle, uv_pipe_t, connect_event, listen_event, shutdown_event, end_event, data_event> {
 public:
     using chmod_flags = details::uvw_chmod_flags;
 

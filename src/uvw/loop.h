@@ -58,7 +58,7 @@ enum class uvw_run_mode : std::underlying_type_t<uv_run_mode> {
 class loop final: public emitter<loop>, public std::enable_shared_from_this<loop> {
     using deleter = void (*)(uv_loop_t *);
 
-    template<typename, typename>
+    template<typename, typename, typename...>
     friend class resource;
 
     class uv_token {

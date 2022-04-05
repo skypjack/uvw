@@ -28,7 +28,7 @@ struct fs_poll_event {
  *
  * To create a `fs_poll_handle` through a `loop`, no arguments are required.
  */
-class fs_poll_handle final: public handle<fs_poll_handle, uv_fs_poll_t> {
+class fs_poll_handle final: public handle<fs_poll_handle, uv_fs_poll_t, fs_poll_event> {
     static void start_callback(uv_fs_poll_t *hndl, int status, const uv_stat_t *prev, const uv_stat_t *curr);
 
 public:

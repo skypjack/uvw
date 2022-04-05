@@ -21,7 +21,7 @@ UVW_INLINE void details::send_req::udp_send_callback(uv_udp_send_t *req, int sta
 }
 
 UVW_INLINE details::send_req::send_req(loop::token token, std::shared_ptr<loop> parent, std::unique_ptr<char[], deleter> dt, unsigned int len)
-    : request<send_req, uv_udp_send_t>{token, std::move(parent)},
+    : request{token, std::move(parent)},
       data{std::move(dt)},
       buf{uv_buf_init(data.get(), len)} {}
 
