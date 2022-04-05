@@ -39,7 +39,7 @@ struct data_event {
 
 namespace details {
 
-class connect_req final: public request<connect_req, uv_connect_t> {
+class connect_req final: public request<connect_req, uv_connect_t, connect_event> {
     static void connect_callback(uv_connect_t *req, int status);
 
 public:
@@ -59,7 +59,7 @@ public:
     }
 };
 
-class shutdown_req final: public request<shutdown_req, uv_shutdown_t> {
+class shutdown_req final: public request<shutdown_req, uv_shutdown_t, shutdown_event> {
     static void shoutdown_callback(uv_shutdown_t *req, int status);
 
 public:
@@ -69,9 +69,9 @@ public:
 };
 
 template<typename Deleter>
-class write_req final: public request<write_req<Deleter>, uv_write_t> {
+class write_req final: public request<write_req<Deleter>, uv_write_t, write_event> {
     static void write_callback(uv_write_t *req, int status) {
-        if(auto ptr = request<write_req<Deleter>, uv_write_t>::reserve(req); status) {
+        if(auto ptr = request<write_req<Deleter>, uv_write_t, write_event>::reserve(req); status) {
             ptr->publish(error_event{status});
         } else {
             ptr->publish(write_event{});
@@ -80,7 +80,7 @@ class write_req final: public request<write_req<Deleter>, uv_write_t> {
 
 public:
     write_req(loop::token token, std::shared_ptr<loop> parent, std::unique_ptr<char[], Deleter> dt, unsigned int len)
-        : request<write_req<Deleter>, uv_write_t>{token, std::move(parent)},
+        : request<write_req<Deleter>, uv_write_t, write_event>{token, std::move(parent)},
           data{std::move(dt)},
           buf{uv_buf_init(data.get(), len)} {}
 
@@ -110,9 +110,9 @@ private:
  * The stream handle is an intermediate type, `uvw` provides three stream
  * implementations: tcp, pipe and tty handles.
  */
-template<typename T, typename U>
-class stream_handle: public handle<T, U> {
-    template<typename, typename>
+template<typename T, typename U, typename... E>
+class stream_handle: public handle<T, U, write_event, E...> {
+    template<typename, typename, typename...>
     friend class stream_handle;
 
     static constexpr unsigned int DEFAULT_BACKLOG = 128;
@@ -157,9 +157,9 @@ class stream_handle: public handle<T, U> {
 public:
 #ifdef _MSC_VER
     stream_handle(loop::token token, std::shared_ptr<loop> ref)
-        : handle<T, U>{token, std::move(ref)} {}
+        : handle<T, U, write_event, E...>{token, std::move(ref)} {}
 #else
-    using handle<T, U>::handle;
+    using handle<T, U, write_event, E...>::handle;
 #endif
 
     /**

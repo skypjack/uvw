@@ -46,7 +46,7 @@ enum class uvw_membership : std::underlying_type_t<uv_membership> {
     JOIN_GROUP = UV_JOIN_GROUP
 };
 
-class send_req final: public request<send_req, uv_udp_send_t> {
+class send_req final: public request<send_req, uv_udp_send_t, send_event> {
     static void udp_send_callback(uv_udp_send_t *req, int status);
 
 public:
@@ -79,7 +79,7 @@ private:
  * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_init_ex)
  * for further details.
  */
-class udp_handle final: public handle<udp_handle, uv_udp_t> {
+class udp_handle final: public handle<udp_handle, uv_udp_t, send_event, udp_data_event> {
     static void recv_callback(uv_udp_t *hndl, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags);
 
 public:

@@ -78,58 +78,37 @@ private:
  * Almost everything in `uvw` is an event emitter.<br/>
  * This is the base class from which resources and loops inherit.
  */
-template<typename T>
+template<typename T, typename... E>
 class emitter {
-    struct base_handler {
-        virtual ~base_handler() UVW_NOEXCEPT = default;
-        virtual bool has() const UVW_NOEXCEPT = 0;
-        virtual void reset() UVW_NOEXCEPT = 0;
-    };
+public:
+    template<typename U>
+    using listener_t = std::function<void(U &, T &)>;
 
-    template<typename E>
-    struct event_handler final: base_handler {
-        bool has() const UVW_NOEXCEPT override {
-            return static_cast<bool>(listener);
-        }
+private:
 
-        void reset() UVW_NOEXCEPT override {
-            listener = nullptr;
-        }
+    template<typename U>
+    auto &handler() const UVW_NOEXCEPT {
+        static_assert((std::is_same_v<U, E> || ...), "U is not a supported event type for this emitter");
+        return std::get<listener_t<U>>(handlers);
+    }
 
-        void on(std::function<void(E &, T &)> func) {
-            listener = std::move(func);
-        }
-
-        void publish(E event, T &ref) {
-            if(listener) {
-                listener(event, ref);
-            }
-        }
-
-    private:
-        std::function<void(E &, T &)> listener;
-    };
-
-    template<typename E>
-    event_handler<E> &handler() UVW_NOEXCEPT {
-        const auto id = type<E>();
-
-        if(!handlers.count(id)) {
-            handlers[id] = std::make_unique<event_handler<E>>();
-        }
-
-        return static_cast<event_handler<E> &>(*handlers.at(id));
+    template<typename U>
+    auto &handler() UVW_NOEXCEPT {
+        static_assert(std::is_same_v<U, error_event> || (std::is_same_v<U, E> || ...), "U is not a supported event type for this emitter");
+        return std::get<listener_t<U>>(handlers);
     }
 
 protected:
-    template<typename E>
-    void publish(E event) {
-        handler<E>().publish(std::move(event), *static_cast<T *>(this));
+    template<typename U>
+    void publish(U event) {
+        if (auto& listener = handler<U>(); listener) {
+            listener(event, *static_cast<T *>(this));
+        }
     }
 
 public:
     virtual ~emitter() UVW_NOEXCEPT {
-        static_assert(std::is_base_of_v<emitter<T>, T>);
+        static_assert(std::is_base_of_v<emitter<T, E...>, T>);
     }
 
     /**
@@ -142,26 +121,24 @@ public:
      *
      * @param f A valid listener to be registered.
      */
-    template<typename E>
-    void on(std::function<void(E &, T &)> f) {
-        return handler<E>().on(std::move(f));
+    template<typename U>
+    void on(listener_t<U> f) {
+        handler<U>() = std::move(f);
     }
 
     /**
      * @brief Disconnects the listener for the given event type.
      */
-    template<typename E>
+    template<typename U>
     void reset() UVW_NOEXCEPT {
-        handler<E>().reset();
+        handler<U>() = nullptr;
     }
 
     /**
      * @brief Disconnects all listeners.
      */
     void reset() UVW_NOEXCEPT {
-        for(auto &&curr: handlers) {
-            curr.second->reset();
-        }
+        (reset<E>(), ...);
     }
 
     /**
@@ -169,14 +146,17 @@ public:
      * @return True if there is a listener registered for the specific event,
      * false otherwise.
      */
-    template<typename E>
+    template<typename U>
     bool has() const UVW_NOEXCEPT {
-        const auto id = type<E>();
-        return (handlers.count(id) && static_cast<event_handler<E> &>(*handlers.at(id)).has());
+        if constexpr((std::is_same_v<U, E> || ...)) {
+            return static_cast<bool>(handler<U>());
+        } else {
+            return false;
+        }
     }
 
 private:
-    std::unordered_map<std::uint32_t, std::unique_ptr<base_handler>> handlers{};
+    std::tuple<listener_t<error_event>, listener_t<E>...> handlers{};
 };
 
 } // namespace uvw

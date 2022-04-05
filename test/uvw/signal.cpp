@@ -7,7 +7,6 @@ TEST(Signal, Start) {
     auto handle = loop->resource<uvw::signal_handle>();
 
     handle->on<uvw::error_event>([](auto &&...) { FAIL(); });
-    handle->on<uvw::check_event>([](auto &&...) { FAIL(); });
 
     handle->start(2);
 
@@ -27,7 +26,6 @@ TEST(Signal, OneShot) {
     auto handle = loop->resource<uvw::signal_handle>();
 
     handle->on<uvw::error_event>([](auto &&...) { FAIL(); });
-    handle->on<uvw::check_event>([](auto &&...) { FAIL(); });
 
     handle->one_shot(2);
 

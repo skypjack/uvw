@@ -18,7 +18,7 @@ struct prepare_event {};
  *
  * To create a `prepare_handle` through a `loop`, no arguments are required.
  */
-class prepare_handle final: public handle<prepare_handle, uv_prepare_t> {
+class prepare_handle final: public handle<prepare_handle, uv_prepare_t, prepare_event> {
     static void start_callback(uv_prepare_t *hndl);
 
 public:

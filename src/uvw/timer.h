@@ -18,7 +18,7 @@ struct timer_event {};
  *
  * To create a `timer_handle` through a `loop`, no arguments are required.
  */
-class timer_handle final: public handle<timer_handle, uv_timer_t> {
+class timer_handle final: public handle<timer_handle, uv_timer_t, timer_event> {
     static void start_callback(uv_timer_t *hndl);
 
 public:

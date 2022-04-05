@@ -221,10 +221,10 @@ struct fs_event {
  * Not directly instantiable, should not be used by the users of the library.
  */
 template<typename T>
-class fs_request: public request<T, uv_fs_t> {
+class fs_request: public request<T, uv_fs_t, fs_event> {
 protected:
     static void fs_request_callback(uv_fs_t *req) {
-        if(auto ptr = request<T, uv_fs_t>::reserve(req); req->result < 0) {
+        if(auto ptr = request<T, uv_fs_t, fs_event>::reserve(req); req->result < 0) {
             ptr->publish(error_event{req->result});
         } else {
             ptr->publish(fs_event{*req});
@@ -236,7 +236,7 @@ public:
     using fs_type = details::uvw_fs_type;
     using entry_type = details::uvw_dirent_type_t;
 
-    using request<T, uv_fs_t>::request;
+    using request<T, uv_fs_t, fs_event>::request;
 };
 
 /**

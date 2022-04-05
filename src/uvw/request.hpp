@@ -15,8 +15,8 @@ namespace uvw {
  *
  * Base type for all `uvw` request types.
  */
-template<typename T, typename U>
-class request: public resource<T, U> {
+template<typename T, typename U, typename... E>
+class request: public resource<T, U, E...> {
 protected:
     static auto reserve(U *req) {
         auto ptr = static_cast<T *>(req->data)->shared_from_this();
@@ -25,7 +25,7 @@ protected:
     }
 
 public:
-    using resource<T, U>::resource;
+    using resource<T, U, E...>::resource;
 
     /**
      * @brief Cancels a pending request.

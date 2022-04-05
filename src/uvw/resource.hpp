@@ -14,8 +14,8 @@ namespace uvw {
  *
  * This is the base class for handles and requests.
  */
-template<typename T, typename U>
-class resource: public uv_type<U>, public emitter<T>, public std::enable_shared_from_this<T> {
+template<typename T, typename U, typename... E>
+class resource: public uv_type<U>, public emitter<T, E...>, public std::enable_shared_from_this<T> {
 protected:
     int leak_if(int err) UVW_NOEXCEPT {
         if(err == 0) {

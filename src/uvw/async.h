@@ -18,7 +18,7 @@ struct async_event {};
  *
  * To create an `async_handle` through a `loop`, no arguments are required.
  */
-class async_handle final: public handle<async_handle, uv_async_t> {
+class async_handle final: public handle<async_handle, uv_async_t, async_event> {
     static void send_callback(uv_async_t *hndl);
 
 public:

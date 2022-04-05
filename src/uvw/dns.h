@@ -55,7 +55,7 @@ struct name_info_event {
  *
  * To create a `get_addr_info_req` through a `loop`, no arguments are required.
  */
-class get_addr_info_req final: public request<get_addr_info_req, uv_getaddrinfo_t> {
+class get_addr_info_req final: public request<get_addr_info_req, uv_getaddrinfo_t, addr_info_event> {
     static void addr_info_callback(uv_getaddrinfo_t *req, int status, addrinfo *res);
     void node_addr_info(const char *node, const char *service, addrinfo *hints = nullptr);
     auto node_addr_info_sync(const char *node, const char *service, addrinfo *hints = nullptr);
@@ -139,7 +139,7 @@ public:
  *
  * To create a `get_name_info_req` through a `loop`, no arguments are required.
  */
-class get_name_info_req final: public request<get_name_info_req, uv_getnameinfo_t> {
+class get_name_info_req final: public request<get_name_info_req, uv_getnameinfo_t, name_info_event> {
     static void name_info_callback(uv_getnameinfo_t *req, int status, const char *hostname, const char *service);
 
 public:

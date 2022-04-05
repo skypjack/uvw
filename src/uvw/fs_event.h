@@ -64,7 +64,7 @@ struct fs_event_event {
  * [documentation](http://docs.libuv.org/en/v1.x/fs_event.html)
  * for further details.
  */
-class fs_event_handle final: public handle<fs_event_handle, uv_fs_event_t> {
+class fs_event_handle final: public handle<fs_event_handle, uv_fs_event_t, fs_event_event> {
     static void start_callback(uv_fs_event_t *hndl, const char *filename, int events, int status);
 
 public:

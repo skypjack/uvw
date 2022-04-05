@@ -26,7 +26,7 @@ struct idle_event {};
  *
  * To create an `idle_handle` through a `loop`, no arguments are required.
  */
-class idle_handle final: public handle<idle_handle, uv_idle_t> {
+class idle_handle final: public handle<idle_handle, uv_idle_t, idle_event> {
     static void start_callback(uv_idle_t *hndl);
 
 public:

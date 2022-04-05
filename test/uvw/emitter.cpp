@@ -4,7 +4,7 @@
 
 struct FakeEvent {};
 
-struct TestEmitter: uvw::emitter<TestEmitter> {
+struct TestEmitter: uvw::emitter<TestEmitter, FakeEvent> {
     void emit() {
         publish(FakeEvent{});
     }
@@ -27,7 +27,7 @@ TEST(ErrorEvent, Functionalities) {
 TEST(Emitter, Functionalities) {
     TestEmitter emitter{};
 
-    emitter.on<uvw::error_event>([](const auto &, auto &) {});
+    emitter.on<uvw::error_event>([](const uvw::error_event &, TestEmitter &) {});
 
     ASSERT_TRUE(emitter.has<uvw::error_event>());
     ASSERT_FALSE(emitter.has<FakeEvent>());

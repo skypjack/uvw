@@ -18,7 +18,7 @@ struct check_event {};
  *
  * To create a `check_handle` through a `loop`, no arguments are required.
  */
-class check_handle final: public handle<check_handle, uv_check_t> {
+class check_handle final: public handle<check_handle, uv_check_t, check_event> {
     static void start_callback(uv_check_t *hndl);
 
 public:

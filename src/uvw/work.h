@@ -26,7 +26,7 @@ struct work_event {};
  * [documentation](http://docs.libuv.org/en/v1.x/threadpool.html)
  * for further details.
  */
-class work_req final: public request<work_req, uv_work_t> {
+class work_req final: public request<work_req, uv_work_t, work_event> {
     static void work_callback(uv_work_t *req);
     static void after_work_callback(uv_work_t *req, int status);
 

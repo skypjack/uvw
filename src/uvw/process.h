@@ -55,7 +55,7 @@ struct exit_event {
  * Process handles will spawn a new process and allow the user to control it and
  * establish communication channels with it using streams.
  */
-class process_handle final: public handle<process_handle, uv_process_t> {
+class process_handle final: public handle<process_handle, uv_process_t, exit_event> {
     static void exit_callback(uv_process_t *hndl, int64_t exit_status, int term_signal);
 
 public:
@@ -175,8 +175,8 @@ public:
      * @param flags A valid set of flags.
      * @return A reference to this process handle.
      */
-    template<typename T, typename U>
-    process_handle &stdio(stream_handle<T, U> &stream, stdio_flags flags) {
+    template<typename T, typename U, typename... E>
+    process_handle &stdio(stream_handle<T, U, E...> &stream, stdio_flags flags) {
         uv_stdio_container_t container;
         container.flags = static_cast<uv_stdio_flags>(flags);
         container.data.stream = reinterpret_cast<uv_stream_t *>(stream.raw());

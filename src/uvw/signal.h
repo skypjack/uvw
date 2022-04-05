@@ -28,7 +28,7 @@ struct signal_event {
  * [documentation](http://docs.libuv.org/en/v1.x/signal.html)
  * for further details.
  */
-class signal_handle final: public handle<signal_handle, uv_signal_t> {
+class signal_handle final: public handle<signal_handle, uv_signal_t, signal_event> {
     static void start_callback(uv_signal_t *hndl, int signum);
 
 public:
