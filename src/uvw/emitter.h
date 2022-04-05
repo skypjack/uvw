@@ -87,14 +87,12 @@ public:
 
 private:
     template<typename U>
-    auto &handler() const UVW_NOEXCEPT {
-        static_assert(std::is_same_v<U, error_event> || (std::is_same_v<U, E> || ...), "U is not a supported event type for this emitter");
+    const auto &handler() const UVW_NOEXCEPT {
         return std::get<listener_t<U>>(handlers);
     }
 
     template<typename U>
     auto &handler() UVW_NOEXCEPT {
-        static_assert(std::is_same_v<U, error_event> || (std::is_same_v<U, E> || ...), "U is not a supported event type for this emitter");
         return std::get<listener_t<U>>(handlers);
     }
 
@@ -149,11 +147,7 @@ public:
      */
     template<typename U>
     bool has() const UVW_NOEXCEPT {
-        if constexpr(std::is_same_v<U, error_event> || (std::is_same_v<U, E> || ...)) {
-            return static_cast<bool>(handler<U>());
-        } else {
-            return false;
-        }
+        return static_cast<bool>(handler<U>());
     }
 
 private:
