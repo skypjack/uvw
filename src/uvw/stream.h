@@ -111,7 +111,9 @@ private:
  * implementations: tcp, pipe and tty handles.
  */
 template<typename T, typename U, typename... E>
-class stream_handle: public handle<T, U, write_event, E...> {
+class stream_handle: public handle<T, U, listen_event, end_event, shutdown_event, data_event, write_event, E...> {
+    using base = handle<T, U, listen_event, end_event, shutdown_event, data_event, write_event, E...>;
+
     template<typename, typename, typename...>
     friend class stream_handle;
 
@@ -157,9 +159,9 @@ class stream_handle: public handle<T, U, write_event, E...> {
 public:
 #ifdef _MSC_VER
     stream_handle(loop::token token, std::shared_ptr<loop> ref)
-        : handle<T, U, write_event, E...>{token, std::move(ref)} {}
+        : base{token, std::move(ref)} {}
 #else
-    using handle<T, U, write_event, E...>::handle;
+    using base::base;
 #endif
 
     /**
