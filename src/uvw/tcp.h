@@ -40,7 +40,7 @@ enum class uvw_tcp_flags : std::underlying_type_t<uv_tcp_flags> {
  * [documentation](http://docs.libuv.org/en/v1.x/tcp.html#c.uv_tcp_init_ex)
  * for further details.
  */
-class tcp_handle final: public stream_handle<tcp_handle, uv_tcp_t, connect_event> {
+class tcp_handle final: public stream_handle<tcp_handle, uv_tcp_t> {
 public:
     using time = std::chrono::duration<unsigned int>;
     using tcp_flags = details::uvw_tcp_flags;
