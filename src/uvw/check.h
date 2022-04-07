@@ -35,13 +35,16 @@ public:
      *
      * A check event will be emitted once per loop iteration, right after
      * polling for I/O.
+     *
+     * @return Underlying return value.
      */
-    void start();
+    int start();
 
     /**
      * @brief Stops the handle.
+     * @return Underlying return value.
      */
-    void stop();
+    int stop();
 };
 
 } // namespace uvw
