@@ -31,8 +31,9 @@ UVW_INLINE void fs_event_handle::start(const std::string &path, event_flags flag
 }
 
 UVW_INLINE void fs_event_handle::stop() {
-    // uv_fs_event_stop never returns a value other than 0 apparently
-    uv_fs_event_stop(raw());
+    if(auto err = uv_fs_event_stop(raw()); err != 0) {
+        publish(error_event{err});
+    }
 }
 
 UVW_INLINE std::string fs_event_handle::path() UVW_NOEXCEPT {
