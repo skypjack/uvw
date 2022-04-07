@@ -16,8 +16,7 @@ TEST(Async, Send) {
         ASSERT_TRUE(hndl.closing());
     });
 
-    handle->send();
-
+    ASSERT_EQ(0, handle->send());
     ASSERT_TRUE(handle->active());
     ASSERT_FALSE(handle->closing());
 

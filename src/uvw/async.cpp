@@ -15,10 +15,8 @@ UVW_INLINE int async_handle::init() {
     return leak_if(uv_async_init(parent().raw(), raw(), &send_callback));
 }
 
-UVW_INLINE void async_handle::send() {
-    if(auto err = uv_async_send(raw()); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int async_handle::send() {
+    return uv_async_send(raw());
 }
 
 } // namespace uvw
