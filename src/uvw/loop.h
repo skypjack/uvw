@@ -265,9 +265,9 @@ public:
     /**
      * @brief Walks the list of handles.
      *
-     * The callback will be executed once for each handle that is still active.
+     * The callback is invoked once for each handle that is still active.
      *
-     * @param callback A function to be invoked once for each active handle.
+     * @param callback A function to invoke once for each active handle.
      */
     template<typename Func>
     void walk(Func callback) {
