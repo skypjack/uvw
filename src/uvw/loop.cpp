@@ -97,9 +97,7 @@ UVW_INLINE void loop::update() const UVW_NOEXCEPT {
 }
 
 UVW_INLINE void loop::fork() UVW_NOEXCEPT {
-    auto err = uv_loop_fork(uv_loop.get());
-
-    if(err) {
+    if(auto err = uv_loop_fork(uv_loop.get()); err) {
         publish(error_event{err});
     }
 }
