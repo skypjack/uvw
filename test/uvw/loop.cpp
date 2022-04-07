@@ -73,6 +73,7 @@ TEST(Loop, Walk) {
     loop->resource<uvw::signal_handle>();
     loop->resource<uvw::tcp_handle>();
     loop->resource<uvw::timer_handle>();
+    loop->resource<uvw::tty_handle>(0, true);
     loop->resource<uvw::udp_handle>();
 
     std::size_t count{};
@@ -82,12 +83,12 @@ TEST(Loop, Walk) {
         handle.close();
     });
 
-    ASSERT_EQ(count, 11u);
+    ASSERT_EQ(count, 12u);
 
     loop->run();
     loop->walk([&count](auto &handle) { --count; });
 
-    ASSERT_EQ(count, 11u);
+    ASSERT_EQ(count, 12u);
 }
 
 TEST(Loop, UserData) {
@@ -123,4 +124,15 @@ TEST(Loop, Raw) {
     auto *craw = cloop->raw();
 
     ASSERT_EQ(raw, craw);
+}
+
+TEST(Loop, Close) {
+    auto loop = uvw::loop::create();
+    auto idle = loop->resource<uvw::idle_handle>();
+
+    ASSERT_NE(0, loop->close());
+
+    idle->close();
+
+    ASSERT_EQ(0, loop->close());
 }
