@@ -6,7 +6,7 @@ struct fake_handle_t {
     void *data;
 };
 
-struct FakeHandle: uvw::handle<FakeHandle, fake_handle_t> {
+struct fake_handle: uvw::handle<fake_handle, fake_handle_t> {
     using handle::handle;
 
     int init() override {
@@ -48,7 +48,7 @@ TEST(Handle, Functionalities) {
 
 TEST(Handle, InitializationFailure) {
     auto loop = uvw::loop::get_default();
-    auto resource = loop->resource<FakeHandle>();
+    auto resource = loop->resource<fake_handle>();
 
     ASSERT_FALSE(static_cast<bool>(resource));
 }

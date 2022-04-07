@@ -51,9 +51,16 @@ UVW_INLINE loop::~loop() UVW_NOEXCEPT {
     }
 }
 
-UVW_INLINE void loop::close() {
-    auto err = uv_loop_close(uv_loop.get());
-    return err ? publish(error_event{err}) : uv_loop.reset();
+UVW_INLINE int loop::close() {
+    int ret = 0;
+
+    if(uv_loop) {
+        ret = uv_loop_close(uv_loop.get());
+        uv_loop.reset();
+    }
+
+
+    return ret;
 }
 
 bool loop::run(run_mode mode) UVW_NOEXCEPT {

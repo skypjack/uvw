@@ -171,9 +171,9 @@ public:
      * Call this function only when the loop has finished executing and all open
      * handles and requests have been closed, or the loop will emit an error.
      *
-     * An error event will be emitted in case of errors.
+     * @return Underlying code in case of errors, 0 otherwise.
      */
-    void close();
+    int close();
 
     /**
      * @brief Runs the event loop.
