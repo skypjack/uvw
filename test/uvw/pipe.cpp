@@ -22,8 +22,8 @@ TEST(Pipe, ReadWrite) {
         socket->on<uvw::close_event>([&handle](const uvw::close_event &, uvw::pipe_handle &) { handle.close(); });
         socket->on<uvw::end_event>([](const uvw::end_event &, uvw::pipe_handle &sock) { sock.close(); });
 
-        handle.accept(*socket);
-        socket->read();
+        ASSERT_EQ(0, handle.accept(*socket));
+        ASSERT_EQ(0, socket->read());
     });
 
     client->on<uvw::write_event>([](const uvw::write_event &, uvw::pipe_handle &handle) {
@@ -39,7 +39,9 @@ TEST(Pipe, ReadWrite) {
     });
 
     server->bind(sockname);
-    server->listen();
+
+    ASSERT_EQ(0, server->listen());
+
     client->connect(sockname);
 
     loop->run();
@@ -68,9 +70,8 @@ TEST(Pipe, SockPeer) {
         socket->on<uvw::close_event>([&handle](const uvw::close_event &, uvw::pipe_handle &) { handle.close(); });
         socket->on<uvw::end_event>([](const uvw::end_event &, uvw::pipe_handle &sock) { sock.close(); });
 
-        handle.accept(*socket);
-        socket->read();
-
+        ASSERT_EQ(0, handle.accept(*socket));
+        ASSERT_EQ(0, socket->read());
         ASSERT_EQ(handle.sock(), peername);
     });
 
@@ -81,7 +82,9 @@ TEST(Pipe, SockPeer) {
     });
 
     server->bind(sockname);
-    server->listen();
+
+    ASSERT_EQ(0, server->listen());
+
     client->connect(sockname);
 
     loop->run();
@@ -110,8 +113,8 @@ TEST(Pipe, Shutdown) {
         socket->on<uvw::close_event>([&handle](const uvw::close_event &, uvw::pipe_handle &) { handle.close(); });
         socket->on<uvw::end_event>([](const uvw::end_event &, uvw::pipe_handle &sock) { sock.close(); });
 
-        handle.accept(*socket);
-        socket->read();
+        ASSERT_EQ(0, handle.accept(*socket));
+        ASSERT_EQ(0, socket->read());
     });
 
     client->on<uvw::shutdown_event>([](const uvw::shutdown_event &, uvw::pipe_handle &handle) {
@@ -120,12 +123,14 @@ TEST(Pipe, Shutdown) {
 
     client->on<uvw::connect_event>([&data](const uvw::connect_event &, uvw::pipe_handle &handle) {
         handle.write(data.get(), 3);
-        
+
         ASSERT_EQ(0, handle.shutdown());
     });
 
     server->bind(sockname);
-    server->listen();
+
+    ASSERT_EQ(0, server->listen());
+
     client->connect(sockname);
 
     loop->run();

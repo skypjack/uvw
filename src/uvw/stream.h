@@ -181,7 +181,7 @@ public:
         auto shutdown = this->parent().template resource<details::shutdown_req>();
         shutdown->template on<error_event>(listener);
         shutdown->template on<shutdown_event>(listener);
-        
+
         return shutdown->shutdown(as_uv_stream());
     }
 
@@ -194,11 +194,11 @@ public:
      *
      * @param backlog Indicates the number of connections the kernel might
      * queue, same as listen(2).
+     *
+     * @return Underlying return value.
      */
-    void listen(int backlog = DEFAULT_BACKLOG) {
-        if(auto err = uv_listen(as_uv_stream(), backlog, &listen_callback); err != 0) {
-            this->publish(error_event{err});
-        }
+    int listen(int backlog = DEFAULT_BACKLOG) {
+        return uv_listen(as_uv_stream(), backlog, &listen_callback);
     }
 
     /**
@@ -219,12 +219,11 @@ public:
      * Both the handles must be running on the same loop.
      *
      * @param ref An initialized handle to be used to accept the connection.
+     * @return Underlying return value.
      */
     template<typename S>
-    void accept(S &ref) {
-        if(auto err = uv_accept(as_uv_stream(), ref.as_uv_stream()); err != 0) {
-            this->publish(error_event{err});
-        }
+    int accept(S &ref) {
+        return uv_accept(as_uv_stream(), ref.as_uv_stream());
     }
 
     /**
@@ -233,22 +232,22 @@ public:
      * A data event will be emitted several times until there is no more data to
      * read or `stop()` is called.<br/>
      * An end event will be emitted when there is no more data to read.
+     *
+     * @return Underlying return value.
      */
-    void read() {
-        if(auto err = uv_read_start(as_uv_stream(), &details::common_alloc_callback, &read_callback); err != 0) {
-            this->publish(error_event{err});
-        }
+    int read() {
+        return uv_read_start(as_uv_stream(), &details::common_alloc_callback, &read_callback);
     }
 
     /**
      * @brief Stops reading data from the stream.
      *
      * This function is idempotent and may be safely called on a stopped stream.
+     *
+     * @return Underlying return value.
      */
-    void stop() {
-        if(auto err = uv_read_stop(as_uv_stream()); err != 0) {
-            this->publish(error_event{err});
-        }
+    int stop() {
+        return uv_read_stop(as_uv_stream());
     }
 
     /**
@@ -369,18 +368,11 @@ public:
      *
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
-     * @return Number of bytes written.
+     * @return Underlying return value.
      */
     int try_write(std::unique_ptr<char[]> data, unsigned int len) {
         uv_buf_t bufs[] = {uv_buf_init(data.get(), len)};
-        auto bw = uv_try_write(as_uv_stream(), bufs, 1);
-
-        if(bw < 0) {
-            this->publish(error_event{bw});
-            bw = 0;
-        }
-
-        return bw;
+        return uv_try_write(as_uv_stream(), bufs, 1);
     }
 
     /**
@@ -392,19 +384,12 @@ public:
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
      * @param send A valid handle suitable for the purpose.
-     * @return Number of bytes written.
+     * @return Underlying return value.
      */
     template<typename V, typename W>
     int try_write(std::unique_ptr<char[]> data, unsigned int len, stream_handle<V, W> &send) {
         uv_buf_t bufs[] = {uv_buf_init(data.get(), len)};
-        auto bw = uv_try_write2(as_uv_stream(), bufs, 1, send.raw());
-
-        if(bw < 0) {
-            this->publish(error_event{bw});
-            bw = 0;
-        }
-
-        return bw;
+        return uv_try_write2(as_uv_stream(), bufs, 1, send.raw());
     }
 
     /**
@@ -416,18 +401,11 @@ public:
      *
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
-     * @return Number of bytes written.
+     * @return Underlying return value.
      */
     int try_write(char *data, unsigned int len) {
         uv_buf_t bufs[] = {uv_buf_init(data, len)};
-        auto bw = uv_try_write(as_uv_stream(), bufs, 1);
-
-        if(bw < 0) {
-            this->publish(error_event{bw});
-            bw = 0;
-        }
-
-        return bw;
+        return uv_try_write(as_uv_stream(), bufs, 1);
     }
 
     /**
@@ -439,19 +417,12 @@ public:
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
      * @param send A valid handle suitable for the purpose.
-     * @return Number of bytes written.
+     * @return Underlying return value.
      */
     template<typename V, typename W>
     int try_write(char *data, unsigned int len, stream_handle<V, W> &send) {
         uv_buf_t bufs[] = {uv_buf_init(data, len)};
-        auto bw = uv_try_write2(as_uv_stream(), bufs, 1, send.raw());
-
-        if(bw < 0) {
-            this->publish(error_event{bw});
-            bw = 0;
-        }
-
-        return bw;
+        return uv_try_write2(as_uv_stream(), bufs, 1, send.raw());
     }
 
     /**
