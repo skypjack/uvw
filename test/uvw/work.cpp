@@ -21,7 +21,9 @@ TEST(Work, RunTask) {
     });
 
     handle->start();
-    req->queue();
+    
+    ASSERT_EQ(0, req->queue());
+    
     loop->run();
 
     ASSERT_TRUE(checkTask);

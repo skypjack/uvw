@@ -15,16 +15,12 @@ UVW_INLINE int prepare_handle::init() {
     return leak_if(uv_prepare_init(parent().raw(), raw()));
 }
 
-UVW_INLINE void prepare_handle::start() {
-    if(auto err = uv_prepare_start(raw(), &start_callback); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int prepare_handle::start() {
+    return uv_prepare_start(raw(), &start_callback);
 }
 
-UVW_INLINE void prepare_handle::stop() {
-    if(auto err = uv_prepare_stop(raw()); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int prepare_handle::stop() {
+    return uv_prepare_stop(raw());
 }
 
 } // namespace uvw

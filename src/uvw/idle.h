@@ -34,7 +34,7 @@ public:
 
     /**
      * @brief Initializes the handle.
-     * @return Underlying code in case of errors, 0 otherwise.
+     * @return Underlying return value.
      */
     int init() final;
 
@@ -43,13 +43,17 @@ public:
      *
      * An idle event will be emitted once per loop iteration, right before
      * polling the prepare handles.
+     *
+     * @return Underlying return value.
      */
-    void start();
+    int start();
 
     /**
      * @brief Stops the handle.
+     *
+     * @return Underlying return value.
      */
-    void stop();
+    int stop();
 };
 
 } // namespace uvw
