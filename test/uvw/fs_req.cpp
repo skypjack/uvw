@@ -170,7 +170,7 @@ TEST(FsReq, Lstat) {
     fileReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
         if(event.type == uvw::fs_req::fs_type::CLOSE) {
             fsReq->lstat(filename);
-        } else if(event.type == uvw::fs_req::fs_type::CLOSE) {
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.close();
         }
     });
