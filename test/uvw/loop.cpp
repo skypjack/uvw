@@ -1,7 +1,5 @@
 #include <gtest/gtest.h>
-#include <uvw/loop.h>
-#include <uvw/prepare.h>
-#include <uvw/work.h>
+#include <uvw.hpp>
 
 TEST(Loop, DefaultLoop) {
     auto def = uvw::loop::get_default();
@@ -60,6 +58,36 @@ TEST(Loop, Functionalities) {
     ASSERT_NO_THROW(loop->run(uvw::loop::run_mode::NOWAIT));
 
     ASSERT_FALSE(loop->alive());
+}
+
+TEST(Loop, Walk) {
+    auto loop = uvw::loop::create();
+
+    loop->resource<uvw::async_handle>();
+    loop->resource<uvw::check_handle>();
+    loop->resource<uvw::fs_event_handle>();
+    loop->resource<uvw::fs_poll_handle>();
+    loop->resource<uvw::idle_handle>();
+    loop->resource<uvw::pipe_handle>();
+    loop->resource<uvw::prepare_handle>();
+    loop->resource<uvw::signal_handle>();
+    loop->resource<uvw::tcp_handle>();
+    loop->resource<uvw::timer_handle>();
+    loop->resource<uvw::udp_handle>();
+
+    std::size_t count{};
+
+    loop->walk([&count](auto &handle) {
+        ++count;
+        handle.close();
+    });
+
+    ASSERT_EQ(count, 11u);
+
+    loop->run();
+    loop->walk([&count](auto &handle) { --count; });
+
+    ASSERT_EQ(count, 11u);
 }
 
 TEST(Loop, UserData) {
