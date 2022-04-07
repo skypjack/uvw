@@ -15,16 +15,12 @@ UVW_INLINE int idle_handle::init() {
     return leak_if(uv_idle_init(parent().raw(), raw()));
 }
 
-UVW_INLINE void idle_handle::start() {
-    if(auto err = uv_idle_start(raw(), &start_callback); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int idle_handle::start() {
+    return uv_idle_start(raw(), &start_callback);
 }
 
-UVW_INLINE void idle_handle::stop() {
-    if(auto err = uv_idle_stop(raw()); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int idle_handle::stop() {
+    return uv_idle_stop(raw());
 }
 
 } // namespace uvw

@@ -63,8 +63,8 @@ UVW_INLINE int loop::close() {
     return ret;
 }
 
-bool loop::run(run_mode mode) UVW_NOEXCEPT {
-    return (uv_run(uv_loop.get(), static_cast<uv_run_mode>(mode)) == 0);
+int loop::run(run_mode mode) UVW_NOEXCEPT {
+    return uv_run(uv_loop.get(), static_cast<uv_run_mode>(mode));
 }
 
 UVW_INLINE bool loop::alive() const UVW_NOEXCEPT {
@@ -96,10 +96,8 @@ UVW_INLINE void loop::update() const UVW_NOEXCEPT {
     return uv_update_time(uv_loop.get());
 }
 
-UVW_INLINE void loop::fork() UVW_NOEXCEPT {
-    if(auto err = uv_loop_fork(uv_loop.get()); err) {
-        publish(error_event{err});
-    }
+UVW_INLINE int loop::fork() UVW_NOEXCEPT {
+    return uv_loop_fork(uv_loop.get());
 }
 
 UVW_INLINE void loop::data(std::shared_ptr<void> ud) {

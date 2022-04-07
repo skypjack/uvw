@@ -51,7 +51,7 @@ public:
 
     /**
      * @brief Initializes the handle. No socket is created as of yet.
-     * @return Underlying code in case of errors, 0 otherwise.
+     * @return Underlying return value.
      */
     int init() final;
 

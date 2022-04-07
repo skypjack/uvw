@@ -75,7 +75,7 @@ public:
 
     /**
      * @brief Initializes the handle.
-     * @return Underlying code in case of errors, 0 otherwise.
+     * @return Underlying return value.
      */
     int init() final;
 

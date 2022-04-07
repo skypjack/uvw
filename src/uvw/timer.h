@@ -28,7 +28,7 @@ public:
 
     /**
      * @brief Initializes the handle.
-     * @return Underlying code in case of errors, 0 otherwise.
+     * @return Underlying return value.
      */
     int init() final;
 
@@ -43,13 +43,16 @@ public:
      * `std::chrono::duration<uint64_t, std::milli>`).
      * @param repeat Milliseconds between successive events (use
      * `std::chrono::duration<uint64_t, std::milli>`).
+     *
+     * @return Underlying return value.
      */
-    void start(time timeout, time repeat);
+    int start(time timeout, time repeat);
 
     /**
      * @brief Stops the handle.
+     * @return Underlying return value.
      */
-    void stop();
+    int stop();
 
     /**
      * @brief Stops the timer and restarts it if it was repeating.
@@ -57,8 +60,10 @@ public:
      * Stop the timer, and if it is repeating restart it using the repeat value
      * as the timeout.<br/>
      * If the timer has never been started before it emits an error event.
+     *
+     * @return Underlying return value.
      */
-    void again();
+    int again();
 
     /**
      * @brief Sets the repeat interval value.

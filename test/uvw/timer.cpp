@@ -14,16 +14,22 @@ TEST(Timer, StartAndStop) {
 
     handleNoRepeat->on<uvw::timer_event>([&checkTimerNoRepeatEvent](const auto &, auto &handle) {
         ASSERT_FALSE(checkTimerNoRepeatEvent);
+
         checkTimerNoRepeatEvent = true;
-        handle.stop();
+
+        ASSERT_EQ(0, handle.stop());
+
         handle.close();
+
         ASSERT_TRUE(handle.closing());
     });
 
     handleRepeat->on<uvw::timer_event>([&checkTimerRepeatEvent](const auto &, auto &handle) {
         if(checkTimerRepeatEvent) {
-            handle.stop();
+            ASSERT_EQ(0, handle.stop());
+
             handle.close();
+
             ASSERT_TRUE(handle.closing());
         } else {
             checkTimerRepeatEvent = true;
@@ -31,8 +37,8 @@ TEST(Timer, StartAndStop) {
         }
     });
 
-    handleNoRepeat->start(uvw::timer_handle::time{0}, uvw::timer_handle::time{0});
-    handleRepeat->start(uvw::timer_handle::time{0}, uvw::timer_handle::time{1});
+    ASSERT_EQ(0, handleNoRepeat->start(uvw::timer_handle::time{0}, uvw::timer_handle::time{0}));
+    ASSERT_EQ(0, handleRepeat->start(uvw::timer_handle::time{0}, uvw::timer_handle::time{1}));
 
     ASSERT_TRUE(handleNoRepeat->active());
     ASSERT_FALSE(handleNoRepeat->closing());
@@ -50,13 +56,9 @@ TEST(Timer, Again) {
     auto loop = uvw::loop::get_default();
     auto handle = loop->resource<uvw::timer_handle>();
 
-    bool checkErrorEvent = false;
     bool checkTimerEvent = false;
 
-    handle->on<uvw::error_event>([&checkErrorEvent](const auto &, auto &) {
-        ASSERT_FALSE(checkErrorEvent);
-        checkErrorEvent = true;
-    });
+    handle->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     handle->on<uvw::timer_event>([&checkTimerEvent](const auto &, auto &hndl) {
         static bool guard = false;
@@ -68,17 +70,15 @@ TEST(Timer, Again) {
             ASSERT_TRUE(hndl.closing());
         } else {
             guard = true;
-            hndl.again();
+            ASSERT_EQ(0, hndl.again());
             ASSERT_EQ(hndl.repeat(), uvw::timer_handle::time{1});
             ASSERT_FALSE(hndl.closing());
         }
     });
 
-    ASSERT_NO_THROW(handle->again());
+    ASSERT_NE(0, handle->again());
     ASSERT_FALSE(handle->active());
-    ASSERT_TRUE(checkErrorEvent);
 
-    checkErrorEvent = false;
     handle->start(uvw::timer_handle::time{0}, uvw::timer_handle::time{1});
 
     ASSERT_TRUE(handle->active());
@@ -86,7 +86,6 @@ TEST(Timer, Again) {
 
     loop->run();
 
-    ASSERT_FALSE(checkErrorEvent);
     ASSERT_TRUE(checkTimerEvent);
 
     handle->close();
@@ -94,9 +93,7 @@ TEST(Timer, Again) {
     ASSERT_FALSE(handle->active());
     ASSERT_TRUE(handle->closing());
 
-    handle->start(uvw::timer_handle::time{0}, uvw::timer_handle::time{1});
-
-    ASSERT_TRUE(checkErrorEvent);
+    ASSERT_NE(0, handle->start(uvw::timer_handle::time{0}, uvw::timer_handle::time{1}));
 }
 
 TEST(Timer, Repeat) {

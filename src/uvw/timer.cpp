@@ -15,22 +15,16 @@ UVW_INLINE int timer_handle::init() {
     return leak_if(uv_timer_init(parent().raw(), raw()));
 }
 
-UVW_INLINE void timer_handle::start(timer_handle::time timeout, timer_handle::time repeat) {
-    if(auto err = uv_timer_start(raw(), &start_callback, timeout.count(), repeat.count()); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int timer_handle::start(timer_handle::time timeout, timer_handle::time repeat) {
+    return uv_timer_start(raw(), &start_callback, timeout.count(), repeat.count());
 }
 
-UVW_INLINE void timer_handle::stop() {
-    if(auto err = uv_timer_stop(raw()); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int timer_handle::stop() {
+    return uv_timer_stop(raw());
 }
 
-UVW_INLINE void timer_handle::again() {
-    if(auto err = uv_timer_again(raw()); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int timer_handle::again() {
+    return uv_timer_again(raw());
 }
 
 UVW_INLINE void timer_handle::repeat(timer_handle::time repeat) {

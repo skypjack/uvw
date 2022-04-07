@@ -132,12 +132,12 @@ public:
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_configure)
      * for further details.
+     *
+     * @return Underlying return value.
      */
     template<typename... Args>
-    void configure(option flag, Args &&...args) {
-        if(auto err = uv_loop_configure(uv_loop.get(), static_cast<uv_loop_option>(flag), std::forward<Args>(args)...); err) {
-            publish(error_event{err});
-        }
+    int configure(option flag, Args &&...args) {
+        return uv_loop_configure(uv_loop.get(), static_cast<uv_loop_option>(flag), std::forward<Args>(args)...);
     }
 
     /**
@@ -172,7 +172,7 @@ public:
      * Call this function only when the loop has finished executing and all open
      * handles and requests have been closed, or the loop will emit an error.
      *
-     * @return Underlying code in case of errors, 0 otherwise.
+     * @return Underlying return value.
      */
     int close();
 
@@ -192,9 +192,9 @@ public:
      * [documentation](http://docs.libuv.org/en/v1.x/loop.html#c.uv_run)
      * for further details.
      *
-     * @return True when done, false in all other cases.
+     * @return Underlying return value.
      */
-    bool run(run_mode mode = run_mode::DEFAULT) UVW_NOEXCEPT;
+    int run(run_mode mode = run_mode::DEFAULT) UVW_NOEXCEPT;
 
     /**
      * @brief Checks if there are active resources.
@@ -358,8 +358,10 @@ public:
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_fork)
      * for further details.
+     *
+     * @return Underlying return value.
      */
-    void fork() UVW_NOEXCEPT;
+    int fork() UVW_NOEXCEPT;
 
     /**
      * @brief Gets user-defined data. `uvw` won't use this field in any case.

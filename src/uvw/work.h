@@ -41,8 +41,10 @@ public:
      * A work event will be emitted on the loop thread when the task is
      * finished.<br/>
      * This request can be cancelled with `cancel()`.
+     *
+     * @return Underlying return value.
      */
-    void queue();
+    int queue();
 
 private:
     task func{};

@@ -23,10 +23,8 @@ UVW_INLINE void work_req::after_work_callback(uv_work_t* req, int status) {
     }
 }
 
-UVW_INLINE void work_req::queue() {
-    if(auto err = this->leak_if(uv_queue_work(parent().raw(), raw(), &work_callback, &after_work_callback)); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int work_req::queue() {
+    return this->leak_if(uv_queue_work(parent().raw(), raw(), &work_callback, &after_work_callback));
 }
 
 } // namespace uvw

@@ -26,7 +26,7 @@ public:
 
     /**
      * @brief Initializes the handle.
-     * @return Underlying code in case of errors, 0 otherwise.
+     * @return Underlying return value.
      */
     int init() final;
 
@@ -37,13 +37,16 @@ public:
      * polling for I/O.
      *
      * The handle will start emitting prepare events when needed.
+     *
+     * @return Underlying return value.
      */
-    void start();
+    int start();
 
     /**
      * @brief Stops the handle.
+     * @return Underlying return value.
      */
-    void stop();
+    int stop();
 };
 
 } // namespace uvw

@@ -32,7 +32,7 @@ TEST(Loop, Functionalities) {
 
 #ifndef _MSC_VER
     // fork isn't implemented on Windows in libuv and it returns an error by default
-    ASSERT_NO_THROW(loop->fork());
+    ASSERT_EQ(0, loop->fork());
 #endif
 
     ASSERT_FALSE(loop->alive());
@@ -50,12 +50,12 @@ TEST(Loop, Functionalities) {
     });
 
     ASSERT_TRUE(loop->alive());
-    ASSERT_NO_THROW(loop->run());
+    ASSERT_EQ(0, loop->run());
 
     loop->walk([](auto &) { FAIL(); });
 
-    ASSERT_NO_THROW(loop->run(uvw::loop::run_mode::ONCE));
-    ASSERT_NO_THROW(loop->run(uvw::loop::run_mode::NOWAIT));
+    ASSERT_EQ(0, loop->run(uvw::loop::run_mode::ONCE));
+    ASSERT_EQ(0, loop->run(uvw::loop::run_mode::NOWAIT));
 
     ASSERT_FALSE(loop->alive());
 }
@@ -106,8 +106,8 @@ TEST(Loop, UserData) {
 
 TEST(Loop, Configure) {
     auto loop = uvw::loop::create();
-    ASSERT_NO_THROW(loop->configure(uvw::loop::option::BLOCK_SIGNAL, 9));
-    ASSERT_NO_THROW(loop->run());
+    ASSERT_EQ(0, loop->configure(uvw::loop::option::IDLE_TIME));
+    ASSERT_EQ(0, loop->run());
 }
 
 TEST(Loop, IdleTime) {

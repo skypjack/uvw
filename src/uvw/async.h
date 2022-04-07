@@ -30,7 +30,7 @@ public:
      * Unlike other handle initialization functions, it immediately starts the
      * handle.
      *
-     * @return Underlying code in case of errors, 0 otherwise.
+     * @return Underlying return value.
      */
     int init() final;
 
