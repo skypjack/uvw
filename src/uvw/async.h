@@ -38,13 +38,15 @@ public:
      * @brief Wakeups the event loop and emits the async event.
      *
      * It’s safe to call this function from any thread.<br/>
-     * An async event will be emitted on the loop thread.
+     * An async event is emitted on the loop thread.
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/async.html#c.uv_async_send)
      * for further details.
+     *
+     * @return Underlying return value.
      */
-    void send();
+    int send();
 };
 
 } // namespace uvw
