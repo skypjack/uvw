@@ -135,8 +135,9 @@ public:
      */
     template<typename... Args>
     void configure(option flag, Args &&...args) {
-        auto err = uv_loop_configure(uv_loop.get(), static_cast<uv_loop_option>(flag), std::forward<Args>(args)...);
-        if(err) { publish(error_event{err}); }
+        if(auto err = uv_loop_configure(uv_loop.get(), static_cast<uv_loop_option>(flag), std::forward<Args>(args)...); err) {
+            publish(error_event{err});
+        }
     }
 
     /**
