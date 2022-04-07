@@ -9,10 +9,13 @@ TEST(FsEvent, Functionalities) {
     auto handle = loop->resource<uvw::fs_event_handle>();
     auto request = loop->resource<uvw::file_req>();
 
+    bool checkErrorEvent = false;
     bool checkFsEventEvent = false;
 
-    handle->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
-    request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
+    handle->on<uvw::error_event>([&](const auto &, auto &) {
+        ASSERT_FALSE(checkErrorEvent);
+        checkErrorEvent = true;
+    });
 
     handle->on<uvw::fs_event_event>([&checkFsEventEvent](const auto &event, auto &hndl) {
         ASSERT_FALSE(checkFsEventEvent);
@@ -22,6 +25,8 @@ TEST(FsEvent, Functionalities) {
         hndl.close();
         ASSERT_TRUE(hndl.closing());
     });
+
+    request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::fs_event>([&](const auto &event, auto &req) {
         switch(event.type) {
@@ -44,6 +49,11 @@ TEST(FsEvent, Functionalities) {
     ASSERT_EQ(handle->path(), std::string{TARGET_FS_EVENT_DIR});
     ASSERT_TRUE(handle->active());
     ASSERT_FALSE(handle->closing());
+
+    handle->start(std::string{TARGET_FS_EVENT_DIR}, uvw::fs_event_handle::event_flags::RECURSIVE);
+
+    ASSERT_TRUE(checkErrorEvent);
+    ASSERT_FALSE(checkFsEventEvent);
 
     loop->run();
 

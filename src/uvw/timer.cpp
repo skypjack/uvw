@@ -22,7 +22,7 @@ UVW_INLINE void timer_handle::start(timer_handle::time timeout, timer_handle::ti
 }
 
 UVW_INLINE void timer_handle::stop() {
-    // uv_timer_stop never returns 0 apparently
+    // uv_timer_stop never returns a value other than 0 apparently
     uv_timer_stop(raw());
 }
 
