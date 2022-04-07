@@ -32,7 +32,7 @@ UVW_INLINE int process_handle::init() {
     return 0;
 }
 
-UVW_INLINE void process_handle::spawn(const char *file, char **args, char **env) {
+UVW_INLINE int process_handle::spawn(const char *file, char **args, char **env) {
     uv_process_options_t po;
 
     po.exit_cb = &exit_callback;
@@ -55,15 +55,11 @@ UVW_INLINE void process_handle::spawn(const char *file, char **args, char **env)
     // see init member function for more details
     leak_if(0);
 
-    if(auto err = uv_spawn(parent().raw(), raw(), &po); err != 0) {
-        publish(error_event{err});
-    }
+    return uv_spawn(parent().raw(), raw(), &po);
 }
 
-UVW_INLINE void process_handle::kill(int signum) {
-    if(auto err = uv_process_kill(raw(), signum); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int process_handle::kill(int signum) {
+    return uv_process_kill(raw(), signum);
 }
 
 UVW_INLINE int process_handle::pid() UVW_NOEXCEPT {

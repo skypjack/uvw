@@ -107,14 +107,16 @@ public:
      * @param file Path pointing to the program to be executed.
      * @param args Command line arguments.
      * @param env Optional environment for the new process.
+     * @return Underlying return value.
      */
-    void spawn(const char *file, char **args, char **env = nullptr);
+    int spawn(const char *file, char **args, char **env = nullptr);
 
     /**
      * @brief Sends the specified signal to the internal process handle.
      * @param signum A valid signal identifier.
+     * @return Underlying return value.
      */
-    void kill(int signum);
+    int kill(int signum);
 
     /**
      * @brief Gets the PID of the spawned process.

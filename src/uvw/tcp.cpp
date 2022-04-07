@@ -17,10 +17,8 @@ UVW_INLINE int tcp_handle::init() {
     }
 }
 
-UVW_INLINE void tcp_handle::open(os_socket_handle socket) {
-    if(auto err = uv_tcp_open(raw(), socket); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int tcp_handle::open(os_socket_handle socket) {
+    return uv_tcp_open(raw(), socket);
 }
 
 UVW_INLINE bool tcp_handle::no_delay(bool value) {
@@ -35,18 +33,16 @@ UVW_INLINE bool tcp_handle::simultaneous_accepts(bool enable) {
     return (0 == uv_tcp_simultaneous_accepts(raw(), enable));
 }
 
-UVW_INLINE void tcp_handle::bind(const sockaddr &addr, tcp_flags opts) {
-    if(auto err = uv_tcp_bind(raw(), &addr, static_cast<uv_tcp_flags>(opts)); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int tcp_handle::bind(const sockaddr &addr, tcp_flags opts) {
+    return uv_tcp_bind(raw(), &addr, static_cast<uv_tcp_flags>(opts));
 }
 
-UVW_INLINE void tcp_handle::bind(const std::string &ip, unsigned int port, tcp_flags opts) {
-    bind(details::ip_addr(ip.data(), port), opts);
+UVW_INLINE int tcp_handle::bind(const std::string &ip, unsigned int port, tcp_flags opts) {
+    return bind(details::ip_addr(ip.data(), port), opts);
 }
 
-UVW_INLINE void tcp_handle::bind(socket_address addr, tcp_flags opts) {
-    bind(addr.ip, addr.port, opts);
+UVW_INLINE int tcp_handle::bind(socket_address addr, tcp_flags opts) {
+    return bind(addr.ip, addr.port, opts);
 }
 
 UVW_INLINE socket_address tcp_handle::sock() const UVW_NOEXCEPT {
@@ -82,10 +78,8 @@ UVW_INLINE void tcp_handle::connect(const sockaddr &addr) {
     req->connect(&uv_tcp_connect, raw(), &addr);
 }
 
-UVW_INLINE void tcp_handle::close_reset() {
-    if(auto err = uv_tcp_close_reset(raw(), &this->close_callback); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int tcp_handle::close_reset() {
+    return uv_tcp_close_reset(raw(), &this->close_callback);
 }
 
 } // namespace uvw

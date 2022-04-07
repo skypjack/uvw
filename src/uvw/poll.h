@@ -89,13 +89,15 @@ public:
      * caller is interested.
      *
      * @param flags The events to which the caller is interested.
+     * @return Underlying return value.
      */
-    void start(poll_event flags);
+    int start(poll_event flags);
 
     /**
      * @brief Stops polling the file descriptor.
+     * @return Underlying return value.
      */
-    void stop();
+    int stop();
 
 private:
     enum {

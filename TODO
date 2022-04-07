@@ -1,5 +1,5 @@
+* do not send error events when the return value is enough (still wip)
+* also cleanup error event mentions in the doc
 * Make all tests pass on all platforms
-* Pass the events to the emitter, avoid allocations for the map and the handlers (use an std::tuple<handler<T>...>)
-* Reduce compile-time, use clang ftime and whatnot
 * add iwyu and clean up everything
 * Allocator support

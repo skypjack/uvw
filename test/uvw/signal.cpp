@@ -8,11 +8,10 @@ TEST(Signal, Start) {
 
     handle->on<uvw::error_event>([](auto &&...) { FAIL(); });
 
-    handle->start(2);
-
+    ASSERT_EQ(0, handle->start(2));
     ASSERT_EQ(2, handle->signal());
+    ASSERT_EQ(0, handle->stop());
 
-    handle->stop();
     handle->close();
 
     ASSERT_FALSE(handle->active());
@@ -27,11 +26,10 @@ TEST(Signal, OneShot) {
 
     handle->on<uvw::error_event>([](auto &&...) { FAIL(); });
 
-    handle->one_shot(2);
-
+    ASSERT_EQ(0, handle->one_shot(2));
     ASSERT_EQ(2, handle->signal());
+    ASSERT_EQ(0, handle->stop());
 
-    handle->stop();
     handle->close();
 
     ASSERT_FALSE(handle->active());

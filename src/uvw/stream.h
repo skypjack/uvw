@@ -65,7 +65,7 @@ class shutdown_req final: public request<shutdown_req, uv_shutdown_t, shutdown_e
 public:
     using request::request;
 
-    void shutdown(uv_stream_t *hndl);
+    int shutdown(uv_stream_t *hndl);
 };
 
 template<typename Deleter>
@@ -170,8 +170,10 @@ public:
      * It waits for pending write requests to complete. The handle should refer
      * to a initialized stream.<br/>
      * A shutdown event will be emitted after shutdown is complete.
+     *
+     * @return Underlying return value.
      */
-    void shutdown() {
+    int shutdown() {
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
         };
@@ -179,7 +181,8 @@ public:
         auto shutdown = this->parent().template resource<details::shutdown_req>();
         shutdown->template on<error_event>(listener);
         shutdown->template on<shutdown_event>(listener);
-        shutdown->shutdown(as_uv_stream());
+        
+        return shutdown->shutdown(as_uv_stream());
     }
 
     /**

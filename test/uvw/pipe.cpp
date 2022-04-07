@@ -120,7 +120,8 @@ TEST(Pipe, Shutdown) {
 
     client->on<uvw::connect_event>([&data](const uvw::connect_event &, uvw::pipe_handle &handle) {
         handle.write(data.get(), 3);
-        handle.shutdown();
+        
+        ASSERT_EQ(0, handle.shutdown());
     });
 
     server->bind(sockname);
