@@ -57,7 +57,7 @@ struct name_info_event {
  */
 class get_addr_info_req final: public request<get_addr_info_req, uv_getaddrinfo_t, addr_info_event> {
     static void addr_info_callback(uv_getaddrinfo_t *req, int status, addrinfo *res);
-    void node_addr_info(const char *node, const char *service, addrinfo *hints = nullptr);
+    int node_addr_info(const char *node, const char *service, addrinfo *hints = nullptr);
     auto node_addr_info_sync(const char *node, const char *service, addrinfo *hints = nullptr);
 
 public:
@@ -70,8 +70,9 @@ public:
      * @param node Either a numerical network address or a network hostname.
      * @param hints Optional `addrinfo` data structure with additional address
      * type constraints.
+     * @return Underlying return value.
      */
-    void node_addr_info(const std::string &node, addrinfo *hints = nullptr);
+    int node_addr_info(const std::string &node, addrinfo *hints = nullptr);
 
     /**
      * @brief Sync [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
@@ -91,8 +92,9 @@ public:
      * @param service Either a service name or a port number as a string.
      * @param hints Optional `addrinfo` data structure with additional address
      * type constraints.
+     * @return Underlying return value.
      */
-    void service_addr_info(const std::string &service, addrinfo *hints = nullptr);
+    int service_addr_info(const std::string &service, addrinfo *hints = nullptr);
 
     /**
      * @brief Sync [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
@@ -113,8 +115,9 @@ public:
      * @param service Either a service name or a port number as a string.
      * @param hints Optional `addrinfo` data structure with additional address
      * type constraints.
+     * @return Underlying return value.
      */
-    void addr_info(const std::string &node, const std::string &service, addrinfo *hints = nullptr);
+    int addr_info(const std::string &node, const std::string &service, addrinfo *hints = nullptr);
 
     /**
      * @brief Sync [getaddrinfo](http://linux.die.net/man/3/getaddrinfo).
@@ -149,23 +152,26 @@ public:
      * @brief Async [getnameinfo](http://linux.die.net/man/3/getnameinfo).
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @param flags Optional flags that modify the behavior of `getnameinfo`.
+     * @return Underlying return value.
      */
-    void name_info(const sockaddr &addr, int flags = 0);
+    int name_info(const sockaddr &addr, int flags = 0);
 
     /**
      * @brief Async [getnameinfo](http://linux.die.net/man/3/getnameinfo).
      * @param ip A valid IP address.
      * @param port A valid port number.
      * @param flags Optional flags that modify the behavior of `getnameinfo`.
+     * @return Underlying return value.
      */
-    void name_info(const std::string &ip, unsigned int port, int flags = 0);
+    int name_info(const std::string &ip, unsigned int port, int flags = 0);
 
     /**
      * @brief Async [getnameinfo](http://linux.die.net/man/3/getnameinfo).
      * @param addr A valid instance of socket_address.
      * @param flags Optional flags that modify the behavior of `getnameinfo`.
+     * @return Underlying return value.
      */
-    void name_info(socket_address addr, int flags = 0);
+    int name_info(socket_address addr, int flags = 0);
 
     /**
      * @brief Sync [getnameinfo](http://linux.die.net/man/3/getnameinfo).

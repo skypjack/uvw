@@ -25,10 +25,8 @@ UVW_INLINE details::send_req::send_req(loop::token token, std::shared_ptr<loop> 
       data{std::move(dt)},
       buf{uv_buf_init(data.get(), len)} {}
 
-UVW_INLINE void details::send_req::send(uv_udp_t *hndl, const struct sockaddr *addr) {
-    if(auto err = this->leak_if(uv_udp_send(raw(), hndl, &buf, 1, addr, &udp_send_callback)); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int details::send_req::send(uv_udp_t *hndl, const struct sockaddr *addr) {
+    return this->leak_if(uv_udp_send(raw(), hndl, &buf, 1, addr, &udp_send_callback));
 }
 
 UVW_INLINE void udp_handle::recv_callback(uv_udp_t *hndl, ssize_t nread, const uv_buf_t *buf, const sockaddr *addr, unsigned flags) {
@@ -61,30 +59,24 @@ UVW_INLINE int udp_handle::init() {
     }
 }
 
-UVW_INLINE void udp_handle::open(os_socket_handle socket) {
-    if(auto err = uv_udp_open(raw(), socket); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int udp_handle::open(os_socket_handle socket) {
+    return uv_udp_open(raw(), socket);
 }
 
-UVW_INLINE void udp_handle::connect(const sockaddr &addr) {
-    if(auto err = uv_udp_connect(raw(), &addr); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int udp_handle::connect(const sockaddr &addr) {
+    return uv_udp_connect(raw(), &addr);
 }
 
-UVW_INLINE void udp_handle::connect(const std::string &ip, unsigned int port) {
-    connect(details::ip_addr(ip.data(), port));
+UVW_INLINE int udp_handle::connect(const std::string &ip, unsigned int port) {
+    return connect(details::ip_addr(ip.data(), port));
 }
 
-UVW_INLINE void udp_handle::connect(socket_address addr) {
-    connect(addr.ip, addr.port);
+UVW_INLINE int udp_handle::connect(socket_address addr) {
+    return connect(addr.ip, addr.port);
 }
 
-UVW_INLINE void udp_handle::disconnect() {
-    if(auto err = uv_udp_connect(raw(), nullptr); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int udp_handle::disconnect() {
+    return uv_udp_connect(raw(), nullptr);
 }
 
 UVW_INLINE socket_address udp_handle::peer() const UVW_NOEXCEPT {
@@ -94,18 +86,16 @@ UVW_INLINE socket_address udp_handle::peer() const UVW_NOEXCEPT {
     return details::sock_addr(storage);
 }
 
-UVW_INLINE void udp_handle::bind(const sockaddr &addr, udp_handle::udp_flags opts) {
-    if(auto err = uv_udp_bind(raw(), &addr, static_cast<uv_udp_flags>(opts)); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int udp_handle::bind(const sockaddr &addr, udp_handle::udp_flags opts) {
+    return uv_udp_bind(raw(), &addr, static_cast<uv_udp_flags>(opts));
 }
 
-UVW_INLINE void udp_handle::bind(const std::string &ip, unsigned int port, udp_flags opts) {
-    bind(details::ip_addr(ip.data(), port), opts);
+UVW_INLINE int udp_handle::bind(const std::string &ip, unsigned int port, udp_flags opts) {
+    return bind(details::ip_addr(ip.data(), port), opts);
 }
 
-UVW_INLINE void udp_handle::bind(socket_address addr, udp_flags opts) {
-    bind(addr.ip, addr.port, opts);
+UVW_INLINE int udp_handle::bind(socket_address addr, udp_flags opts) {
+    return bind(addr.ip, addr.port, opts);
 }
 
 UVW_INLINE socket_address udp_handle::sock() const UVW_NOEXCEPT {
@@ -139,7 +129,7 @@ UVW_INLINE bool udp_handle::ttl(int val) {
     return (0 == uv_udp_set_ttl(raw(), val > 255 ? 255 : val));
 }
 
-UVW_INLINE void udp_handle::send(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len) {
+UVW_INLINE int udp_handle::send(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len) {
     auto req = parent().resource<details::send_req>(std::unique_ptr<char[], details::send_req::deleter>{data.release(), [](char *ptr) { delete[] ptr; }}, len);
 
     auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
@@ -148,18 +138,19 @@ UVW_INLINE void udp_handle::send(const sockaddr &addr, std::unique_ptr<char[]> d
 
     req->on<error_event>(listener);
     req->on<send_event>(listener);
-    req->send(raw(), &addr);
+
+    return req->send(raw(), &addr);
 }
 
-UVW_INLINE void udp_handle::send(const std::string &ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len) {
-    send(details::ip_addr(ip.data(), port), std::move(data), len);
+UVW_INLINE int udp_handle::send(const std::string &ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len) {
+    return send(details::ip_addr(ip.data(), port), std::move(data), len);
 }
 
-UVW_INLINE void udp_handle::send(socket_address addr, std::unique_ptr<char[]> data, unsigned int len) {
-    send(addr.ip, addr.port, std::move(data), len);
+UVW_INLINE int udp_handle::send(socket_address addr, std::unique_ptr<char[]> data, unsigned int len) {
+    return send(addr.ip, addr.port, std::move(data), len);
 }
 
-UVW_INLINE void udp_handle::send(const sockaddr &addr, char *data, unsigned int len) {
+UVW_INLINE int udp_handle::send(const sockaddr &addr, char *data, unsigned int len) {
     auto req = parent().resource<details::send_req>(std::unique_ptr<char[], details::send_req::deleter>{data, [](char *) {}}, len);
 
     auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
@@ -168,27 +159,21 @@ UVW_INLINE void udp_handle::send(const sockaddr &addr, char *data, unsigned int 
 
     req->on<error_event>(listener);
     req->on<send_event>(listener);
-    req->send(raw(), &addr);
+
+    return req->send(raw(), &addr);
 }
 
-UVW_INLINE void udp_handle::send(const std::string &ip, unsigned int port, char *data, unsigned int len) {
-    send(details::ip_addr(ip.data(), port), data, len);
+UVW_INLINE int udp_handle::send(const std::string &ip, unsigned int port, char *data, unsigned int len) {
+    return send(details::ip_addr(ip.data(), port), data, len);
 }
 
-UVW_INLINE void udp_handle::send(socket_address addr, char *data, unsigned int len) {
-    send(addr.ip, addr.port, data, len);
+UVW_INLINE int udp_handle::send(socket_address addr, char *data, unsigned int len) {
+    return send(addr.ip, addr.port, data, len);
 }
 
 UVW_INLINE int udp_handle::try_send(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len) {
     uv_buf_t bufs[] = {uv_buf_init(data.get(), len)};
-    auto bw = uv_udp_try_send(raw(), bufs, 1, &addr);
-
-    if(bw < 0) {
-        publish(error_event{bw});
-        bw = 0;
-    }
-
-    return bw;
+    return uv_udp_try_send(raw(), bufs, 1, &addr);
 }
 
 UVW_INLINE int udp_handle::try_send(const std::string &ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len) {
@@ -201,14 +186,7 @@ UVW_INLINE int udp_handle::try_send(socket_address addr, std::unique_ptr<char[]>
 
 UVW_INLINE int udp_handle::try_send(const sockaddr &addr, char *data, unsigned int len) {
     uv_buf_t bufs[] = {uv_buf_init(data, len)};
-    auto bw = uv_udp_try_send(raw(), bufs, 1, &addr);
-
-    if(bw < 0) {
-        publish(error_event{bw});
-        bw = 0;
-    }
-
-    return bw;
+    return uv_udp_try_send(raw(), bufs, 1, &addr);
 }
 
 UVW_INLINE int udp_handle::try_send(const std::string &ip, unsigned int port, char *data, unsigned int len) {
@@ -219,16 +197,12 @@ UVW_INLINE int udp_handle::try_send(socket_address addr, char *data, unsigned in
     return try_send(addr.ip, addr.port, data, len);
 }
 
-UVW_INLINE void udp_handle::recv() {
-    if(auto err = uv_udp_recv_start(raw(), &details::common_alloc_callback, &recv_callback); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int udp_handle::recv() {
+    return uv_udp_recv_start(raw(), &details::common_alloc_callback, &recv_callback);
 }
 
-UVW_INLINE void udp_handle::stop() {
-    if(auto err = uv_udp_recv_stop(raw()); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int udp_handle::stop() {
+    return uv_udp_recv_stop(raw());
 }
 
 UVW_INLINE size_t udp_handle::send_queue_size() const UVW_NOEXCEPT {

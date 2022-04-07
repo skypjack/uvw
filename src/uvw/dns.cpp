@@ -21,10 +21,8 @@ UVW_INLINE void get_addr_info_req::addr_info_callback(uv_getaddrinfo_t *req, int
     }
 }
 
-UVW_INLINE void get_addr_info_req::node_addr_info(const char *node, const char *service, addrinfo *hints) {
-    if(auto err = this->leak_if(uv_getaddrinfo(parent().raw(), raw(), &addr_info_callback, node, service, hints)); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int get_addr_info_req::node_addr_info(const char *node, const char *service, addrinfo *hints) {
+    return this->leak_if(uv_getaddrinfo(parent().raw(), raw(), &addr_info_callback, node, service, hints));
 }
 
 UVW_INLINE auto get_addr_info_req::node_addr_info_sync(const char *node, const char *service, addrinfo *hints) {
@@ -34,24 +32,24 @@ UVW_INLINE auto get_addr_info_req::node_addr_info_sync(const char *node, const c
     return std::make_pair(!err, std::move(data));
 }
 
-UVW_INLINE void get_addr_info_req::node_addr_info(const std::string &node, addrinfo *hints) {
-    node_addr_info(node.data(), nullptr, hints);
+UVW_INLINE int get_addr_info_req::node_addr_info(const std::string &node, addrinfo *hints) {
+    return node_addr_info(node.data(), nullptr, hints);
 }
 
 UVW_INLINE std::pair<bool, std::unique_ptr<addrinfo, get_addr_info_req::deleter>> get_addr_info_req::node_addr_info_sync(const std::string &node, addrinfo *hints) {
     return node_addr_info_sync(node.data(), nullptr, hints);
 }
 
-UVW_INLINE void get_addr_info_req::service_addr_info(const std::string &service, addrinfo *hints) {
-    node_addr_info(nullptr, service.data(), hints);
+UVW_INLINE int get_addr_info_req::service_addr_info(const std::string &service, addrinfo *hints) {
+    return node_addr_info(nullptr, service.data(), hints);
 }
 
 UVW_INLINE std::pair<bool, std::unique_ptr<addrinfo, get_addr_info_req::deleter>> get_addr_info_req::service_addr_info_sync(const std::string &service, addrinfo *hints) {
     return node_addr_info_sync(nullptr, service.data(), hints);
 }
 
-UVW_INLINE void get_addr_info_req::addr_info(const std::string &node, const std::string &service, addrinfo *hints) {
-    node_addr_info(node.data(), service.data(), hints);
+UVW_INLINE int get_addr_info_req::addr_info(const std::string &node, const std::string &service, addrinfo *hints) {
+    return node_addr_info(node.data(), service.data(), hints);
 }
 
 UVW_INLINE std::pair<bool, std::unique_ptr<addrinfo, get_addr_info_req::deleter>> get_addr_info_req::addr_info_sync(const std::string &node, const std::string &service, addrinfo *hints) {
@@ -66,18 +64,16 @@ UVW_INLINE void get_name_info_req::name_info_callback(uv_getnameinfo_t *req, int
     }
 }
 
-UVW_INLINE void get_name_info_req::name_info(const sockaddr &addr, int flags) {
-    if(auto err = this->leak_if(uv_getnameinfo(parent().raw(), raw(), &name_info_callback, &addr, flags)); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int get_name_info_req::name_info(const sockaddr &addr, int flags) {
+    return this->leak_if(uv_getnameinfo(parent().raw(), raw(), &name_info_callback, &addr, flags));
 }
 
-UVW_INLINE void get_name_info_req::name_info(const std::string &ip, unsigned int port, int flags) {
-    name_info(details::ip_addr(ip.data(), port), flags);
+UVW_INLINE int get_name_info_req::name_info(const std::string &ip, unsigned int port, int flags) {
+    return name_info(details::ip_addr(ip.data(), port), flags);
 }
 
-UVW_INLINE void get_name_info_req::name_info(socket_address addr, int flags) {
-    name_info(std::move(addr.ip), addr.port, flags);
+UVW_INLINE int get_name_info_req::name_info(socket_address addr, int flags) {
+    return name_info(std::move(addr.ip), addr.port, flags);
 }
 
 UVW_INLINE std::pair<bool, std::pair<const char *, const char *>> get_name_info_req::name_info_sync(const sockaddr &addr, int flags) {
