@@ -29,9 +29,6 @@ TEST(FsReq, MkdirAndRmdir) {
             ASSERT_FALSE(checkFsRmdirEvent);
             checkFsRmdirEvent = true;
             break;
-        default:
-            // nothing to do here
-            break;
         };
     });
 
@@ -78,9 +75,6 @@ TEST(FsReq, MkdtempAndRmdir) {
             ASSERT_FALSE(checkFsRmdirEvent);
             checkFsRmdirEvent = true;
             break;
-        default:
-            // nothing to do here
-            break;
         };
     });
 
@@ -125,9 +119,6 @@ TEST(FsReq, Stat) {
             ASSERT_FALSE(checkFsStatEvent);
             checkFsStatEvent = true;
             break;
-        default:
-            // nothing to do here
-            break;
         }
     });
 
@@ -138,9 +129,6 @@ TEST(FsReq, Stat) {
             break;
         case uvw::fs_req::fs_type::OPEN:
             req.close();
-            break;
-        default:
-            // nothing to do here
             break;
         }
     });
@@ -189,9 +177,6 @@ TEST(FsReq, Lstat) {
             ASSERT_FALSE(checkFsLstatEvent);
             checkFsLstatEvent = true;
             break;
-        default:
-            // nothing to do here
-            break;
         }
     });
 
@@ -202,9 +187,6 @@ TEST(FsReq, Lstat) {
             break;
         case uvw::fs_req::fs_type::OPEN:
             req.close();
-            break;
-        default:
-            // nothing to do here
             break;
         }
     });
@@ -254,9 +236,6 @@ TEST(FsReq, Rename) {
             ASSERT_FALSE(checkFsRenameEvent);
             checkFsRenameEvent = true;
             break;
-        default:
-            // nothing to do here
-            break;
         }
     });
 
@@ -267,9 +246,6 @@ TEST(FsReq, Rename) {
             break;
         case uvw::fs_req::fs_type::OPEN:
             req.close();
-            break;
-        default:
-            // nothing to do here
             break;
         }
     });
@@ -316,9 +292,6 @@ TEST(FsReq, Access) {
             ASSERT_FALSE(checkFsAccessEvent);
             checkFsAccessEvent = true;
             break;
-        default:
-            // nothing to do here
-            break;
         }
     });
 
@@ -329,9 +302,6 @@ TEST(FsReq, Access) {
             break;
         case uvw::fs_req::fs_type::OPEN:
             req.close();
-            break;
-        default:
-            // nothing to do here
             break;
         }
     });
@@ -377,9 +347,6 @@ TEST(FsReq, Chmod) {
             ASSERT_FALSE(checkFsChmodEvent);
             checkFsChmodEvent = true;
             break;
-        default:
-            // nothing to do here
-            break;
         }
     });
 
@@ -390,9 +357,6 @@ TEST(FsReq, Chmod) {
             break;
         case uvw::fs_req::fs_type::OPEN:
             req.close();
-            break;
-        default:
-            // nothing to do here
             break;
         }
     });
@@ -438,9 +402,6 @@ TEST(FsReq, Utime) {
             ASSERT_FALSE(checkFsUtimeEvent);
             checkFsUtimeEvent = true;
             break;
-        default:
-            // nothing to do here
-            break;
         }
     });
 
@@ -453,9 +414,6 @@ TEST(FsReq, Utime) {
             break;
         case uvw::fs_req::fs_type::OPEN:
             req.close();
-            break;
-        default:
-            // nothing to do here
             break;
         }
     });
@@ -513,9 +471,6 @@ TEST(FsReq, LinkAndUnlink) {
             ASSERT_FALSE(checkFsUnlinkEvent);
             checkFsUnlinkEvent = true;
             break;
-        default:
-            // nothing to do here
-            break;
         }
     });
 
@@ -526,9 +481,6 @@ TEST(FsReq, LinkAndUnlink) {
             break;
         case uvw::fs_req::fs_type::OPEN:
             req.close();
-            break;
-        default:
-            // nothing to do here
             break;
         }
     });
@@ -584,9 +536,6 @@ TEST(FsReq, SymlinkAndUnlink) {
             ASSERT_FALSE(checkFsUnlinkEvent);
             checkFsUnlinkEvent = true;
             break;
-        default:
-            // nothing to do here
-            break;
         }
     });
 
@@ -597,9 +546,6 @@ TEST(FsReq, SymlinkAndUnlink) {
             break;
         case uvw::fs_req::fs_type::OPEN:
             req.close();
-            break;
-        default:
-            // nothing to do here
             break;
         }
     });
@@ -653,9 +599,6 @@ TEST(FsReq, Readlink) {
         case uvw::fs_req::fs_type::SYMLINK:
             req.readlink(linkname);
             break;
-        default:
-            // nothing to do here
-            break;
         }
     });
 
@@ -666,9 +609,6 @@ TEST(FsReq, Readlink) {
             break;
         case uvw::fs_req::fs_type::OPEN:
             req.close();
-            break;
-        default:
-            // nothing to do here
             break;
         }
     });
@@ -721,9 +661,6 @@ TEST(FsReq, Realpath) {
             ASSERT_NE(event.path, nullptr);
             checkFsRealpathEvent = true;
             break;
-        default:
-            // nothing to do here
-            break;
         };
     });
 
@@ -734,9 +671,6 @@ TEST(FsReq, Realpath) {
             break;
         case uvw::fs_req::fs_type::OPEN:
             req.close();
-            break;
-        default:
-            // nothing to do here
             break;
         }
     });
@@ -789,9 +723,6 @@ TEST(FsReq, Chown) {
         case uvw::fs_req::fs_type::STAT:
             req.chown(filename, static_cast<uvw::uid_type>(event.stat.st_uid), static_cast<uvw::uid_type>(event.stat.st_gid));
             break;
-        default:
-            // nothing to do here
-            break;
         };
     });
 
@@ -802,9 +733,6 @@ TEST(FsReq, Chown) {
             break;
         case uvw::fs_req::fs_type::OPEN:
             req.close();
-            break;
-        default:
-            // nothing to do here
             break;
         }
     });
@@ -859,9 +787,6 @@ TEST(FsReq, Lchown) {
         case uvw::fs_req::fs_type::STAT:
             req.lchown(filename, static_cast<uvw::uid_type>(event.stat.st_uid), static_cast<uvw::uid_type>(event.stat.st_gid));
             break;
-        default:
-            // nothing to do here
-            break;
         };
     });
 
@@ -872,9 +797,6 @@ TEST(FsReq, Lchown) {
             break;
         case uvw::fs_req::fs_type::OPEN:
             req.close();
-            break;
-        default:
-            // nothing to do here
             break;
         }
     });
@@ -939,9 +861,6 @@ TEST(FsReq, ReadDir) {
                 checkFsReadDirEvent = true;
                 req.closedir();
             }
-            break;
-        default:
-            // nothing to do here
             break;
         }
     });
