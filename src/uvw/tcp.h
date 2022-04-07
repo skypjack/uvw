@@ -183,8 +183,9 @@ public:
      * An error event is emitted in case of errors during the connection.
      *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
+     * @return Underlying return value.
      */
-    void connect(const sockaddr &addr);
+    int connect(const sockaddr &addr);
 
     /**
      * @brief Establishes an IPv4 or IPv6 TCP connection.
@@ -194,8 +195,9 @@ public:
      *
      * @param ip The address to which to bind.
      * @param port The port to which to bind.
+     * @return Underlying return value.
      */
-    void connect(const std::string &ip, unsigned int port);
+    int connect(const std::string &ip, unsigned int port);
 
     /**
      * @brief Establishes an IPv4 or IPv6 TCP connection.
@@ -204,8 +206,9 @@ public:
      * An error event is emitted in case of errors during the connection.
      *
      * @param addr A valid instance of socket_address.
+     * @return Underlying return value.
      */
-    void connect(socket_address addr);
+    int connect(socket_address addr);
 
     /**
      * @brief Resets a TCP connection by sending a RST packet.

@@ -53,8 +53,7 @@ TEST(TCP, ReadWrite) {
 
     ASSERT_EQ(0, (server->bind(address, port)));
     ASSERT_EQ(0, server->listen());
-
-    client->connect(address, port);
+    ASSERT_EQ(0, (client->connect(address, port)));
 
     loop->run();
 }
@@ -95,8 +94,7 @@ TEST(TCP, SockPeer) {
 
     ASSERT_EQ(0, (server->bind(uvw::socket_address{address, port})));
     ASSERT_EQ(0, server->listen());
-
-    client->connect(uvw::socket_address{address, port});
+    ASSERT_EQ(0, (client->connect(uvw::socket_address{address, port})));
 
     loop->run();
 }
@@ -133,8 +131,7 @@ TEST(TCP, Shutdown) {
 
     ASSERT_EQ(0, (server->bind(address, port)));
     ASSERT_EQ(0, server->listen());
-
-    client->connect(address, port);
+    ASSERT_EQ(0, (client->connect(address, port)));
 
     loop->run();
 }
@@ -143,20 +140,11 @@ TEST(TCP, WriteError) {
     auto loop = uvw::loop::get_default();
     auto handle = loop->resource<uvw::tcp_handle>();
 
-    bool checkWriteSmartPtrErrorEvent = false;
-    bool checkWriteNakedPtrErrorEvent = false;
-
     handle->close();
-    handle->on<uvw::error_event>([&checkWriteSmartPtrErrorEvent](const auto &, auto &) { checkWriteSmartPtrErrorEvent = true; });
-    handle->write(std::unique_ptr<char[]>{}, 0);
-    handle->on<uvw::error_event>([&checkWriteNakedPtrErrorEvent](const auto &, auto &) { checkWriteNakedPtrErrorEvent = true; });
-    handle->write(nullptr, 0);
+
+    ASSERT_NE(0, (handle->write(std::unique_ptr<char[]>{}, 0)));
+    ASSERT_NE(0, (handle->write(nullptr, 0)));
 
     ASSERT_LT(handle->try_write(std::unique_ptr<char[]>{}, 0), 0);
     ASSERT_LT(handle->try_write(nullptr, 0), 0);
-
-    loop->run();
-
-    ASSERT_TRUE(checkWriteSmartPtrErrorEvent);
-    ASSERT_TRUE(checkWriteNakedPtrErrorEvent);
 }

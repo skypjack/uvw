@@ -41,8 +41,7 @@ TEST(Pipe, ReadWrite) {
     server->bind(sockname);
 
     ASSERT_EQ(0, server->listen());
-
-    client->connect(sockname);
+    ASSERT_EQ(0, client->connect(sockname));
 
     loop->run();
 }
@@ -84,8 +83,7 @@ TEST(Pipe, SockPeer) {
     server->bind(sockname);
 
     ASSERT_EQ(0, server->listen());
-
-    client->connect(sockname);
+    ASSERT_EQ(0, client->connect(sockname));
 
     loop->run();
 }
@@ -130,8 +128,7 @@ TEST(Pipe, Shutdown) {
     server->bind(sockname);
 
     ASSERT_EQ(0, server->listen());
-
-    client->connect(sockname);
+    ASSERT_EQ(0, client->connect(sockname));
 
     loop->run();
 }

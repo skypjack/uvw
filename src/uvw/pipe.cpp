@@ -22,7 +22,7 @@ UVW_INLINE int pipe_handle::bind(const std::string &name) {
     return uv_pipe_bind(raw(), name.data());
 }
 
-UVW_INLINE void pipe_handle::connect(const std::string &name) {
+UVW_INLINE int pipe_handle::connect(const std::string &name) {
     auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
         ptr->publish(event);
     };
@@ -30,7 +30,8 @@ UVW_INLINE void pipe_handle::connect(const std::string &name) {
     auto connect = parent().resource<details::connect_req>();
     connect->on<error_event>(listener);
     connect->on<connect_event>(listener);
-    connect->connect(&uv_pipe_connect, raw(), name.data());
+
+    return connect->connect(&uv_pipe_connect, raw(), name.data());
 }
 
 UVW_INLINE std::string pipe_handle::sock() const UVW_NOEXCEPT {
