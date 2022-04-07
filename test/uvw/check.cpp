@@ -11,14 +11,17 @@ TEST(Check, StartAndStop) {
 
     handle->on<uvw::check_event>([&checkCheckEvent](const auto &, auto &hndl) {
         ASSERT_FALSE(checkCheckEvent);
+
         checkCheckEvent = true;
-        hndl.stop();
+
+        ASSERT_EQ(0, hndl.stop());
+
         hndl.close();
+
         ASSERT_TRUE(hndl.closing());
     });
 
-    handle->start();
-
+    ASSERT_EQ(0, handle->start());
     ASSERT_TRUE(handle->active());
     ASSERT_FALSE(handle->closing());
 
