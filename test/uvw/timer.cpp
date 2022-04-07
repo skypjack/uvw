@@ -88,6 +88,15 @@ TEST(Timer, Again) {
 
     ASSERT_FALSE(checkErrorEvent);
     ASSERT_TRUE(checkTimerEvent);
+
+    handle->close();
+
+    ASSERT_FALSE(handle->active());
+    ASSERT_TRUE(handle->closing());
+
+    handle->start(uvw::timer_handle::time{0}, uvw::timer_handle::time{1});
+
+    ASSERT_TRUE(checkErrorEvent);
 }
 
 TEST(Timer, Repeat) {
