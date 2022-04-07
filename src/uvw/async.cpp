@@ -16,9 +16,8 @@ UVW_INLINE int async_handle::init() {
 }
 
 UVW_INLINE void async_handle::send() {
-    if(auto err = uv_async_send(raw()); err != 0) {
-        publish(error_event{err});
-    }
+    // uv_async_send only returns an error if the handle has the wrong type which is not the case here
+    uv_async_send(raw());
 }
 
 } // namespace uvw
