@@ -24,13 +24,8 @@ TEST(FsPoll, Functionalities) {
     });
 
     request->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::WRITE:
+        if(event.type == uvw::fs_req::fs_type::WRITE) {
             req.close();
-            break;
-        default:
-            // nothing to do here
-            break;
         };
     });
 

@@ -29,16 +29,10 @@ TEST(FsEvent, Functionalities) {
     request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::WRITE:
+        if(event.type == uvw::fs_req::fs_type::WRITE) {
             req.close();
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.write(std::unique_ptr<char[]>{new char[1]{42}}, 1, 0);
-            break;
-        default:
-            // nothing to do here
-            break;
         }
     });
 
