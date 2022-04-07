@@ -22,9 +22,8 @@ UVW_INLINE void timer_handle::start(timer_handle::time timeout, timer_handle::ti
 }
 
 UVW_INLINE void timer_handle::stop() {
-    if(auto err = uv_timer_stop(raw()); err != 0) {
-        publish(error_event{err});
-    }
+    // uv_timer_stop never returns 0 apparently
+    uv_timer_stop(raw());
 }
 
 UVW_INLINE void timer_handle::again() {
