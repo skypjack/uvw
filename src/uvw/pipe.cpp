@@ -14,16 +14,12 @@ UVW_INLINE int pipe_handle::init() {
     return leak_if(uv_pipe_init(parent().raw(), raw(), ipc));
 }
 
-UVW_INLINE void pipe_handle::open(file_handle file) {
-    if(auto err = uv_pipe_open(raw(), file); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int pipe_handle::open(file_handle file) {
+    return uv_pipe_open(raw(), file);
 }
 
-UVW_INLINE void pipe_handle::bind(const std::string &name) {
-    if(auto err = uv_pipe_bind(raw(), name.data()); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int pipe_handle::bind(const std::string &name) {
+    return uv_pipe_bind(raw(), name.data());
 }
 
 UVW_INLINE void pipe_handle::connect(const std::string &name) {

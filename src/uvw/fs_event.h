@@ -95,13 +95,15 @@ public:
      *
      * @param path The file or directory to be monitored.
      * @param flags Additional flags to control the behavior.
+     * @return Underlying return value.
      */
-    void start(const std::string &path, event_flags flags = event_flags::_UVW_ENUM);
+    int start(const std::string &path, event_flags flags = event_flags::_UVW_ENUM);
 
     /**
      * @brief Stops polling the file descriptor.
+     * @return Underlying return value.
      */
-    void stop();
+    int stop();
 
     /**
      * @brief Gets the path being monitored.
