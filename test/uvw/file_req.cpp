@@ -72,9 +72,6 @@ TEST(FileReq, OpenAndClose) {
             checkFileOpenEvent = true;
             req.close();
             break;
-        default:
-            // nothing to do here
-            break;
         };
     });
 
@@ -127,9 +124,6 @@ TEST(FileReq, RWChecked) {
             checkFileWriteEvent = true;
             req.read(0, 1);
             break;
-        default:
-            // nothing to do here
-            break;
         };
     });
 
@@ -169,9 +163,6 @@ TEST(FileReq, RWUnchecked) {
             ASSERT_FALSE(checkFileWriteEvent);
             checkFileWriteEvent = true;
             req.read(0, 1);
-            break;
-        default:
-            // nothing to do here
             break;
         };
     });
@@ -229,9 +220,6 @@ TEST(FileReq, Stat) {
             checkFileStatEvent = true;
             req.close();
             break;
-        default:
-            // nothing to do here
-            break;
         };
     });
 
@@ -280,9 +268,6 @@ TEST(FileReq, Sync) {
         case uvw::fs_req::fs_type::OPEN:
             req.sync();
             break;
-        default:
-            // nothing to do here
-            break;
         };
     });
 
@@ -327,9 +312,6 @@ TEST(FileReq, Datasync) {
             break;
         case uvw::fs_req::fs_type::OPEN:
             req.datasync();
-            break;
-        default:
-            // nothing to do here
             break;
         };
     });
@@ -376,9 +358,6 @@ TEST(FileReq, Truncate) {
         case uvw::fs_req::fs_type::OPEN:
             req.truncate(0);
             break;
-        default:
-            // nothing to do here
-            break;
         };
     });
 
@@ -423,9 +402,6 @@ TEST(FileReq, Chmod) {
             break;
         case uvw::fs_req::fs_type::OPEN:
             req.chmod(0644);
-            break;
-        default:
-            // nothing to do here
             break;
         };
     });
@@ -473,9 +449,6 @@ TEST(FileReq, Futime) {
             break;
         case uvw::fs_req::fs_type::OPEN:
             req.futime(value, value);
-            break;
-        default:
-            // nothing to do here
             break;
         };
     });
@@ -530,9 +503,6 @@ TEST(FileReq, Chown) {
             break;
         case uvw::fs_req::fs_type::OPEN:
             req.stat();
-            break;
-        default:
-            // nothing to do here
             break;
         };
     });
