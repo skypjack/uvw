@@ -32,16 +32,12 @@ UVW_INLINE int poll_handle::init() {
     }
 }
 
-UVW_INLINE void poll_handle::start(poll_handle::poll_event flags) {
-    if(auto err = uv_poll_start(raw(), static_cast<uv_poll_event>(flags), &start_callback); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int poll_handle::start(poll_handle::poll_event flags) {
+    return uv_poll_start(raw(), static_cast<uv_poll_event>(flags), &start_callback);
 }
 
-UVW_INLINE void poll_handle::stop() {
-    if(auto err = uv_poll_stop(raw()); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int poll_handle::stop() {
+    return uv_poll_stop(raw());
 }
 
 } // namespace uvw

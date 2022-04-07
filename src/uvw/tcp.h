@@ -63,8 +63,10 @@ public:
      *
      * @param socket A valid socket handle (either a file descriptor or a
      * SOCKET).
+     *
+     * @return Underlying return value.
      */
-    void open(os_socket_handle socket);
+    int open(os_socket_handle socket);
 
     /**
      * @brief Enables/Disables Nagle’s algorithm.
@@ -113,8 +115,9 @@ public:
      *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @param opts Optional additional flags.
+     * @return Underlying return value.
      */
-    void bind(const sockaddr &addr, tcp_flags opts = tcp_flags::_UVW_ENUM);
+    int bind(const sockaddr &addr, tcp_flags opts = tcp_flags::_UVW_ENUM);
 
     /**
      * @brief Binds the handle to an address and port.
@@ -132,8 +135,9 @@ public:
      * @param ip The address to which to bind.
      * @param port The port to which to bind.
      * @param opts Optional additional flags.
+     * @return Underlying return value.
      */
-    void bind(const std::string &ip, unsigned int port, tcp_flags opts = tcp_flags::_UVW_ENUM);
+    int bind(const std::string &ip, unsigned int port, tcp_flags opts = tcp_flags::_UVW_ENUM);
 
     /**
      * @brief Binds the handle to an address and port.
@@ -150,8 +154,9 @@ public:
      *
      * @param addr A valid instance of socket_address.
      * @param opts Optional additional flags.
+     * @return Underlying return value.
      */
-    void bind(socket_address addr, tcp_flags opts = tcp_flags::_UVW_ENUM);
+    int bind(socket_address addr, tcp_flags opts = tcp_flags::_UVW_ENUM);
 
     /**
      * @brief Gets the current address to which the handle is bound.
@@ -212,8 +217,10 @@ public:
      *
      * A close event is emitted when the connection has been reset.<br/>
      * An error event is emitted in case of errors.
+     *
+     * @return Underlying return value.
      */
-    void close_reset();
+    int close_reset();
 
 private:
     enum {

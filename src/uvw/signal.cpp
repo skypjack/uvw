@@ -18,22 +18,16 @@ UVW_INLINE int signal_handle::init() {
     return leak_if(uv_signal_init(parent().raw(), raw()));
 }
 
-UVW_INLINE void signal_handle::start(int signum) {
-    if(auto err = uv_signal_start(raw(), &start_callback, signum); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int signal_handle::start(int signum) {
+    return uv_signal_start(raw(), &start_callback, signum);
 }
 
-UVW_INLINE void signal_handle::one_shot(int signum) {
-    if(auto err = uv_signal_start_oneshot(raw(), &start_callback, signum); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int signal_handle::one_shot(int signum) {
+    return uv_signal_start_oneshot(raw(), &start_callback, signum);
 }
 
-UVW_INLINE void signal_handle::stop() {
-    if(auto err = uv_signal_stop(raw()); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int signal_handle::stop() {
+    return uv_signal_stop(raw());
 }
 
 UVW_INLINE int signal_handle::signal() const UVW_NOEXCEPT {

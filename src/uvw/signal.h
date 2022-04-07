@@ -46,8 +46,9 @@ public:
      * The handle will start emitting signal events when needed.
      *
      * @param signum The signal to be monitored.
+     * @return Underlying return value.
      */
-    void start(int signum);
+    int start(int signum);
 
     /**
      * @brief Starts the handle.
@@ -55,14 +56,16 @@ public:
      * Same functionality as signal_handle::start but the signal handler is
      * reset the moment the signal is received.
      *
-     * @param signum
+     * @param signum The signal to be monitored.
+     * @return Underlying return value.
      */
-    void one_shot(int signum);
+    int one_shot(int signum);
 
     /**
      * @brief Stops the handle.
+     * @return Underlying return value.
      */
-    void stop();
+    int stop();
 
     /**
      * @brief Gets the signal being monitored.

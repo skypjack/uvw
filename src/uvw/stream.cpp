@@ -26,10 +26,8 @@ UVW_INLINE void details::shutdown_req::shoutdown_callback(uv_shutdown_t *req, in
     }
 }
 
-UVW_INLINE void details::shutdown_req::shutdown(uv_stream_t *hndl) {
-    if(auto err = this->leak_if(uv_shutdown(raw(), hndl, &shoutdown_callback)); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int details::shutdown_req::shutdown(uv_stream_t *hndl) {
+    return this->leak_if(uv_shutdown(raw(), hndl, &shoutdown_callback));
 }
 
 } // namespace uvw

@@ -49,7 +49,8 @@ TEST(TCP, ReadWrite) {
         handle.write(std::move(dataWrite), 2);
     });
 
-    server->bind(address, port);
+    ASSERT_EQ(0, (server->bind(address, port)));
+
     server->listen();
     client->connect(address, port);
 
@@ -90,7 +91,8 @@ TEST(TCP, SockPeer) {
         handle.close();
     });
 
-    server->bind(uvw::socket_address{address, port});
+    ASSERT_EQ(0, (server->bind(uvw::socket_address{address, port})));
+
     server->listen();
     client->connect(uvw::socket_address{address, port});
 
@@ -124,10 +126,11 @@ TEST(TCP, Shutdown) {
     });
 
     client->on<uvw::connect_event>([](const uvw::connect_event &, uvw::tcp_handle &handle) {
-        handle.shutdown();
+        ASSERT_EQ(0, handle.shutdown());
     });
 
-    server->bind(address, port);
+    ASSERT_EQ(0, (server->bind(address, port)));
+
     server->listen();
     client->connect(address, port);
 
