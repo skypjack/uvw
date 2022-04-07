@@ -55,8 +55,9 @@ public:
      * An error event is emitted in case of errors.
      *
      * @param file A valid file handle (either a file descriptor or a HANDLE).
+     * @return Underlying return value.
      */
-    void open(file_handle file);
+    int open(file_handle file);
 
     /**
      * @brief bind Binds the pipe to a file path (Unix) or a name (Windows).
@@ -65,8 +66,9 @@ public:
      * An error event is emitted in case of errors.
      *
      * @param name A valid file path.
+     * @return Underlying return value.
      */
-    void bind(const std::string &name);
+    int bind(const std::string &name);
 
     /**
      * @brief Connects to the Unix domain socket or the named pipe.

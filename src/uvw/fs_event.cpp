@@ -24,16 +24,12 @@ UVW_INLINE int fs_event_handle::init() {
     return leak_if(uv_fs_event_init(parent().raw(), raw()));
 }
 
-UVW_INLINE void fs_event_handle::start(const std::string &path, event_flags flags) {
-    if(auto err = uv_fs_event_start(raw(), &start_callback, path.data(), static_cast<uv_fs_event_flags>(flags)); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int fs_event_handle::start(const std::string &path, event_flags flags) {
+    return uv_fs_event_start(raw(), &start_callback, path.data(), static_cast<uv_fs_event_flags>(flags));
 }
 
-UVW_INLINE void fs_event_handle::stop() {
-    if(auto err = uv_fs_event_stop(raw()); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int fs_event_handle::stop() {
+    return uv_fs_event_stop(raw());
 }
 
 UVW_INLINE std::string fs_event_handle::path() UVW_NOEXCEPT {

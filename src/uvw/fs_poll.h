@@ -49,13 +49,15 @@ public:
      *
      * @param file The path to the file to be checked.
      * @param interval Milliseconds between successive checks.
+     * @return Underlying return value.
      */
-    void start(const std::string &file, time interval);
+    int start(const std::string &file, time interval);
 
     /**
      * @brief Stops the handle.
+     * @return Underlying return value.
      */
-    void stop();
+    int stop();
 
     /**
      * @brief Gets the path being monitored by the handle.

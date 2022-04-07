@@ -17,9 +17,13 @@ TEST(FsPoll, Functionalities) {
 
     handle->on<uvw::fs_poll_event>([&checkFsPollEvent](const auto &, auto &hndl) {
         ASSERT_FALSE(checkFsPollEvent);
+        
         checkFsPollEvent = true;
-        hndl.stop();
+        
+        ASSERT_EQ(0, hndl.stop());
+        
         hndl.close();
+        
         ASSERT_TRUE(hndl.closing());
     });
 
@@ -30,7 +34,9 @@ TEST(FsPoll, Functionalities) {
     });
 
     request->open_sync(filename, uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC, 0755);
-    handle->start(filename, uvw::fs_poll_handle::time{1000});
+    
+    ASSERT_EQ(0, handle->start(filename, uvw::fs_poll_handle::time{1000}));
+    
     request->write(std::unique_ptr<char[]>{new char[1]{42}}, 1, 0);
 
     ASSERT_EQ(handle->path(), filename);

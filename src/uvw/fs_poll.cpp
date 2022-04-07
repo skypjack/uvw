@@ -22,16 +22,12 @@ UVW_INLINE int fs_poll_handle::init() {
     return leak_if(uv_fs_poll_init(parent().raw(), raw()));
 }
 
-UVW_INLINE void fs_poll_handle::start(const std::string &file, fs_poll_handle::time interval) {
-    if(auto err = uv_fs_poll_start(raw(), &start_callback, file.data(), interval.count()); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int fs_poll_handle::start(const std::string &file, fs_poll_handle::time interval) {
+    return uv_fs_poll_start(raw(), &start_callback, file.data(), interval.count());
 }
 
-UVW_INLINE void fs_poll_handle::stop() {
-    if(auto err = uv_fs_poll_stop(raw()); err != 0) {
-        publish(error_event{err});
-    }
+UVW_INLINE int fs_poll_handle::stop() {
+    return uv_fs_poll_stop(raw());
 }
 
 UVW_INLINE std::string fs_poll_handle::path() UVW_NOEXCEPT {
