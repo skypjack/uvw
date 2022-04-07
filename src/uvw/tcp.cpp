@@ -59,15 +59,15 @@ UVW_INLINE socket_address tcp_handle::peer() const UVW_NOEXCEPT {
     return details::sock_addr(storage);
 }
 
-UVW_INLINE void tcp_handle::connect(const std::string &ip, unsigned int port) {
-    connect(details::ip_addr(ip.data(), port));
+UVW_INLINE int tcp_handle::connect(const std::string &ip, unsigned int port) {
+    return connect(details::ip_addr(ip.data(), port));
 }
 
-UVW_INLINE void tcp_handle::connect(socket_address addr) {
-    connect(addr.ip, addr.port);
+UVW_INLINE int tcp_handle::connect(socket_address addr) {
+    return connect(addr.ip, addr.port);
 }
 
-UVW_INLINE void tcp_handle::connect(const sockaddr &addr) {
+UVW_INLINE int tcp_handle::connect(const sockaddr &addr) {
     auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
         ptr->publish(event);
     };
@@ -75,7 +75,8 @@ UVW_INLINE void tcp_handle::connect(const sockaddr &addr) {
     auto req = parent().resource<details::connect_req>();
     req->on<error_event>(listener);
     req->on<connect_event>(listener);
-    req->connect(&uv_tcp_connect, raw(), &addr);
+
+    return req->connect(&uv_tcp_connect, raw(), &addr);
 }
 
 UVW_INLINE int tcp_handle::close_reset() {

@@ -17,7 +17,9 @@ TEST(TTY, Functionalities) {
 
     timer->on<uvw::timer_event>([handle](const auto &, auto &hndl) {
         auto data = std::make_unique<char[]>('*');
-        handle->write(std::move(data), 1);
+
+        ASSERT_EQ(0, (handle->write(std::move(data), 1)));
+
         hndl.close();
     });
 

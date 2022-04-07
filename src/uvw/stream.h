@@ -46,16 +46,14 @@ public:
     using request::request;
 
     template<typename F, typename... Args>
-    auto connect(F &&f, Args &&...args) -> std::enable_if_t<std::is_same_v<decltype(std::forward<F>(f)(raw(), std::forward<Args>(args)..., &connect_callback)), void>> {
+    auto connect(F &&f, Args &&...args) -> std::enable_if_t<std::is_same_v<decltype(std::forward<F>(f)(raw(), std::forward<Args>(args)..., &connect_callback)), void>, int> {
         std::forward<F>(f)(raw(), std::forward<Args>(args)..., &connect_callback);
-        this->leak_if(0);
+        return this->leak_if(0);
     }
 
     template<typename F, typename... Args>
-    auto connect(F &&f, Args &&...args) -> std::enable_if_t<!std::is_same_v<decltype(std::forward<F>(f)(raw(), std::forward<Args>(args)..., &connect_callback)), void>> {
-        if(auto err = this->leak_if(std::forward<F>(f)(raw(), std::forward<Args>(args)..., &connect_callback)); err) {
-            publish(error_event{err});
-        }
+    auto connect(F &&f, Args &&...args) -> std::enable_if_t<!std::is_same_v<decltype(std::forward<F>(f)(raw(), std::forward<Args>(args)..., &connect_callback)), void>, int> {
+        return this->leak_if(std::forward<F>(f)(raw(), std::forward<Args>(args)..., &connect_callback));
     }
 };
 
@@ -84,16 +82,12 @@ public:
           data{std::move(dt)},
           buf{uv_buf_init(data.get(), len)} {}
 
-    void write(uv_stream_t *hndl) {
-        if(auto err = this->leak_if(uv_write(this->raw(), hndl, &buf, 1, &write_callback)); err != 0) {
-            this->publish(error_event{err});
-        }
+    int write(uv_stream_t *hndl) {
+        return this->leak_if(uv_write(this->raw(), hndl, &buf, 1, &write_callback));
     }
 
-    void write(uv_stream_t *hndl, uv_stream_t *send) {
-        if(auto err = this->leak_if(uv_write2(this->raw(), hndl, &buf, 1, send, &write_callback)); err != 0) {
-            this->publish(error_event{err});
-        }
+    int write(uv_stream_t *hndl, uv_stream_t *send) {
+        return this->leak_if(uv_write2(this->raw(), hndl, &buf, 1, send, &write_callback));
     }
 
 private:
@@ -261,9 +255,10 @@ public:
      *
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
+     * @return Underlying return value.
      */
     template<typename Deleter>
-    void write(std::unique_ptr<char[], Deleter> data, unsigned int len) {
+    int write(std::unique_ptr<char[], Deleter> data, unsigned int len) {
         auto req = this->parent().template resource<details::write_req<Deleter>>(std::move(data), len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
@@ -271,7 +266,8 @@ public:
 
         req->template on<error_event>(listener);
         req->template on<write_event>(listener);
-        req->write(as_uv_stream());
+
+        return req->write(as_uv_stream());
     }
 
     /**
@@ -285,8 +281,9 @@ public:
      *
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
+     * @return Underlying return value.
      */
-    void write(char *data, unsigned int len) {
+    int write(char *data, unsigned int len) {
         auto req = this->parent().template resource<details::write_req<void (*)(char *)>>(std::unique_ptr<char[], void (*)(char *)>{data, [](char *) {}}, len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
@@ -294,7 +291,8 @@ public:
 
         req->template on<error_event>(listener);
         req->template on<write_event>(listener);
-        req->write(as_uv_stream());
+
+        return req->write(as_uv_stream());
     }
 
     /**
@@ -315,9 +313,10 @@ public:
      * @param send The handle over which to write data.
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
+     * @return Underlying return value.
      */
     template<typename S, typename Deleter>
-    void write(S &send, std::unique_ptr<char[], Deleter> data, unsigned int len) {
+    int write(S &send, std::unique_ptr<char[], Deleter> data, unsigned int len) {
         auto req = this->parent().template resource<details::write_req<Deleter>>(std::move(data), len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
@@ -325,7 +324,8 @@ public:
 
         req->template on<error_event>(listener);
         req->template on<write_event>(listener);
-        req->write(as_uv_stream(), send.as_uv_stream());
+
+        return req->write(as_uv_stream(), send.as_uv_stream());
     }
 
     /**
@@ -346,9 +346,10 @@ public:
      * @param send The handle over which to write data.
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
+     * @return Underlying return value.
      */
     template<typename S>
-    void write(S &send, char *data, unsigned int len) {
+    int write(S &send, char *data, unsigned int len) {
         auto req = this->parent().template resource<details::write_req<void (*)(char *)>>(std::unique_ptr<char[], void (*)(char *)>{data, [](char *) {}}, len);
         auto listener = [ptr = this->shared_from_this()](const auto &event, const auto &) {
             ptr->publish(event);
@@ -356,7 +357,8 @@ public:
 
         req->template on<error_event>(listener);
         req->template on<write_event>(listener);
-        req->write(as_uv_stream(), send.as_uv_stream());
+
+        return req->write(as_uv_stream(), send.as_uv_stream());
     }
 
     /**

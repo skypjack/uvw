@@ -79,8 +79,9 @@ public:
      * An error event is emitted in case of errors during the connection.
      *
      * @param name A valid domain socket or named pipe.
+     * @return Underlying return value.
      */
-    void connect(const std::string &name);
+    int connect(const std::string &name);
 
     /**
      * @brief Gets the name of the Unix domain socket or the named pipe.
