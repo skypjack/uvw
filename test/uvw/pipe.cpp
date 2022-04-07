@@ -13,9 +13,7 @@ TEST(Pipe, ReadWrite) {
     auto client = loop->resource<uvw::pipe_handle>();
 
     server->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
-    client->on<uvw::error_event>([](const auto &, auto &) {
-        FAIL();
-    });
+    client->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     server->on<uvw::listen_event>([](const uvw::listen_event &, uvw::pipe_handle &handle) {
         std::shared_ptr<uvw::pipe_handle> socket = handle.parent().resource<uvw::pipe_handle>();
