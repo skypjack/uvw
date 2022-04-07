@@ -54,7 +54,7 @@ public:
 
     send_req(loop::token token, std::shared_ptr<loop> parent, std::unique_ptr<char[], deleter> dt, unsigned int len);
 
-    void send(uv_udp_t *hndl, const struct sockaddr *addr);
+    int send(uv_udp_t *hndl, const struct sockaddr *addr);
 
 private:
     std::unique_ptr<char[], deleter> data;
@@ -108,8 +108,10 @@ public:
      *
      * @param socket A valid socket handle (either a file descriptor or a
      * SOCKET).
+     *
+     * @return Underlying return value.
      */
-    void open(os_socket_handle socket);
+    int open(os_socket_handle socket);
 
     /**
      * @brief Associates the handle to a remote address and port (either IPv4 or
@@ -123,8 +125,9 @@ public:
      * An error event is emitted in case of errors during the connection.
      *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
+     * @return Underlying return value.
      */
-    void connect(const sockaddr &addr);
+    int connect(const sockaddr &addr);
 
     /**
      * @brief Associates the handle to a remote address and port (either IPv4 or
@@ -139,8 +142,9 @@ public:
      *
      * @param ip The address to which to bind.
      * @param port The port to which to bind.
+     * @return Underlying return value.
      */
-    void connect(const std::string &ip, unsigned int port);
+    int connect(const std::string &ip, unsigned int port);
 
     /**
      * @brief Associates the handle to a remote address and port (either IPv4 or
@@ -154,8 +158,9 @@ public:
      * An error event is emitted in case of errors during the connection.
      *
      * @param addr A valid instance of socket_address.
+     * @return Underlying return value.
      */
-    void connect(socket_address addr);
+    int connect(socket_address addr);
 
     /**
      * @brief Disconnects the handle.
@@ -163,8 +168,10 @@ public:
      * Trying to disconnect a handle that is not connected isn't allowed.
      *
      * An error event is emitted in case of errors.
+     *
+     * @return Underlying return value.
      */
-    void disconnect();
+    int disconnect();
 
     /**
      * @brief Gets the remote address to which the handle is connected, if any.
@@ -192,8 +199,9 @@ public:
      *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @param opts Optional additional flags.
+     * @return Underlying return value.
      */
-    void bind(const sockaddr &addr, udp_flags opts = udp_flags::_UVW_ENUM);
+    int bind(const sockaddr &addr, udp_flags opts = udp_flags::_UVW_ENUM);
 
     /**
      * @brief Binds the UDP handle to an IP address and port.
@@ -215,8 +223,9 @@ public:
      * @param ip The IP address to which to bind.
      * @param port The port to which to bind.
      * @param opts Optional additional flags.
+     * @return Underlying return value.
      */
-    void bind(const std::string &ip, unsigned int port, udp_flags opts = udp_flags::_UVW_ENUM);
+    int bind(const std::string &ip, unsigned int port, udp_flags opts = udp_flags::_UVW_ENUM);
 
     /**
      * @brief Binds the UDP handle to an IP address and port.
@@ -237,8 +246,9 @@ public:
      *
      * @param addr A valid instance of socket_address.
      * @param opts Optional additional flags.
+     * @return Underlying return value.
      */
-    void bind(socket_address addr, udp_flags opts = udp_flags::_UVW_ENUM);
+    int bind(socket_address addr, udp_flags opts = udp_flags::_UVW_ENUM);
 
     /**
      * @brief Get the local IP and port of the UDP handle.
@@ -316,8 +326,9 @@ public:
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
+     * @return Underlying return value.
      */
-    void send(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len);
+    int send(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -336,8 +347,9 @@ public:
      * @param port The port to which to send data.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
+     * @return Underlying return value.
      */
-    void send(const std::string &ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len);
+    int send(const std::string &ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -355,8 +367,9 @@ public:
      * @param addr A valid instance of socket_address.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
+     * @return Underlying return value.
      */
-    void send(socket_address addr, std::unique_ptr<char[]> data, unsigned int len);
+    int send(socket_address addr, std::unique_ptr<char[]> data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -374,8 +387,9 @@ public:
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
+     * @return Underlying return value.
      */
-    void send(const sockaddr &addr, char *data, unsigned int len);
+    int send(const sockaddr &addr, char *data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -394,8 +408,9 @@ public:
      * @param port The port to which to send data.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
+     * @return Underlying return value.
      */
-    void send(const std::string &ip, unsigned int port, char *data, unsigned int len);
+    int send(const std::string &ip, unsigned int port, char *data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -413,8 +428,9 @@ public:
      * @param addr A valid instance of socket_address.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
+     * @return Underlying return value.
      */
-    void send(socket_address addr, char *data, unsigned int len);
+    int send(socket_address addr, char *data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -425,7 +441,7 @@ public:
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
-     * @return Number of bytes written.
+     * @return Underlying return value.
      */
     int try_send(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len);
 
@@ -439,7 +455,7 @@ public:
      * @param port The port to which to send data.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
-     * @return Number of bytes written.
+     * @return Underlying return value.
      */
     int try_send(const std::string &ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len);
 
@@ -452,7 +468,7 @@ public:
      * @param addr A valid instance of socket_address.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
-     * @return Number of bytes written.
+     * @return Underlying return value.
      */
     int try_send(socket_address addr, std::unique_ptr<char[]> data, unsigned int len);
 
@@ -465,7 +481,7 @@ public:
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
-     * @return Number of bytes written.
+     * @return Underlying return value.
      */
     int try_send(const sockaddr &addr, char *data, unsigned int len);
 
@@ -479,7 +495,7 @@ public:
      * @param port The port to which to send data.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
-     * @return Number of bytes written.
+     * @return Underlying return value.
      */
     int try_send(const std::string &ip, unsigned int port, char *data, unsigned int len);
 
@@ -492,7 +508,7 @@ public:
      * @param addr A valid instance of socket_address.
      * @param data The data to be sent.
      * @param len The lenght of the submitted data.
-     * @return Number of bytes written.
+     * @return Underlying return value.
      */
     int try_send(socket_address addr, char *data, unsigned int len);
 
@@ -505,13 +521,16 @@ public:
      *
      * An UDP data event will be emitted when the handle receives data.<br/>
      * An error event will be emitted in case of errors.
+     *
+     * @return Underlying return value.
      */
-    void recv();
+    int recv();
 
     /**
      * @brief Stops listening for incoming datagrams.
+     * @return Underlying return value.
      */
-    void stop();
+    int stop();
 
     /**
      * @brief Gets the number of bytes queued for sending.
