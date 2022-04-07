@@ -62,16 +62,13 @@ TEST(FileReq, OpenAndClose) {
     request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::CLOSE:
+        if(event.type == uvw::fs_req::fs_type::CLOSE) {
             ASSERT_FALSE(checkFileCloseEvent);
             checkFileCloseEvent = true;
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             ASSERT_FALSE(checkFileOpenEvent);
             checkFileOpenEvent = true;
             req.close();
-            break;
         };
     });
 
@@ -109,21 +106,17 @@ TEST(FileReq, RWChecked) {
     request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::OPEN:
+        if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.write(std::unique_ptr<char[]>{new char[1]{42}}, 1, 0);
-            break;
-        case uvw::fs_req::fs_type::READ:
+        } else if(event.type == uvw::fs_req::fs_type::READ) {
             ASSERT_FALSE(checkFileReadEvent);
             ASSERT_EQ(event.read.data[0], 42);
             checkFileReadEvent = true;
             req.close();
-            break;
-        case uvw::fs_req::fs_type::WRITE:
+        } else if(event.type == uvw::fs_req::fs_type::WRITE) {
             ASSERT_FALSE(checkFileWriteEvent);
             checkFileWriteEvent = true;
             req.read(0, 1);
-            break;
         };
     });
 
@@ -149,21 +142,17 @@ TEST(FileReq, RWUnchecked) {
     request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::OPEN:
+        if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.write(data.get(), 1, 0);
-            break;
-        case uvw::fs_req::fs_type::READ:
+        } else if(event.type == uvw::fs_req::fs_type::READ) {
             ASSERT_FALSE(checkFileReadEvent);
             ASSERT_EQ(event.read.data[0], 42);
             checkFileReadEvent = true;
             req.close();
-            break;
-        case uvw::fs_req::fs_type::WRITE:
+        } else if(event.type == uvw::fs_req::fs_type::WRITE) {
             ASSERT_FALSE(checkFileWriteEvent);
             checkFileWriteEvent = true;
             req.read(0, 1);
-            break;
         };
     });
 
@@ -211,15 +200,12 @@ TEST(FileReq, Stat) {
     request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::OPEN:
+        if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.stat();
-            break;
-        case uvw::fs_req::fs_type::FSTAT:
+        } else if(event.type == uvw::fs_req::fs_type::FSTAT) {
             ASSERT_FALSE(checkFileStatEvent);
             checkFileStatEvent = true;
             req.close();
-            break;
         };
     });
 
@@ -259,15 +245,12 @@ TEST(FileReq, Sync) {
     request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::FSYNC:
+        if(event.type == uvw::fs_req::fs_type::FSYNC) {
             ASSERT_FALSE(checkFileSyncEvent);
             checkFileSyncEvent = true;
             req.close();
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.sync();
-            break;
         };
     });
 
@@ -304,15 +287,12 @@ TEST(FileReq, Datasync) {
     request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::FDATASYNC:
+        if(event.type == uvw::fs_req::fs_type::FDATASYNC) {
             ASSERT_FALSE(checkFileDatasyncEvent);
             checkFileDatasyncEvent = true;
             req.close();
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.datasync();
-            break;
         };
     });
 
@@ -349,15 +329,12 @@ TEST(FileReq, Truncate) {
     request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::FTRUNCATE:
+        if(event.type == uvw::fs_req::fs_type::FTRUNCATE) {
             ASSERT_FALSE(checkFileTruncateEvent);
             checkFileTruncateEvent = true;
             req.close();
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.truncate(0);
-            break;
         };
     });
 
@@ -394,15 +371,12 @@ TEST(FileReq, Chmod) {
     request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::FCHMOD:
+        if(event.type == uvw::fs_req::fs_type::FCHMOD) {
             ASSERT_FALSE(checkFileChmodEvent);
             checkFileChmodEvent = true;
             req.close();
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.chmod(0644);
-            break;
         };
     });
 
@@ -441,15 +415,12 @@ TEST(FileReq, Futime) {
     request->on<uvw::fs_event>([&](const auto &event, auto &req) {
         const auto value = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
 
-        switch(event.type) {
-        case uvw::fs_req::fs_type::FUTIME:
+        if(event.type == uvw::fs_req::fs_type::FUTIME) {
             ASSERT_FALSE(checkFileUtimeEvent);
             checkFileUtimeEvent = true;
             req.close();
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.futime(value, value);
-            break;
         };
     });
 
@@ -492,18 +463,14 @@ TEST(FileReq, Chown) {
     request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::FCHOWN:
+        if(event.type == uvw::fs_req::fs_type::FCHOWN) {
             ASSERT_FALSE(checkFileChownEvent);
             checkFileChownEvent = true;
             req.close();
-            break;
-        case uvw::fs_req::fs_type::FSTAT:
+        } else if(event.type == uvw::fs_req::fs_type::FSTAT) {
             req.chown(static_cast<uvw::uid_type>(event.stat.st_uid), static_cast<uvw::uid_type>(event.stat.st_gid));
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.stat();
-            break;
         };
     });
 

@@ -19,16 +19,13 @@ TEST(FsReq, MkdirAndRmdir) {
     request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::MKDIR:
+        if(event.type == uvw::fs_req::fs_type::MKDIR) {
             ASSERT_FALSE(checkFsMkdirEvent);
             checkFsMkdirEvent = true;
             req.rmdir(dirname);
-            break;
-        case uvw::fs_req::fs_type::RMDIR:
+        } else if(event.type == uvw::fs_req::fs_type::RMDIR) {
             ASSERT_FALSE(checkFsRmdirEvent);
             checkFsRmdirEvent = true;
-            break;
         };
     });
 
@@ -64,17 +61,14 @@ TEST(FsReq, MkdtempAndRmdir) {
     request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     request->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::MKDTEMP:
+        if(event.type == uvw::fs_req::fs_type::MKDTEMP) {
             ASSERT_FALSE(checkFsMkdtempEvent);
             ASSERT_NE(event.path, nullptr);
             checkFsMkdtempEvent = true;
             req.rmdir(event.path);
-            break;
-        case uvw::fs_req::fs_type::RMDIR:
+        } else if(event.type == uvw::fs_req::fs_type::RMDIR) {
             ASSERT_FALSE(checkFsRmdirEvent);
             checkFsRmdirEvent = true;
-            break;
         };
     });
 
@@ -114,22 +108,17 @@ TEST(FsReq, Stat) {
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::STAT:
+        if(event.type == uvw::fs_req::fs_type::STAT) {
             ASSERT_FALSE(checkFsStatEvent);
             checkFsStatEvent = true;
-            break;
         }
     });
 
     fileReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::CLOSE:
+        if(event.type == uvw::fs_req::fs_type::CLOSE) {
             fsReq->stat(filename);
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.close();
-            break;
         }
     });
 
@@ -172,22 +161,17 @@ TEST(FsReq, Lstat) {
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::LSTAT:
+        if(event.type == uvw::fs_req::fs_type::LSTAT) {
             ASSERT_FALSE(checkFsLstatEvent);
             checkFsLstatEvent = true;
-            break;
         }
     });
 
     fileReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::CLOSE:
+        if(event.type == uvw::fs_req::fs_type::CLOSE) {
             fsReq->lstat(filename);
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::CLOSE) {
             req.close();
-            break;
         }
     });
 
@@ -231,22 +215,17 @@ TEST(FsReq, Rename) {
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::RENAME:
+        if(event.type == uvw::fs_req::fs_type::RENAME) {
             ASSERT_FALSE(checkFsRenameEvent);
             checkFsRenameEvent = true;
-            break;
         }
     });
 
     fileReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::CLOSE:
+        if(event.type == uvw::fs_req::fs_type::CLOSE) {
             fsReq->rename(filename, rename);
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.close();
-            break;
         }
     });
 
@@ -287,22 +266,17 @@ TEST(FsReq, Access) {
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::ACCESS:
+        if(event.type == uvw::fs_req::fs_type::ACCESS) {
             ASSERT_FALSE(checkFsAccessEvent);
             checkFsAccessEvent = true;
-            break;
         }
     });
 
     fileReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::CLOSE:
+        if(event.type == uvw::fs_req::fs_type::CLOSE) {
             fsReq->access(filename, R_OK);
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.close();
-            break;
         }
     });
 
@@ -342,22 +316,17 @@ TEST(FsReq, Chmod) {
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::CHMOD:
+        if(event.type == uvw::fs_req::fs_type::CHMOD) {
             ASSERT_FALSE(checkFsChmodEvent);
             checkFsChmodEvent = true;
-            break;
         }
     });
 
     fileReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::CLOSE:
+        if(event.type == uvw::fs_req::fs_type::CLOSE) {
             fsReq->chmod(filename, 0644);
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.close();
-            break;
         }
     });
 
@@ -397,24 +366,19 @@ TEST(FsReq, Utime) {
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::UTIME:
+        if(event.type == uvw::fs_req::fs_type::UTIME) {
             ASSERT_FALSE(checkFsUtimeEvent);
             checkFsUtimeEvent = true;
-            break;
         }
     });
 
     fileReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
         const auto value = std::chrono::duration_cast<std::chrono::seconds>(std::chrono::system_clock::now().time_since_epoch());
 
-        switch(event.type) {
-        case uvw::fs_req::fs_type::CLOSE:
+        if(event.type == uvw::fs_req::fs_type::CLOSE) {
             fsReq->utime(filename, value, value);
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.close();
-            break;
         }
     });
 
@@ -461,27 +425,21 @@ TEST(FsReq, LinkAndUnlink) {
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::LINK:
+        if(event.type == uvw::fs_req::fs_type::LINK) {
             ASSERT_FALSE(checkFsLinkEvent);
             checkFsLinkEvent = true;
             req.unlink(linkname);
-            break;
-        case uvw::fs_req::fs_type::UNLINK:
+        } else if(event.type == uvw::fs_req::fs_type::UNLINK) {
             ASSERT_FALSE(checkFsUnlinkEvent);
             checkFsUnlinkEvent = true;
-            break;
         }
     });
 
     fileReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::CLOSE:
+        if(event.type == uvw::fs_req::fs_type::CLOSE) {
             fsReq->link(filename, linkname);
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.close();
-            break;
         }
     });
 
@@ -526,27 +484,21 @@ TEST(FsReq, SymlinkAndUnlink) {
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::SYMLINK:
+        if(event.type == uvw::fs_req::fs_type::SYMLINK) {
             ASSERT_FALSE(checkFsLinkEvent);
             checkFsLinkEvent = true;
             req.unlink(linkname);
-            break;
-        case uvw::fs_req::fs_type::UNLINK:
+        } else if(event.type == uvw::fs_req::fs_type::UNLINK) {
             ASSERT_FALSE(checkFsUnlinkEvent);
             checkFsUnlinkEvent = true;
-            break;
         }
     });
 
     fileReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::CLOSE:
+        if(event.type == uvw::fs_req::fs_type::CLOSE) {
             fsReq->symlink(filename, linkname);
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.close();
-            break;
         }
     });
 
@@ -590,26 +542,20 @@ TEST(FsReq, Readlink) {
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::READLINK:
+        if(event.type == uvw::fs_req::fs_type::READLINK) {
             ASSERT_FALSE(checkFsReadlinkEvent);
             checkFsReadlinkEvent = true;
             req.unlink(linkname);
-            break;
-        case uvw::fs_req::fs_type::SYMLINK:
+        } else if(event.type == uvw::fs_req::fs_type::SYMLINK) {
             req.readlink(linkname);
-            break;
         }
     });
 
     fileReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::CLOSE:
+        if(event.type == uvw::fs_req::fs_type::CLOSE) {
             fsReq->symlink(filename, linkname);
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.close();
-            break;
         }
     });
 
@@ -655,23 +601,18 @@ TEST(FsReq, Realpath) {
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::REALPATH:
+        if(event.type == uvw::fs_req::fs_type::REALPATH) {
             ASSERT_FALSE(checkFsRealpathEvent);
             ASSERT_NE(event.path, nullptr);
             checkFsRealpathEvent = true;
-            break;
         };
     });
 
     fileReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::CLOSE:
+        if(event.type == uvw::fs_req::fs_type::CLOSE) {
             fsReq->realpath(filename);
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.close();
-            break;
         }
     });
 
@@ -715,25 +656,19 @@ TEST(FsReq, Chown) {
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::CHOWN:
+        if(event.type == uvw::fs_req::fs_type::CHOWN) {
             ASSERT_FALSE(checkFsChownEvent);
             checkFsChownEvent = true;
-            break;
-        case uvw::fs_req::fs_type::STAT:
+        } else if(event.type == uvw::fs_req::fs_type::STAT) {
             req.chown(filename, static_cast<uvw::uid_type>(event.stat.st_uid), static_cast<uvw::uid_type>(event.stat.st_gid));
-            break;
         };
     });
 
     fileReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::CLOSE:
+        if(event.type == uvw::fs_req::fs_type::CLOSE) {
             fsReq->stat(filename);
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.close();
-            break;
         }
     });
 
@@ -779,25 +714,19 @@ TEST(FsReq, Lchown) {
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::LCHOWN:
+        if(event.type == uvw::fs_req::fs_type::LCHOWN) {
             ASSERT_FALSE(checkFsLChownEvent);
             checkFsLChownEvent = true;
-            break;
-        case uvw::fs_req::fs_type::STAT:
+        } else if(event.type == uvw::fs_req::fs_type::STAT) {
             req.lchown(filename, static_cast<uvw::uid_type>(event.stat.st_uid), static_cast<uvw::uid_type>(event.stat.st_gid));
-            break;
         };
     });
 
     fileReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::CLOSE:
+        if(event.type == uvw::fs_req::fs_type::CLOSE) {
             fsReq->stat(filename);
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             req.close();
-            break;
         }
     });
 
@@ -843,17 +772,14 @@ TEST(FsReq, ReadDir) {
     fsReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::CLOSEDIR:
+        if(event.type == uvw::fs_req::fs_type::CLOSEDIR) {
             ASSERT_FALSE(checkFsCloseDirEvent);
             checkFsCloseDirEvent = true;
-            break;
-        case uvw::fs_req::fs_type::OPENDIR:
+        } else if(event.type == uvw::fs_req::fs_type::OPENDIR) {
             ASSERT_FALSE(checkFsOpenDirEvent);
             checkFsOpenDirEvent = true;
             req.readdir();
-            break;
-        case uvw::fs_req::fs_type::READDIR:
+        } else if(event.type == uvw::fs_req::fs_type::READDIR) {
             ASSERT_FALSE(checkFsReadDirEvent);
             if(!event.dirent.eos) {
                 req.readdir();
@@ -861,7 +787,6 @@ TEST(FsReq, ReadDir) {
                 checkFsReadDirEvent = true;
                 req.closedir();
             }
-            break;
         }
     });
 
