@@ -199,6 +199,7 @@ if(FETCH_LIBUV AND BUILD_UVW_LIBS)
     endif()
     
 endif(FETCH_LIBUV AND BUILD_UVW_LIBS)
+export(EXPORT uvwConfig)
 
 ### Testing
 
