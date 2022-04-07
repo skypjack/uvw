@@ -21,30 +21,19 @@ TEST(FileReq, SendFile) {
     srcReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     dstReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::OPEN:
+        if(event.type == uvw::fs_req::fs_type::OPEN) {
             srcReq->sendfile(static_cast<uvw::file_handle>(req), 0, 0);
-            break;
-        default:
-            // nothing to do here
-            break;
         }
     });
 
     srcReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
-        switch(event.type) {
-        case uvw::fs_req::fs_type::SENDFILE:
+        if(event.type == uvw::fs_req::fs_type::SENDFILE) {
             ASSERT_FALSE(checkFileSendFileEvent);
             checkFileSendFileEvent = true;
             dstReq->close();
             req.close();
-            break;
-        case uvw::fs_req::fs_type::OPEN:
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
             dstReq->open(dstFilename, uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::WRONLY | uvw::file_req::file_open_flags::TRUNC, 0644);
-            break;
-        default:
-            // nothing to do here
-            break;
         }
     });
 
