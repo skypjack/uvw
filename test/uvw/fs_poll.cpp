@@ -10,16 +10,10 @@ TEST(FsPoll, Functionalities) {
     auto handle = loop->resource<uvw::fs_poll_handle>();
     auto request = loop->resource<uvw::file_req>();
 
-    bool checkFsPollEvent = false;
-
     handle->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
     request->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    handle->on<uvw::fs_poll_event>([&checkFsPollEvent](const auto &, auto &hndl) {
-        ASSERT_FALSE(checkFsPollEvent);
-        
-        checkFsPollEvent = true;
-        
+    handle->on<uvw::fs_poll_event>([](const auto &, auto &hndl) {
         ASSERT_EQ(0, hndl.stop());
         
         hndl.close();
@@ -43,7 +37,5 @@ TEST(FsPoll, Functionalities) {
     ASSERT_TRUE(handle->active());
     ASSERT_FALSE(handle->closing());
 
-    loop->run();
-
-    ASSERT_TRUE(checkFsPollEvent);
+    loop->run(uvw::loop::run_mode::ONCE);
 }
