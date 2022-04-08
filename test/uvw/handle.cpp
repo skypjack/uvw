@@ -37,11 +37,11 @@ TEST(Handle, Functionalities) {
 
     ASSERT_NE(handle->size(), static_cast<decltype(handle->size())>(0));
 
-    ASSERT_EQ(handle->send_buffer_size(), static_cast<decltype(handle->send_buffer_size())>(0));
-    ASSERT_FALSE(handle->send_buffer_size(0));
+    ASSERT_LT(handle->send_buffer_size(), 0);
+    ASSERT_NE(0, handle->send_buffer_size(0));
 
-    ASSERT_EQ(handle->recv_buffer_size(), static_cast<decltype(handle->recv_buffer_size())>(0));
-    ASSERT_FALSE(handle->recv_buffer_size(0));
+    ASSERT_LT(handle->recv_buffer_size(), 0);
+    ASSERT_NE(0, handle->recv_buffer_size(0));
 
     ASSERT_NO_THROW(handle->fd());
 }

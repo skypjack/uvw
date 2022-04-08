@@ -145,9 +145,9 @@ public:
      * for further details.
      *
      * @param flags A valid set of flags.
-     * @return True in case of success, false otherwise.
+     * @return Underlying return value.
      */
-    bool chmod(chmod_flags flags) UVW_NOEXCEPT;
+    int chmod(chmod_flags flags) UVW_NOEXCEPT;
 
 private:
     bool ipc;

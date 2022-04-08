@@ -86,7 +86,7 @@ public:
      * @return True if the handle is active, false otherwise.
      */
     bool active() const UVW_NOEXCEPT {
-        return !(uv_is_active(as_uv_handle()) == 0);
+        return !!uv_is_active(as_uv_handle());
     }
 
     /**
@@ -98,7 +98,7 @@ public:
      * @return True if the handle is closing or closed, false otherwise.
      */
     bool closing() const UVW_NOEXCEPT {
-        return !(uv_is_closing(as_uv_handle()) == 0);
+        return !!uv_is_closing(as_uv_handle());
     }
 
     /**
@@ -140,7 +140,7 @@ public:
      * @return True if the handle referenced, false otherwise.
      */
     bool referenced() const UVW_NOEXCEPT {
-        return !(uv_has_ref(as_uv_handle()) == 0);
+        return !!uv_has_ref(as_uv_handle());
     }
 
     /**
@@ -160,12 +160,13 @@ public:
      * udp handles on Windows.<br/>
      * Note that Linux will return double the size of the original set value.
      *
-     * @return The size of the send buffer, 0 in case of errors.
+     * @return The size of the send buffer, the underlying return value in case
+     * of errors.
      */
     int send_buffer_size() {
         int value = 0;
         auto err = uv_send_buffer_size(as_uv_handle(), &value);
-        return err ? 0 : value;
+        return err ? err : value;
     }
 
     /**
@@ -177,10 +178,10 @@ public:
      * udp handles on Windows.<br/>
      * Note that Linux will set double the size.
      *
-     * @return True in case of success, false otherwise.
+     * @return Underlying return value.
      */
-    bool send_buffer_size(int value) {
-        return (0 == uv_send_buffer_size(as_uv_handle(), &value));
+    int send_buffer_size(int value) {
+        return uv_send_buffer_size(as_uv_handle(), &value);
     }
 
     /**
@@ -192,12 +193,13 @@ public:
      * udp handles on Windows.<br/>
      * Note that Linux will return double the size of the original set value.
      *
-     * @return The size of the receive buffer, 0 in case of errors.
+     * @return The size of the receive buffer, the underlying return value in
+     * case of errors.
      */
     int recv_buffer_size() {
         int value = 0;
         auto err = uv_recv_buffer_size(as_uv_handle(), &value);
-        return err ? 0 : value;
+        return err ? err : value;
     }
 
     /**
@@ -209,10 +211,10 @@ public:
      * udp handles on Windows.<br/>
      * Note that Linux will set double the size.
      *
-     * @return True in case of success, false otherwise.
+     * @return Underlying return value.
      */
-    bool recv_buffer_size(int value) {
-        return (0 == uv_recv_buffer_size(as_uv_handle(), &value));
+    int recv_buffer_size(int value) {
+        return uv_recv_buffer_size(as_uv_handle(), &value);
     }
 
     /**

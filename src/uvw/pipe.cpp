@@ -55,8 +55,8 @@ UVW_INLINE handle_type pipe_handle::receive() UVW_NOEXCEPT {
     return utilities::guess_handle(category);
 }
 
-UVW_INLINE bool pipe_handle::chmod(chmod_flags flags) UVW_NOEXCEPT {
-    return (0 == uv_pipe_chmod(raw(), static_cast<uv_poll_event>(flags)));
+UVW_INLINE int pipe_handle::chmod(chmod_flags flags) UVW_NOEXCEPT {
+    return uv_pipe_chmod(raw(), static_cast<uv_poll_event>(flags));
 }
 
 } // namespace uvw
