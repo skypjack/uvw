@@ -268,8 +268,7 @@ public:
     /**
      * @brief Async [close](http://linux.die.net/man/2/close).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      */
     void close();
 
@@ -282,8 +281,7 @@ public:
     /**
      * @brief Async [open](http://linux.die.net/man/2/open).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * Available flags are:
      *
@@ -362,8 +360,7 @@ public:
     /**
      * @brief Async [read](http://linux.die.net/man/2/preadv).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param offset Offset, as described in the official documentation.
      * @param len Length, as described in the official documentation.
@@ -390,8 +387,7 @@ public:
      * The request takes the ownership of the data and it is in charge of delete
      * them.
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param buf The data to be written.
      * @param len The lenght of the submitted data.
@@ -405,8 +401,7 @@ public:
      * The request doesn't take the ownership of the data. Be sure that their
      * lifetime overcome the one of the request.
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param buf The data to be written.
      * @param len The lenght of the submitted data.
@@ -430,8 +425,7 @@ public:
     /**
      * @brief Async [fstat](http://linux.die.net/man/2/fstat).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      */
     void stat();
 
@@ -447,8 +441,7 @@ public:
     /**
      * @brief Async [fsync](http://linux.die.net/man/2/fsync).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      */
     void sync();
 
@@ -461,8 +454,7 @@ public:
     /**
      * @brief Async [fdatasync](http://linux.die.net/man/2/fdatasync).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      */
     void datasync();
 
@@ -475,8 +467,7 @@ public:
     /**
      * @brief Async [ftruncate](http://linux.die.net/man/2/ftruncate).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param offset Offset, as described in the official documentation.
      */
@@ -492,8 +483,7 @@ public:
     /**
      * @brief Async [sendfile](http://linux.die.net/man/2/sendfile).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param out A valid instance of file_handle.
      * @param offset Offset, as described in the official documentation.
@@ -517,8 +507,7 @@ public:
     /**
      * @brief Async [fchmod](http://linux.die.net/man/2/fchmod).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param mode Mode, as described in the official documentation.
      */
@@ -534,8 +523,7 @@ public:
     /**
      * @brief Async [futime](http://linux.die.net/man/3/futimes).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param atime `std::chrono::duration<double>`, having the same meaning as
      * described in the official documentation.
@@ -557,8 +545,7 @@ public:
     /**
      * @brief Async [fchown](http://linux.die.net/man/2/fchown).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param uid UID, as described in the official documentation.
      * @param gid GID, as described in the official documentation.
@@ -613,8 +600,7 @@ public:
     /**
      * @brief Async [unlink](http://linux.die.net/man/2/unlink).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      */
@@ -630,8 +616,7 @@ public:
     /**
      * @brief Async [mkdir](http://linux.die.net/man/2/mkdir).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      * @param mode Mode, as described in the official documentation.
@@ -649,8 +634,7 @@ public:
     /**
      * @brief Async [mktemp](http://linux.die.net/man/3/mkdtemp).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param tpl Template, as described in the official documentation.
      */
@@ -670,8 +654,7 @@ public:
     /**
      * @brief Async [mkstemp](https://linux.die.net/man/3/mkstemp).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param tpl Template, as described in the official documentation.
      */
@@ -702,8 +685,7 @@ public:
     /**
      * @brief Async [lutime](http://linux.die.net/man/3/lutimes).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      * @param atime `std::chrono::duration<double>`, having the same meaning as
@@ -727,8 +709,7 @@ public:
     /**
      * @brief Async [rmdir](http://linux.die.net/man/2/rmdir).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      */
@@ -744,8 +725,7 @@ public:
     /**
      * @brief Async [scandir](http://linux.die.net/man/3/scandir).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      * @param flags Flags, as described in the official documentation.
@@ -798,8 +778,7 @@ public:
     /**
      * @brief Async [stat](http://linux.die.net/man/2/stat).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      */
@@ -819,8 +798,7 @@ public:
     /**
      * @brief Async [lstat](http://linux.die.net/man/2/lstat).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      */
@@ -840,8 +818,7 @@ public:
     /**
      * @brief Async [statfs](http://linux.die.net/man/2/statfs).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * Any fields in the resulting object that are not supported by the
      * underlying operating system are set to zero.
@@ -867,8 +844,7 @@ public:
     /**
      * @brief Async [rename](http://linux.die.net/man/2/rename).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param old Old path, as described in the official documentation.
      * @param path New path, as described in the official documentation.
@@ -886,9 +862,7 @@ public:
     /**
      * @brief Copies a file asynchronously from a path to a new one.
      *
-     * Emit a `fs_event` event when
-     * completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * Available flags are:
      *
@@ -938,8 +912,7 @@ public:
     /**
      * @brief Async [access](http://linux.die.net/man/2/access).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      * @param mode Mode, as described in the official documentation.
@@ -957,8 +930,7 @@ public:
     /**
      * @brief Async [chmod](http://linux.die.net/man/2/chmod).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      * @param mode Mode, as described in the official documentation.
@@ -976,8 +948,7 @@ public:
     /**
      * @brief Async [utime](http://linux.die.net/man/2/utime).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      * @param atime `std::chrono::duration<double>`, having the same meaning as
@@ -1001,8 +972,7 @@ public:
     /**
      * @brief Async [link](http://linux.die.net/man/2/link).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param old Old path, as described in the official documentation.
      * @param path New path, as described in the official documentation.
@@ -1020,8 +990,7 @@ public:
     /**
      * @brief Async [symlink](http://linux.die.net/man/2/symlink).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * Available flags are:
      *
@@ -1056,8 +1025,7 @@ public:
     /**
      * @brief Async [readlink](http://linux.die.net/man/2/readlink).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      */
@@ -1079,8 +1047,7 @@ public:
     /**
      * @brief Async [realpath](http://linux.die.net/man/3/realpath).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      */
@@ -1100,8 +1067,7 @@ public:
     /**
      * @brief Async [chown](http://linux.die.net/man/2/chown).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      * @param uid UID, as described in the official documentation.
@@ -1121,8 +1087,7 @@ public:
     /**
      * @brief Async [lchown](https://linux.die.net/man/2/lchown).
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      * @param uid UID, as described in the official documentation.
@@ -1142,8 +1107,7 @@ public:
     /**
      * @brief Opens a path asynchronously as a directory stream.
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * The contents of the directory can be iterated over by means of the
      * `readdir` od `readdir_sync` member functions. The memory allocated by
@@ -1168,8 +1132,7 @@ public:
     /**
      * @brief Closes asynchronously a directory stream.
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * It frees also the memory allocated internally when a path has been opened
      * as a directory stream.
@@ -1190,8 +1153,7 @@ public:
      * @brief Iterates asynchronously over a directory stream one entry at a
      * time.
      *
-     * Emit a `fs_event` event when completed.<br/>
-     * Emit an error event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * This function isn't thread safe. Moreover, it doesn't return the `.` and
      * `..` entries.

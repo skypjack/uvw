@@ -31,17 +31,16 @@ public:
      * @brief Cancels a pending request.
      *
      * This method fails if the request is executing or has finished
-     * executing.<br/>
-     * It can emit an error event in case of errors.
+     * executing.
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/request.html#c.uv_cancel)
      * for further details.
      *
-     * @return True in case of success, false otherwise.
+     * @return Underlying return value.
      */
-    bool cancel() {
-        return (0 == uv_cancel(reinterpret_cast<uv_req_t *>(this->raw())));
+    int cancel() {
+        return uv_cancel(reinterpret_cast<uv_req_t *>(this->raw()));
     }
 
     /**

@@ -183,8 +183,7 @@ public:
      * @brief Starts listening for incoming connections.
      *
      * When a new incoming connection is received, a listen event is
-     * emitted.<br/>
-     * An error event will be emitted in case of errors.
+     * emitted.
      *
      * @param backlog Indicates the number of connections the kernel might
      * queue, same as listen(2).
@@ -201,8 +200,7 @@ public:
      * This call is used in conjunction with `listen()` to accept incoming
      * connections. Call this function after receiving a listen event to accept
      * the connection. Before calling this function, the submitted handle must
-     * be initialized.<br>
-     * An error event will be emitted in case of errors.
+     * be initialized.
      *
      * When the listen event is emitted it is guaranteed that this function will
      * complete successfully the first time. If you attempt to use it more than
@@ -250,8 +248,7 @@ public:
      * Data are written in order. The handle takes the ownership of the data and
      * it is in charge of delete them.
      *
-     * A write event will be emitted when the data have been written.<br/>
-     * An error event will be emitted in case of errors.
+     * A write event will be emitted when the data have been written.
      *
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
@@ -276,8 +273,7 @@ public:
      * Data are written in order. The handle doesn't take the ownership of the
      * data. Be sure that their lifetime overcome the one of the request.
      *
-     * A write event will be emitted when the data have been written.<br/>
-     * An error event will be emitted in case of errors.
+     * A write event will be emitted when the data have been written.
      *
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
@@ -307,8 +303,7 @@ public:
      * The handle takes the ownership of the data and it is in charge of delete
      * them.
      *
-     * A write event will be emitted when the data have been written.<br/>
-     * An error event will be emitted in case of errors.
+     * A write event will be emitted when the data have been written.
      *
      * @param send The handle over which to write data.
      * @param data The data to be written to the stream.
@@ -340,8 +335,7 @@ public:
      * The handle doesn't take the ownership of the data. Be sure that their
      * lifetime overcome the one of the request.
      *
-     * A write event will be emitted when the data have been written.<br/>
-     * An error event will be emitted in case of errors.
+     * A write event will be emitted when the data have been written.
      *
      * @param send The handle over which to write data.
      * @param data The data to be written to the stream.
@@ -365,8 +359,7 @@ public:
      * @brief Queues a write request if it can be completed immediately.
      *
      * Same as `write()`, but won’t queue a write request if it can’t be
-     * completed immediately.<br/>
-     * An error event will be emitted in case of errors.
+     * completed immediately.
      *
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
@@ -380,8 +373,7 @@ public:
     /**
      * @brief Queues a write request if it can be completed immediately.
      *
-     * Same as `try_write` for sending handles over a pipe.<br/>
-     * An error event will be emitted in case of errors.
+     * Same as `try_write` for sending handles over a pipe.
      *
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
@@ -398,8 +390,7 @@ public:
      * @brief Queues a write request if it can be completed immediately.
      *
      * Same as `write()`, but won’t queue a write request if it can’t be
-     * completed immediately.<br/>
-     * An error event will be emitted in case of errors.
+     * completed immediately.
      *
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.
@@ -413,8 +404,7 @@ public:
     /**
      * @brief Queues a write request if it can be completed immediately.
      *
-     * Same as `try_write` for sending handles over a pipe.<br/>
-     * An error event will be emitted in case of errors.
+     * Same as `try_write` for sending handles over a pipe.
      *
      * @param data The data to be written to the stream.
      * @param len The lenght of the submitted data.

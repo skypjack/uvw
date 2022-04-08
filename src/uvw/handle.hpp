@@ -105,8 +105,7 @@ public:
      * @brief Request handle to be closed.
      *
      * This **must** be called on each handle before memory is released.<br/>
-     * In-progress requests are cancelled and this can result in an error event
-     * emitted.
+     * In-progress requests are cancelled and this can result in errors.
      *
      * The handle will emit a close event when finished.
      */
@@ -227,9 +226,8 @@ public:
      * * udp_handle
      * * poll_handle
      *
-     * It will emit an error event if invoked on any other handle.<br/>
-     * If a handle doesn’t have an attached file descriptor yet or the handle
-     * itself has been closed, an error event will be emitted.
+     * If invoked on a different handle, one that doesn’t have an attached file
+     * descriptor yet or one which was closed, an invalid value is returned.
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/handle.html#c.uv_fileno)

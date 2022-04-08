@@ -122,8 +122,6 @@ public:
      * Trying to call this function on an already connected handle isn't
      * allowed.
      *
-     * An error event is emitted in case of errors during the connection.
-     *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @return Underlying return value.
      */
@@ -137,8 +135,6 @@ public:
      * destination.<br/>
      * Trying to call this function on an already connected handle isn't
      * allowed.
-     *
-     * An error event is emitted in case of errors during the connection.
      *
      * @param ip The address to which to bind.
      * @param port The port to which to bind.
@@ -155,8 +151,6 @@ public:
      * Trying to call this function on an already connected handle isn't
      * allowed.
      *
-     * An error event is emitted in case of errors during the connection.
-     *
      * @param addr A valid instance of socket_address.
      * @return Underlying return value.
      */
@@ -166,8 +160,6 @@ public:
      * @brief Disconnects the handle.
      *
      * Trying to disconnect a handle that is not connected isn't allowed.
-     *
-     * An error event is emitted in case of errors.
      *
      * @return Underlying return value.
      */
@@ -320,8 +312,7 @@ public:
      * The handle takes the ownership of the data and it is in charge of delete
      * them.
      *
-     * A send event will be emitted when the data have been sent.<br/>
-     * An error event will be emitted in case of errors.
+     * A send event will be emitted when the data have been sent.
      *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @param data The data to be sent.
@@ -340,8 +331,7 @@ public:
      * The handle takes the ownership of the data and it is in charge of delete
      * them.
      *
-     * A send event will be emitted when the data have been sent.<br/>
-     * An error event will be emitted in case of errors.
+     * A send event will be emitted when the data have been sent.
      *
      * @param ip The address to which to send data.
      * @param port The port to which to send data.
@@ -361,8 +351,7 @@ public:
      * The handle takes the ownership of the data and it is in charge of delete
      * them.
      *
-     * A send event will be emitted when the data have been sent.<br/>
-     * An error event will be emitted in case of errors.
+     * A send event will be emitted when the data have been sent.
      *
      * @param addr A valid instance of socket_address.
      * @param data The data to be sent.
@@ -381,8 +370,7 @@ public:
      * The handle doesn't take the ownership of the data. Be sure that their
      * lifetime overcome the one of the request.
      *
-     * A send event will be emitted when the data have been sent.<br/>
-     * An error event will be emitted in case of errors.
+     * A send event will be emitted when the data have been sent.
      *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @param data The data to be sent.
@@ -401,8 +389,7 @@ public:
      * The handle doesn't take the ownership of the data. Be sure that their
      * lifetime overcome the one of the request.
      *
-     * A send event will be emitted when the data have been sent.<br/>
-     * An error event will be emitted in case of errors.
+     * A send event will be emitted when the data have been sent.
      *
      * @param ip The address to which to send data.
      * @param port The port to which to send data.
@@ -422,8 +409,7 @@ public:
      * The handle doesn't take the ownership of the data. Be sure that their
      * lifetime overcome the one of the request.
      *
-     * A send event will be emitted when the data have been sent.<br/>
-     * An error event will be emitted in case of errors.
+     * A send event will be emitted when the data have been sent.
      *
      * @param addr A valid instance of socket_address.
      * @param data The data to be sent.
@@ -519,8 +505,7 @@ public:
      * is bound to `0.0.0.0` (the _all interfaces_ IPv4 address) and a random
      * port number.
      *
-     * An UDP data event will be emitted when the handle receives data.<br/>
-     * An error event will be emitted in case of errors.
+     * An UDP data event will be emitted when the handle receives data.
      *
      * @return Underlying return value.
      */
