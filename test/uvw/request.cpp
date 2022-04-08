@@ -7,7 +7,7 @@ TEST(Request, Functionalities) {
     auto req = loop->resource<uvw::work_req>([]() {});
 
     ASSERT_NE(req->size(), decltype(req->size()){0});
-    ASSERT_FALSE(req->cancel());
+    ASSERT_EQ(0, req->cancel());
 
     loop->run();
 }

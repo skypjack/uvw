@@ -127,8 +127,6 @@ public:
      * loop spends in the event provider. This option is necessary to use
      * `idle_time()`.
      *
-     * An error event will be emitted in case of errors.
-     *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_configure)
      * for further details.
@@ -170,7 +168,7 @@ public:
      * @brief Releases all internal loop resources.
      *
      * Call this function only when the loop has finished executing and all open
-     * handles and requests have been closed, or the loop will emit an error.
+     * handles and requests have been closed, or the loop will error.
      *
      * @return Underlying return value.
      */
@@ -352,8 +350,6 @@ public:
      * Note also that this function is experimental in `libuv`. It may contain
      * bugs, and is subject to change or removal. API and ABI stability is not
      * guaranteed.
-     *
-     * An error event will be emitted in case of errors.
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_fork)

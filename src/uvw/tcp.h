@@ -104,9 +104,7 @@ public:
      * @brief Binds the handle to an address and port.
      *
      * A successful call to this function does not guarantee that the call to
-     * `listen()` or `connect()` will work properly.<br/>
-     * Error events can be emitted because of either this function or the ones
-     * mentioned above.
+     * `listen()` or `connect()` will work properly.
      *
      * Available flags are:
      *
@@ -123,9 +121,7 @@ public:
      * @brief Binds the handle to an address and port.
      *
      * A successful call to this function does not guarantee that the call to
-     * `listen()` or `connect()` will work properly.<br/>
-     * Error events can be emitted because of either this function or the ones
-     * mentioned above.
+     * `listen()` or `connect()` will work properly.
      *
      * Available flags are:
      *
@@ -143,9 +139,7 @@ public:
      * @brief Binds the handle to an address and port.
      *
      * A successful call to this function does not guarantee that the call to
-     * `listen()` or `connect()` will work properly.<br/>
-     * Error events can be emitted because of either this function or the ones
-     * mentioned above.
+     * `listen()` or `connect()` will work properly.
      *
      * Available flags are:
      *
@@ -179,8 +173,7 @@ public:
      * (`0.0.0.0` or `::`) it will be changed to point to localhost. This is
      * done to match the behavior of Linux systems.
      *
-     * A connect event is emitted when the connection has been established.<br/>
-     * An error event is emitted in case of errors during the connection.
+     * A connect event is emitted when the connection has been established.
      *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
      * @return Underlying return value.
@@ -190,8 +183,7 @@ public:
     /**
      * @brief Establishes an IPv4 or IPv6 TCP connection.
      *
-     * A connect event is emitted when the connection has been established.<br/>
-     * An error event is emitted in case of errors during the connection.
+     * A connect event is emitted when the connection has been established.
      *
      * @param ip The address to which to bind.
      * @param port The port to which to bind.
@@ -202,8 +194,7 @@ public:
     /**
      * @brief Establishes an IPv4 or IPv6 TCP connection.
      *
-     * A connect event is emitted when the connection has been established.<br/>
-     * An error event is emitted in case of errors during the connection.
+     * A connect event is emitted when the connection has been established.
      *
      * @param addr A valid instance of socket_address.
      * @return Underlying return value.
@@ -218,8 +209,7 @@ public:
      * Due to some platform inconsistencies, mixing of `shutdown` and
      * `close_reset` calls is not allowed.
      *
-     * A close event is emitted when the connection has been reset.<br/>
-     * An error event is emitted in case of errors.
+     * A close event is emitted when the connection has been reset.
      *
      * @return Underlying return value.
      */

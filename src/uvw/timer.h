@@ -58,8 +58,7 @@ public:
      * @brief Stops the timer and restarts it if it was repeating.
      *
      * Stop the timer, and if it is repeating restart it using the repeat value
-     * as the timeout.<br/>
-     * If the timer has never been started before it emits an error event.
+     * as the timeout.
      *
      * @return Underlying return value.
      */

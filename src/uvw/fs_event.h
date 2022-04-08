@@ -84,8 +84,7 @@ public:
      *
      * It will watch the specified path for changes.<br/>
      * As soon as a change is observed, a fs_event_event is emitted by the
-     * handle.<br>
-     * It could happen that error events are emitted while running.
+     * handle.
      *
      * Available flags are:
      *

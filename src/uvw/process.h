@@ -97,9 +97,6 @@ public:
     /**
      * @brief spawn Starts the process.
      *
-     * If the process isn't successfully spawned, an error event will be emitted
-     * by the handle.
-     *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/process.html)
      * for further details.

@@ -82,8 +82,7 @@ public:
      * * `poll_handle::event::PRIORITIZED`
      *
      * As soon as an event is detected, a poll event is emitted by the
-     * handle.<br>
-     * It could happen that error events are emitted while running.
+     * handle.
      *
      * Calling more than once this method will update the flags to which the
      * caller is interested.

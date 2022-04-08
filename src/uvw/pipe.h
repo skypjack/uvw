@@ -51,8 +51,7 @@ public:
      * @brief Opens an existing file descriptor or HANDLE as a pipe.
      *
      * The passed file descriptor or HANDLE is not checked for its type, but
-     * it’s required that it represents a valid pipe.<br/>
-     * An error event is emitted in case of errors.
+     * it’s required that it represents a valid pipe.
      *
      * @param file A valid file handle (either a file descriptor or a HANDLE).
      * @return Underlying return value.
@@ -62,8 +61,7 @@ public:
     /**
      * @brief bind Binds the pipe to a file path (Unix) or a name (Windows).
      *
-     * Paths on Unix get truncated typically between 92 and 108 bytes.<br/>
-     * An error event is emitted in case of errors.
+     * Paths on Unix get truncated typically between 92 and 108 bytes.
      *
      * @param name A valid file path.
      * @return Underlying return value.
@@ -75,8 +73,7 @@ public:
      *
      * Paths on Unix get truncated typically between 92 and 108 bytes.<br/>
      * A connect event is emitted when the connection has been
-     * established.<br/>
-     * An error event is emitted in case of errors during the connection.
+     * established.
      *
      * @param name A valid domain socket or named pipe.
      * @return Underlying return value.

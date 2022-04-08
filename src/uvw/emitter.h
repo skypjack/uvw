@@ -123,17 +123,13 @@ public:
         handler<U>() = std::move(f);
     }
 
-    /**
-     * @brief Disconnects the listener for the given event type.
-     */
+    /*! @brief Disconnects the listener for the given event type. */
     template<typename U>
     void reset() UVW_NOEXCEPT {
         handler<U>() = nullptr;
     }
 
-    /**
-     * @brief Disconnects all listeners.
-     */
+    /*! @brief Disconnects all listeners. */
     void reset() UVW_NOEXCEPT {
         reset<error_event>();
         (reset<E>(), ...);
