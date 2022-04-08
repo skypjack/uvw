@@ -68,7 +68,7 @@ int loop::run(run_mode mode) UVW_NOEXCEPT {
 }
 
 UVW_INLINE bool loop::alive() const UVW_NOEXCEPT {
-    return !(uv_loop_alive(uv_loop.get()) == 0);
+    return !!uv_loop_alive(uv_loop.get());
 }
 
 UVW_INLINE void loop::stop() UVW_NOEXCEPT {
