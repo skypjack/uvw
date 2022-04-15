@@ -7,7 +7,7 @@
 
 namespace uvw {
 
-UVW_INLINE fs_poll_event::fs_poll_event(file_info previous, file_info current) UVW_NOEXCEPT
+UVW_INLINE fs_poll_event::fs_poll_event(file_info previous, file_info current) noexcept
     : prev{std::move(previous)}, curr{std::move(current)} {}
 
 UVW_INLINE void fs_poll_handle::start_callback(uv_fs_poll_t *hndl, int status, const uv_stat_t *prev, const uv_stat_t *curr) {
@@ -30,7 +30,7 @@ UVW_INLINE int fs_poll_handle::stop() {
     return uv_fs_poll_stop(raw());
 }
 
-UVW_INLINE std::string fs_poll_handle::path() UVW_NOEXCEPT {
+UVW_INLINE std::string fs_poll_handle::path() noexcept {
     return details::try_read(&uv_fs_poll_getpath, raw());
 }
 

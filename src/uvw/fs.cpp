@@ -38,7 +38,7 @@ UVW_INLINE void file_req::fs_read_callback(uv_fs_t *req) {
     }
 }
 
-UVW_INLINE file_req::~file_req() UVW_NOEXCEPT {
+UVW_INLINE file_req::~file_req() noexcept {
     uv_fs_req_cleanup(raw());
 }
 
@@ -217,11 +217,11 @@ UVW_INLINE bool file_req::chown_sync(uid_type uid, gid_type gid) {
     return !(req->result < 0);
 }
 
-UVW_INLINE file_req::operator file_handle() const UVW_NOEXCEPT {
+UVW_INLINE file_req::operator file_handle() const noexcept {
     return file;
 }
 
-UVW_INLINE fs_req::~fs_req() UVW_NOEXCEPT {
+UVW_INLINE fs_req::~fs_req() noexcept {
     uv_fs_req_cleanup(raw());
 }
 
@@ -548,11 +548,11 @@ UVW_INLINE std::pair<bool, std::pair<fs_req::entry_type, const char *>> fs_req::
     return {req->result != 0, {static_cast<entry_type>(dirents[0].type), dirents[0].name}};
 }
 
-UVW_INLINE os_file_descriptor fs_helper::handle(file_handle file) UVW_NOEXCEPT {
+UVW_INLINE os_file_descriptor fs_helper::handle(file_handle file) noexcept {
     return uv_get_osfhandle(file);
 }
 
-UVW_INLINE file_handle fs_helper::open(os_file_descriptor descriptor) UVW_NOEXCEPT {
+UVW_INLINE file_handle fs_helper::open(os_file_descriptor descriptor) noexcept {
     return uv_open_osfhandle(descriptor);
 }
 

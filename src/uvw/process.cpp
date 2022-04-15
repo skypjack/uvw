@@ -7,7 +7,7 @@
 
 namespace uvw {
 
-UVW_INLINE exit_event::exit_event(int64_t code, int sig) UVW_NOEXCEPT
+UVW_INLINE exit_event::exit_event(int64_t code, int sig) noexcept
     : status{code}, signal{sig} {}
 
 UVW_INLINE void process_handle::exit_callback(uv_process_t *hndl, int64_t exit_status, int term_signal) {
@@ -18,11 +18,11 @@ UVW_INLINE void process_handle::exit_callback(uv_process_t *hndl, int64_t exit_s
 UVW_INLINE process_handle::process_handle(loop::token token, std::shared_ptr<loop> ref)
     : handle{token, std::move(ref)} {}
 
-UVW_INLINE void process_handle::disable_stdio_inheritance() UVW_NOEXCEPT {
+UVW_INLINE void process_handle::disable_stdio_inheritance() noexcept {
     uv_disable_stdio_inheritance();
 }
 
-UVW_INLINE bool process_handle::kill(int pid, int signum) UVW_NOEXCEPT {
+UVW_INLINE bool process_handle::kill(int pid, int signum) noexcept {
     return (0 == uv_kill(pid, signum));
 }
 
@@ -62,16 +62,16 @@ UVW_INLINE int process_handle::kill(int signum) {
     return uv_process_kill(raw(), signum);
 }
 
-UVW_INLINE int process_handle::pid() UVW_NOEXCEPT {
+UVW_INLINE int process_handle::pid() noexcept {
     return raw()->pid;
 }
 
-UVW_INLINE process_handle &process_handle::cwd(const std::string &path) UVW_NOEXCEPT {
+UVW_INLINE process_handle &process_handle::cwd(const std::string &path) noexcept {
     po_cwd = path;
     return *this;
 }
 
-UVW_INLINE process_handle &process_handle::flags(process_flags flags) UVW_NOEXCEPT {
+UVW_INLINE process_handle &process_handle::flags(process_flags flags) noexcept {
     po_flags = flags;
     return *this;
 }

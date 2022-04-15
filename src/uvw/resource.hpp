@@ -17,7 +17,7 @@ namespace uvw {
 template<typename T, typename U, typename... E>
 class resource: public uv_type<U>, public emitter<T, E...>, public std::enable_shared_from_this<T> {
 protected:
-    int leak_if(int err) UVW_NOEXCEPT {
+    int leak_if(int err) noexcept {
         if(err == 0) {
             self_ptr = this->shared_from_this();
         }
@@ -25,11 +25,11 @@ protected:
         return err;
     }
 
-    void reset() UVW_NOEXCEPT {
+    void reset() noexcept {
         self_ptr.reset();
     }
 
-    bool self() const UVW_NOEXCEPT {
+    bool self() const noexcept {
         return static_cast<bool>(self_ptr);
     }
 

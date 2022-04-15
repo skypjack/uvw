@@ -85,7 +85,7 @@ public:
      * @return The name of the Unix domain socket or the named pipe, an empty
      * string in case of errors.
      */
-    std::string sock() const UVW_NOEXCEPT;
+    std::string sock() const noexcept;
 
     /**
      * @brief Gets the name of the Unix domain socket or the named pipe to which
@@ -93,7 +93,7 @@ public:
      * @return The name of the Unix domain socket or the named pipe to which
      * the handle is connected, an empty string in case of errors.
      */
-    std::string peer() const UVW_NOEXCEPT;
+    std::string peer() const noexcept;
 
     /**
      * @brief Sets the number of pending pipe this instance can handle.
@@ -104,13 +104,13 @@ public:
      *
      * @param count The number of accepted pending pipe.
      */
-    void pending(int count) UVW_NOEXCEPT;
+    void pending(int count) noexcept;
 
     /**
      * @brief Gets the number of pending pipe this instance can handle.
      * @return The number of pending pipe this instance can handle.
      */
-    int pending() UVW_NOEXCEPT;
+    int pending() noexcept;
 
     /**
      * @brief Used to receive handles over IPC pipes.
@@ -128,7 +128,7 @@ public:
      * * `handle_type::UDP`
      * * `handle_type::UNKNOWN`
      */
-    handle_type receive() UVW_NOEXCEPT;
+    handle_type receive() noexcept;
 
     /**
      * @brief Alters pipe permissions.
@@ -147,7 +147,7 @@ public:
      * @param flags A valid set of flags.
      * @return Underlying return value.
      */
-    int chmod(chmod_flags flags) UVW_NOEXCEPT;
+    int chmod(chmod_flags flags) noexcept;
 
 private:
     bool ipc;

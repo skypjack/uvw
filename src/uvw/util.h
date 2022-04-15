@@ -48,11 +48,11 @@ struct uv_type_wrapper {
     constexpr uv_type_wrapper(Type val)
         : value{val} {}
 
-    constexpr operator Type() const UVW_NOEXCEPT {
+    constexpr operator Type() const noexcept {
         return value;
     }
 
-    bool operator==(uv_type_wrapper other) const UVW_NOEXCEPT {
+    bool operator==(uv_type_wrapper other) const noexcept {
         return value == other.value;
     }
 
@@ -111,37 +111,37 @@ struct passwd_info {
      * @brief Gets the username.
      * @return The username of the current effective uid (not the real uid).
      */
-    std::string username() const UVW_NOEXCEPT;
+    std::string username() const noexcept;
 
     /**
      * @brief Gets the uid.
      * @return The current effective uid (not the real uid).
      */
-    decltype(uv_passwd_t::uid) uid() const UVW_NOEXCEPT;
+    decltype(uv_passwd_t::uid) uid() const noexcept;
 
     /**
      * @brief Gets the gid.
      * @return The gid of the current effective uid (not the real uid).
      */
-    decltype(uv_passwd_t::gid) gid() const UVW_NOEXCEPT;
+    decltype(uv_passwd_t::gid) gid() const noexcept;
 
     /**
      * @brief Gets the shell.
      * @return The shell of the current effective uid (not the real uid).
      */
-    std::string shell() const UVW_NOEXCEPT;
+    std::string shell() const noexcept;
 
     /**
      * @brief Gets the homedir.
      * @return The homedir of the current effective uid (not the real uid).
      */
-    std::string homedir() const UVW_NOEXCEPT;
+    std::string homedir() const noexcept;
 
     /**
      * @brief Checks if the instance contains valid data.
      * @return True if data are all valid, false otherwise.
      */
-    operator bool() const UVW_NOEXCEPT;
+    operator bool() const noexcept;
 
 private:
     std::shared_ptr<uv_passwd_t> value;
@@ -163,25 +163,25 @@ struct uts_name {
      * @brief Gets the operating system name (like "Linux").
      * @return The operating system name.
      */
-    std::string sysname() const UVW_NOEXCEPT;
+    std::string sysname() const noexcept;
 
     /**
      * @brief Gets the operating system release (like "2.6.28").
      * @return The operating system release.
      */
-    std::string release() const UVW_NOEXCEPT;
+    std::string release() const noexcept;
 
     /**
      * @brief Gets the operating system version.
      * @return The operating system version
      */
-    std::string version() const UVW_NOEXCEPT;
+    std::string version() const noexcept;
 
     /**
      * @brief Gets the hardware identifier.
      * @return The hardware identifier.
      */
-    std::string machine() const UVW_NOEXCEPT;
+    std::string machine() const noexcept;
 
 private:
     std::shared_ptr<uv_utsname_t> uname;
@@ -243,7 +243,7 @@ namespace details {
 static constexpr std::size_t DEFAULT_SIZE = 128;
 
 template<typename F, typename... Args>
-std::string try_read(F &&f, Args &&...args) UVW_NOEXCEPT {
+std::string try_read(F &&f, Args &&...args) noexcept {
     std::size_t size = DEFAULT_SIZE;
     char buf[DEFAULT_SIZE];
     std::string str{};
@@ -297,7 +297,7 @@ struct utilities {
          *
          * @return The current process id.
          */
-        static pid_type pid() UVW_NOEXCEPT;
+        static pid_type pid() noexcept;
 
         /**
          * @brief Returns the parent process id.
@@ -308,7 +308,7 @@ struct utilities {
          *
          * @return The parent process id.
          */
-        static pid_type ppid() UVW_NOEXCEPT;
+        static pid_type ppid() noexcept;
 
         /**
          * @brief Gets the current user's home directory.
@@ -320,7 +320,7 @@ struct utilities {
          * @return The current user's home directory, an empty string in case of
          * errors.
          */
-        static std::string homedir() UVW_NOEXCEPT;
+        static std::string homedir() noexcept;
 
         /**
          * @brief Gets the temp directory.
@@ -331,7 +331,7 @@ struct utilities {
          *
          * @return The temp directory, an empty string in case of errors.
          */
-        static std::string tmpdir() UVW_NOEXCEPT;
+        static std::string tmpdir() noexcept;
 
         /**
          * @brief Retrieves an environment variable.
@@ -339,7 +339,7 @@ struct utilities {
          * @return The value of the environment variable, an empty string in
          * case of errors.
          */
-        static std::string env(const std::string &name) UVW_NOEXCEPT;
+        static std::string env(const std::string &name) noexcept;
 
         /**
          * @brief Creates, updates or deletes an environment variable.
@@ -348,7 +348,7 @@ struct utilities {
          * to unset it).
          * @return True in case of success, false otherwise.
          */
-        static bool env(const std::string &name, const std::string &value) UVW_NOEXCEPT;
+        static bool env(const std::string &name, const std::string &value) noexcept;
 
         /**
          * @brief Retrieves all environment variables and iterates them.
@@ -365,7 +365,7 @@ struct utilities {
          */
         template<typename Func>
         static std::enable_if_t<std::is_invocable_v<Func, std::string_view, std::string_view>, bool>
-        env(Func func) UVW_NOEXCEPT {
+        env(Func func) noexcept {
             uv_env_item_t *items = nullptr;
             int count{};
 
@@ -386,7 +386,7 @@ struct utilities {
          * @brief Returns the hostname.
          * @return The hostname, an empty string in case of errors.
          */
-        static std::string hostname() UVW_NOEXCEPT;
+        static std::string hostname() noexcept;
 
         /**
          * @brief Gets name and information about the current kernel.
@@ -397,7 +397,7 @@ struct utilities {
          *
          * @return Name and information about the current kernel.
          */
-        static uts_name uname() UVW_NOEXCEPT;
+        static uts_name uname() noexcept;
 
         /**
          * @brief Gets a subset of the password file entry.
@@ -411,7 +411,7 @@ struct utilities {
          *
          * @return The accessible subset of the password file entry.
          */
-        static passwd_info passwd() UVW_NOEXCEPT;
+        static passwd_info passwd() noexcept;
 
         /**
          * @brief Retrieves the scheduling priority of a process.
@@ -451,7 +451,7 @@ struct utilities {
      * @param category A properly initialized handle category.
      * @return The actual type of the handle as defined by handle_type
      */
-    static handle_type guess_handle(handle_category category) UVW_NOEXCEPT;
+    static handle_type guess_handle(handle_category category) noexcept;
 
     /**
      * @brief Gets the type of the stream to be used with the given descriptor.
@@ -471,7 +471,7 @@ struct utilities {
      * * `handle_type::UDP`
      * * `handle_type::FILE`
      */
-    static handle_type guess_handle(file_handle file) UVW_NOEXCEPT;
+    static handle_type guess_handle(file_handle file) noexcept;
 
     /** @brief Gets information about the CPUs on the system.
      *
@@ -480,7 +480,7 @@ struct utilities {
      *
      * @return A set of descriptors of all the available CPUs.
      */
-    static std::vector<cpu_info> cpu() UVW_NOEXCEPT;
+    static std::vector<cpu_info> cpu() noexcept;
 
     /**
      * @brief Gets a set of descriptors of all the available interfaces.
@@ -490,7 +490,7 @@ struct utilities {
      *
      * @return A set of descriptors of all the available interfaces.
      */
-    static std::vector<interface_address> interface_addresses() UVW_NOEXCEPT;
+    static std::vector<interface_address> interface_addresses() noexcept;
 
     /**
      * @brief IPv6-capable implementation of
@@ -505,7 +505,7 @@ struct utilities {
      * @param index Network interface index.
      * @return Network interface name.
      */
-    static std::string index_to_name(unsigned int index) UVW_NOEXCEPT;
+    static std::string index_to_name(unsigned int index) noexcept;
 
     /**
      * @brief Retrieves a network interface identifier.
@@ -517,7 +517,7 @@ struct utilities {
      * @param index Network interface index.
      * @return Network interface identifier.
      */
-    static std::string index_to_iid(unsigned int index) UVW_NOEXCEPT;
+    static std::string index_to_iid(unsigned int index) noexcept;
 
     /**
      * @brief Override the use of some standard library’s functions.
@@ -542,13 +542,13 @@ struct utilities {
      * @param free_func Replacement function for _free_.
      * @return True in case of success, false otherwise.
      */
-    static bool replace_allocator(malloc_func_type malloc_func, realloc_func_type realloc_func, calloc_func_type calloc_func, free_func_type free_func) UVW_NOEXCEPT;
+    static bool replace_allocator(malloc_func_type malloc_func, realloc_func_type realloc_func, calloc_func_type calloc_func, free_func_type free_func) noexcept;
 
     /**
      * @brief Gets the load average.
      * @return `[0,0,0]` on Windows (not available), the load average otherwise.
      */
-    static std::array<double, 3> load_average() UVW_NOEXCEPT;
+    static std::array<double, 3> load_average() noexcept;
 
     /**
      * @brief Store the program arguments.
@@ -576,7 +576,7 @@ struct utilities {
      * @brief Gets memory information (in bytes).
      * @return Memory information.
      */
-    static uint64_t total_memory() UVW_NOEXCEPT;
+    static uint64_t total_memory() noexcept;
 
     /**
      * @brief Gets the amount of memory available to the process (in bytes).
@@ -589,19 +589,19 @@ struct utilities {
      *
      * @return Amount of memory available to the process.
      */
-    static uint64_t constrained_memory() UVW_NOEXCEPT;
+    static uint64_t constrained_memory() noexcept;
 
     /**
      * @brief Gets the current system uptime.
      * @return The current system uptime or 0 in case of errors.
      */
-    static double uptime() UVW_NOEXCEPT;
+    static double uptime() noexcept;
 
     /**
      * @brief Gets the resource usage measures for the current process.
      * @return Resource usage measures, zeroes-filled object in case of errors.
      */
-    static resource_usage rusage() UVW_NOEXCEPT;
+    static resource_usage rusage() noexcept;
 
     /**
      * @brief Gets the current high-resolution real time.
@@ -613,46 +613,46 @@ struct utilities {
      *
      * @return The current high-resolution real time.
      */
-    static uint64_t hrtime() UVW_NOEXCEPT;
+    static uint64_t hrtime() noexcept;
 
     /**
      * @brief Gets the executable path.
      * @return The executable path, an empty string in case of errors.
      */
-    static std::string path() UVW_NOEXCEPT;
+    static std::string path() noexcept;
 
     /**
      * @brief Gets the current working directory.
      * @return The current working directory, an empty string in case of errors.
      */
-    static std::string cwd() UVW_NOEXCEPT;
+    static std::string cwd() noexcept;
 
     /**
      * @brief Changes the current working directory.
      * @param dir The working directory to be set.
      * @return True in case of success, false otherwise.
      */
-    static bool chdir(const std::string &dir) UVW_NOEXCEPT;
+    static bool chdir(const std::string &dir) noexcept;
 
     /**
      * @brief Cross-platform implementation of
      * [`gettimeofday`](https://linux.die.net/man/2/gettimeofday)
      * @return The current time.
      */
-    static timeval64 time_of_day() UVW_NOEXCEPT;
+    static timeval64 time_of_day() noexcept;
 
     /**
      * @brief Causes the calling thread to sleep for a while.
      * @param msec Number of milliseconds to sleep.
      */
-    static void sleep(unsigned int msec) UVW_NOEXCEPT;
+    static void sleep(unsigned int msec) noexcept;
 
     /**
      * @brief Returns an estimate of the amount of parallelism a program should
      * use (always a non-zero value).
      * @return Estimate of the amount of parallelism a program should use.
      */
-    static unsigned int available_parallelism() UVW_NOEXCEPT;
+    static unsigned int available_parallelism() noexcept;
 };
 
 /**

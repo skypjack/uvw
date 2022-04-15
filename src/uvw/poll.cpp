@@ -7,7 +7,7 @@
 
 namespace uvw {
 
-UVW_INLINE poll_event::poll_event(details::uvw_poll_event events) UVW_NOEXCEPT
+UVW_INLINE poll_event::poll_event(details::uvw_poll_event events) noexcept
     : flags{std::move(events)} {}
 
 UVW_INLINE poll_handle::poll_handle(loop::token token, std::shared_ptr<loop> ref, int desc)

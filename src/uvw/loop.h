@@ -66,7 +66,7 @@ class loop final: public emitter<loop>, public std::enable_shared_from_this<loop
         explicit uv_token(int) {}
     };
 
-    loop(std::unique_ptr<uv_loop_t, deleter> ptr) UVW_NOEXCEPT;
+    loop(std::unique_ptr<uv_loop_t, deleter> ptr) noexcept;
 
 public:
     using token = uv_token;
@@ -112,7 +112,7 @@ public:
     loop &operator=(const loop &) = delete;
     loop &operator=(loop &&other) = delete;
 
-    ~loop() UVW_NOEXCEPT;
+    ~loop() noexcept;
 
     /**
      * @brief Sets additional loop options.
@@ -192,13 +192,13 @@ public:
      *
      * @return Underlying return value.
      */
-    int run(run_mode mode = run_mode::DEFAULT) UVW_NOEXCEPT;
+    int run(run_mode mode = run_mode::DEFAULT) noexcept;
 
     /**
      * @brief Checks if there are active resources.
      * @return True if there are active resources in the loop.
      */
-    bool alive() const UVW_NOEXCEPT;
+    bool alive() const noexcept;
 
     /**
      * @brief Stops the event loop.
@@ -208,7 +208,7 @@ public:
      * If this function was called before blocking for I/O, the loop won’t block
      * for I/O on this iteration.
      */
-    void stop() UVW_NOEXCEPT;
+    void stop() noexcept;
 
     /**
      * @brief Get backend file descriptor.
@@ -219,7 +219,7 @@ public:
      *
      * @return The backend file descriptor.
      */
-    int descriptor() const UVW_NOEXCEPT;
+    int descriptor() const noexcept;
 
     /**
      * @brief Gets the poll timeout.
@@ -227,14 +227,14 @@ public:
      * * A boolean value that is true in case of valid timeout, false otherwise.
      * * Milliseconds (`std::chrono::duration<uint64_t, std::milli>`).
      */
-    std::pair<bool, time> timeout() const UVW_NOEXCEPT;
+    std::pair<bool, time> timeout() const noexcept;
 
     /**
      * @brief Returns the amount of time the event loop has been idle. The call
      * is thread safe.
      * @return The accumulated time spent idle.
      */
-    time idle_time() const UVW_NOEXCEPT;
+    time idle_time() const noexcept;
 
     /**
      * @brief Returns the current timestamp in milliseconds.
@@ -248,7 +248,7 @@ public:
      * @return The current timestamp in milliseconds (actual type is
      * `std::chrono::duration<uint64_t, std::milli>`).
      */
-    time now() const UVW_NOEXCEPT;
+    time now() const noexcept;
 
     /**
      * @brief Updates the event loop’s concept of _now_.
@@ -259,7 +259,7 @@ public:
      * that block the event loop for longer periods of time, where _longer_ is
      * somewhat subjective but probably on the order of a millisecond or more.
      */
-    void update() const UVW_NOEXCEPT;
+    void update() const noexcept;
 
     /**
      * @brief Walks the list of handles.
@@ -357,7 +357,7 @@ public:
      *
      * @return Underlying return value.
      */
-    int fork() UVW_NOEXCEPT;
+    int fork() noexcept;
 
     /**
      * @brief Gets user-defined data. `uvw` won't use this field in any case.
@@ -389,7 +389,7 @@ public:
      *
      * @return The underlying raw data structure.
      */
-    const uv_loop_t *raw() const UVW_NOEXCEPT;
+    const uv_loop_t *raw() const noexcept;
 
     /**
      * @brief Gets the underlying raw data structure.
@@ -406,7 +406,7 @@ public:
      *
      * @return The underlying raw data structure.
      */
-    uv_loop_t *raw() UVW_NOEXCEPT;
+    uv_loop_t *raw() noexcept;
 
 private:
     std::unique_ptr<uv_loop_t, deleter> uv_loop;
