@@ -19,15 +19,15 @@ namespace uvw {
  */
 class shared_lib final: public uv_type<uv_lib_t> {
 public:
-    explicit shared_lib(loop::token token, std::shared_ptr<loop> ref, const std::string &filename) UVW_NOEXCEPT;
+    explicit shared_lib(loop::token token, std::shared_ptr<loop> ref, const std::string &filename) noexcept;
 
-    ~shared_lib() UVW_NOEXCEPT;
+    ~shared_lib() noexcept;
 
     /**
      * @brief Checks if the library has been correctly opened.
      * @return True if the library is opened, false otherwise.
      */
-    explicit operator bool() const UVW_NOEXCEPT;
+    explicit operator bool() const noexcept;
 
     /**
      * @brief Retrieves a data pointer from a dynamic library.
@@ -51,7 +51,7 @@ public:
      * @brief Returns the last error message, if any.
      * @return The last error message, if any.
      */
-    const char *error() const UVW_NOEXCEPT;
+    const char *error() const noexcept;
 
 private:
     bool opened;

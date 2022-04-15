@@ -32,7 +32,7 @@ UVW_INLINE int fs_event_handle::stop() {
     return uv_fs_event_stop(raw());
 }
 
-UVW_INLINE std::string fs_event_handle::path() UVW_NOEXCEPT {
+UVW_INLINE std::string fs_event_handle::path() noexcept {
     return details::try_read(&uv_fs_event_getpath, raw());
 }
 

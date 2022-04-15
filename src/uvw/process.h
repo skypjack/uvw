@@ -43,7 +43,7 @@ enum class uvw_stdio_flags : std::underlying_type_t<uv_stdio_flags> {
 
 /*! @brief Exit event. */
 struct exit_event {
-    explicit exit_event(int64_t code, int sig) UVW_NOEXCEPT;
+    explicit exit_event(int64_t code, int sig) noexcept;
 
     int64_t status; /*!< The exit status. */
     int signal;     /*!< The signal that caused the process to terminate, if any. */
@@ -78,7 +78,7 @@ public:
      * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_disable_stdio_inheritance)
      * for further details.
      */
-    static void disable_stdio_inheritance() UVW_NOEXCEPT;
+    static void disable_stdio_inheritance() noexcept;
 
     /**
      * @brief kill Sends the specified signal to the given PID.
@@ -86,7 +86,7 @@ public:
      * @param signum A valid signal identifier.
      * @return True in case of success, false otherwise.
      */
-    static bool kill(int pid, int signum) UVW_NOEXCEPT;
+    static bool kill(int pid, int signum) noexcept;
 
     /**
      * @brief Initializes the handle.
@@ -122,14 +122,14 @@ public:
      *
      * @return The PID of the spawned process.
      */
-    int pid() UVW_NOEXCEPT;
+    int pid() noexcept;
 
     /**
      * @brief Sets the current working directory for the subprocess.
      * @param path The working directory to be used when `spawn()` is invoked.
      * @return A reference to this process handle.
      */
-    process_handle &cwd(const std::string &path) UVW_NOEXCEPT;
+    process_handle &cwd(const std::string &path) noexcept;
 
     /**
      * @brief Sets flags that control how `spawn()` behaves.
@@ -151,7 +151,7 @@ public:
      * @param flags A valid set of flags.
      * @return A reference to this process handle.
      */
-    process_handle &flags(process_flags flags) UVW_NOEXCEPT;
+    process_handle &flags(process_flags flags) noexcept;
 
     /**
      * @brief Makes a `stdio` handle available to the child process.

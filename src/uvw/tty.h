@@ -84,7 +84,7 @@ public:
      * @brief Resets TTY settings to default values.
      * @return True in case of success, false otherwise.
      */
-    bool reset() UVW_NOEXCEPT;
+    bool reset() noexcept;
 
     /**
      * @brief Gets the current Window size.
@@ -110,7 +110,7 @@ public:
      *
      * @param s The state to be set.
      */
-    void vterm_state(tty_vtermstate s) const UVW_NOEXCEPT;
+    void vterm_state(tty_vtermstate s) const noexcept;
 
     /**
      * @brief Gets the current state of whether console virtual terminal
@@ -129,7 +129,7 @@ public:
      *
      * @return The current state.
      */
-    tty_vtermstate vterm_state() const UVW_NOEXCEPT;
+    tty_vtermstate vterm_state() const noexcept;
 
 private:
     std::shared_ptr<details::reset_mode_memo> memo;

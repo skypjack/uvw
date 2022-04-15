@@ -9,46 +9,46 @@ namespace uvw {
 UVW_INLINE passwd_info::passwd_info(std::shared_ptr<uv_passwd_t> pwd)
     : value{pwd} {}
 
-UVW_INLINE std::string passwd_info::username() const UVW_NOEXCEPT {
+UVW_INLINE std::string passwd_info::username() const noexcept {
     return ((value && value->username) ? value->username : "");
 }
 
-UVW_INLINE decltype(uv_passwd_t::uid) passwd_info::uid() const UVW_NOEXCEPT {
+UVW_INLINE decltype(uv_passwd_t::uid) passwd_info::uid() const noexcept {
     return (value ? value->uid : decltype(uv_passwd_t::uid){});
 }
 
-UVW_INLINE decltype(uv_passwd_t::gid) passwd_info::gid() const UVW_NOEXCEPT {
+UVW_INLINE decltype(uv_passwd_t::gid) passwd_info::gid() const noexcept {
     return (value ? value->gid : decltype(uv_passwd_t::gid){});
 }
 
-UVW_INLINE std::string passwd_info::shell() const UVW_NOEXCEPT {
+UVW_INLINE std::string passwd_info::shell() const noexcept {
     return ((value && value->shell) ? value->shell : "");
 }
 
-UVW_INLINE std::string passwd_info::homedir() const UVW_NOEXCEPT {
+UVW_INLINE std::string passwd_info::homedir() const noexcept {
     return ((value && value->homedir) ? value->homedir : "");
 }
 
-UVW_INLINE passwd_info::operator bool() const UVW_NOEXCEPT {
+UVW_INLINE passwd_info::operator bool() const noexcept {
     return static_cast<bool>(value);
 }
 
 UVW_INLINE uts_name::uts_name(std::shared_ptr<uv_utsname_t> init)
     : uname{init} {}
 
-UVW_INLINE std::string uts_name::sysname() const UVW_NOEXCEPT {
+UVW_INLINE std::string uts_name::sysname() const noexcept {
     return uname ? uname->sysname : "";
 }
 
-UVW_INLINE std::string uts_name::release() const UVW_NOEXCEPT {
+UVW_INLINE std::string uts_name::release() const noexcept {
     return uname ? uname->release : "";
 }
 
-UVW_INLINE std::string uts_name::version() const UVW_NOEXCEPT {
+UVW_INLINE std::string uts_name::version() const noexcept {
     return uname ? uname->version : "";
 }
 
-UVW_INLINE std::string uts_name::machine() const UVW_NOEXCEPT {
+UVW_INLINE std::string uts_name::machine() const noexcept {
     return uname ? uname->machine : "";
 }
 
@@ -107,41 +107,41 @@ UVW_INLINE socket_address sock_addr(const sockaddr_storage &storage) {
 
 } // namespace details
 
-UVW_INLINE pid_type utilities::os::pid() UVW_NOEXCEPT {
+UVW_INLINE pid_type utilities::os::pid() noexcept {
     return uv_os_getpid();
 }
 
-UVW_INLINE pid_type utilities::os::ppid() UVW_NOEXCEPT {
+UVW_INLINE pid_type utilities::os::ppid() noexcept {
     return uv_os_getppid();
 }
 
-UVW_INLINE std::string utilities::os::homedir() UVW_NOEXCEPT {
+UVW_INLINE std::string utilities::os::homedir() noexcept {
     return details::try_read(&uv_os_homedir);
 }
 
-UVW_INLINE std::string utilities::os::tmpdir() UVW_NOEXCEPT {
+UVW_INLINE std::string utilities::os::tmpdir() noexcept {
     return details::try_read(&uv_os_tmpdir);
 }
 
-UVW_INLINE std::string utilities::os::env(const std::string &name) UVW_NOEXCEPT {
+UVW_INLINE std::string utilities::os::env(const std::string &name) noexcept {
     return details::try_read(&uv_os_getenv, name.c_str());
 }
 
-UVW_INLINE bool utilities::os::env(const std::string &name, const std::string &value) UVW_NOEXCEPT {
+UVW_INLINE bool utilities::os::env(const std::string &name, const std::string &value) noexcept {
     return (0 == (value.empty() ? uv_os_unsetenv(name.c_str()) : uv_os_setenv(name.c_str(), value.c_str())));
 }
 
-UVW_INLINE std::string utilities::os::hostname() UVW_NOEXCEPT {
+UVW_INLINE std::string utilities::os::hostname() noexcept {
     return details::try_read(&uv_os_gethostname);
 }
 
-UVW_INLINE uts_name utilities::os::uname() UVW_NOEXCEPT {
+UVW_INLINE uts_name utilities::os::uname() noexcept {
     auto ptr = std::make_shared<uv_utsname_t>();
     uv_os_uname(ptr.get());
     return ptr;
 }
 
-UVW_INLINE passwd_info utilities::os::passwd() UVW_NOEXCEPT {
+UVW_INLINE passwd_info utilities::os::passwd() noexcept {
     auto deleter = [](uv_passwd_t *passwd) {
         uv_os_free_passwd(passwd);
         delete passwd;
@@ -166,7 +166,7 @@ UVW_INLINE bool utilities::os::priority(pid_type pid, int prio) {
     return 0 == uv_os_setpriority(pid, prio);
 }
 
-UVW_INLINE handle_type utilities::guess_handle(handle_category category) UVW_NOEXCEPT {
+UVW_INLINE handle_type utilities::guess_handle(handle_category category) noexcept {
     switch(category) {
     case UV_ASYNC:
         return handle_type::ASYNC;
@@ -207,12 +207,12 @@ UVW_INLINE handle_type utilities::guess_handle(handle_category category) UVW_NOE
     }
 }
 
-UVW_INLINE handle_type utilities::guess_handle(file_handle file) UVW_NOEXCEPT {
+UVW_INLINE handle_type utilities::guess_handle(file_handle file) noexcept {
     handle_category category = uv_guess_handle(file);
     return guess_handle(category);
 }
 
-UVW_INLINE std::vector<cpu_info> utilities::cpu() UVW_NOEXCEPT {
+UVW_INLINE std::vector<cpu_info> utilities::cpu() noexcept {
     std::vector<cpu_info> cpuinfos;
 
     uv_cpu_info_t *infos;
@@ -229,7 +229,7 @@ UVW_INLINE std::vector<cpu_info> utilities::cpu() UVW_NOEXCEPT {
     return cpuinfos;
 }
 
-UVW_INLINE std::vector<interface_address> utilities::interface_addresses() UVW_NOEXCEPT {
+UVW_INLINE std::vector<interface_address> utilities::interface_addresses() noexcept {
     std::vector<interface_address> interfaces;
 
     uv_interface_address_t *ifaces{nullptr};
@@ -260,19 +260,19 @@ UVW_INLINE std::vector<interface_address> utilities::interface_addresses() UVW_N
     return interfaces;
 }
 
-UVW_INLINE std::string utilities::index_to_name(unsigned int index) UVW_NOEXCEPT {
+UVW_INLINE std::string utilities::index_to_name(unsigned int index) noexcept {
     return details::try_read(&uv_if_indextoname, index);
 }
 
-UVW_INLINE std::string utilities::index_to_iid(unsigned int index) UVW_NOEXCEPT {
+UVW_INLINE std::string utilities::index_to_iid(unsigned int index) noexcept {
     return details::try_read(&uv_if_indextoiid, index);
 }
 
-UVW_INLINE bool utilities::replace_allocator(malloc_func_type malloc_func, realloc_func_type realloc_func, calloc_func_type calloc_func, free_func_type free_func) UVW_NOEXCEPT {
+UVW_INLINE bool utilities::replace_allocator(malloc_func_type malloc_func, realloc_func_type realloc_func, calloc_func_type calloc_func, free_func_type free_func) noexcept {
     return (0 == uv_replace_allocator(malloc_func, realloc_func, calloc_func, free_func));
 }
 
-UVW_INLINE std::array<double, 3> utilities::load_average() UVW_NOEXCEPT {
+UVW_INLINE std::array<double, 3> utilities::load_average() noexcept {
     std::array<double, 3> avg;
     uv_loadavg(avg.data());
     return avg;
@@ -298,15 +298,15 @@ UVW_INLINE bool utilities::process_title(const std::string &title) {
     return (0 == uv_set_process_title(title.c_str()));
 }
 
-UVW_INLINE uint64_t utilities::total_memory() UVW_NOEXCEPT {
+UVW_INLINE uint64_t utilities::total_memory() noexcept {
     return uv_get_total_memory();
 }
 
-UVW_INLINE uint64_t utilities::constrained_memory() UVW_NOEXCEPT {
+UVW_INLINE uint64_t utilities::constrained_memory() noexcept {
     return uv_get_constrained_memory();
 }
 
-UVW_INLINE double utilities::uptime() UVW_NOEXCEPT {
+UVW_INLINE double utilities::uptime() noexcept {
     double ret;
 
     if(0 != uv_uptime(&ret)) {
@@ -316,39 +316,39 @@ UVW_INLINE double utilities::uptime() UVW_NOEXCEPT {
     return ret;
 }
 
-UVW_INLINE resource_usage utilities::rusage() UVW_NOEXCEPT {
+UVW_INLINE resource_usage utilities::rusage() noexcept {
     resource_usage ru;
     auto err = uv_getrusage(&ru);
     return err ? resource_usage{} : ru;
 }
 
-UVW_INLINE uint64_t utilities::hrtime() UVW_NOEXCEPT {
+UVW_INLINE uint64_t utilities::hrtime() noexcept {
     return uv_hrtime();
 }
 
-UVW_INLINE std::string utilities::path() UVW_NOEXCEPT {
+UVW_INLINE std::string utilities::path() noexcept {
     return details::try_read(&uv_exepath);
 }
 
-UVW_INLINE std::string utilities::cwd() UVW_NOEXCEPT {
+UVW_INLINE std::string utilities::cwd() noexcept {
     return details::try_read(&uv_cwd);
 }
 
-UVW_INLINE bool utilities::chdir(const std::string &dir) UVW_NOEXCEPT {
+UVW_INLINE bool utilities::chdir(const std::string &dir) noexcept {
     return (0 == uv_chdir(dir.data()));
 }
 
-UVW_INLINE timeval64 utilities::time_of_day() UVW_NOEXCEPT {
+UVW_INLINE timeval64 utilities::time_of_day() noexcept {
     uv_timeval64_t ret;
     uv_gettimeofday(&ret);
     return ret;
 }
 
-UVW_INLINE void utilities::sleep(unsigned int msec) UVW_NOEXCEPT {
+UVW_INLINE void utilities::sleep(unsigned int msec) noexcept {
     uv_sleep(msec);
 }
 
-UVW_INLINE unsigned int utilities::available_parallelism() UVW_NOEXCEPT {
+UVW_INLINE unsigned int utilities::available_parallelism() noexcept {
     return uv_available_parallelism();
 }
 

@@ -31,7 +31,7 @@ struct write_event {};
 
 /*! @brief Data event. */
 struct data_event {
-    explicit data_event(std::unique_ptr<char[]> buf, std::size_t len) UVW_NOEXCEPT;
+    explicit data_event(std::unique_ptr<char[]> buf, std::size_t len) noexcept;
 
     std::unique_ptr<char[]> data; /*!< A bunch of data read on the stream. */
     std::size_t length;           /*!< The amount of data read on the stream. */
@@ -421,7 +421,7 @@ public:
      * @brief Checks if the stream is readable.
      * @return True if the stream is readable, false otherwise.
      */
-    bool readable() const UVW_NOEXCEPT {
+    bool readable() const noexcept {
         return (uv_is_readable(as_uv_stream()) == 1);
     }
 
@@ -429,7 +429,7 @@ public:
      * @brief Checks if the stream is writable.
      * @return True if the stream is writable, false otherwise.
      */
-    bool writable() const UVW_NOEXCEPT {
+    bool writable() const noexcept {
         return (uv_is_writable(as_uv_stream()) == 1);
     }
 
@@ -456,7 +456,7 @@ public:
      * @brief Gets the amount of queued bytes waiting to be sent.
      * @return Amount of queued bytes waiting to be sent.
      */
-    size_t write_queue_size() const UVW_NOEXCEPT {
+    size_t write_queue_size() const noexcept {
         return uv_stream_get_write_queue_size(as_uv_stream());
     }
 };

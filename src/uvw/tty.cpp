@@ -32,7 +32,7 @@ UVW_INLINE bool tty_handle::mode(tty_handle::tty_mode m) {
     return (0 == uv_tty_set_mode(raw(), static_cast<uv_tty_mode_t>(m)));
 }
 
-UVW_INLINE bool tty_handle::reset() UVW_NOEXCEPT {
+UVW_INLINE bool tty_handle::reset() noexcept {
     return (0 == uv_tty_reset_mode());
 }
 
@@ -47,7 +47,7 @@ UVW_INLINE win_size tty_handle::get_win_size() {
     return size;
 }
 
-UVW_INLINE void tty_handle::vterm_state(tty_handle::tty_vtermstate s) const UVW_NOEXCEPT {
+UVW_INLINE void tty_handle::vterm_state(tty_handle::tty_vtermstate s) const noexcept {
     switch(s) {
     case tty_vtermstate::SUPPORTED:
         uv_tty_set_vterm_state(uv_tty_vtermstate_t::UV_TTY_SUPPORTED);
@@ -58,7 +58,7 @@ UVW_INLINE void tty_handle::vterm_state(tty_handle::tty_vtermstate s) const UVW_
     }
 }
 
-UVW_INLINE tty_handle::tty_vtermstate tty_handle::vterm_state() const UVW_NOEXCEPT {
+UVW_INLINE tty_handle::tty_vtermstate tty_handle::vterm_state() const noexcept {
     uv_tty_vtermstate_t state;
     uv_tty_get_vterm_state(&state);
     return tty_vtermstate{state};

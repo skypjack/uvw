@@ -47,7 +47,7 @@ public:
      * @brief Returns the size of the underlying request type.
      * @return The size of the underlying request type.
      */
-    std::size_t size() const UVW_NOEXCEPT {
+    std::size_t size() const noexcept {
         return uv_req_size(reinterpret_cast<const uv_req_t *>(this->raw())->type);
     }
 };

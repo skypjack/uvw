@@ -10,7 +10,7 @@ namespace uvw {
 
 /*! @brief Signal event. */
 struct signal_event {
-    explicit signal_event(int sig) UVW_NOEXCEPT;
+    explicit signal_event(int sig) noexcept;
 
     int signum; /*!< The signal being monitored by this handle. */
 };
@@ -71,7 +71,7 @@ public:
      * @brief Gets the signal being monitored.
      * @return The signal being monitored.
      */
-    int signal() const UVW_NOEXCEPT;
+    int signal() const noexcept;
 };
 
 } // namespace uvw

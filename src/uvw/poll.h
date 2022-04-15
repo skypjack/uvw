@@ -25,7 +25,7 @@ enum class uvw_poll_event : std::underlying_type_t<uv_poll_event> {
 
 /*! @brief Poll event. */
 struct poll_event {
-    explicit poll_event(details::uvw_poll_event events) UVW_NOEXCEPT;
+    explicit poll_event(details::uvw_poll_event events) noexcept;
 
     /**
      * @brief Detected events all in one.

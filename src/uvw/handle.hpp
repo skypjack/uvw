@@ -49,7 +49,7 @@ public:
      *
      * @return The actual category of the handle.
      */
-    handle_category category() const UVW_NOEXCEPT {
+    handle_category category() const noexcept {
         return handle_category{as_uv_handle()->type};
     }
 
@@ -62,7 +62,7 @@ public:
      *
      * @return The actual type of the handle.
      */
-    handle_type type() const UVW_NOEXCEPT {
+    handle_type type() const noexcept {
         return utilities::guess_handle(category());
     }
 
@@ -85,7 +85,7 @@ public:
      *
      * @return True if the handle is active, false otherwise.
      */
-    bool active() const UVW_NOEXCEPT {
+    bool active() const noexcept {
         return !!uv_is_active(as_uv_handle());
     }
 
@@ -97,7 +97,7 @@ public:
      *
      * @return True if the handle is closing or closed, false otherwise.
      */
-    bool closing() const UVW_NOEXCEPT {
+    bool closing() const noexcept {
         return !!uv_is_closing(as_uv_handle());
     }
 
@@ -109,7 +109,7 @@ public:
      *
      * The handle will emit a close event when finished.
      */
-    void close() UVW_NOEXCEPT {
+    void close() noexcept {
         if(!closing()) {
             uv_close(as_uv_handle(), &handle<T, U, E...>::close_callback);
         }
@@ -121,7 +121,7 @@ public:
      * References are idempotent, that is, if a handle is already referenced
      * calling this function again will have no effect.
      */
-    void reference() UVW_NOEXCEPT {
+    void reference() noexcept {
         uv_ref(as_uv_handle());
     }
 
@@ -131,7 +131,7 @@ public:
      * References are idempotent, that is, if a handle is not referenced calling
      * this function again will have no effect.
      */
-    void unreference() UVW_NOEXCEPT {
+    void unreference() noexcept {
         uv_unref(as_uv_handle());
     }
 
@@ -139,7 +139,7 @@ public:
      * @brief Checks if the given handle referenced.
      * @return True if the handle referenced, false otherwise.
      */
-    bool referenced() const UVW_NOEXCEPT {
+    bool referenced() const noexcept {
         return !!uv_has_ref(as_uv_handle());
     }
 
@@ -147,7 +147,7 @@ public:
      * @brief Returns the size of the underlying handle type.
      * @return The size of the underlying handle type.
      */
-    std::size_t size() const UVW_NOEXCEPT {
+    std::size_t size() const noexcept {
         return uv_handle_size(as_uv_handle()->type);
     }
 

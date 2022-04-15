@@ -21,7 +21,7 @@ namespace uvw {
  */
 struct error_event {
     template<typename U, typename = std::enable_if_t<std::is_integral_v<U>>>
-    explicit error_event(U val) UVW_NOEXCEPT
+    explicit error_event(U val) noexcept
         : ec{static_cast<int>(val)} {}
 
     /**
@@ -36,7 +36,7 @@ struct error_event {
      * @param sys A platform dependent error code.
      * @return The `libuv` error code equivalent to the given platform dependent error code.
      */
-    static int translate(int sys) UVW_NOEXCEPT;
+    static int translate(int sys) noexcept;
 
     /**
      * @brief Returns the error message for the given error code.
@@ -45,7 +45,7 @@ struct error_event {
      *
      * @return The error message for the given error code.
      */
-    const char *what() const UVW_NOEXCEPT;
+    const char *what() const noexcept;
 
     /**
      * @brief Returns the error name for the given error code.
@@ -54,19 +54,19 @@ struct error_event {
      *
      * @return The error name for the given error code.
      */
-    const char *name() const UVW_NOEXCEPT;
+    const char *name() const noexcept;
 
     /**
      * @brief Gets the underlying error code, that is an error constant of `libuv`.
      * @return The underlying error code.
      */
-    int code() const UVW_NOEXCEPT;
+    int code() const noexcept;
 
     /**
      * @brief Checks if the event contains a valid error code.
      * @return True in case of success, false otherwise.
      */
-    explicit operator bool() const UVW_NOEXCEPT;
+    explicit operator bool() const noexcept;
 
 private:
     const int ec;
@@ -86,12 +86,12 @@ public:
 
 private:
     template<typename U>
-    const auto &handler() const UVW_NOEXCEPT {
+    const auto &handler() const noexcept {
         return std::get<listener_t<U>>(handlers);
     }
 
     template<typename U>
-    auto &handler() UVW_NOEXCEPT {
+    auto &handler() noexcept {
         return std::get<listener_t<U>>(handlers);
     }
 
@@ -104,7 +104,7 @@ protected:
     }
 
 public:
-    virtual ~emitter() UVW_NOEXCEPT {
+    virtual ~emitter() noexcept {
         static_assert(std::is_base_of_v<emitter<T, E...>, T>);
     }
 
@@ -125,12 +125,12 @@ public:
 
     /*! @brief Disconnects the listener for the given event type. */
     template<typename U>
-    void reset() UVW_NOEXCEPT {
+    void reset() noexcept {
         handler<U>() = nullptr;
     }
 
     /*! @brief Disconnects all listeners. */
-    void reset() UVW_NOEXCEPT {
+    void reset() noexcept {
         reset<error_event>();
         (reset<E>(), ...);
     }
@@ -141,7 +141,7 @@ public:
      * false otherwise.
      */
     template<typename U>
-    bool has() const UVW_NOEXCEPT {
+    bool has() const noexcept {
         return static_cast<bool>(handler<U>());
     }
 

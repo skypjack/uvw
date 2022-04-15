@@ -6,7 +6,7 @@
 
 namespace uvw {
 
-UVW_INLINE signal_event::signal_event(int sig) UVW_NOEXCEPT
+UVW_INLINE signal_event::signal_event(int sig) noexcept
     : signum{sig} {}
 
 UVW_INLINE void signal_handle::start_callback(uv_signal_t *hndl, int signum) {
@@ -30,7 +30,7 @@ UVW_INLINE int signal_handle::stop() {
     return uv_signal_stop(raw());
 }
 
-UVW_INLINE int signal_handle::signal() const UVW_NOEXCEPT {
+UVW_INLINE int signal_handle::signal() const noexcept {
     return raw()->signum;
 }
 

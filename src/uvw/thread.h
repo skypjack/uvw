@@ -51,13 +51,13 @@ public:
     using task = internal_task;
     using type = uv_thread_t;
 
-    explicit thread(loop::token token, std::shared_ptr<loop> ref, task t, std::shared_ptr<void> d = nullptr) UVW_NOEXCEPT;
+    explicit thread(loop::token token, std::shared_ptr<loop> ref, task t, std::shared_ptr<void> d = nullptr) noexcept;
 
     /**
      * @brief Obtains the identifier of the calling thread.
      * @return The identifier of the calling thread.
      */
-    static type self() UVW_NOEXCEPT;
+    static type self() noexcept;
 
     /**
      * @brief Compares thread by means of their identifiers.
@@ -65,15 +65,15 @@ public:
      * @param tr A valid instance of a thread.
      * @return True if the two threads are the same thread, false otherwise.
      */
-    static bool equal(const thread &tl, const thread &tr) UVW_NOEXCEPT;
+    static bool equal(const thread &tl, const thread &tr) noexcept;
 
-    ~thread() UVW_NOEXCEPT;
+    ~thread() noexcept;
 
     /**
      * @brief Creates a new thread.
      * @return True in case of success, false otherwise.
      */
-    bool run() UVW_NOEXCEPT;
+    bool run() noexcept;
 
     /**
      * @brief Creates a new thread.
@@ -88,13 +88,13 @@ public:
      *
      * @return True in case of success, false otherwise.
      */
-    bool run(create_flags opts, std::size_t stack = {}) UVW_NOEXCEPT;
+    bool run(create_flags opts, std::size_t stack = {}) noexcept;
 
     /**
      * @brief Joins with a terminated thread.
      * @return True in case of success, false otherwise.
      */
-    bool join() UVW_NOEXCEPT;
+    bool join() noexcept;
 
 private:
     std::shared_ptr<void> data;
@@ -110,9 +110,9 @@ private:
  */
 class thread_local_storage final: public uv_type<uv_key_t> {
 public:
-    explicit thread_local_storage(loop::token token, std::shared_ptr<loop> ref) UVW_NOEXCEPT;
+    explicit thread_local_storage(loop::token token, std::shared_ptr<loop> ref) noexcept;
 
-    ~thread_local_storage() UVW_NOEXCEPT;
+    ~thread_local_storage() noexcept;
 
     /**
      * @brief Gets the value of a given variable.
@@ -120,7 +120,7 @@ public:
      * @return A pointer to the given variable.
      */
     template<typename T>
-    T *get() UVW_NOEXCEPT {
+    T *get() noexcept {
         return static_cast<T *>(uv_key_get(uv_type::raw()));
     }
 
@@ -130,7 +130,7 @@ public:
      * @param value A valid pointer to the variable to store
      */
     template<typename T>
-    void set(T *value) UVW_NOEXCEPT {
+    void set(T *value) noexcept {
         return uv_key_set(uv_type::raw(), value);
     }
 };
@@ -142,7 +142,7 @@ public:
  * callers except one (it’s unspecified which one).
  */
 class once final: public uv_type<uv_once_t> {
-    static uv_once_t *guard() UVW_NOEXCEPT;
+    static uv_once_t *guard() noexcept;
 
 public:
     using uv_type::uv_type;
@@ -157,7 +157,7 @@ public:
      * @param f A valid callback function.
      */
     template<typename F>
-    static void run(F &&f) UVW_NOEXCEPT {
+    static void run(F &&f) noexcept {
         using callback_type = void (*)(void);
         static_assert(std::is_convertible_v<F, callback_type>);
         callback_type cb = f;
@@ -177,25 +177,25 @@ class mutex final: public uv_type<uv_mutex_t> {
     friend class condition;
 
 public:
-    explicit mutex(loop::token token, std::shared_ptr<loop> ref, bool recursive = false) UVW_NOEXCEPT;
+    explicit mutex(loop::token token, std::shared_ptr<loop> ref, bool recursive = false) noexcept;
 
-    ~mutex() UVW_NOEXCEPT;
+    ~mutex() noexcept;
 
     /**
      * @brief Locks the mutex.
      */
-    void lock() UVW_NOEXCEPT;
+    void lock() noexcept;
 
     /**
      * @brief Tries to lock the mutex.
      * @return True in case of success, false otherwise.
      */
-    bool try_lock() UVW_NOEXCEPT;
+    bool try_lock() noexcept;
 
     /**
      * @brief Unlocks the mutex.
      */
-    void unlock() UVW_NOEXCEPT;
+    void unlock() noexcept;
 };
 
 /**
@@ -203,41 +203,41 @@ public:
  */
 class rwlock final: public uv_type<uv_rwlock_t> {
 public:
-    explicit rwlock(loop::token token, std::shared_ptr<loop> ref) UVW_NOEXCEPT;
+    explicit rwlock(loop::token token, std::shared_ptr<loop> ref) noexcept;
 
-    ~rwlock() UVW_NOEXCEPT;
+    ~rwlock() noexcept;
 
     /**
      * @brief Locks a read-write lock object for reading.
      */
-    void rdlock() UVW_NOEXCEPT;
+    void rdlock() noexcept;
 
     /**
      * @brief Tries to lock a read-write lock object for reading.
      * @return True in case of success, false otherwise.
      */
-    bool try_rdlock() UVW_NOEXCEPT;
+    bool try_rdlock() noexcept;
 
     /**
      * @brief Unlocks a read-write lock object previously locked for reading.
      */
-    void rdunlock() UVW_NOEXCEPT;
+    void rdunlock() noexcept;
 
     /**
      * @brief Locks a read-write lock object for writing.
      */
-    void wrlock() UVW_NOEXCEPT;
+    void wrlock() noexcept;
 
     /**
      * @brief Tries to lock a read-write lock object for writing.
      * @return True in case of success, false otherwise.
      */
-    bool try_wrlock() UVW_NOEXCEPT;
+    bool try_wrlock() noexcept;
 
     /**
      * @brief Unlocks a read-write lock object previously locked for writing.
      */
-    void wrunlock() UVW_NOEXCEPT;
+    void wrunlock() noexcept;
 };
 
 /**
@@ -249,25 +249,25 @@ public:
  */
 class semaphore final: public uv_type<uv_sem_t> {
 public:
-    explicit semaphore(loop::token token, std::shared_ptr<loop> ref, unsigned int value) UVW_NOEXCEPT;
+    explicit semaphore(loop::token token, std::shared_ptr<loop> ref, unsigned int value) noexcept;
 
-    ~semaphore() UVW_NOEXCEPT;
+    ~semaphore() noexcept;
 
     /**
      * @brief Unlocks a semaphore.
      */
-    void post() UVW_NOEXCEPT;
+    void post() noexcept;
 
     /**
      * @brief Locks a semaphore.
      */
-    void wait() UVW_NOEXCEPT;
+    void wait() noexcept;
 
     /**
      * @brief Tries to lock a semaphore.
      * @return True in case of success, false otherwise.
      */
-    bool try_wait() UVW_NOEXCEPT;
+    bool try_wait() noexcept;
 };
 
 /**
@@ -275,9 +275,9 @@ public:
  */
 class condition final: public uv_type<uv_cond_t> {
 public:
-    explicit condition(loop::token token, std::shared_ptr<loop> ref) UVW_NOEXCEPT;
+    explicit condition(loop::token token, std::shared_ptr<loop> ref) noexcept;
 
-    ~condition() UVW_NOEXCEPT;
+    ~condition() noexcept;
 
     /**
      * @brief Signals a condition.
@@ -285,14 +285,14 @@ public:
      * This function shall unblock at least one of the threads that are blocked
      * on the specified condition variable (if any threads are blocked on it).
      */
-    void signal() UVW_NOEXCEPT;
+    void signal() noexcept;
 
     /**
      * @brief Broadcasts a condition.
      *
      * This function shall unblock threads blocked on a condition variable.
      */
-    void broadcast() UVW_NOEXCEPT;
+    void broadcast() noexcept;
 
     /**
      * @brief Waits on a condition.
@@ -303,7 +303,7 @@ public:
      * @param mtx A mutex locked by the calling thread, otherwise expect
      * undefined behavior.
      */
-    void wait(mutex &mtx) UVW_NOEXCEPT;
+    void wait(mutex &mtx) noexcept;
 
     /**
      * @brief Waits on a condition.
@@ -320,7 +320,7 @@ public:
      * @param timeout The maximum time to wait before to return.
      * @return True in case of success, false otherwise.
      */
-    bool timed_wait(mutex &mtx, uint64_t timeout) UVW_NOEXCEPT;
+    bool timed_wait(mutex &mtx, uint64_t timeout) noexcept;
 };
 
 /**
@@ -334,15 +334,15 @@ public:
  */
 class barrier final: public uv_type<uv_barrier_t> {
 public:
-    explicit barrier(loop::token token, std::shared_ptr<loop> ref, unsigned int count) UVW_NOEXCEPT;
+    explicit barrier(loop::token token, std::shared_ptr<loop> ref, unsigned int count) noexcept;
 
-    ~barrier() UVW_NOEXCEPT;
+    ~barrier() noexcept;
 
     /**
      * @brief Synchronizes at a barrier.
      * @return True in case of success, false otherwise.
      */
-    bool wait() UVW_NOEXCEPT;
+    bool wait() noexcept;
 };
 
 } // namespace uvw

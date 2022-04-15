@@ -20,7 +20,7 @@ struct send_event {};
 
 /*! @brief UDP data event. */
 struct udp_data_event {
-    explicit udp_data_event(socket_address sndr, std::unique_ptr<char[]> buf, std::size_t len, bool part) UVW_NOEXCEPT;
+    explicit udp_data_event(socket_address sndr, std::unique_ptr<char[]> buf, std::size_t len, bool part) noexcept;
 
     std::unique_ptr<char[]> data; /*!< A bunch of data read on the stream. */
     std::size_t length;           /*!< The amount of data read on the stream. */
@@ -170,7 +170,7 @@ public:
      * @return A valid instance of socket_address, an empty one in case of
      * errors.
      */
-    socket_address peer() const UVW_NOEXCEPT;
+    socket_address peer() const noexcept;
 
     /**
      * @brief Binds the UDP handle to an IP address and port.
@@ -247,7 +247,7 @@ public:
      * @return A valid instance of socket_address, an empty one in case of
      * errors.
      */
-    socket_address sock() const UVW_NOEXCEPT;
+    socket_address sock() const noexcept;
 
     /**
      * @brief Sets membership for a multicast address.
@@ -524,14 +524,14 @@ public:
      *
      * @return Number of bytes queued for sending.
      */
-    size_t send_queue_size() const UVW_NOEXCEPT;
+    size_t send_queue_size() const noexcept;
 
     /**
      * @brief Number of send requests currently in the queue awaiting to be
      * processed.
      * @return Number of send requests currently in the queue.
      */
-    size_t send_queue_count() const UVW_NOEXCEPT;
+    size_t send_queue_count() const noexcept;
 
 private:
     enum {

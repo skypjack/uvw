@@ -13,7 +13,7 @@ namespace uvw {
 
 /*! @brief Fs pos event. */
 struct fs_poll_event {
-    explicit fs_poll_event(file_info previous, file_info current) UVW_NOEXCEPT;
+    explicit fs_poll_event(file_info previous, file_info current) noexcept;
 
     file_info prev; /*!< The old file_info struct. */
     file_info curr; /*!< The new file_info struct. */
@@ -64,7 +64,7 @@ public:
      * @return The path being monitored by the handle, an empty string in case
      * of errors.
      */
-    std::string path() UVW_NOEXCEPT;
+    std::string path() noexcept;
 };
 
 } // namespace uvw

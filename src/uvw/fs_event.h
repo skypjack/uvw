@@ -108,7 +108,7 @@ public:
      * @brief Gets the path being monitored.
      * @return The path being monitored, an empty string in case of errors.
      */
-    std::string path() UVW_NOEXCEPT;
+    std::string path() noexcept;
 };
 
 } // namespace uvw

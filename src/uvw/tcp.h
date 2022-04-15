@@ -157,14 +157,14 @@ public:
      * @return A valid instance of socket_address, an empty one in case of
      * errors.
      */
-    socket_address sock() const UVW_NOEXCEPT;
+    socket_address sock() const noexcept;
 
     /**
      * @brief Gets the address of the peer connected to the handle.
      * @return A valid instance of socket_address, an empty one in case of
      * errors.
      */
-    socket_address peer() const UVW_NOEXCEPT;
+    socket_address peer() const noexcept;
 
     /**
      * @brief Establishes an IPv4 or IPv6 TCP connection.

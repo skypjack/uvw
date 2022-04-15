@@ -45,14 +45,14 @@ UVW_INLINE int tcp_handle::bind(socket_address addr, tcp_flags opts) {
     return bind(addr.ip, addr.port, opts);
 }
 
-UVW_INLINE socket_address tcp_handle::sock() const UVW_NOEXCEPT {
+UVW_INLINE socket_address tcp_handle::sock() const noexcept {
     sockaddr_storage storage;
     int len = sizeof(sockaddr_storage);
     uv_tcp_getsockname(raw(), reinterpret_cast<sockaddr *>(&storage), &len);
     return details::sock_addr(storage);
 }
 
-UVW_INLINE socket_address tcp_handle::peer() const UVW_NOEXCEPT {
+UVW_INLINE socket_address tcp_handle::peer() const noexcept {
     sockaddr_storage storage;
     int len = sizeof(sockaddr_storage);
     uv_tcp_getpeername(raw(), reinterpret_cast<sockaddr *>(&storage), &len);

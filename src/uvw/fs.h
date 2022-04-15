@@ -263,7 +263,7 @@ public:
 
     using fs_request::fs_request;
 
-    ~file_req() UVW_NOEXCEPT;
+    ~file_req() noexcept;
 
     /**
      * @brief Async [close](http://linux.die.net/man/2/close).
@@ -568,7 +568,7 @@ public:
      *
      * @return A valid instance of file_handle (the descriptor can be invalid).
      */
-    operator file_handle() const UVW_NOEXCEPT;
+    operator file_handle() const noexcept;
 
 private:
     std::unique_ptr<char[]> current{nullptr};
@@ -595,7 +595,7 @@ public:
 
     using fs_request::fs_request;
 
-    ~fs_req() UVW_NOEXCEPT;
+    ~fs_req() noexcept;
 
     /**
      * @brief Async [unlink](http://linux.die.net/man/2/unlink).
@@ -1211,7 +1211,7 @@ struct fs_helper {
      * to close it or to use it after closing the file descriptor may lead to
      * malfunction.
      */
-    static os_file_descriptor handle(file_handle file) UVW_NOEXCEPT;
+    static os_file_descriptor handle(file_handle file) noexcept;
 
     /**
      * @brief Gets the file descriptor.
@@ -1223,7 +1223,7 @@ struct fs_helper {
      * to close it or to use it after closing the handle may lead to
      * malfunction.
      */
-    static file_handle open(os_file_descriptor descriptor) UVW_NOEXCEPT;
+    static file_handle open(os_file_descriptor descriptor) noexcept;
 };
 
 } // namespace uvw

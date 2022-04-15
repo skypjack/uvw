@@ -6,7 +6,7 @@
 
 namespace uvw {
 
-UVW_INLINE udp_data_event::udp_data_event(socket_address sndr, std::unique_ptr<char[]> buf, std::size_t len, bool part) UVW_NOEXCEPT
+UVW_INLINE udp_data_event::udp_data_event(socket_address sndr, std::unique_ptr<char[]> buf, std::size_t len, bool part) noexcept
     : data{std::move(buf)},
       length{len},
       sender{std::move(sndr)},
@@ -79,7 +79,7 @@ UVW_INLINE int udp_handle::disconnect() {
     return uv_udp_connect(raw(), nullptr);
 }
 
-UVW_INLINE socket_address udp_handle::peer() const UVW_NOEXCEPT {
+UVW_INLINE socket_address udp_handle::peer() const noexcept {
     sockaddr_storage storage;
     int len = sizeof(sockaddr_storage);
     uv_udp_getpeername(raw(), reinterpret_cast<sockaddr *>(&storage), &len);
@@ -98,7 +98,7 @@ UVW_INLINE int udp_handle::bind(socket_address addr, udp_flags opts) {
     return bind(addr.ip, addr.port, opts);
 }
 
-UVW_INLINE socket_address udp_handle::sock() const UVW_NOEXCEPT {
+UVW_INLINE socket_address udp_handle::sock() const noexcept {
     sockaddr_storage storage;
     int len = sizeof(sockaddr_storage);
     uv_udp_getsockname(raw(), reinterpret_cast<sockaddr *>(&storage), &len);
@@ -205,11 +205,11 @@ UVW_INLINE int udp_handle::stop() {
     return uv_udp_recv_stop(raw());
 }
 
-UVW_INLINE size_t udp_handle::send_queue_size() const UVW_NOEXCEPT {
+UVW_INLINE size_t udp_handle::send_queue_size() const noexcept {
     return uv_udp_get_send_queue_size(raw());
 }
 
-UVW_INLINE size_t udp_handle::send_queue_count() const UVW_NOEXCEPT {
+UVW_INLINE size_t udp_handle::send_queue_count() const noexcept {
     return uv_udp_get_send_queue_count(raw());
 }
 
