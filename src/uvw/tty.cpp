@@ -32,7 +32,7 @@ UVW_INLINE bool tty_handle::mode(tty_handle::tty_mode m) {
     return (0 == uv_tty_set_mode(raw(), static_cast<uv_tty_mode_t>(m)));
 }
 
-UVW_INLINE bool tty_handle::reset() noexcept {
+UVW_INLINE bool tty_handle::reset_mode() noexcept {
     return (0 == uv_tty_reset_mode());
 }
 

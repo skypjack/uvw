@@ -84,7 +84,7 @@ public:
      * @brief Resets TTY settings to default values.
      * @return True in case of success, false otherwise.
      */
-    bool reset() noexcept;
+    bool reset_mode() noexcept;
 
     /**
      * @brief Gets the current Window size.

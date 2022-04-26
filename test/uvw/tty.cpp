@@ -23,7 +23,7 @@ TEST(TTY, Functionalities) {
         hndl.close();
     });
 
-    ASSERT_TRUE(handle->reset());
+    ASSERT_TRUE(handle->reset_mode());
     ASSERT_TRUE(!handle->readable() || handle->mode(uvw::tty_handle::tty_mode::NORMAL));
     ASSERT_NO_THROW(handle->get_win_size());
 

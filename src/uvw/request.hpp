@@ -20,7 +20,7 @@ class request: public resource<T, U, E...> {
 protected:
     static auto reserve(U *req) {
         auto ptr = static_cast<T *>(req->data)->shared_from_this();
-        ptr->reset();
+        ptr->self_reset();
         return ptr;
     }
 
