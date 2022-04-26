@@ -7,9 +7,7 @@
 namespace uvw {
 
 UVW_INLINE void file_req::fs_open_callback(uv_fs_t *req) {
-    auto ptr = reserve(req);
-
-    if(req->result < 0) {
+    if(auto ptr = reserve(req); req->result < 0) {
         ptr->publish(error_event{req->result});
     } else {
         ptr->file = static_cast<uv_file>(req->result);
@@ -18,9 +16,7 @@ UVW_INLINE void file_req::fs_open_callback(uv_fs_t *req) {
 }
 
 UVW_INLINE void file_req::fs_close_callback(uv_fs_t *req) {
-    auto ptr = reserve(req);
-
-    if(req->result < 0) {
+    if(auto ptr = reserve(req); req->result < 0) {
         ptr->publish(error_event{req->result});
     } else {
         ptr->file = BAD_FD;
@@ -29,9 +25,7 @@ UVW_INLINE void file_req::fs_close_callback(uv_fs_t *req) {
 }
 
 UVW_INLINE void file_req::fs_read_callback(uv_fs_t *req) {
-    auto ptr = reserve(req);
-
-    if(req->result < 0) {
+    if(auto ptr = reserve(req); req->result < 0) {
         ptr->publish(error_event{req->result});
     } else {
         ptr->publish(fs_event{*req, std::move(ptr->current)});
