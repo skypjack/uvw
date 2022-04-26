@@ -25,7 +25,7 @@ protected:
     static void close_callback(uv_handle_t *hndl) {
         handle<T, U, E...> &ref = *(static_cast<T *>(hndl->data));
         [[maybe_unused]] auto ptr = ref.shared_from_this();
-        ref.reset();
+        ref.self_reset();
         ref.publish(close_event{});
     }
 

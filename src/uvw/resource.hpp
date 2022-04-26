@@ -25,11 +25,11 @@ protected:
         return err;
     }
 
-    void reset() noexcept {
+    void self_reset() noexcept {
         self_ptr.reset();
     }
 
-    bool self() const noexcept {
+    bool has_self() const noexcept {
         return static_cast<bool>(self_ptr);
     }
 
