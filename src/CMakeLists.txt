@@ -72,7 +72,7 @@ else()
     add_library(uvw STATIC)
     add_library(uvw::uvw-static ALIAS uvw)
     # If libuv is not fetched by ourselves, it's the caller's responsibility to make sure of the linkage.
-    if(FETCH_LIBUV OR libuv_FOUND)
+    if(FETCH_LIBUV OR libuv-static_FOUND)
         target_link_libraries(uvw PUBLIC uv::uv-static)
     endif()
 endif()
