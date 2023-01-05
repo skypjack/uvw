@@ -187,8 +187,23 @@ install(
 # Install targets
 #
 
-install(EXPORT uvwConfig NAMESPACE uvw:: DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/uvw)
-install(TARGETS uvw EXPORT uvwConfig ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+set_target_properties(
+    uvw PROPERTIES
+    VERSION ${UVW_VERSION_MAJOR}.0.0
+    SOVERSION ${UVW_VERSION_MAJOR}
+)
+install(
+    EXPORT uvwConfig 
+    NAMESPACE uvw:: 
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/uvw
+)
+install(
+    TARGETS uvw 
+    EXPORT uvwConfig
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+)
 if(FETCH_LIBUV AND BUILD_UVW_LIBS)
     # libuv is only fetched when both above conditions are true
     install(DIRECTORY ${libuv_SOURCE_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/uvw/uv/include)
