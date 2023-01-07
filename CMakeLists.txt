@@ -189,7 +189,7 @@ install(
 
 set_target_properties(
     uvw PROPERTIES
-    VERSION ${UVW_VERSION_MAJOR}.0.0
+    VERSION ${UVW_VERSION_MAJOR}.${UVW_VERSION_MINOR}.${UVW_VERSION_PATCH}
     SOVERSION ${UVW_VERSION_MAJOR}
 )
 install(
