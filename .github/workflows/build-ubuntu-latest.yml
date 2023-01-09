@@ -1,0 +1,39 @@
+name: build-ubuntu-latest
+
+on: [push, pull_request]
+
+jobs:
+
+  linux:
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        compiler:
+          - { pkg: g++, exe: 'g++', version: 10 }
+          - { pkg: g++, exe: 'g++', version: 11 }
+          - { pkg: g++, exe: 'g++', version: 12 }
+          - { pkg: clang, exe: 'clang++', version: 12 }
+          - { pkg: clang, exe: 'clang++', version: 13 }
+          - { pkg: clang, exe: 'clang++', version: 14 }
+        mode: [-DBUILD_UVW_SHARED_LIB=ON, -DBUILD_UVW_LIBS=ON, -DBUILD_UVW_LIBS=OFF]
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install ${{ matrix.compiler.exe }}
+      run: |
+        sudo apt-get update --fix-missing
+        sudo apt install -y ${{ matrix.compiler.pkg }}-${{ matrix.compiler.version }}
+    - name: Compile tests
+      working-directory: build
+      env:
+        CXX: ${{ matrix.compiler.exe }}-${{ matrix.compiler.version }}
+      run: |
+        cmake ${{ matrix.mode }} -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF ..
+        make -j2
+    - name: Run tests
+      working-directory: build
+      env:
+        CTEST_OUTPUT_ON_FAILURE: 1
+      run: ctest --timeout 5 -C Debug -j2

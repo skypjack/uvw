@@ -237,7 +237,10 @@ endif()
 add_custom_target(
     uvw_aob
     SOURCES
-        .github/workflows/build.yml
+        .github/workflows/build-macos.yml
+        .github/workflows/build-ubuntu-20.04.yml
+        .github/workflows/build-ubuntu-latest.yml
+        .github/workflows/build-win.yml
         .github/workflows/coverage.yml
         .github/workflows/deploy.yml
         .github/FUNDING.yml

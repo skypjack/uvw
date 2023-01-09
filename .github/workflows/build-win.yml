@@ -1,0 +1,22 @@
+name: build-win
+
+on: [push, pull_request]
+
+jobs:
+
+  windows:
+    timeout-minutes: 60
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        generator: [Visual Studio 17 2022]
+        mode: [-DBUILD_UVW_SHARED_LIB=ON, -DBUILD_UVW_LIBS=ON, -DBUILD_UVW_LIBS=OFF]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Compile tests
+      working-directory: build
+      run: |
+        cmake -DCMAKE_WINDOWS_EXPORT_ALL_SYMBOLS=TRUE ${{ matrix.mode }} -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF -DCMAKE_CXX_FLAGS=/W1 -G"${{ matrix.generator }}" ..
+        cmake --build . -j 2
