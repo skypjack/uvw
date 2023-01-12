@@ -1,0 +1,40 @@
+name: build-ubuntu-20.04
+
+on: [push, pull_request]
+
+jobs:
+
+  linux:
+    timeout-minutes: 60
+    strategy:
+      matrix:
+        compiler:
+          - { pkg: g++, exe: 'g++', version: 7 }
+          - { pkg: g++, exe: 'g++', version: 8 }
+          - { pkg: g++, exe: 'g++', version: 9 }
+          - { pkg: clang, exe: 'clang++', version: 8 }
+          - { pkg: clang, exe: 'clang++', version: 9 }
+          - { pkg: clang, exe: 'clang++', version: 10 }
+          - { pkg: clang, exe: 'clang++', version: 11 }
+        mode: [-DBUILD_UVW_SHARED_LIB=ON, -DBUILD_UVW_LIBS=ON, -DBUILD_UVW_LIBS=OFF]
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install ${{ matrix.compiler.exe }}
+      run: |
+        sudo apt-get update --fix-missing
+        sudo apt install -y ${{ matrix.compiler.pkg }}-${{ matrix.compiler.version }}
+    - name: Compile tests
+      working-directory: build
+      env:
+        CXX: ${{ matrix.compiler.exe }}-${{ matrix.compiler.version }}
+      run: |
+        cmake ${{ matrix.mode }} -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF ..
+        make -j2
+    - name: Run tests
+      working-directory: build
+      env:
+        CTEST_OUTPUT_ON_FAILURE: 1
+      run: ctest --timeout 5 -C Debug -j2
