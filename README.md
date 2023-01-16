@@ -5,7 +5,7 @@
 -->
 [![Build Status](https://github.com/skypjack/uvw/workflows/build/badge.svg)](https://github.com/skypjack/uvw/actions)
 [![Coverage](https://codecov.io/gh/skypjack/uvw/branch/master/graph/badge.svg)](https://codecov.io/gh/skypjack/uvw)
-[![Documentation](https://img.shields.io/badge/docs-docsforge-blue)](http://uvw.docsforge.com/)
+[![Documentation](https://img.shields.io/badge/docs-doxygen-blue)](https://skypjack.github.io/uvw/)
 [![Download](https://api.bintray.com/packages/skypjack/conan/uvw%3Askypjack/images/download.svg)](https://bintray.com/skypjack/conan/uvw%3Askypjack/_latestVersion)
 [![Gitter chat](https://badges.gitter.im/skypjack/uvw.png)](https://gitter.im/skypjack/uvw)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/skypjack)
@@ -185,10 +185,7 @@ To navigate it with your favorite browser:
 * `$ your_favorite_browser docs/html/index.html`
 
 The same version is also available [online](https://skypjack.github.io/uvw/)
-for the latest release, that is the last stable tag. If you are looking for
-something more pleasing to the eye, consider reading the nice-looking version
-available on [docsforge](https://uvw.docsforge.com/): same documentation, much
-more pleasant to read.
+for the latest release, that is the last stable tag.
 
 ### Note
 
