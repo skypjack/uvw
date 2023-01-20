@@ -432,7 +432,7 @@ who has partecipated so far.
 
 # License
 
-Code and documentation Copyright (c) 2016-2022 Michele Caini.<br/>
+Code and documentation Copyright (c) 2016-2023 Michele Caini.<br/>
 Logo Copyright (c) 2018-2021 Richard Caseres.
 
 Code and documentation released under
