@@ -1,6 +1,7 @@
 #ifndef UVW_TIMER_INCLUDE_H
 #define UVW_TIMER_INCLUDE_H
 
+#include <cstdint>
 #include <chrono>
 #include <uv.h>
 #include "handle.hpp"
