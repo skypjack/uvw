@@ -2,6 +2,7 @@
 #define UVW_THREAD_INCLUDE_H
 
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <type_traits>

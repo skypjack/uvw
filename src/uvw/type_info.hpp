@@ -2,6 +2,7 @@
 #define UVW_TYPE_INFO_INCLUDE_HPP
 
 #include <cstddef>
+#include <cstdint>
 #include <string_view>
 
 namespace uvw {
