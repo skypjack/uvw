@@ -6,6 +6,7 @@
 [![Build Status](https://github.com/skypjack/uvw/workflows/build/badge.svg)](https://github.com/skypjack/uvw/actions)
 [![Coverage](https://codecov.io/gh/skypjack/uvw/branch/master/graph/badge.svg)](https://codecov.io/gh/skypjack/uvw)
 [![Documentation](https://img.shields.io/badge/docs-doxygen-blue)](https://skypjack.github.io/uvw/)
+[![Vcpkg port](https://img.shields.io/vcpkg/v/uvw)](https://vcpkg.link/ports/uvw)
 [![Gitter chat](https://badges.gitter.im/skypjack/uvw.png)](https://gitter.im/skypjack/uvw)
 [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.me/skypjack)
 
