@@ -9,9 +9,10 @@ TEST(Loop, DefaultLoop) {
     ASSERT_NO_THROW(def->stop());
 
     def->walk([](auto &) { FAIL(); });
-
     auto def2 = uvw::loop::get_default();
+
     ASSERT_EQ(def, def2);
+    ASSERT_EQ(0, def->close());
 }
 
 TEST(Loop, Functionalities) {
@@ -58,6 +59,7 @@ TEST(Loop, Functionalities) {
     ASSERT_EQ(0, loop->run(uvw::loop::run_mode::NOWAIT));
 
     ASSERT_FALSE(loop->alive());
+    ASSERT_EQ(0, loop->close());
 }
 
 TEST(Loop, Walk) {
@@ -89,6 +91,8 @@ TEST(Loop, Walk) {
     loop->walk([&count](auto &handle) { --count; });
 
     ASSERT_EQ(count, 12u);
+
+    ASSERT_EQ(0, loop->close());
 }
 
 TEST(Loop, UserData) {
@@ -102,18 +106,22 @@ TEST(Loop, UserData) {
 
     ASSERT_EQ(*std::static_pointer_cast<int>(loop->data()), 42);
     ASSERT_EQ(*loop->data<int>(), 42);
+
+    ASSERT_EQ(0, loop->close());
 }
 
 TEST(Loop, Configure) {
     auto loop = uvw::loop::create();
     ASSERT_EQ(0, loop->configure(uvw::loop::option::IDLE_TIME));
     ASSERT_EQ(0, loop->run());
+    ASSERT_EQ(0, loop->close());
 }
 
 TEST(Loop, IdleTime) {
     auto loop = uvw::loop::create();
     loop->configure(uvw::loop::option::IDLE_TIME);
     ASSERT_EQ(loop->idle_time().count(), 0u);
+    ASSERT_EQ(0, loop->close());
 }
 
 TEST(Loop, Raw) {
@@ -124,6 +132,8 @@ TEST(Loop, Raw) {
     auto *craw = cloop->raw();
 
     ASSERT_EQ(raw, craw);
+
+    ASSERT_EQ(0, loop->close());
 }
 
 TEST(Loop, Close) {
@@ -133,6 +143,4 @@ TEST(Loop, Close) {
     ASSERT_NE(0, loop->close());
 
     idle->close();
-
-    ASSERT_EQ(0, loop->close());
 }
