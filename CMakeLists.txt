@@ -186,12 +186,13 @@ install(
 #
 # Install targets
 #
-
-set_target_properties(
-    uvw PROPERTIES
-    VERSION ${UVW_VERSION_MAJOR}.${UVW_VERSION_MINOR}.${UVW_VERSION_PATCH}
-    SOVERSION ${UVW_VERSION_MAJOR}
-)
+if (BUILD_UVW_LIBS)
+    set_target_properties(
+        uvw PROPERTIES
+        VERSION ${UVW_VERSION_MAJOR}.${UVW_VERSION_MINOR}.${UVW_VERSION_PATCH}
+        SOVERSION ${UVW_VERSION_MAJOR}
+    )
+endif()
 install(
     EXPORT uvwConfig 
     NAMESPACE uvw:: 
