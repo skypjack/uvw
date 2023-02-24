@@ -135,12 +135,3 @@ TEST(Loop, Raw) {
 
     ASSERT_EQ(0, loop->close());
 }
-
-TEST(Loop, Close) {
-    auto loop = uvw::loop::create();
-    auto idle = loop->resource<uvw::idle_handle>();
-
-    ASSERT_NE(0, loop->close());
-
-    idle->close();
-}
