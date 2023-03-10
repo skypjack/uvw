@@ -6,6 +6,8 @@
 #include <string>
 #include <utility>
 #include <uv.h>
+#include "config.h"
+#include "enum.hpp"
 #include "loop.h"
 #include "request.hpp"
 #include "util.h"
@@ -14,7 +16,7 @@ namespace uvw {
 
 namespace details {
 
-enum class UVFsType : std::underlying_type_t<uv_fs_type> {
+enum class uvw_fs_type : std::underlying_type_t<uv_fs_type> {
     UNKNOWN = UV_FS_UNKNOWN,
     CUSTOM = UV_FS_CUSTOM,
     OPEN = UV_FS_OPEN,
@@ -55,7 +57,7 @@ enum class UVFsType : std::underlying_type_t<uv_fs_type> {
     LUTIME = UV_FS_LUTIME
 };
 
-enum class UVDirentTypeT : std::underlying_type_t<uv_dirent_type_t> {
+enum class uvw_dirent_type_t : std::underlying_type_t<uv_dirent_type_t> {
     UNKNOWN = UV_DIRENT_UNKNOWN,
     FILE = UV_DIRENT_FILE,
     DIR = UV_DIRENT_DIR,
@@ -66,7 +68,7 @@ enum class UVDirentTypeT : std::underlying_type_t<uv_dirent_type_t> {
     BLOCK = UV_DIRENT_BLOCK
 };
 
-enum class UVFileOpenFlags : int {
+enum class uvw_file_open_flags : int {
     APPEND = UV_FS_O_APPEND,
     CREAT = UV_FS_O_CREAT,
     DIRECT = UV_FS_O_DIRECT,
@@ -88,345 +90,185 @@ enum class UVFileOpenFlags : int {
     SYNC = UV_FS_O_SYNC,
     TEMPORARY = UV_FS_O_TEMPORARY,
     TRUNC = UV_FS_O_TRUNC,
-    WRONLY = UV_FS_O_WRONLY
+    WRONLY = UV_FS_O_WRONLY,
+    _UVW_ENUM = 0
 };
 
-enum class UVCopyFileFlags : int {
+enum class uvw_copy_file_flags : int {
     EXCL = UV_FS_COPYFILE_EXCL,
     FICLONE = UV_FS_COPYFILE_FICLONE,
-    FICLONE_FORCE = UV_FS_COPYFILE_FICLONE_FORCE
+    FICLONE_FORCE = UV_FS_COPYFILE_FICLONE_FORCE,
+    _UVW_ENUM = 0
 };
 
-enum class UVSymLinkFlags : int {
+enum class uvw_symlink_flags : int {
     DIR = UV_FS_SYMLINK_DIR,
-    JUNCTION = UV_FS_SYMLINK_JUNCTION
+    JUNCTION = UV_FS_SYMLINK_JUNCTION,
+    _UVW_ENUM = 0
 };
 
 } // namespace details
 
 /**
- * @brief Default FsEvent event.
+ * @brief Common fs event.
  *
  * Available types are:
  *
- * * `FsRequest::Type::UNKNOWN`
- * * `FsRequest::Type::CUSTOM`
- * * `FsRequest::Type::OPEN`
- * * `FsRequest::Type::CLOSE`
- * * `FsRequest::Type::READ`
- * * `FsRequest::Type::WRITE`
- * * `FsRequest::Type::SENDFILE`
- * * `FsRequest::Type::STAT`
- * * `FsRequest::Type::LSTAT`
- * * `FsRequest::Type::FSTAT`
- * * `FsRequest::Type::FTRUNCATE`
- * * `FsRequest::Type::UTIME`
- * * `FsRequest::Type::FUTIME`
- * * `FsRequest::Type::ACCESS`
- * * `FsRequest::Type::CHMOD`
- * * `FsRequest::Type::FCHMOD`
- * * `FsRequest::Type::FSYNC`
- * * `FsRequest::Type::FDATASYNC`
- * * `FsRequest::Type::UNLINK`
- * * `FsRequest::Type::RMDIR`
- * * `FsRequest::Type::MKDIR`
- * * `FsRequest::Type::MKDTEMP`
- * * `FsRequest::Type::RENAME`
- * * `FsRequest::Type::SCANDIR`
- * * `FsRequest::Type::LINK`
- * * `FsRequest::Type::SYMLINK`
- * * `FsRequest::Type::READLINK`
- * * `FsRequest::Type::CHOWN`
- * * `FsRequest::Type::FCHOWN`
- * * `FsRequest::Type::REALPATH`
- * * `FsRequest::Type::COPYFILE`
- * * `FsRequest::Type::LCHOWN`
- * * `FsRequest::Type::OPENDIR`
- * * `FsRequest::Type::READDIR`
- * * `FsRequest::Type::CLOSEDIR`
- * * `FsRequest::Type::STATFS`
- * * `FsRequest::Type::MKSTEMP`
- * * `FsRequest::Type::LUTIME`
- *
- * It will be emitted by FsReq and/or FileReq according with their
- * functionalities.
+ * * `fs_request::fs_type::UNKNOWN`
+ * * `fs_request::fs_type::CUSTOM`
+ * * `fs_request::fs_type::OPEN`
+ * * `fs_request::fs_type::CLOSE`
+ * * `fs_request::fs_type::READ`
+ * * `fs_request::fs_type::WRITE`
+ * * `fs_request::fs_type::SENDFILE`
+ * * `fs_request::fs_type::STAT`
+ * * `fs_request::fs_type::LSTAT`
+ * * `fs_request::fs_type::FSTAT`
+ * * `fs_request::fs_type::FTRUNCATE`
+ * * `fs_request::fs_type::UTIME`
+ * * `fs_request::fs_type::FUTIME`
+ * * `fs_request::fs_type::ACCESS`
+ * * `fs_request::fs_type::CHMOD`
+ * * `fs_request::fs_type::FCHMOD`
+ * * `fs_request::fs_type::FSYNC`
+ * * `fs_request::fs_type::FDATASYNC`
+ * * `fs_request::fs_type::UNLINK`
+ * * `fs_request::fs_type::RMDIR`
+ * * `fs_request::fs_type::MKDIR`
+ * * `fs_request::fs_type::MKDTEMP`
+ * * `fs_request::fs_type::RENAME`
+ * * `fs_request::fs_type::SCANDIR`
+ * * `fs_request::fs_type::LINK`
+ * * `fs_request::fs_type::SYMLINK`
+ * * `fs_request::fs_type::READLINK`
+ * * `fs_request::fs_type::CHOWN`
+ * * `fs_request::fs_type::FCHOWN`
+ * * `fs_request::fs_type::REALPATH`
+ * * `fs_request::fs_type::COPYFILE`
+ * * `fs_request::fs_type::LCHOWN`
+ * * `fs_request::fs_type::OPENDIR`
+ * * `fs_request::fs_type::READDIR`
+ * * `fs_request::fs_type::CLOSEDIR`
+ * * `fs_request::fs_type::STATFS`
+ * * `fs_request::fs_type::MKSTEMP`
+ * * `fs_request::fs_type::LUTIME`
  *
  * See the official
  * [documentation](http://docs.libuv.org/en/v1.x/fs.html#c.uv_fs_type)
  * for further details.
  */
-template<details::UVFsType e>
-struct FsEvent {
-    FsEvent(const char *pathname) noexcept
-        : path{pathname} {}
+struct fs_event {
+    using fs_type = details::uvw_fs_type;
+    using entry_type = details::uvw_dirent_type_t;
 
-    const char *path; /*!< The path affecting the request. */
+    fs_event(const uv_fs_t &req, std::unique_ptr<const char[]> data)
+        : fs_event{req} {
+        read.data = std::move(data);
+    }
+
+    fs_event(const uv_fs_t &req)
+        : type{req.fs_type},
+          path{req.path},
+          result{static_cast<std::size_t>(req.result)} {
+        switch(type) {
+        case fs_type::STAT:
+        case fs_type::LSTAT:
+        case fs_type::FSTAT:
+            stat = *static_cast<file_info *>(req.ptr);
+            break;
+        case fs_type::READLINK:
+            readlink.data = static_cast<char *>(req.ptr);
+            break;
+        case fs_type::READDIR:
+            dirent.name = static_cast<uv_dir_t *>(req.ptr)->dirents[0].name;
+            dirent.type = static_cast<entry_type>(static_cast<uv_dir_t *>(req.ptr)->dirents[0].type);
+            dirent.eos = !req.result;
+            break;
+        case fs_type::STATFS:
+            statfs = *static_cast<fs_info *>(req.ptr);
+            break;
+        default:
+            // nothing to do here
+            break;
+        }
+    }
+
+    fs_type type;       /*!< Actual event type. */
+    const char *path;   /*!< The path affecting the request. */
+    std::size_t result; /*!< Result value for the specific type. */
+
+    struct {
+        std::unique_ptr<const char[]> data; /*!< A bunch of data read from the given path. */
+    } read;
+
+    struct {
+        const char *data; /*!< The content of a symbolic link. */
+    } readlink;
+
+    file_info stat; /*!< An initialized instance of file_info. */
+    fs_info statfs; /*!< An initialized instance of fs_info. */
+
+    struct {
+        const char *name; /*!< The name of the last entry. */
+        entry_type type;  /*!< The entry type. */
+        bool eos;         /*!< True if there a no more entries to read. */
+    } dirent;
 };
 
 /**
- * @brief FsEvent event specialization for `FsRequest::Type::READ`.
- *
- * It will be emitted by FsReq and/or FileReq according with their
- * functionalities.
- */
-template<>
-struct FsEvent<details::UVFsType::READ> {
-    FsEvent(const char *pathname, std::unique_ptr<const char[]> buf, std::size_t sz) noexcept
-        : path{pathname}, data{std::move(buf)}, size{sz} {}
-
-    const char *path;                   /*!< The path affecting the request. */
-    std::unique_ptr<const char[]> data; /*!< A bunch of data read from the given path. */
-    std::size_t size;                   /*!< The amount of data read from the given path. */
-};
-
-/**
- * @brief FsEvent event specialization for `FsRequest::Type::WRITE`.
- *
- * It will be emitted by FsReq and/or FileReq according with their
- * functionalities.
- */
-template<>
-struct FsEvent<details::UVFsType::WRITE> {
-    FsEvent(const char *pathname, std::size_t sz) noexcept
-        : path{pathname}, size{sz} {}
-
-    const char *path; /*!< The path affecting the request. */
-    std::size_t size; /*!< The amount of data written to the given path. */
-};
-
-/**
- * @brief FsEvent event specialization for `FsRequest::Type::SENDFILE`.
- *
- * It will be emitted by FsReq and/or FileReq according with their
- * functionalities.
- */
-template<>
-struct FsEvent<details::UVFsType::SENDFILE> {
-    FsEvent(const char *pathname, std::size_t sz) noexcept
-        : path{pathname}, size{sz} {}
-
-    const char *path; /*!< The path affecting the request. */
-    std::size_t size; /*!< The amount of data transferred. */
-};
-
-/**
- * @brief FsEvent event specialization for `FsRequest::Type::STAT`.
- *
- * It will be emitted by FsReq and/or FileReq according with their
- * functionalities.
- */
-template<>
-struct FsEvent<details::UVFsType::STAT> {
-    FsEvent(const char *pathname, Stat curr) noexcept
-        : path{pathname}, stat{std::move(curr)} {}
-
-    const char *path; /*!< The path affecting the request. */
-    Stat stat;        /*!< An initialized instance of Stat. */
-};
-
-/**
- * @brief FsEvent event specialization for `FsRequest::Type::FSTAT`.
- *
- * It will be emitted by FsReq and/or FileReq according with their
- * functionalities.
- */
-template<>
-struct FsEvent<details::UVFsType::FSTAT> {
-    FsEvent(const char *pathname, Stat curr) noexcept
-        : path{pathname}, stat{std::move(curr)} {}
-
-    const char *path; /*!< The path affecting the request. */
-    Stat stat;        /*!< An initialized instance of Stat. */
-};
-
-/**
- * @brief FsEvent event specialization for `FsRequest::Type::LSTAT`.
- *
- * It will be emitted by FsReq and/or FileReq according with their
- * functionalities.
- */
-template<>
-struct FsEvent<details::UVFsType::LSTAT> {
-    FsEvent(const char *pathname, Stat curr) noexcept
-        : path{pathname}, stat{std::move(curr)} {}
-
-    const char *path; /*!< The path affecting the request. */
-    Stat stat;        /*!< An initialized instance of Stat. */
-};
-
-/**
- * @brief FsEvent event specialization for `FsRequest::Type::STATFS`.
- *
- * It will be emitted by FsReq and/or FileReq according with their
- * functionalities.
- */
-template<>
-struct FsEvent<details::UVFsType::STATFS> {
-    FsEvent(const char *pathname, Statfs curr) noexcept
-        : path{pathname}, statfs{std::move(curr)} {}
-
-    const char *path; /*!< The path affecting the request. */
-    Statfs statfs;    /*!< An initialized instance of Statfs. */
-};
-
-/**
- * @brief FsEvent event specialization for `FsRequest::Type::MKSTEMP`.
- *
- * It will be emitted by FsReq and/or FileReq according with their
- * functionalities.
- */
-template<>
-struct FsEvent<details::UVFsType::MKSTEMP> {
-    FsEvent(const char *pathname, std::size_t desc) noexcept
-        : path{pathname}, descriptor{desc} {}
-
-    const char *path;       /*!< The created file path. */
-    std::size_t descriptor; /*!< The file descriptor as an integer. */
-};
-
-/**
- * @brief FsEvent event specialization for `FsRequest::Type::SCANDIR`.
- *
- * It will be emitted by FsReq and/or FileReq according with their
- * functionalities.
- */
-template<>
-struct FsEvent<details::UVFsType::SCANDIR> {
-    FsEvent(const char *pathname, std::size_t sz) noexcept
-        : path{pathname}, size{sz} {}
-
-    const char *path; /*!< The path affecting the request. */
-    std::size_t size; /*!< The number of directory entries selected. */
-};
-
-/**
- * @brief FsEvent event specialization for `FsRequest::Type::READLINK`.
- *
- * It will be emitted by FsReq and/or FileReq according with their
- * functionalities.
- */
-template<>
-struct FsEvent<details::UVFsType::READLINK> {
-    explicit FsEvent(const char *pathname, const char *buf, std::size_t sz) noexcept
-        : path{pathname}, data{buf}, size{sz} {}
-
-    const char *path; /*!< The path affecting the request. */
-    const char *data; /*!< A bunch of data read from the given path. */
-    std::size_t size; /*!< The amount of data read from the given path. */
-};
-
-/**
- * @brief FsEvent event specialization for `FsRequest::Type::READDIR`.
- *
- * It will be emitted by FsReq and/or FileReq according with their
- * functionalities.
- */
-template<>
-struct FsEvent<details::UVFsType::READDIR> {
-    using EntryType = details::UVDirentTypeT;
-
-    FsEvent(const char *name, EntryType type, bool eos) noexcept
-        : name{name}, type{type}, eos{eos} {}
-
-    const char *name; /*!< The name of the last entry. */
-    EntryType type;   /*!< The entry type. */
-    bool eos;         /*!< True if there a no more entries to read. */
-};
-
-/**
- * @brief Base class for FsReq and/or FileReq.
+ * @brief Base class for fs/file request.
  *
  * Not directly instantiable, should not be used by the users of the library.
  */
 template<typename T>
-class FsRequest: public Request<T, uv_fs_t> {
+class fs_request: public request<T, uv_fs_t, fs_event> {
 protected:
-    template<details::UVFsType e>
-    static void fsGenericCallback(uv_fs_t *req) {
-        if(auto ptr = Request<T, uv_fs_t>::reserve(req); req->result < 0) {
-            ptr->publish(ErrorEvent{req->result});
+    static void fs_request_callback(uv_fs_t *req) {
+        if(auto ptr = request<T, uv_fs_t, fs_event>::reserve(req); req->result < 0) {
+            ptr->publish(error_event{req->result});
         } else {
-            ptr->publish(FsEvent<e>{req->path});
+            ptr->publish(fs_event{*req});
         }
-    }
-
-    template<details::UVFsType e>
-    static void fsResultCallback(uv_fs_t *req) {
-        if(auto ptr = Request<T, uv_fs_t>::reserve(req); req->result < 0) {
-            ptr->publish(ErrorEvent{req->result});
-        } else {
-            ptr->publish(FsEvent<e>{req->path, static_cast<std::size_t>(req->result)});
-        }
-    }
-
-    template<details::UVFsType e>
-    static void fsStatCallback(uv_fs_t *req) {
-        if(auto ptr = Request<T, uv_fs_t>::reserve(req); req->result < 0) {
-            ptr->publish(ErrorEvent{req->result});
-        } else {
-            ptr->publish(FsEvent<e>{req->path, req->statbuf});
-        }
-    }
-
-    static void fsStatfsCallback(uv_fs_t *req) {
-        if(auto ptr = Request<T, uv_fs_t>::reserve(req); req->result < 0) {
-            ptr->publish(ErrorEvent{req->result});
-        } else {
-            ptr->publish(FsEvent<Type::STATFS>{req->path, *static_cast<Statfs *>(req->ptr)});
-        }
-    }
-
-    template<typename... Args>
-    void cleanupAndInvoke(Args &&...args) {
-        uv_fs_req_cleanup(this->get());
-        this->invoke(std::forward<Args>(args)...);
-    }
-
-    template<typename F, typename... Args>
-    void cleanupAndInvokeSync(F &&f, Args &&...args) {
-        uv_fs_req_cleanup(this->get());
-        std::forward<F>(f)(std::forward<Args>(args)..., nullptr);
     }
 
 public:
-    using Time = std::chrono::duration<double>;
-    using Type = details::UVFsType;
-    using EntryType = details::UVDirentTypeT;
+    using time = std::chrono::duration<double>;
+    using fs_type = details::uvw_fs_type;
+    using entry_type = details::uvw_dirent_type_t;
 
-    using Request<T, uv_fs_t>::Request;
+    using request<T, uv_fs_t, fs_event>::request;
 };
 
 /**
- * @brief The FileReq request.
+ * @brief The file request.
  *
  * Cross-platform sync and async filesystem operations.<br/>
  * All file operations are run on the threadpool.
  *
- * To create a `FileReq` through a `Loop`, no arguments are required.
+ * To create a `file_req` through a `loop`, no arguments are required.
  *
  * See the official
  * [documentation](http://docs.libuv.org/en/v1.x/fs.html)
  * for further details.
  */
-class FileReq final: public FsRequest<FileReq> {
+class file_req final: public fs_request<file_req> {
     static constexpr uv_file BAD_FD = -1;
 
-    static void fsOpenCallback(uv_fs_t *req);
-    static void fsCloseCallback(uv_fs_t *req);
-    static void fsReadCallback(uv_fs_t *req);
+    static void fs_open_callback(uv_fs_t *req);
+    static void fs_close_callback(uv_fs_t *req);
+    static void fs_read_callback(uv_fs_t *req);
 
 public:
-    using FileOpen = details::UVFileOpenFlags;
+    using file_open_flags = details::uvw_file_open_flags;
 
-    using FsRequest::FsRequest;
+    using fs_request::fs_request;
 
-    ~FileReq() noexcept;
+    ~file_req() noexcept;
 
     /**
      * @brief Async [close](http://linux.die.net/man/2/close).
      *
-     * Emit a `FsEvent<FileReq::Type::CLOSE>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      */
     void close();
 
@@ -434,38 +276,37 @@ public:
      * @brief Sync [close](http://linux.die.net/man/2/close).
      * @return True in case of success, false otherwise.
      */
-    bool closeSync();
+    bool close_sync();
 
     /**
      * @brief Async [open](http://linux.die.net/man/2/open).
      *
-     * Emit a `FsEvent<FileReq::Type::OPEN>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * Available flags are:
      *
-     * * `FileReq::FileOpen::APPEND`
-     * * `FileReq::FileOpen::CREAT`
-     * * `FileReq::FileOpen::DIRECT`
-     * * `FileReq::FileOpen::DIRECTORY`
-     * * `FileReq::FileOpen::DSYNC`
-     * * `FileReq::FileOpen::EXCL`
-     * * `FileReq::FileOpen::EXLOCK`
-     * * `FileReq::FileOpen::FILEMAP`
-     * * `FileReq::FileOpen::NOATIME`
-     * * `FileReq::FileOpen::NOCTTY`
-     * * `FileReq::FileOpen::NOFOLLOW`
-     * * `FileReq::FileOpen::NONBLOCK`
-     * * `FileReq::FileOpen::RANDOM`
-     * * `FileReq::FileOpen::RDONLY`
-     * * `FileReq::FileOpen::RDWR`
-     * * `FileReq::FileOpen::SEQUENTIAL`
-     * * `FileReq::FileOpen::SHORT_LIVED`
-     * * `FileReq::FileOpen::SYMLINK`
-     * * `FileReq::FileOpen::SYNC`
-     * * `FileReq::FileOpen::TEMPORARY`
-     * * `FileReq::FileOpen::TRUNC`
-     * * `FileReq::FileOpen::WRONLY`
+     * * `file_req::file_open_flags::APPEND`
+     * * `file_req::file_open_flags::CREAT`
+     * * `file_req::file_open_flags::DIRECT`
+     * * `file_req::file_open_flags::DIRECTORY`
+     * * `file_req::file_open_flags::DSYNC`
+     * * `file_req::file_open_flags::EXCL`
+     * * `file_req::file_open_flags::EXLOCK`
+     * * `file_req::file_open_flags::FILEMAP`
+     * * `file_req::file_open_flags::NOATIME`
+     * * `file_req::file_open_flags::NOCTTY`
+     * * `file_req::file_open_flags::NOFOLLOW`
+     * * `file_req::file_open_flags::NONBLOCK`
+     * * `file_req::file_open_flags::RANDOM`
+     * * `file_req::file_open_flags::RDONLY`
+     * * `file_req::file_open_flags::RDWR`
+     * * `file_req::file_open_flags::SEQUENTIAL`
+     * * `file_req::file_open_flags::SHORT_LIVED`
+     * * `file_req::file_open_flags::SYMLINK`
+     * * `file_req::file_open_flags::SYNC`
+     * * `file_req::file_open_flags::TEMPORARY`
+     * * `file_req::file_open_flags::TRUNC`
+     * * `file_req::file_open_flags::WRONLY`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/fs.html#file-open-constants)
@@ -475,35 +316,35 @@ public:
      * @param flags Flags made out of underlying constants.
      * @param mode Mode, as described in the official documentation.
      */
-    void open(const std::string &path, Flags<FileOpen> flags, int mode);
+    void open(const std::string &path, file_open_flags flags, int mode);
 
     /**
      * @brief Sync [open](http://linux.die.net/man/2/open).
      *
      * Available flags are:
      *
-     * * `FileReq::FileOpen::APPEND`
-     * * `FileReq::FileOpen::CREAT`
-     * * `FileReq::FileOpen::DIRECT`
-     * * `FileReq::FileOpen::DIRECTORY`
-     * * `FileReq::FileOpen::DSYNC`
-     * * `FileReq::FileOpen::EXCL`
-     * * `FileReq::FileOpen::EXLOCK`
-     * * `FileReq::FileOpen::FILEMAP`
-     * * `FileReq::FileOpen::NOATIME`
-     * * `FileReq::FileOpen::NOCTTY`
-     * * `FileReq::FileOpen::NOFOLLOW`
-     * * `FileReq::FileOpen::NONBLOCK`
-     * * `FileReq::FileOpen::RANDOM`
-     * * `FileReq::FileOpen::RDONLY`
-     * * `FileReq::FileOpen::RDWR`
-     * * `FileReq::FileOpen::SEQUENTIAL`
-     * * `FileReq::FileOpen::SHORT_LIVED`
-     * * `FileReq::FileOpen::SYMLINK`
-     * * `FileReq::FileOpen::SYNC`
-     * * `FileReq::FileOpen::TEMPORARY`
-     * * `FileReq::FileOpen::TRUNC`
-     * * `FileReq::FileOpen::WRONLY`
+     * * `file_req::file_open_flags::APPEND`
+     * * `file_req::file_open_flags::CREAT`
+     * * `file_req::file_open_flags::DIRECT`
+     * * `file_req::file_open_flags::DIRECTORY`
+     * * `file_req::file_open_flags::DSYNC`
+     * * `file_req::file_open_flags::EXCL`
+     * * `file_req::file_open_flags::EXLOCK`
+     * * `file_req::file_open_flags::FILEMAP`
+     * * `file_req::file_open_flags::NOATIME`
+     * * `file_req::file_open_flags::NOCTTY`
+     * * `file_req::file_open_flags::NOFOLLOW`
+     * * `file_req::file_open_flags::NONBLOCK`
+     * * `file_req::file_open_flags::RANDOM`
+     * * `file_req::file_open_flags::RDONLY`
+     * * `file_req::file_open_flags::RDWR`
+     * * `file_req::file_open_flags::SEQUENTIAL`
+     * * `file_req::file_open_flags::SHORT_LIVED`
+     * * `file_req::file_open_flags::SYMLINK`
+     * * `file_req::file_open_flags::SYNC`
+     * * `file_req::file_open_flags::TEMPORARY`
+     * * `file_req::file_open_flags::TRUNC`
+     * * `file_req::file_open_flags::WRONLY`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/fs.html#file-open-constants)
@@ -514,13 +355,12 @@ public:
      * @param mode Mode, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool openSync(const std::string &path, Flags<FileOpen> flags, int mode);
+    bool open_sync(const std::string &path, file_open_flags flags, int mode);
 
     /**
      * @brief Async [read](http://linux.die.net/man/2/preadv).
      *
-     * Emit a `FsEvent<FileReq::Type::READ>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param offset Offset, as described in the official documentation.
      * @param len Length, as described in the official documentation.
@@ -539,7 +379,7 @@ public:
      *   * A bunch of data read from the given path.
      *   * The amount of data read from the given path.
      */
-    std::pair<bool, std::pair<std::unique_ptr<const char[]>, std::size_t>> readSync(int64_t offset, unsigned int len);
+    std::pair<bool, std::pair<std::unique_ptr<const char[]>, std::size_t>> read_sync(int64_t offset, unsigned int len);
 
     /**
      * @brief Async [write](http://linux.die.net/man/2/pwritev).
@@ -547,8 +387,7 @@ public:
      * The request takes the ownership of the data and it is in charge of delete
      * them.
      *
-     * Emit a `FsEvent<FileReq::Type::WRITE>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param buf The data to be written.
      * @param len The lenght of the submitted data.
@@ -562,8 +401,7 @@ public:
      * The request doesn't take the ownership of the data. Be sure that their
      * lifetime overcome the one of the request.
      *
-     * Emit a `FsEvent<FileReq::Type::WRITE>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param buf The data to be written.
      * @param len The lenght of the submitted data.
@@ -582,13 +420,12 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The amount of data written to the given path.
      */
-    std::pair<bool, std::size_t> writeSync(std::unique_ptr<char[]> buf, unsigned int len, int64_t offset);
+    std::pair<bool, std::size_t> write_sync(std::unique_ptr<char[]> buf, unsigned int len, int64_t offset);
 
     /**
      * @brief Async [fstat](http://linux.die.net/man/2/fstat).
      *
-     * Emit a `FsEvent<FileReq::Type::FSTAT>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      */
     void stat();
 
@@ -597,15 +434,14 @@ public:
      *
      * @return A `std::pair` composed as it follows:
      * * A boolean value that is true in case of success, false otherwise.
-     * * An initialized instance of Stat.
+     * * An initialized instance of file_info.
      */
-    std::pair<bool, Stat> statSync();
+    std::pair<bool, file_info> stat_sync();
 
     /**
      * @brief Async [fsync](http://linux.die.net/man/2/fsync).
      *
-     * Emit a `FsEvent<FileReq::Type::FSYNC>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      */
     void sync();
 
@@ -613,13 +449,12 @@ public:
      * @brief Sync [fsync](http://linux.die.net/man/2/fsync).
      * @return True in case of success, false otherwise.
      */
-    bool syncSync();
+    bool sync_sync();
 
     /**
      * @brief Async [fdatasync](http://linux.die.net/man/2/fdatasync).
      *
-     * Emit a `FsEvent<FileReq::Type::FDATASYNC>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      */
     void datasync();
 
@@ -627,13 +462,12 @@ public:
      * @brief Sync [fdatasync](http://linux.die.net/man/2/fdatasync).
      * @return True in case of success, false otherwise.
      */
-    bool datasyncSync();
+    bool datasync_sync();
 
     /**
      * @brief Async [ftruncate](http://linux.die.net/man/2/ftruncate).
      *
-     * Emit a `FsEvent<FileReq::Type::FTRUNCATE>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param offset Offset, as described in the official documentation.
      */
@@ -644,24 +478,23 @@ public:
      * @param offset Offset, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool truncateSync(int64_t offset);
+    bool truncate_sync(int64_t offset);
 
     /**
      * @brief Async [sendfile](http://linux.die.net/man/2/sendfile).
      *
-     * Emit a `FsEvent<FileReq::Type::SENDFILE>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
-     * @param out A valid instance of FileHandle.
+     * @param out A valid instance of file_handle.
      * @param offset Offset, as described in the official documentation.
      * @param length Length, as described in the official documentation.
      */
-    void sendfile(FileHandle out, int64_t offset, std::size_t length);
+    void sendfile(file_handle out, int64_t offset, std::size_t length);
 
     /**
      * @brief Sync [sendfile](http://linux.die.net/man/2/sendfile).
      *
-     * @param out A valid instance of FileHandle.
+     * @param out A valid instance of file_handle.
      * @param offset Offset, as described in the official documentation.
      * @param length Length, as described in the official documentation.
      *
@@ -669,13 +502,12 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The amount of data transferred.
      */
-    std::pair<bool, std::size_t> sendfileSync(FileHandle out, int64_t offset, std::size_t length);
+    std::pair<bool, std::size_t> sendfile_sync(file_handle out, int64_t offset, std::size_t length);
 
     /**
      * @brief Async [fchmod](http://linux.die.net/man/2/fchmod).
      *
-     * Emit a `FsEvent<FileReq::Type::FCHMOD>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param mode Mode, as described in the official documentation.
      */
@@ -686,20 +518,19 @@ public:
      * @param mode Mode, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool chmodSync(int mode);
+    bool chmod_sync(int mode);
 
     /**
      * @brief Async [futime](http://linux.die.net/man/3/futimes).
      *
-     * Emit a `FsEvent<FileReq::Type::FUTIME>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param atime `std::chrono::duration<double>`, having the same meaning as
      * described in the official documentation.
      * @param mtime `std::chrono::duration<double>`, having the same meaning as
      * described in the official documentation.
      */
-    void futime(Time atime, Time mtime);
+    void futime(time atime, time mtime);
 
     /**
      * @brief Sync [futime](http://linux.die.net/man/3/futimes).
@@ -709,18 +540,17 @@ public:
      * described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool futimeSync(Time atime, Time mtime);
+    bool futime_sync(time atime, time mtime);
 
     /**
      * @brief Async [fchown](http://linux.die.net/man/2/fchown).
      *
-     * Emit a `FsEvent<FileReq::Type::FCHOWN>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param uid UID, as described in the official documentation.
      * @param gid GID, as described in the official documentation.
      */
-    void chown(Uid uid, Gid gid);
+    void chown(uid_type uid, gid_type gid);
 
     /**
      * @brief Sync [fchown](http://linux.die.net/man/2/fchown).
@@ -728,17 +558,17 @@ public:
      * @param gid GID, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool chownSync(Uid uid, Gid gid);
+    bool chown_sync(uid_type uid, gid_type gid);
 
     /**
-     * @brief Cast operator to FileHandle.
+     * @brief Cast operator to file_handle.
      *
      * Cast operator to an internal representation of the underlying file
      * handle.
      *
-     * @return A valid instance of FileHandle (the descriptor can be invalid).
+     * @return A valid instance of file_handle (the descriptor can be invalid).
      */
-    operator FileHandle() const noexcept;
+    operator file_handle() const noexcept;
 
 private:
     std::unique_ptr<char[]> current{nullptr};
@@ -747,34 +577,30 @@ private:
 };
 
 /**
- * @brief The FsReq request.
+ * @brief The fs request.
  *
  * Cross-platform sync and async filesystem operations.<br/>
  * All file operations are run on the threadpool.
  *
- * To create a `FsReq` through a `Loop`, no arguments are required.
+ * To create a `fs_req` through a `loop`, no arguments are required.
  *
  * See the official
  * [documentation](http://docs.libuv.org/en/v1.x/fs.html)
  * for further details.
  */
-class FsReq final: public FsRequest<FsReq> {
-    static void fsReadlinkCallback(uv_fs_t *req);
-    static void fsReaddirCallback(uv_fs_t *req);
-
+class fs_req final: public fs_request<fs_req> {
 public:
-    using CopyFile = details::UVCopyFileFlags;
-    using SymLink = details::UVSymLinkFlags;
+    using copy_file_flags = details::uvw_copy_file_flags;
+    using symlink_flags = details::uvw_symlink_flags;
 
-    using FsRequest::FsRequest;
+    using fs_request::fs_request;
 
-    ~FsReq() noexcept;
+    ~fs_req() noexcept;
 
     /**
      * @brief Async [unlink](http://linux.die.net/man/2/unlink).
      *
-     * Emit a `FsEvent<FsReq::Type::UNLINK>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      */
@@ -785,13 +611,12 @@ public:
      * @param path Path, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool unlinkSync(const std::string &path);
+    bool unlink_sync(const std::string &path);
 
     /**
      * @brief Async [mkdir](http://linux.die.net/man/2/mkdir).
      *
-     * Emit a `FsEvent<FsReq::Type::MKDIR>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      * @param mode Mode, as described in the official documentation.
@@ -804,13 +629,12 @@ public:
      * @param mode Mode, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool mkdirSync(const std::string &path, int mode);
+    bool mkdir_sync(const std::string &path, int mode);
 
     /**
      * @brief Async [mktemp](http://linux.die.net/man/3/mkdtemp).
      *
-     * Emit a `FsEvent<FsReq::Type::MKDTEMP>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param tpl Template, as described in the official documentation.
      */
@@ -825,13 +649,12 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The actual path of the newly created directory.
      */
-    std::pair<bool, const char *> mkdtempSync(const std::string &tpl);
+    std::pair<bool, const char *> mkdtemp_sync(const std::string &tpl);
 
     /**
      * @brief Async [mkstemp](https://linux.die.net/man/3/mkstemp).
      *
-     * Emit a `FsEvent<FsReq::Type::MKSTEMP>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param tpl Template, as described in the official documentation.
      */
@@ -857,13 +680,12 @@ public:
      * false otherwise.
      * * The second parameter is a composed value (see above).
      */
-    std::pair<bool, std::pair<std::string, std::size_t>> mkstempSync(const std::string &tpl);
+    std::pair<bool, std::pair<std::string, std::size_t>> mkstemp_sync(const std::string &tpl);
 
     /**
      * @brief Async [lutime](http://linux.die.net/man/3/lutimes).
      *
-     * Emit a `FsEvent<FsReq::Type::UTIME>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      * @param atime `std::chrono::duration<double>`, having the same meaning as
@@ -871,7 +693,7 @@ public:
      * @param mtime `std::chrono::duration<double>`, having the same meaning as
      * described in the official documentation.
      */
-    void lutime(const std::string &path, Time atime, Time mtime);
+    void lutime(const std::string &path, time atime, time mtime);
 
     /**
      * @brief Sync [lutime](http://linux.die.net/man/3/lutimes).
@@ -882,13 +704,12 @@ public:
      * described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool lutimeSync(const std::string &path, Time atime, Time mtime);
+    bool lutime_sync(const std::string &path, time atime, time mtime);
 
     /**
      * @brief Async [rmdir](http://linux.die.net/man/2/rmdir).
      *
-     * Emit a `FsEvent<FsReq::Type::RMDIR>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      */
@@ -899,13 +720,12 @@ public:
      * @param path Path, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool rmdirSync(const std::string &path);
+    bool rmdir_sync(const std::string &path);
 
     /**
      * @brief Async [scandir](http://linux.die.net/man/3/scandir).
      *
-     * Emit a `FsEvent<FsReq::Type::SCANDIR>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      * @param flags Flags, as described in the official documentation.
@@ -922,7 +742,7 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The number of directory entries selected.
      */
-    std::pair<bool, std::size_t> scandirSync(const std::string &path, int flags);
+    std::pair<bool, std::size_t> scandir_sync(const std::string &path, int flags);
 
     /**
      * @brief Gets entries populated with the next directory entry data.
@@ -934,14 +754,14 @@ public:
      *
      * Available entry types are:
      *
-     * * `FsReq::EntryType::UNKNOWN`
-     * * `FsReq::EntryType::FILE`
-     * * `FsReq::EntryType::DIR`
-     * * `FsReq::EntryType::LINK`
-     * * `FsReq::EntryType::FIFO`
-     * * `FsReq::EntryType::SOCKET`
-     * * `FsReq::EntryType::CHAR`
-     * * `FsReq::EntryType::BLOCK`
+     * * `fs_req::entry_type::UNKNOWN`
+     * * `fs_req::entry_type::FILE`
+     * * `fs_req::entry_type::DIR`
+     * * `fs_req::entry_type::LINK`
+     * * `fs_req::entry_type::FIFO`
+     * * `fs_req::entry_type::SOCKET`
+     * * `fs_req::entry_type::CHAR`
+     * * `fs_req::entry_type::BLOCK`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/fs.html#c.uv_dirent_t)
@@ -953,13 +773,12 @@ public:
      * entry is still valid.
      * * The second parameter is a composed value (see above).
      */
-    std::pair<bool, std::pair<EntryType, const char *>> scandirNext();
+    std::pair<bool, std::pair<entry_type, const char *>> scandir_next();
 
     /**
      * @brief Async [stat](http://linux.die.net/man/2/stat).
      *
-     * Emit a `FsEvent<FsReq::Type::STAT>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      */
@@ -972,15 +791,14 @@ public:
      *
      * @return A `std::pair` composed as it follows:
      * * A boolean value that is true in case of success, false otherwise.
-     * * An initialized instance of Stat.
+     * * An initialized instance of file_info.
      */
-    std::pair<bool, Stat> statSync(const std::string &path);
+    std::pair<bool, file_info> stat_sync(const std::string &path);
 
     /**
      * @brief Async [lstat](http://linux.die.net/man/2/lstat).
      *
-     * Emit a `FsEvent<FsReq::Type::LSTAT>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      */
@@ -993,15 +811,14 @@ public:
      *
      * @return A `std::pair` composed as it follows:
      * * A boolean value that is true in case of success, false otherwise.
-     * * An initialized instance of Stat.
+     * * An initialized instance of file_info.
      */
-    std::pair<bool, Stat> lstatSync(const std::string &path);
+    std::pair<bool, file_info> lstat_sync(const std::string &path);
 
     /**
      * @brief Async [statfs](http://linux.die.net/man/2/statfs).
      *
-     * Emit a `FsEvent<FsReq::Type::STATFS>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * Any fields in the resulting object that are not supported by the
      * underlying operating system are set to zero.
@@ -1020,15 +837,14 @@ public:
      *
      * @return A `std::pair` composed as it follows:
      * * A boolean value that is true in case of success, false otherwise.
-     * * An initialized instance of Statfs.
+     * * An initialized instance of fs_info.
      */
-    std::pair<bool, Statfs> statfsSync(const std::string &path);
+    std::pair<bool, fs_info> statfs_sync(const std::string &path);
 
     /**
      * @brief Async [rename](http://linux.die.net/man/2/rename).
      *
-     * Emit a `FsEvent<FsReq::Type::RENAME>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param old Old path, as described in the official documentation.
      * @param path New path, as described in the official documentation.
@@ -1041,26 +857,24 @@ public:
      * @param path New path, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool renameSync(const std::string &old, const std::string &path);
+    bool rename_sync(const std::string &old, const std::string &path);
 
     /**
      * @brief Copies a file asynchronously from a path to a new one.
      *
-     * Emit a `FsEvent<FsReq::Type::UV_FS_COPYFILE>` event when
-     * completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * Available flags are:
      *
-     * * `FsReq::CopyFile::EXCL`: it fails if the destination path
+     * * `fs_req::copy_file_flags::EXCL`: it fails if the destination path
      * already exists (the default behavior is to overwrite the destination if
      * it exists).
-     * * `FsReq::CopyFile::FICLONE`: If present, it will attempt to create a
-     * copy-on-write reflink. If the underlying platform does not support
-     * copy-on-write, then a fallback copy mechanism is used.
-     * * `FsReq::CopyFile::FICLONE_FORCE`: If present, it will attempt to create
-     * a copy-on-write reflink. If the underlying platform does not support
-     * copy-on-write, then an error is returned.
+     * * `fs_req::copy_file_flags::FICLONE`: If present, it will attempt to
+     * create a copy-on-write reflink. If the underlying platform does not
+     * support copy-on-write, then a fallback copy mechanism is used.
+     * * `fs_req::copy_file_flags::FICLONE_FORCE`: If present, it will attempt
+     * to create a copy-on-write reflink. If the underlying platform does not
+     * support copy-on-write, then an error is returned.
      *
      * @warning
      * If the destination path is created, but an error occurs while copying the
@@ -1072,14 +886,14 @@ public:
      * @param path New path, as described in the official documentation.
      * @param flags Optional additional flags.
      */
-    void copyfile(const std::string &old, const std::string &path, Flags<CopyFile> flags = Flags<CopyFile>{});
+    void copyfile(const std::string &old, const std::string &path, copy_file_flags flags = copy_file_flags::_UVW_ENUM);
 
     /**
      * @brief Copies a file synchronously from a path to a new one.
      *
      * Available flags are:
      *
-     * * `FsReq::CopyFile::EXCL`: it fails if the destination path
+     * * `fs_req::copy_file_flags::EXCL`: it fails if the destination path
      * already exists (the default behavior is to overwrite the destination if
      * it exists).
      *
@@ -1093,13 +907,12 @@ public:
      * @param flags Optional additional flags.
      * @return True in case of success, false otherwise.
      */
-    bool copyfileSync(const std::string &old, const std::string &path, Flags<CopyFile> flags = Flags<CopyFile>{});
+    bool copyfile_sync(const std::string &old, const std::string &path, copy_file_flags flags = copy_file_flags::_UVW_ENUM);
 
     /**
      * @brief Async [access](http://linux.die.net/man/2/access).
      *
-     * Emit a `FsEvent<FsReq::Type::ACCESS>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      * @param mode Mode, as described in the official documentation.
@@ -1112,13 +925,12 @@ public:
      * @param mode Mode, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool accessSync(const std::string &path, int mode);
+    bool access_sync(const std::string &path, int mode);
 
     /**
      * @brief Async [chmod](http://linux.die.net/man/2/chmod).
      *
-     * Emit a `FsEvent<FsReq::Type::CHMOD>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      * @param mode Mode, as described in the official documentation.
@@ -1131,13 +943,12 @@ public:
      * @param mode Mode, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool chmodSync(const std::string &path, int mode);
+    bool chmod_sync(const std::string &path, int mode);
 
     /**
      * @brief Async [utime](http://linux.die.net/man/2/utime).
      *
-     * Emit a `FsEvent<FsReq::Type::UTIME>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      * @param atime `std::chrono::duration<double>`, having the same meaning as
@@ -1145,7 +956,7 @@ public:
      * @param mtime `std::chrono::duration<double>`, having the same meaning as
      * described in the official documentation.
      */
-    void utime(const std::string &path, Time atime, Time mtime);
+    void utime(const std::string &path, time atime, time mtime);
 
     /**
      * @brief Sync [utime](http://linux.die.net/man/2/utime).
@@ -1156,13 +967,12 @@ public:
      * described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool utimeSync(const std::string &path, Time atime, Time mtime);
+    bool utime_sync(const std::string &path, time atime, time mtime);
 
     /**
      * @brief Async [link](http://linux.die.net/man/2/link).
      *
-     * Emit a `FsEvent<FsReq::Type::LINK>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param old Old path, as described in the official documentation.
      * @param path New path, as described in the official documentation.
@@ -1175,49 +985,47 @@ public:
      * @param path New path, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool linkSync(const std::string &old, const std::string &path);
+    bool link_sync(const std::string &old, const std::string &path);
 
     /**
      * @brief Async [symlink](http://linux.die.net/man/2/symlink).
      *
-     * Emit a `FsEvent<FsReq::Type::SYMLINK>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * Available flags are:
      *
-     * * `FsReq::SymLink::DIR`: it indicates that the old path points to a
-     * directory.
-     * * `FsReq::SymLink::JUNCTION`: it requests that the symlink is created
-     * using junction points.
+     * * `fs_req::symlink_flags::DIR`: it indicates that the old path points to
+     * a directory.
+     * * `fs_req::symlink_flags::JUNCTION`: it requests that the symlink is
+     * created using junction points.
      *
      * @param old Old path, as described in the official documentation.
      * @param path New path, as described in the official documentation.
      * @param flags Optional additional flags.
      */
-    void symlink(const std::string &old, const std::string &path, Flags<SymLink> flags = Flags<SymLink>{});
+    void symlink(const std::string &old, const std::string &path, symlink_flags flags = symlink_flags::_UVW_ENUM);
 
     /**
      * @brief Sync [symlink](http://linux.die.net/man/2/symlink).
      *
      * Available flags are:
      *
-     * * `FsReq::SymLink::DIR`: it indicates that the old path points to a
-     * directory.
-     * * `FsReq::SymLink::JUNCTION`: it requests that the symlink is created
-     * using junction points.
+     * * `fs_req::symlink_flags::DIR`: it indicates that the old path points to
+     * a directory.
+     * * `fs_req::symlink_flags::JUNCTION`: it requests that the symlink is
+     * created using junction points.
      *
      * @param old Old path, as described in the official documentation.
      * @param path New path, as described in the official documentation.
      * @param flags Flags, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool symlinkSync(const std::string &old, const std::string &path, Flags<SymLink> flags = Flags<SymLink>{});
+    bool symlink_sync(const std::string &old, const std::string &path, symlink_flags flags = symlink_flags::_UVW_ENUM);
 
     /**
      * @brief Async [readlink](http://linux.die.net/man/2/readlink).
      *
-     * Emit a `FsEvent<FsReq::Type::READLINK>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      */
@@ -1234,13 +1042,12 @@ public:
      *   * A bunch of data read from the given path.
      *   * The amount of data read from the given path.
      */
-    std::pair<bool, std::pair<const char *, std::size_t>> readlinkSync(const std::string &path);
+    std::pair<bool, std::pair<const char *, std::size_t>> readlink_sync(const std::string &path);
 
     /**
      * @brief Async [realpath](http://linux.die.net/man/3/realpath).
      *
-     * Emit a `FsEvent<FsReq::Type::REALPATH>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      */
@@ -1255,19 +1062,18 @@ public:
      * * A boolean value that is true in case of success, false otherwise.
      * * The canonicalized absolute pathname.
      */
-    std::pair<bool, const char *> realpathSync(const std::string &path);
+    std::pair<bool, const char *> realpath_sync(const std::string &path);
 
     /**
      * @brief Async [chown](http://linux.die.net/man/2/chown).
      *
-     * Emit a `FsEvent<FsReq::Type::CHOWN>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      * @param uid UID, as described in the official documentation.
      * @param gid GID, as described in the official documentation.
      */
-    void chown(const std::string &path, Uid uid, Gid gid);
+    void chown(const std::string &path, uid_type uid, gid_type gid);
 
     /**
      * @brief Sync [chown](http://linux.die.net/man/2/chown).
@@ -1276,19 +1082,18 @@ public:
      * @param gid GID, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool chownSync(const std::string &path, Uid uid, Gid gid);
+    bool chown_sync(const std::string &path, uid_type uid, gid_type gid);
 
     /**
      * @brief Async [lchown](https://linux.die.net/man/2/lchown).
      *
-     * Emit a `FsEvent<FsReq::Type::LCHOWN>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * @param path Path, as described in the official documentation.
      * @param uid UID, as described in the official documentation.
      * @param gid GID, as described in the official documentation.
      */
-    void lchown(const std::string &path, Uid uid, Gid gid);
+    void lchown(const std::string &path, uid_type uid, gid_type gid);
 
     /**
      * @brief Sync [lchown](https://linux.die.net/man/2/lchown).
@@ -1297,17 +1102,16 @@ public:
      * @param gid GID, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool lchownSync(const std::string &path, Uid uid, Gid gid);
+    bool lchown_sync(const std::string &path, uid_type uid, gid_type gid);
 
     /**
      * @brief Opens a path asynchronously as a directory stream.
      *
-     * Emit a `FsEvent<FsReq::Type::OPENDIR>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * The contents of the directory can be iterated over by means of the
-     * `readdir` od `readdirSync` member functions. The memory allocated by this
-     * function must be freed by calling `closedir` or `closedirSync`.
+     * `readdir` od `readdir_sync` member functions. The memory allocated by
+     * this function must be freed by calling `closedir` or `closedir_sync`.
      *
      * @param path The path to open as a directory stream.
      */
@@ -1317,19 +1121,18 @@ public:
      * @brief Opens a path synchronously as a directory stream.
      *
      * The contents of the directory can be iterated over by means of the
-     * `readdir` od `readdirSync` member functions. The memory allocated by this
-     * function must be freed by calling `closedir` or `closedirSync`.
+     * `readdir` od `readdir_sync` member functions. The memory allocated by
+     * this function must be freed by calling `closedir` or `closedir_sync`.
      *
      * @param path The path to open as a directory stream.
      * @return True in case of success, false otherwise.
      */
-    bool opendirSync(const std::string &path);
+    bool opendir_sync(const std::string &path);
 
     /**
      * @brief Closes asynchronously a directory stream.
      *
-     * Emit a `FsEvent<FsReq::Type::CLOSEDIR>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * It frees also the memory allocated internally when a path has been opened
      * as a directory stream.
@@ -1344,14 +1147,13 @@ public:
      *
      * @return True in case of success, false otherwise.
      */
-    bool closedirSync();
+    bool closedir_sync();
 
     /**
      * @brief Iterates asynchronously over a directory stream one entry at a
      * time.
      *
-     * Emit a `FsEvent<FsReq::Type::READDIR>` event when completed.<br/>
-     * Emit an ErrorEvent event in case of errors.
+     * Emit a `fs_event` event when completed.
      *
      * This function isn't thread safe. Moreover, it doesn't return the `.` and
      * `..` entries.
@@ -1369,14 +1171,14 @@ public:
      *
      * Available entry types are:
      *
-     * * `FsReq::EntryType::UNKNOWN`
-     * * `FsReq::EntryType::FILE`
-     * * `FsReq::EntryType::DIR`
-     * * `FsReq::EntryType::LINK`
-     * * `FsReq::EntryType::FIFO`
-     * * `FsReq::EntryType::SOCKET`
-     * * `FsReq::EntryType::CHAR`
-     * * `FsReq::EntryType::BLOCK`
+     * * `fs_req::entry_type::UNKNOWN`
+     * * `fs_req::entry_type::FILE`
+     * * `fs_req::entry_type::DIR`
+     * * `fs_req::entry_type::LINK`
+     * * `fs_req::entry_type::FIFO`
+     * * `fs_req::entry_type::SOCKET`
+     * * `fs_req::entry_type::CHAR`
+     * * `fs_req::entry_type::BLOCK`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/fs.html#c.uv_dirent_t)
@@ -1391,14 +1193,14 @@ public:
      * entry is still valid.
      * * The second parameter is a composed value (see above).
      */
-    std::pair<bool, std::pair<EntryType, const char *>> readdirSync();
+    std::pair<bool, std::pair<entry_type, const char *>> readdir_sync();
 
 private:
     uv_dirent_t dirents[1];
 };
 
 /*! @brief Helper functions. */
-struct FsHelper {
+struct fs_helper {
     /**
      * @brief Gets the OS dependent handle.
      *
@@ -1409,7 +1211,7 @@ struct FsHelper {
      * to close it or to use it after closing the file descriptor may lead to
      * malfunction.
      */
-    static OSFileDescriptor handle(FileHandle file) noexcept;
+    static os_file_descriptor handle(file_handle file) noexcept;
 
     /**
      * @brief Gets the file descriptor.
@@ -1421,7 +1223,7 @@ struct FsHelper {
      * to close it or to use it after closing the handle may lead to
      * malfunction.
      */
-    static FileHandle open(OSFileDescriptor descriptor) noexcept;
+    static file_handle open(os_file_descriptor descriptor) noexcept;
 };
 
 } // namespace uvw

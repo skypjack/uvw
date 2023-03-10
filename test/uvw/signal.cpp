@@ -3,17 +3,15 @@
 #include <uvw/signal.h>
 
 TEST(Signal, Start) {
-    auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::SignalHandle>();
+    auto loop = uvw::loop::get_default();
+    auto handle = loop->resource<uvw::signal_handle>();
 
-    handle->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
-    handle->on<uvw::CheckEvent>([](auto &&...) { FAIL(); });
+    handle->on<uvw::error_event>([](auto &&...) { FAIL(); });
 
-    handle->start(2);
-
+    ASSERT_EQ(0, handle->start(2));
     ASSERT_EQ(2, handle->signal());
+    ASSERT_EQ(0, handle->stop());
 
-    handle->stop();
     handle->close();
 
     ASSERT_FALSE(handle->active());
@@ -23,17 +21,15 @@ TEST(Signal, Start) {
 }
 
 TEST(Signal, OneShot) {
-    auto loop = uvw::Loop::getDefault();
-    auto handle = loop->resource<uvw::SignalHandle>();
+    auto loop = uvw::loop::get_default();
+    auto handle = loop->resource<uvw::signal_handle>();
 
-    handle->on<uvw::ErrorEvent>([](auto &&...) { FAIL(); });
-    handle->on<uvw::CheckEvent>([](auto &&...) { FAIL(); });
+    handle->on<uvw::error_event>([](auto &&...) { FAIL(); });
 
-    handle->oneShot(2);
-
+    ASSERT_EQ(0, handle->one_shot(2));
     ASSERT_EQ(2, handle->signal());
+    ASSERT_EQ(0, handle->stop());
 
-    handle->stop();
     handle->close();
 
     ASSERT_FALSE(handle->active());

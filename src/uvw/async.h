@@ -7,26 +7,22 @@
 
 namespace uvw {
 
-/**
- * @brief AsyncEvent event.
- *
- * It will be emitted by AsyncHandle according with its functionalities.
- */
-struct AsyncEvent {};
+/*! @brief Async event. */
+struct async_event {};
 
 /**
- * @brief The AsyncHandle handle.
+ * @brief The async handle.
  *
  * Async handles allow the user to _wakeup_ the event loop and get an event
  * emitted from another thread.
  *
- * To create an `AsyncHandle` through a `Loop`, no arguments are required.
+ * To create an `async_handle` through a `loop`, no arguments are required.
  */
-class AsyncHandle final: public Handle<AsyncHandle, uv_async_t> {
-    static void sendCallback(uv_async_t *handle);
+class async_handle final: public handle<async_handle, uv_async_t, async_event> {
+    static void send_callback(uv_async_t *hndl);
 
 public:
-    using Handle::Handle;
+    using handle::handle;
 
     /**
      * @brief Initializes the handle.
@@ -34,21 +30,23 @@ public:
      * Unlike other handle initialization functions, it immediately starts the
      * handle.
      *
-     * @return True in case of success, false otherwise.
+     * @return Underlying return value.
      */
-    bool init();
+    int init() final;
 
     /**
-     * @brief Wakeups the event loop and emits the AsyncEvent event.
+     * @brief Wakeups the event loop and emits the async event.
      *
      * It’s safe to call this function from any thread.<br/>
-     * An AsyncEvent event will be emitted on the loop thread.
+     * An async event is emitted on the loop thread.
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/async.html#c.uv_async_send)
      * for further details.
+     *
+     * @return Underlying return value.
      */
-    void send();
+    int send();
 };
 
 } // namespace uvw

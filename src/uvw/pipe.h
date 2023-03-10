@@ -5,6 +5,8 @@
 #include <string>
 #include <type_traits>
 #include <uv.h>
+#include "config.h"
+#include "enum.hpp"
 #include "loop.h"
 #include "request.hpp"
 #include "stream.h"
@@ -14,68 +16,69 @@ namespace uvw {
 
 namespace details {
 
-enum class UVChmodFlags : std::underlying_type_t<uv_poll_event> {
+enum class uvw_chmod_flags : std::underlying_type_t<uv_poll_event> {
     READABLE = UV_READABLE,
-    WRITABLE = UV_WRITABLE
+    WRITABLE = UV_WRITABLE,
+    _UVW_ENUM = 0
 };
 
 }
 
 /**
- * @brief The PipeHandle handle.
+ * @brief The pipe handle.
  *
  * Pipe handles provide an abstraction over local domain sockets on Unix and
  * named pipes on Windows.
  *
- * To create a `PipeHandle` through a `Loop`, arguments follow:
+ * To create a `pipe_handle` through a `loop`, arguments follow:
  *
  * * An optional boolean value that indicates if this pipe will be used for
  * handle passing between processes.
  */
-class PipeHandle final: public StreamHandle<PipeHandle, uv_pipe_t> {
+class pipe_handle final: public stream_handle<pipe_handle, uv_pipe_t> {
 public:
-    using Chmod = details::UVChmodFlags;
+    using chmod_flags = details::uvw_chmod_flags;
 
-    explicit PipeHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, bool pass = false);
+    explicit pipe_handle(loop::token token, std::shared_ptr<loop> ref, bool pass = false);
 
     /**
      * @brief Initializes the handle.
-     * @return True in case of success, false otherwise.
+     * @return Underlying return value.
      */
-    bool init();
+    int init() final;
 
     /**
      * @brief Opens an existing file descriptor or HANDLE as a pipe.
      *
      * The passed file descriptor or HANDLE is not checked for its type, but
-     * it’s required that it represents a valid pipe.<br/>
-     * An ErrorEvent event is emitted in case of errors.
+     * it’s required that it represents a valid pipe.
      *
      * @param file A valid file handle (either a file descriptor or a HANDLE).
+     * @return Underlying return value.
      */
-    void open(FileHandle file);
+    int open(file_handle file);
 
     /**
      * @brief bind Binds the pipe to a file path (Unix) or a name (Windows).
      *
-     * Paths on Unix get truncated typically between 92 and 108 bytes.<br/>
-     * An ErrorEvent event is emitted in case of errors.
+     * Paths on Unix get truncated typically between 92 and 108 bytes.
      *
      * @param name A valid file path.
+     * @return Underlying return value.
      */
-    void bind(const std::string &name);
+    int bind(const std::string &name);
 
     /**
      * @brief Connects to the Unix domain socket or the named pipe.
      *
      * Paths on Unix get truncated typically between 92 and 108 bytes.<br/>
-     * A ConnectEvent event is emitted when the connection has been
-     * established.<br/>
-     * An ErrorEvent event is emitted in case of errors during the connection.
+     * A connect event is emitted when the connection has been
+     * established.
      *
      * @param name A valid domain socket or named pipe.
+     * @return Underlying return value.
      */
-    void connect(const std::string &name);
+    int connect(const std::string &name);
 
     /**
      * @brief Gets the name of the Unix domain socket or the named pipe.
@@ -120,12 +123,12 @@ public:
      *
      * @return The type of the pending handle. Possible values are:
      *
-     * * `HandleType::PIPE`
-     * * `HandleType::TCP`
-     * * `HandleType::UDP`
-     * * `HandleType::UNKNOWN`
+     * * `handle_type::PIPE`
+     * * `handle_type::TCP`
+     * * `handle_type::UDP`
+     * * `handle_type::UNKNOWN`
      */
-    HandleType receive() noexcept;
+    handle_type receive() noexcept;
 
     /**
      * @brief Alters pipe permissions.
@@ -134,17 +137,17 @@ public:
      *
      * Available flags are:
      *
-     * * `PipeHandle::Chmod::READABLE`
-     * * `PipeHandle::Chmod::WRITABLE`
+     * * `pipe_handle::chmod_flags::READABLE`
+     * * `pipe_handle::chmod_flags::WRITABLE`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/pipe.html#c.uv_pipe_chmod)
      * for further details.
      *
      * @param flags A valid set of flags.
-     * @return True in case of success, false otherwise.
+     * @return Underlying return value.
      */
-    bool chmod(Flags<Chmod> flags) noexcept;
+    int chmod(chmod_flags flags) noexcept;
 
 private:
     bool ipc;

@@ -6,21 +6,21 @@
 
 namespace uvw {
 
-UVW_INLINE void IdleHandle::startCallback(uv_idle_t *handle) {
-    IdleHandle &idle = *(static_cast<IdleHandle *>(handle->data));
-    idle.publish(IdleEvent{});
+UVW_INLINE void idle_handle::start_callback(uv_idle_t *hndl) {
+    idle_handle &idle = *(static_cast<idle_handle *>(hndl->data));
+    idle.publish(idle_event{});
 }
 
-UVW_INLINE bool IdleHandle::init() {
-    return initialize(&uv_idle_init);
+UVW_INLINE int idle_handle::init() {
+    return leak_if(uv_idle_init(parent().raw(), raw()));
 }
 
-UVW_INLINE void IdleHandle::start() {
-    invoke(&uv_idle_start, get(), &startCallback);
+UVW_INLINE int idle_handle::start() {
+    return uv_idle_start(raw(), &start_callback);
 }
 
-UVW_INLINE void IdleHandle::stop() {
-    invoke(&uv_idle_stop, get());
+UVW_INLINE int idle_handle::stop() {
+    return uv_idle_stop(raw());
 }
 
 } // namespace uvw

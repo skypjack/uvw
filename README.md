@@ -28,9 +28,8 @@ and still support me today.
 [`libuv`](https://github.com/libuv/libuv) written in modern C++.<br/>
 Now it's finally available also as a compilable static library.
 
-The basic idea is to hide completely the *C-ish* interface of `libuv` behind a
-graceful C++ API. Currently, no `uv_*_t` data structure is actually exposed by
-the library.<br/>
+The basic idea is to wrap the *C-ish* interface of `libuv` behind a graceful C++
+API.<br/>
 Note that `uvw` stays true to the API of `libuv` and it doesn't add anything to
 its interface. For the same reasons, users of the library must follow the same
 rules which are used with `libuv`.<br/>
@@ -43,14 +42,14 @@ closed once it is no longer in use.
 #include <uvw.hpp>
 #include <memory>
 
-void listen(uvw::Loop &loop) {
-    std::shared_ptr<uvw::TCPHandle> tcp = loop.resource<uvw::TCPHandle>();
+void listen(uvw::loop &loop) {
+    std::shared_ptr<uvw::tcp_handle> tcp = loop.resource<uvw::tcp_handle>();
 
-    tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TCPHandle &srv) {
-        std::shared_ptr<uvw::TCPHandle> client = srv.loop().resource<uvw::TCPHandle>();
+    tcp->once<uvw::listen_event>([](const uvw::listen_event &, uvw::tcp_handle &srv) {
+        std::shared_ptr<uvw::tcp_handle> client = srv.parent().resource<uvw::tcp_handle>();
 
-        client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::TCPHandle &) { ptr->close(); });
-        client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TCPHandle &client) { client.close(); });
+        client->on<uvw::close_event>([ptr = srv.shared_from_this()](const uvw::close_event &, uvw::tcp_handle &) { ptr->close(); });
+        client->on<uvw::end_event>([](const uvw::end_event &, uvw::tcp_handle &client) { client.close(); });
 
         srv.accept(*client);
         client->read();
@@ -60,12 +59,12 @@ void listen(uvw::Loop &loop) {
     tcp->listen();
 }
 
-void conn(uvw::Loop &loop) {
-    auto tcp = loop.resource<uvw::TCPHandle>();
+void conn(uvw::loop &loop) {
+    auto tcp = loop.resource<uvw::tcp_handle>();
 
-    tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { /* handle errors */ });
+    tcp->on<uvw::error_event>([](const uvw::error_event &, uvw::tcp_handle &) { /* handle errors */ });
 
-    tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TCPHandle &tcp) {
+    tcp->once<uvw::connect_event>([](const uvw::connect_event &, uvw::tcp_handle &tcp) {
         auto dataWrite = std::unique_ptr<char[]>(new char[2]{ 'b', 'c' });
         tcp.write(std::move(dataWrite), 2);
         tcp.close();
@@ -75,7 +74,7 @@ void conn(uvw::Loop &loop) {
 }
 
 int main() {
-    auto loop = uvw::Loop::getDefault();
+    auto loop = uvw::loop::get_default();
     listen(*loop);
     conn(*loop);
     loop->run();
@@ -229,7 +228,7 @@ For more details, please refer to the
 ## Handles
 
 Initialization is usually performed under the hood and can be even passed over,
-as far as handles are created using the `Loop::resource` member function.<br/>
+as far as handles are created using the `loop::resource` member function.<br/>
 On the other side, handles keep themselves alive until one explicitly closes
 them. Because of that, memory usage will grow if users simply forget about a
 handle.<br/>
@@ -239,7 +238,7 @@ as calling the `close` member function on them.
 ## Requests
 
 Usually initializing a request object is not required. Anyway, the recommended
-way to create a request is still through the `Loop::resource` member
+way to create a request is still through the `loop::resource` member
 function.<br/>
 Requests will keep themselves alive as long as they are bound to unfinished
 underlying activities. This means that users don't have to discard a
@@ -253,7 +252,7 @@ The first thing to do to use `uvw` is to create a loop. In case the default one
 is enough, it's easy as doing this:
 
 ```cpp
-auto loop = uvw::Loop::getDefault();
+auto loop = uvw::loop::get_default();
 ```
 
 Note that loop objects don't require being closed explicitly, even if they offer
@@ -263,7 +262,7 @@ equivalent:
 
 ```cpp
 loop->run();
-loop->run<uvw::Loop::Mode::DEFAULT>();
+loop->run(uvw::loop::run_mode::DEFAULT);
 ```
 
 Available modes are: `DEFAULT`, `ONCE`, `NOWAIT`. Please refer to the
@@ -273,23 +272,21 @@ In order to create a resource and to bind it to the given loop, just do the
 following:
 
 ```cpp
-auto tcp = loop->resource<uvw::TCPHandle>();
+auto tcp = loop->resource<uvw::tcp_handle>();
 ```
 
-The line above will create and initialize a tcp handle, then a shared pointer to
-that resource will be returned.<br/>
+The line above creates and initializes a tcp handle, then a shared pointer to
+that resource is returned.<br/>
 Users should check if pointers have been correctly initialized: in case of
 errors, they won't be.<br/>
-Another way to create a resource is:
+It also is possible to create uninitialized resources to init later on as:
 
 ```cpp
-auto tcp = TCPHandle::create(loop);
+auto tcp = loop->uninitialized_resource<uvw::tcp_handle>();
 tcp->init();
 ```
 
-Pretty annoying indeed. Using a loop is the recommended approach.
-
-The resources also accept arbitrary user-data that won't be touched in any
+All resources also accept arbitrary user-data that won't be touched in any
 case.<br/>
 Users can set and get them through the `data` member function as it follows:
 
@@ -311,12 +308,12 @@ Remember from the previous section that a handle will keep itself alive until
 one invokes the `close` member function on it.<br/>
 To know what are the handles that are still alive and bound to a given loop,
 there exists the `walk` member function. It returns handles with their types.
-Therefore, the use of `Overloaded` is recommended to be able to intercept all
+Therefore, the use of `overloaded` is recommended to be able to intercept all
 types of interest:
 
 ```cpp
-handle.loop().walk(uvw::Overloaded{
-    [](uvw::TimerHandle &h){ /* application code for timers here */ },
+handle.parent().walk(uvw::overloaded{
+    [](uvw::timer_handle &h){ /* application code for timers here */ },
     [](auto &&){ /* ignore all other types */ }
 });
 ```
@@ -332,58 +329,52 @@ No need to keep track of them.
 
 ## The event-based approach
 
-`uvw` offers an event-based approach, so resources are small event emitters
-to which listeners can be attached.<br/>
-Attaching a listener to a resource is the recommended way to be notified about
-changes.<br/>
-Listeners must be callable objects of type `void(EventType &, ResourceType &)`,
+`uvw` offers an event-based approach where resources are small event emitters to
+which listeners are attached.<br/>
+Attaching listeners to resources is the recommended way to receive notifications
+about their operations.<br/>
+Listeners are callable objects of type `void(event_type &, resource_type &)`,
 where:
 
-* `EventType` is the type of the event for which they have been designed.
-* `ResourceType` is the type of the resource that has originated the event.
+* `event_type` is the type of the event for which they have been designed.
+* `resource_type` is the type of the resource that has originated the event.
 
 It means that the following function types are all valid:
 
-* `void(EventType &, ResourceType &)`
-* `void(const EventType &, ResourceType &)`
-* `void(EventType &, const ResourceType &)`
-* `void(const EventType &, const ResourceType &)`
+* `void(event_type &, resource_type &)`
+* `void(const event_type &, resource_type &)`
+* `void(event_type &, const resource_type &)`
+* `void(const event_type &, const resource_type &)`
 
-Please note that there is no need to keep around references to the resources:
-they will pass themselves as an argument whenever an event is published.
+Please note that there is no need to keep around references to the resources,
+since they pass themselves as an argument whenever an event is published.<br/>
+The `on` member function is the way to go to register long-running listeners:
 
-There exist two methods to attach a listener to a resource:
+```cpp
+resource.on<event_type>(listener)
+```
 
-* `resource.once<EventType>(listener)`: the listener will be automatically
-  removed after the first event of the given type.
-* `resource.on<EventType>(listener)`: to be used for long-running listeners.
+To know if a listener exists for a given type, the class offers a `has` function
+template. Similarly, the `reset` function template is be used to reset and thus
+disconnect listeners, if any. A non-template version of `reset` also exists to
+clear an emitter as a whole.
 
-Both of them return an object of type `ResourceType::Connection` (as an example,
-`TCPHandle::Connection`).<br/>
-A connection object can be used later as an argument to the `erase` member
-function of the resource to remove the listener.<br/>
-There exists also the `clear` member function to drop all the listeners at once.
-Note that `clear` should only be invoked on non-active handles. The handles
-exploit the same event mechanism made available to users to satisfy pending
-requests. Invoking `clear` on an active handle, for example with requests still
-in progress, risks leading to memory leaks or unexpected behavior.
-
-Almost all the resources emit `ErrorEvent` in case of errors.<br/>
+Almost all the resources emit `error_event` in case of errors.<br/>
 All the other events are specific for the given resource and documented in the
 API reference.
 
 The code below shows how to create a simple tcp server using `uvw`:
 
 ```cpp
-auto loop = uvw::Loop::getDefault();
-auto tcp = loop->resource<uvw::TCPHandle>();
+auto loop = uvw::loop::get_default();
+auto tcp = loop->resource<uvw::tcp_handle>();
 
-tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { /* something went wrong */ });
+tcp->on<uvw::error_event>([](const uvw::error_event &, uvw::tcp_handle &) { /* something went wrong */ });
 
-tcp->on<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TCPHandle &srv) {
-    std::shared_ptr<uvw::TCPHandle> client = srv.loop().resource<uvw::TCPHandle>();
-    client->once<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TCPHandle &client) { client.close(); });
-    client->on<uvw::DataEvent>([](const uvw::DataEvent &, uvw::TCPHandle &) { /* data received */ });
+tcp->on<uvw::listen_event>([](const uvw::listen_event &, uvw::tcp_handle &srv) {
+    std::shared_ptr<uvw::tcp_handle> client = srv.parent().resource<uvw::tcp_handle>();
+    client->on<uvw::end_event>([](const uvw::end_event &, uvw::tcp_handle &client) { client.close(); });
+    client->on<uvw::data_event>([](const uvw::data_event &, uvw::tcp_handle &) { /* data received */ });
     srv.accept(*client);
     client->read();
 });
@@ -392,11 +383,7 @@ tcp->bind("127.0.0.1", 4242);
 tcp->listen();
 ```
 
-Note also that `uvw::TCPHandle` already supports _IPv6_ out-of-the-box. The
-statement above is equivalent to `tcp->bind<uvw::IPv4>("127.0.0.1", 4242)`.<br/>
-It's sufficient to explicitly specify `uvw::IPv6` as the underlying protocol to
-use it.
-
+Note also that `uvw::tcp_handle` already supports _IPv6_ out-of-the-box.<br/>
 The API reference is the recommended documentation for further details about
 resources and their methods.
 
@@ -414,8 +401,8 @@ things.
 That being said, _going raw_ is a matter of using the `raw` member functions:
 
 ```cpp
-auto loop = uvw::Loop::getDefault();
-auto tcp = loop->resource<uvw::TCPHandle>();
+auto loop = uvw::loop::get_default();
+auto tcp = loop->resource<uvw::tcp_handle>();
 
 uv_loop_t *raw = loop->raw();
 uv_tcp_t *handle = tcp->raw();

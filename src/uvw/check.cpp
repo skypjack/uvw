@@ -6,21 +6,21 @@
 
 namespace uvw {
 
-UVW_INLINE void CheckHandle::startCallback(uv_check_t *handle) {
-    CheckHandle &check = *(static_cast<CheckHandle *>(handle->data));
-    check.publish(CheckEvent{});
+UVW_INLINE void check_handle::start_callback(uv_check_t *hndl) {
+    check_handle &check = *(static_cast<check_handle *>(hndl->data));
+    check.publish(check_event{});
 }
 
-UVW_INLINE bool CheckHandle::init() {
-    return initialize(&uv_check_init);
+UVW_INLINE int check_handle::init() {
+    return leak_if(uv_check_init(parent().raw(), raw()));
 }
 
-UVW_INLINE void CheckHandle::start() {
-    invoke(&uv_check_start, get(), &startCallback);
+UVW_INLINE int check_handle::start() {
+    return uv_check_start(raw(), &start_callback);
 }
 
-UVW_INLINE void CheckHandle::stop() {
-    invoke(&uv_check_stop, get());
+UVW_INLINE int check_handle::stop() {
+    return uv_check_stop(raw());
 }
 
 } // namespace uvw

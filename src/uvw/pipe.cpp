@@ -7,55 +7,56 @@
 
 namespace uvw {
 
-UVW_INLINE PipeHandle::PipeHandle(ConstructorAccess ca, std::shared_ptr<Loop> ref, bool pass)
-    : StreamHandle{ca, std::move(ref)}, ipc{pass} {}
+UVW_INLINE pipe_handle::pipe_handle(loop::token token, std::shared_ptr<loop> ref, bool pass)
+    : stream_handle{token, std::move(ref)}, ipc{pass} {}
 
-UVW_INLINE bool PipeHandle::init() {
-    return initialize(&uv_pipe_init, ipc);
+UVW_INLINE int pipe_handle::init() {
+    return leak_if(uv_pipe_init(parent().raw(), raw(), ipc));
 }
 
-UVW_INLINE void PipeHandle::open(FileHandle file) {
-    invoke(&uv_pipe_open, get(), file);
+UVW_INLINE int pipe_handle::open(file_handle file) {
+    return uv_pipe_open(raw(), file);
 }
 
-UVW_INLINE void PipeHandle::bind(const std::string &name) {
-    invoke(&uv_pipe_bind, get(), name.data());
+UVW_INLINE int pipe_handle::bind(const std::string &name) {
+    return uv_pipe_bind(raw(), name.data());
 }
 
-UVW_INLINE void PipeHandle::connect(const std::string &name) {
+UVW_INLINE int pipe_handle::connect(const std::string &name) {
     auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
         ptr->publish(event);
     };
 
-    auto connect = loop().resource<details::ConnectReq>();
-    connect->once<ErrorEvent>(listener);
-    connect->once<ConnectEvent>(listener);
-    connect->connect(&uv_pipe_connect, get(), name.data());
+    auto connect = parent().resource<details::connect_req>();
+    connect->on<error_event>(listener);
+    connect->on<connect_event>(listener);
+
+    return connect->connect(&uv_pipe_connect, raw(), name.data());
 }
 
-UVW_INLINE std::string PipeHandle::sock() const noexcept {
-    return details::tryRead(&uv_pipe_getsockname, get());
+UVW_INLINE std::string pipe_handle::sock() const noexcept {
+    return details::try_read(&uv_pipe_getsockname, raw());
 }
 
-UVW_INLINE std::string PipeHandle::peer() const noexcept {
-    return details::tryRead(&uv_pipe_getpeername, get());
+UVW_INLINE std::string pipe_handle::peer() const noexcept {
+    return details::try_read(&uv_pipe_getpeername, raw());
 }
 
-UVW_INLINE void PipeHandle::pending(int count) noexcept {
-    uv_pipe_pending_instances(get(), count);
+UVW_INLINE void pipe_handle::pending(int count) noexcept {
+    uv_pipe_pending_instances(raw(), count);
 }
 
-UVW_INLINE int PipeHandle::pending() noexcept {
-    return uv_pipe_pending_count(get());
+UVW_INLINE int pipe_handle::pending() noexcept {
+    return uv_pipe_pending_count(raw());
 }
 
-UVW_INLINE HandleType PipeHandle::receive() noexcept {
-    HandleCategory category = uv_pipe_pending_type(get());
-    return Utilities::guessHandle(category);
+UVW_INLINE handle_type pipe_handle::receive() noexcept {
+    handle_category category = uv_pipe_pending_type(raw());
+    return utilities::guess_handle(category);
 }
 
-UVW_INLINE bool PipeHandle::chmod(Flags<Chmod> flags) noexcept {
-    return (0 == uv_pipe_chmod(get(), flags));
+UVW_INLINE int pipe_handle::chmod(chmod_flags flags) noexcept {
+    return uv_pipe_chmod(raw(), static_cast<uv_poll_event>(flags));
 }
 
 } // namespace uvw

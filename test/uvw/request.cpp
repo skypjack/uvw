@@ -3,11 +3,11 @@
 #include <uvw/work.h>
 
 TEST(Request, Functionalities) {
-    auto loop = uvw::Loop::getDefault();
-    auto req = loop->resource<uvw::WorkReq>([]() {});
+    auto loop = uvw::loop::get_default();
+    auto req = loop->resource<uvw::work_req>([]() {});
 
     ASSERT_NE(req->size(), decltype(req->size()){0});
-    ASSERT_FALSE(req->cancel());
+    ASSERT_LT(req->cancel(), 0);
 
     loop->run();
 }

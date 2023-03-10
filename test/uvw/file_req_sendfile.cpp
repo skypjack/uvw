@@ -11,32 +11,33 @@ TEST(FileReq, SendFile) {
     const std::string srcFilename = std::string{TARGET_FILE_REQ_SENDFILE_DIR} + std::string{"/src.file"};
     const std::string dstFilename = std::string{TARGET_FILE_REQ_SENDFILE_DIR} + std::string{"/dst.file"};
 
-    auto loop = uvw::Loop::getDefault();
-    auto srcReq = loop->resource<uvw::FileReq>();
-    auto dstReq = loop->resource<uvw::FileReq>();
+    auto loop = uvw::loop::get_default();
+    auto srcReq = loop->resource<uvw::file_req>();
+    auto dstReq = loop->resource<uvw::file_req>();
 
     bool checkFileSendFileEvent = false;
 
-    dstReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
-    srcReq->on<uvw::ErrorEvent>([](const auto &, auto &) { FAIL(); });
+    dstReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
+    srcReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    dstReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&srcReq](const auto &, auto &req) {
-        srcReq->sendfile(static_cast<uvw::FileHandle>(req), 0, 0);
+    dstReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
+        if(event.type == uvw::fs_req::fs_type::OPEN) {
+            srcReq->sendfile(static_cast<uvw::file_handle>(req), 0, 0);
+        }
     });
 
-    srcReq->on<uvw::FsEvent<uvw::FileReq::Type::SENDFILE>>([&checkFileSendFileEvent, &dstReq](const auto &, auto &req) {
-        ASSERT_FALSE(checkFileSendFileEvent);
-        checkFileSendFileEvent = true;
-        dstReq->close();
-        req.close();
+    srcReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
+        if(event.type == uvw::fs_req::fs_type::SENDFILE) {
+            ASSERT_FALSE(checkFileSendFileEvent);
+            checkFileSendFileEvent = true;
+            dstReq->close();
+            req.close();
+        } else if(event.type == uvw::fs_req::fs_type::OPEN) {
+            dstReq->open(dstFilename, uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::WRONLY | uvw::file_req::file_open_flags::TRUNC, 0644);
+        }
     });
 
-    srcReq->on<uvw::FsEvent<uvw::FileReq::Type::OPEN>>([&dstFilename, &dstReq](const auto &, auto &) {
-        auto flags = uvw::Flags<uvw::FileReq::FileOpen>::from<uvw::FileReq::FileOpen::CREAT, uvw::FileReq::FileOpen::WRONLY, uvw::FileReq::FileOpen::TRUNC>();
-        dstReq->open(dstFilename, flags, 0644);
-    });
-
-    auto flags = uvw::Flags<uvw::FileReq::FileOpen>::from<uvw::FileReq::FileOpen::CREAT, uvw::FileReq::FileOpen::RDONLY, uvw::FileReq::FileOpen::TRUNC>();
+    auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDONLY | uvw::file_req::file_open_flags::TRUNC;
     srcReq->open(srcFilename, flags, 0644);
 
     loop->run();
@@ -48,18 +49,18 @@ TEST(FileReq, SendFileSync) {
     const std::string srcFilename = std::string{TARGET_FILE_REQ_SENDFILE_DIR} + std::string{"/src.file"};
     const std::string dstFilename = std::string{TARGET_FILE_REQ_SENDFILE_DIR} + std::string{"/dst.file"};
 
-    auto loop = uvw::Loop::getDefault();
-    auto srcReq = loop->resource<uvw::FileReq>();
-    auto dstReq = loop->resource<uvw::FileReq>();
+    auto loop = uvw::loop::get_default();
+    auto srcReq = loop->resource<uvw::file_req>();
+    auto dstReq = loop->resource<uvw::file_req>();
 
-    ASSERT_TRUE(srcReq->openSync(srcFilename, O_CREAT | O_RDONLY | O_TRUNC, 0644));
-    ASSERT_TRUE(dstReq->openSync(dstFilename, O_CREAT | O_WRONLY | O_TRUNC, 0644));
+    ASSERT_TRUE(srcReq->open_sync(srcFilename, uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDONLY | uvw::file_req::file_open_flags::TRUNC, 0644));
+    ASSERT_TRUE(dstReq->open_sync(dstFilename, uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::WRONLY | uvw::file_req::file_open_flags::TRUNC, 0644));
 
-    auto sendfileR = srcReq->sendfileSync(static_cast<uvw::FileHandle>(*dstReq), 0, 0);
+    auto sendfileR = srcReq->sendfile_sync(static_cast<uvw::file_handle>(*dstReq), 0, 0);
 
     ASSERT_TRUE(sendfileR.first);
-    ASSERT_TRUE(srcReq->closeSync());
-    ASSERT_TRUE(dstReq->closeSync());
+    ASSERT_TRUE(srcReq->close_sync());
+    ASSERT_TRUE(dstReq->close_sync());
 
     loop->run();
 }

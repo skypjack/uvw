@@ -3,26 +3,25 @@
 #endif
 
 #include <utility>
-
 #include "config.h"
 
 namespace uvw {
 
-UVW_INLINE SharedLib::SharedLib(UnderlyingType<SharedLib, uv_lib_t>::ConstructorAccess ca, std::shared_ptr<Loop> ref, const std::string &filename) noexcept
-    : UnderlyingType{ca, std::move(ref)} {
-    opened = (0 == uv_dlopen(filename.data(), get()));
+UVW_INLINE shared_lib::shared_lib(loop::token token, std::shared_ptr<loop> ref, const std::string &filename) noexcept
+    : uv_type{token, std::move(ref)} {
+    opened = (0 == uv_dlopen(filename.data(), raw()));
 }
 
-UVW_INLINE SharedLib::~SharedLib() noexcept {
-    uv_dlclose(get());
+UVW_INLINE shared_lib::~shared_lib() noexcept {
+    uv_dlclose(raw());
 }
 
-UVW_INLINE SharedLib::operator bool() const noexcept {
+UVW_INLINE shared_lib::operator bool() const noexcept {
     return opened;
 }
 
-UVW_INLINE const char *SharedLib::error() const noexcept {
-    return uv_dlerror(get());
+UVW_INLINE const char *shared_lib::error() const noexcept {
+    return uv_dlerror(raw());
 }
 
 } // namespace uvw

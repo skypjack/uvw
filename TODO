@@ -1,0 +1,5 @@
+* do not send error events when the return value is enough (still wip)
+* also cleanup error event mentions in the doc
+* Make all tests pass on all platforms
+* add iwyu and clean up everything
+* Allocator support

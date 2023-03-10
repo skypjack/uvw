@@ -4,6 +4,8 @@
 #include <string>
 #include <type_traits>
 #include <uv.h>
+#include "config.h"
+#include "enum.hpp"
 #include "handle.hpp"
 #include "loop.h"
 #include "util.h"
@@ -12,26 +14,23 @@ namespace uvw {
 
 namespace details {
 
-enum class UVFsEventFlags : std::underlying_type_t<uv_fs_event_flags> {
+enum class uvw_fs_event_flags : std::underlying_type_t<uv_fs_event_flags> {
     WATCH_ENTRY = UV_FS_EVENT_WATCH_ENTRY,
     STAT = UV_FS_EVENT_STAT,
-    RECURSIVE = UV_FS_EVENT_RECURSIVE
+    RECURSIVE = UV_FS_EVENT_RECURSIVE,
+    _UVW_ENUM = 0
 };
 
-enum class UVFsEvent : std::underlying_type_t<uv_fs_event> {
+enum class uvw_fs_event : std::underlying_type_t<uv_fs_event> {
     RENAME = UV_RENAME,
     CHANGE = UV_CHANGE
 };
 
 } // namespace details
 
-/**
- * @brief FsEventEvent event.
- *
- * It will be emitted by FsEventHandle according with its functionalities.
- */
-struct FsEventEvent {
-    FsEventEvent(const char *pathname, Flags<details::UVFsEvent> events);
+/*! @brief Fs event event. */
+struct fs_event_event {
+    fs_event_event(const char *pathname, details::uvw_fs_event events);
 
     /**
      * @brief The path to the file being monitored.
@@ -46,82 +45,64 @@ struct FsEventEvent {
      *
      * Available flags are:
      *
-     * * `FsEventHandle::Watch::RENAME`
-     * * `FsEventHandle::Watch::CHANGE`
+     * * `fs_event_handle::watch::RENAME`
+     * * `fs_event_handle::watch::CHANGE`
      */
-    Flags<details::UVFsEvent> flags;
+    details::uvw_fs_event flags;
 };
 
 /**
- * @brief The FsEventHandle handle.
+ * @brief The fs event handle.
  *
  * These handles allow the user to monitor a given path for changes, for
  * example, if the file was renamed or there was a generic change in it. The
  * best backend for the job on each platform is chosen by the handle.
  *
- * To create a `FsEventHandle` through a `Loop`, no arguments are required.
+ * To create a `fs_event_handle` through a `loop`, no arguments are required.
  *
  * See the official
  * [documentation](http://docs.libuv.org/en/v1.x/fs_event.html)
  * for further details.
  */
-class FsEventHandle final: public Handle<FsEventHandle, uv_fs_event_t> {
-    static void startCallback(uv_fs_event_t *handle, const char *filename, int events, int status);
+class fs_event_handle final: public handle<fs_event_handle, uv_fs_event_t, fs_event_event> {
+    static void start_callback(uv_fs_event_t *hndl, const char *filename, int events, int status);
 
 public:
-    using Watch = details::UVFsEvent;
-    using Event = details::UVFsEventFlags;
+    using watch = details::uvw_fs_event;
+    using event_flags = details::uvw_fs_event_flags;
 
-    using Handle::Handle;
+    using handle::handle;
 
     /**
      * @brief Initializes the handle.
-     * @return True in case of success, false otherwise.
+     * @return Underlying return value.
      */
-    bool init();
+    int init() final;
 
     /**
      * @brief Starts watching the specified path.
      *
      * It will watch the specified path for changes.<br/>
-     * As soon as a change is observed, a FsEventEvent is emitted by the
-     * handle.<br>
-     * It could happen that ErrorEvent events are emitted while running.
+     * As soon as a change is observed, a fs_event_event is emitted by the
+     * handle.
      *
      * Available flags are:
      *
-     * * `FsEventHandle::Event::WATCH_ENTRY`
-     * * `FsEventHandle::Event::STAT`
-     * * `FsEventHandle::Event::RECURSIVE`
+     * * `fs_event_handle::event_flags::WATCH_ENTRY`
+     * * `fs_event_handle::event_flags::STAT`
+     * * `fs_event_handle::event_flags::RECURSIVE`
      *
      * @param path The file or directory to be monitored.
      * @param flags Additional flags to control the behavior.
+     * @return Underlying return value.
      */
-    void start(const std::string &path, Flags<Event> flags = Flags<Event>{});
-
-    /**
-     * @brief Starts watching the specified path.
-     *
-     * It will watch the specified path for changes.<br/>
-     * As soon as a change is observed, a FsEventEvent is emitted by the
-     * handle.<br>
-     * It could happen that ErrorEvent events are emitted while running.
-     *
-     * Available flags are:
-     *
-     * * `FsEventHandle::Event::WATCH_ENTRY`
-     * * `FsEventHandle::Event::STAT`
-     * * `FsEventHandle::Event::RECURSIVE`
-     *
-     * @param path The file or directory to be monitored.
-     * @param flag Additional flag to control the behavior.
-     */
-    void start(const std::string &path, Event flag);
+    int start(const std::string &path, event_flags flags = event_flags::_UVW_ENUM);
 
     /**
      * @brief Stops polling the file descriptor.
+     * @return Underlying return value.
      */
-    void stop();
+    int stop();
 
     /**
      * @brief Gets the path being monitored.

@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <utility>
 #include <uv.h>
+#include "config.h"
 #include "resource.hpp"
 
 namespace uvw {
@@ -14,56 +15,32 @@ namespace uvw {
  *
  * Base type for all `uvw` request types.
  */
-template<typename T, typename U>
-class Request: public Resource<T, U> {
+template<typename T, typename U, typename... E>
+class request: public resource<T, U, E...> {
 protected:
     static auto reserve(U *req) {
         auto ptr = static_cast<T *>(req->data)->shared_from_this();
-        ptr->reset();
+        ptr->self_reset();
         return ptr;
     }
 
-    template<typename E>
-    static void defaultCallback(U *req, int status) {
-        if(auto ptr = reserve(req); status) {
-            ptr->publish(ErrorEvent{status});
-        } else {
-            ptr->publish(E{});
-        }
-    }
-
-    template<typename F, typename... Args>
-    auto invoke(F &&f, Args &&...args) {
-        if constexpr(std::is_void_v<std::invoke_result_t<F, Args...>>) {
-            std::forward<F>(f)(std::forward<Args>(args)...);
-            this->leak();
-        } else {
-            if(auto err = std::forward<F>(f)(std::forward<Args>(args)...); err) {
-                Emitter<T>::publish(ErrorEvent{err});
-            } else {
-                this->leak();
-            }
-        }
-    }
-
 public:
-    using Resource<T, U>::Resource;
+    using resource<T, U, E...>::resource;
 
     /**
      * @brief Cancels a pending request.
      *
      * This method fails if the request is executing or has finished
-     * executing.<br/>
-     * It can emit an ErrorEvent event in case of errors.
+     * executing.
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/request.html#c.uv_cancel)
      * for further details.
      *
-     * @return True in case of success, false otherwise.
+     * @return Underlying return value.
      */
-    bool cancel() {
-        return (0 == uv_cancel(this->template get<uv_req_t>()));
+    int cancel() {
+        return uv_cancel(reinterpret_cast<uv_req_t *>(this->raw()));
     }
 
     /**
@@ -71,7 +48,7 @@ public:
      * @return The size of the underlying request type.
      */
     std::size_t size() const noexcept {
-        return uv_req_size(this->template get<uv_req_t>()->type);
+        return uv_req_size(reinterpret_cast<const uv_req_t *>(this->raw())->type);
     }
 };
 

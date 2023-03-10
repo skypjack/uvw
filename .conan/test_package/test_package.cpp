@@ -3,14 +3,14 @@
 #include <uvw.hpp>
 #include <memory>
 
-void listen(uvw::Loop &loop) {
-    std::shared_ptr<uvw::TCPHandle> tcp = loop.resource<uvw::TCPHandle>();
+void listen(uvw::loop &loop) {
+    std::shared_ptr<uvw::tcp_handle> tcp = loop.resource<uvw::tcp_handle>();
 
-    tcp->once<uvw::ListenEvent>([](const uvw::ListenEvent &, uvw::TCPHandle &srv) {
-        std::shared_ptr<uvw::TCPHandle> client = srv.loop().resource<uvw::TCPHandle>();
+    tcp->on<uvw::listen_event>([](const uvw::listen_event &, uvw::tcp_handle &srv) {
+        std::shared_ptr<uvw::tcp_handle> client = srv.loop().resource<uvw::tcp_handle>();
 
-        client->on<uvw::CloseEvent>([ptr = srv.shared_from_this()](const uvw::CloseEvent &, uvw::TCPHandle &) { ptr->close(); });
-        client->on<uvw::EndEvent>([](const uvw::EndEvent &, uvw::TCPHandle &client) { client.close(); });
+        client->on<uvw::close_event>([ptr = srv.shared_from_this()](const uvw::close_event &, uvw::tcp_handle &) { ptr->close(); });
+        client->on<uvw::end_event>([](const uvw::end_event &, uvw::tcp_handle &client) { client.close(); });
 
         srv.accept(*client);
         client->read();
@@ -20,12 +20,12 @@ void listen(uvw::Loop &loop) {
     tcp->listen();
 }
 
-void conn(uvw::Loop &loop) {
-    auto tcp = loop.resource<uvw::TCPHandle>();
+void conn(uvw::loop &loop) {
+    auto tcp = loop.resource<uvw::tcp_handle>();
 
-    tcp->on<uvw::ErrorEvent>([](const uvw::ErrorEvent &, uvw::TCPHandle &) { /* handle errors */ });
+    tcp->on<uvw::error_event>([](const uvw::error_event &, uvw::tcp_handle &) { /* handle errors */ });
 
-    tcp->once<uvw::ConnectEvent>([](const uvw::ConnectEvent &, uvw::TCPHandle &tcp) {
+    tcp->on<uvw::connect_event>([](const uvw::connect_event &, uvw::tcp_handle &tcp) {
         auto dataWrite = std::unique_ptr<char[]>(new char[2]{ 'b', 'c' });
         tcp.write(std::move(dataWrite), 2);
         tcp.close();
@@ -36,7 +36,7 @@ void conn(uvw::Loop &loop) {
 
 int main() {
     std::cout << "Getting UVW loop ...\n";
-    auto loop = uvw::Loop::getDefault();
+    auto loop = uvw::loop::get_default();
     std::cout << "Staring UVW listener ...\n";
     listen(*loop);
     std::cout << "Connecting ...\n";
