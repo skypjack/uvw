@@ -82,7 +82,8 @@ UVW_INLINE process_handle &process_handle::stdio(file_handle fd, stdio_flags fla
     auto actual = uvw::file_handle{fd};
 
     auto it = std::find_if(po_fd_stdio.begin(), po_fd_stdio.end(), [actual](auto &&container) {
-        return (const uvw::details::uv_type_wrapper<int>)container.data.fd == actual;
+        return static_cast<const uvw::details::uv_type_wrapper<int>>(container.data.fd) == 
+	       static_cast<const uvw::details::uv_type_wrapper<int>>(actual);
     });
 
     if(it == po_fd_stdio.cend()) {
