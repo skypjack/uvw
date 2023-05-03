@@ -20,7 +20,7 @@ UVW_INLINE void poll_handle::start_callback(uv_poll_t *hndl, int status, int eve
     if(poll_handle &poll = *(static_cast<poll_handle *>(hndl->data)); status) {
         poll.publish(error_event{status});
     } else {
-        poll.publish(poll_event{poll_event(events)});
+        poll.publish(poll_event{details::uvw_poll_event(events)});
     }
 }
 
@@ -32,7 +32,7 @@ UVW_INLINE int poll_handle::init() {
     }
 }
 
-UVW_INLINE int poll_handle::start(poll_handle::poll_event flags) {
+UVW_INLINE int poll_handle::start(details::uvw_poll_event flags) {
     return uv_poll_start(raw(), static_cast<uv_poll_event>(flags), &start_callback);
 }
 
