@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['once_453',['Once',['../classuvw_1_1Once.html',1,'uvw']]],
-  ['os_454',['OS',['../structuvw_1_1Utilities_1_1OS.html',1,'uvw::Utilities']]],
-  ['overloaded_455',['Overloaded',['../structuvw_1_1Overloaded.html',1,'uvw']]]
+  ['once_0',['once',['../classuvw_1_1once.html',1,'uvw']]],
+  ['os_1',['os',['../structuvw_1_1utilities_1_1os.html',1,'uvw::utilities']]],
+  ['overloaded_2',['overloaded',['../structuvw_1_1overloaded.html',1,'uvw']]]
 ];

@@ -1,4 +1,4 @@
-<map id="uvw::Semaphore" name="uvw::Semaphore">
-<area shape="rect" id="node1" title="The Semaphore wrapper." alt="" coords="34,95,151,121"/>
-<area shape="rect" id="node2" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,180,47"/>
+<map id="uvw::semaphore" name="uvw::semaphore">
+<area shape="rect" id="node1" title="The semaphore wrapper." alt="" coords="35,79,150,104"/>
+<area shape="rect" id="node2" href="$structuvw_1_1uv__type.html" title=" " alt="" coords="5,5,180,31"/>
 </map>

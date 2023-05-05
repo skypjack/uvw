@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['handle_568',['handle',['../structuvw_1_1FsHelper.html#ac961df94619778e94dd039fc657cc395',1,'uvw::FsHelper']]],
-  ['homedir_569',['homedir',['../structuvw_1_1Passwd.html#a1af30054a044b2d897dbcc517f54cfbe',1,'uvw::Passwd::homedir()'],['../structuvw_1_1Utilities_1_1OS.html#a770ab48231aa27f3868516b0fdf3cacd',1,'uvw::Utilities::OS::homedir() noexcept']]],
-  ['hostname_570',['hostname',['../structuvw_1_1Utilities_1_1OS.html#a3bdfdaceed79abba7c456e761702ce31',1,'uvw::Utilities::OS']]],
-  ['hrtime_571',['hrtime',['../structuvw_1_1Utilities.html#afd89c84fce9a9cdb4d9dcd885fa8f3fc',1,'uvw::Utilities']]]
+  ['handle_0',['handle',['../structuvw_1_1fs__helper.html#a396e5342610a8ba469a5696a44d704f9',1,'uvw::fs_helper']]],
+  ['has_1',['has',['../classuvw_1_1emitter.html#ac02a29fe156faba7571b50450fc4f780',1,'uvw::emitter']]],
+  ['homedir_2',['homedir',['../structuvw_1_1passwd__info.html#ad22c69bf6032fa4fc22ec35d0a5a4fc0',1,'uvw::passwd_info::homedir()'],['../structuvw_1_1utilities_1_1os.html#a1170047f1e2d38e5937adeb10db88b6e',1,'uvw::utilities::os::homedir() noexcept']]],
+  ['hostname_3',['hostname',['../structuvw_1_1utilities_1_1os.html#a35fcce1ddca22c2ff06ba181b9dc67ae',1,'uvw::utilities::os']]],
+  ['hrtime_4',['hrtime',['../structuvw_1_1utilities.html#a795550d5bceddd69e9b4cb81b525a4ee',1,'uvw::utilities']]]
 ];

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['height_742',['height',['../structuvw_1_1WinSize.html#a3a3bdb2c69635beaa384d7259b26cd80',1,'uvw::WinSize']]],
-  ['hostname_743',['hostname',['../structuvw_1_1NameInfoEvent.html#ae221f4521edd76e3601ea745e7e1d076',1,'uvw::NameInfoEvent']]]
+  ['height_0',['height',['../structuvw_1_1win__size.html#a8e1d96278e21680290746f1de040d1f4',1,'uvw::win_size']]],
+  ['hostname_1',['hostname',['../structuvw_1_1name__info__event.html#ae8c70d9132de8d0719ad1b83bc8943a1',1,'uvw::name_info_event']]]
 ];

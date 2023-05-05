@@ -1,0 +1,7 @@
+<map id="uvw::fs_request&lt; T &gt;" name="uvw::fs_request&lt; T &gt;">
+<area shape="rect" id="node1" title="Base class for fs/file request." alt="" coords="79,240,222,265"/>
+<area shape="rect" id="node2" href="$classuvw_1_1request.html" title=" " alt="" coords="84,152,217,192"/>
+<area shape="rect" id="node3" href="$classuvw_1_1resource.html" title="Common class for almost all the resources available in uvw." alt="" coords="67,79,234,104"/>
+<area shape="rect" id="node4" href="$structuvw_1_1uv__type.html" title="Wrapper class for underlying types." alt="" coords="5,5,133,31"/>
+<area shape="rect" id="node5" href="$classuvw_1_1emitter.html" title=" " alt="" coords="158,5,309,31"/>
+</map>

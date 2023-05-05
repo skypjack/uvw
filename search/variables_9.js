@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['name_748',['name',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1READDIR_01_4.html#a09ca486c9a95b960be29f0ccd56633bd',1,'uvw::FsEvent&lt; details::UVFsType::READDIR &gt;::name()'],['../structuvw_1_1InterfaceAddress.html#abfec6ae9914c03ef90f9d08c0c82759e',1,'uvw::InterfaceAddress::name()']]],
-  ['netmask_749',['netmask',['../structuvw_1_1InterfaceAddress.html#ae49c9d7b92ed40cfdf61d846e20eaefa',1,'uvw::InterfaceAddress']]]
+  ['name_0',['name',['../structuvw_1_1fs__event.html#a5d208a113e76c46fda4c6ed58bb9fb69',1,'uvw::fs_event::name()'],['../structuvw_1_1interface__address.html#a93a9f45b9617c89eff63340de36e2bef',1,'uvw::interface_address::name()']]],
+  ['netmask_1',['netmask',['../structuvw_1_1interface__address.html#a172d65a5bd2964532179307ce5a2677b',1,'uvw::interface_address']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['length_746',['length',['../structuvw_1_1DataEvent.html#adc04245b045df6fa1b887722b4ea097d',1,'uvw::DataEvent::length()'],['../structuvw_1_1UDPDataEvent.html#a7fce1eef84538d8e2eaf6e9f6c0e7819',1,'uvw::UDPDataEvent::length()']]]
+  ['length_0',['length',['../structuvw_1_1data__event.html#ac5939ceddfa477e438fefdfd5c3a9690',1,'uvw::data_event::length()'],['../structuvw_1_1udp__data__event.html#ac241aba5819d20ccacb138249058dd84',1,'uvw::udp_data_event::length()']]]
 ];

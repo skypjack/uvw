@@ -1,4 +1,4 @@
-<map id="uvw::Mutex" name="uvw::Mutex">
-<area shape="rect" id="node1" title="The Mutex wrapper." alt="" coords="40,95,127,121"/>
-<area shape="rect" id="node2" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,161,47"/>
+<map id="uvw::mutex" name="uvw::mutex">
+<area shape="rect" id="node1" title="The mutex wrapper." alt="" coords="55,79,141,104"/>
+<area shape="rect" id="node2" href="$structuvw_1_1uv__type.html" title=" " alt="" coords="5,5,191,31"/>
 </map>

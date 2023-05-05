@@ -1,4 +1,4 @@
-<map id="uvw::RWLock" name="uvw::RWLock">
-<area shape="rect" id="node1" title="The RWLock wrapper." alt="" coords="40,95,141,121"/>
-<area shape="rect" id="node2" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,176,47"/>
+<map id="uvw::rwlock" name="uvw::rwlock">
+<area shape="rect" id="node1" title="The rwlock wrapper." alt="" coords="55,79,143,104"/>
+<area shape="rect" id="node2" href="$structuvw_1_1uv__type.html" title=" " alt="" coords="5,5,192,31"/>
 </map>

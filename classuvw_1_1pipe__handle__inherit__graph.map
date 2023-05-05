@@ -1,0 +1,8 @@
+<map id="uvw::pipe_handle" name="uvw::pipe_handle">
+<area shape="rect" id="node1" title="The pipe handle." alt="" coords="91,328,211,353"/>
+<area shape="rect" id="node2" href="$classuvw_1_1stream__handle.html" title=" " alt="" coords="62,240,239,280"/>
+<area shape="rect" id="node3" href="$classuvw_1_1handle.html" title="Handle base class." alt="" coords="73,167,228,192"/>
+<area shape="rect" id="node4" href="$classuvw_1_1resource.html" title=" " alt="" coords="80,79,221,119"/>
+<area shape="rect" id="node5" href="$structuvw_1_1uv__type.html" title="Wrapper class for underlying types." alt="" coords="5,5,133,31"/>
+<area shape="rect" id="node6" href="$classuvw_1_1emitter.html" title=" " alt="" coords="158,5,309,31"/>
+</map>

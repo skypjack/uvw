@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['osfiledescriptor_774',['OSFileDescriptor',['../namespaceuvw.html#ad4b1016f485b28ad7dfd320a593b152b',1,'uvw']]],
-  ['ossockethandle_775',['OSSocketHandle',['../namespaceuvw.html#a2df38e5bba10fc959ef37074cf580097',1,'uvw']]]
+  ['os_5ffile_5fdescriptor_0',['os_file_descriptor',['../namespaceuvw.html#a1a4f79e341b89257a11403ee0739f2b4',1,'uvw']]],
+  ['os_5fsocket_5fhandle_1',['os_socket_handle',['../namespaceuvw.html#aa64a7948231fbdec46df43be0c24f806',1,'uvw']]]
 ];

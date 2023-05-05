@@ -1,4 +1,4 @@
-<map id="uvw::Thread" name="uvw::Thread">
-<area shape="rect" id="node1" title="The Thread wrapper." alt="" coords="39,95,130,121"/>
-<area shape="rect" id="node2" href="$classuvw_1_1UnderlyingType.html" title=" " alt="" coords="5,5,164,47"/>
+<map id="uvw::thread" name="uvw::thread">
+<area shape="rect" id="node1" title="The thread wrapper." alt="" coords="55,79,141,104"/>
+<area shape="rect" id="node2" href="$structuvw_1_1uv__type.html" title=" " alt="" coords="5,5,191,31"/>
 </map>

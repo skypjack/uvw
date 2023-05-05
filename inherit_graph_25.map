@@ -1,3 +1,85 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1SENDFILE_01_4.html" title="FsEvent event specialization for FsRequest::Type::SENDFILE." alt="" coords="5,5,180,47"/>
+<area shape="rect" id="node1" href="$classuvw_1_1emitter.html" title="Event emitter base class." alt="" coords="11,859,150,884"/>
+<area shape="rect" id="node2" href="$classuvw_1_1resource.html" title=" " alt="" coords="235,1381,383,1436"/>
+<area shape="rect" id="node3" href="$classuvw_1_1resource.html" title=" " alt="" coords="235,1460,383,1515"/>
+<area shape="rect" id="node4" href="$classuvw_1_1resource.html" title=" " alt="" coords="223,1539,395,1579"/>
+<area shape="rect" id="node5" href="$classuvw_1_1resource.html" title=" " alt="" coords="237,1604,382,1659"/>
+<area shape="rect" id="node6" href="$classuvw_1_1resource.html" title=" " alt="" coords="219,1683,400,1723"/>
+<area shape="rect" id="node7" href="$classuvw_1_1resource.html" title=" " alt="" coords="226,5,393,60"/>
+<area shape="rect" id="node8" href="$classuvw_1_1resource.html" title=" " alt="" coords="241,85,377,125"/>
+<area shape="rect" id="node9" href="$classuvw_1_1resource.html" title=" " alt="" coords="229,149,389,204"/>
+<area shape="rect" id="node10" href="$classuvw_1_1resource.html" title=" " alt="" coords="234,228,385,283"/>
+<area shape="rect" id="node11" href="$classuvw_1_1resource.html" title=" " alt="" coords="233,307,385,347"/>
+<area shape="rect" id="node12" href="$classuvw_1_1resource.html" title=" " alt="" coords="211,372,407,427"/>
+<area shape="rect" id="node13" href="$classuvw_1_1resource.html" title=" " alt="" coords="204,451,415,505"/>
+<area shape="rect" id="node14" href="$classuvw_1_1resource.html" title=" " alt="" coords="242,529,377,584"/>
+<area shape="rect" id="node15" href="$classuvw_1_1resource.html" title=" " alt="" coords="241,608,378,663"/>
+<area shape="rect" id="node16" href="$classuvw_1_1resource.html" title=" " alt="" coords="242,687,377,741"/>
+<area shape="rect" id="node17" href="$classuvw_1_1resource.html" title=" " alt="" coords="231,765,387,820"/>
+<area shape="rect" id="node18" href="$classuvw_1_1resource.html" title=" " alt="" coords="230,844,389,899"/>
+<area shape="rect" id="node19" href="$classuvw_1_1resource.html" title=" " alt="" coords="236,923,383,977"/>
+<area shape="rect" id="node20" href="$classuvw_1_1resource.html" title=" " alt="" coords="228,1001,391,1056"/>
+<area shape="rect" id="node21" href="$classuvw_1_1resource.html" title=" " alt="" coords="238,1080,381,1135"/>
+<area shape="rect" id="node22" href="$classuvw_1_1resource.html" title=" " alt="" coords="230,1159,389,1213"/>
+<area shape="rect" id="node23" href="$classuvw_1_1resource.html" title=" " alt="" coords="227,1237,392,1292"/>
+<area shape="rect" id="node24" href="$classuvw_1_1resource.html" title=" " alt="" coords="233,1317,386,1357"/>
+<area shape="rect" id="node25" href="$classuvw_1_1emitter.html" title=" " alt="" coords="5,1837,156,1863"/>
+<area shape="rect" id="node26" href="$classuvw_1_1resource.html" title=" " alt="" coords="239,1926,379,1966"/>
+<area shape="rect" id="node27" href="$classuvw_1_1resource.html" title=" " alt="" coords="239,1798,380,1838"/>
+<area shape="rect" id="node37" href="$classuvw_1_1resource.html" title=" " alt="" coords="239,1862,380,1902"/>
+<area shape="rect" id="node43" href="$classuvw_1_1resource.html" title="Common class for almost all the resources available in uvw." alt="" coords="226,1748,393,1773"/>
+<area shape="rect" id="node28" href="$classuvw_1_1handle.html" title=" " alt="" coords="478,2680,650,2764"/>
+<area shape="rect" id="node30" href="$classuvw_1_1handle.html" title="Handle base class." alt="" coords="487,2788,641,2813"/>
+<area shape="rect" id="node29" href="$classuvw_1_1stream__handle.html" title="The stream handle." alt="" coords="734,2653,870,2693"/>
+<area shape="rect" id="node31" href="$classuvw_1_1stream__handle.html" title=" " alt="" coords="713,2717,891,2757"/>
+<area shape="rect" id="node33" href="$classuvw_1_1stream__handle.html" title=" " alt="" coords="719,2781,885,2821"/>
+<area shape="rect" id="node35" href="$classuvw_1_1stream__handle.html" title=" " alt="" coords="723,2845,881,2885"/>
+<area shape="rect" id="node32" href="$classuvw_1_1pipe__handle.html" title="The pipe handle." alt="" coords="939,2724,1059,2749"/>
+<area shape="rect" id="node34" href="$classuvw_1_1tcp__handle.html" title="The TCP handle." alt="" coords="941,2788,1056,2813"/>
+<area shape="rect" id="node36" href="$classuvw_1_1tty__handle.html" title="The tty handle." alt="" coords="943,2852,1054,2877"/>
+<area shape="rect" id="node38" href="$classuvw_1_1request.html" title="Request base class." alt="" coords="485,2916,643,2941"/>
+<area shape="rect" id="node39" href="$classuvw_1_1fs__request.html" title=" " alt="" coords="733,2909,871,2949"/>
+<area shape="rect" id="node41" href="$classuvw_1_1fs__request.html" title=" " alt="" coords="735,2973,869,3013"/>
+<area shape="rect" id="node40" href="$classuvw_1_1file__req.html" title="The file request." alt="" coords="953,2916,1045,2941"/>
+<area shape="rect" id="node42" href="$classuvw_1_1fs__req.html" title="The fs request." alt="" coords="955,2980,1042,3005"/>
+<area shape="rect" id="node44" href="$classuvw_1_1handle.html" title=" " alt="" coords="492,1425,636,1480"/>
+<area shape="rect" id="node46" href="$classuvw_1_1handle.html" title=" " alt="" coords="492,1504,636,1559"/>
+<area shape="rect" id="node48" href="$classuvw_1_1handle.html" title=" " alt="" coords="490,1583,638,1637"/>
+<area shape="rect" id="node50" href="$classuvw_1_1handle.html" title=" " alt="" coords="491,1661,637,1716"/>
+<area shape="rect" id="node52" href="$classuvw_1_1handle.html" title=" " alt="" coords="479,1741,649,1781"/>
+<area shape="rect" id="node54" href="$classuvw_1_1handle.html" title=" " alt="" coords="468,1805,660,1889"/>
+<area shape="rect" id="node55" href="$classuvw_1_1handle.html" title=" " alt="" coords="479,1913,649,1968"/>
+<area shape="rect" id="node57" href="$classuvw_1_1handle.html" title=" " alt="" coords="488,1992,640,2047"/>
+<area shape="rect" id="node59" href="$classuvw_1_1handle.html" title=" " alt="" coords="487,2071,641,2125"/>
+<area shape="rect" id="node61" href="$classuvw_1_1handle.html" title=" " alt="" coords="493,2149,635,2204"/>
+<area shape="rect" id="node63" href="$classuvw_1_1handle.html" title=" " alt="" coords="468,2228,660,2312"/>
+<area shape="rect" id="node64" href="$classuvw_1_1handle.html" title=" " alt="" coords="495,2336,633,2391"/>
+<area shape="rect" id="node66" href="$classuvw_1_1handle.html" title=" " alt="" coords="468,2415,660,2499"/>
+<area shape="rect" id="node67" href="$classuvw_1_1handle.html" title=" " alt="" coords="479,2523,649,2577"/>
+<area shape="rect" id="node69" href="$classuvw_1_1request.html" title=" " alt="" coords="471,2601,657,2656"/>
+<area shape="rect" id="node70" href="$classuvw_1_1request.html" title=" " alt="" coords="491,760,637,815"/>
+<area shape="rect" id="node71" href="$classuvw_1_1request.html" title=" " alt="" coords="463,839,665,893"/>
+<area shape="rect" id="node72" href="$classuvw_1_1request.html" title=" " alt="" coords="489,917,639,972"/>
+<area shape="rect" id="node73" href="$classuvw_1_1request.html" title=" " alt="" coords="483,997,645,1037"/>
+<area shape="rect" id="node74" href="$classuvw_1_1request.html" title=" " alt="" coords="491,1061,637,1101"/>
+<area shape="rect" id="node75" href="$classuvw_1_1request.html" title=" " alt="" coords="497,1125,631,1165"/>
+<area shape="rect" id="node77" href="$classuvw_1_1request.html" title=" " alt="" coords="482,1189,646,1244"/>
+<area shape="rect" id="node79" href="$classuvw_1_1request.html" title=" " alt="" coords="479,1268,649,1323"/>
+<area shape="rect" id="node81" href="$classuvw_1_1request.html" title=" " alt="" coords="491,1347,637,1401"/>
+<area shape="rect" id="node45" href="$classuvw_1_1async__handle.html" title="The async handle." alt="" coords="737,1440,867,1465"/>
+<area shape="rect" id="node47" href="$classuvw_1_1check__handle.html" title="The check handle." alt="" coords="737,1519,867,1544"/>
+<area shape="rect" id="node49" href="$classuvw_1_1fs__event__handle.html" title="The fs event handle." alt="" coords="731,1597,873,1623"/>
+<area shape="rect" id="node51" href="$classuvw_1_1fs__poll__handle.html" title="The fs poll handle." alt="" coords="735,1676,869,1701"/>
+<area shape="rect" id="node53" href="$classuvw_1_1idle__handle.html" title="The idle handle." alt="" coords="744,1748,860,1773"/>
+<area shape="rect" id="node56" href="$classuvw_1_1poll__handle.html" title="The poll handle." alt="" coords="744,1928,860,1953"/>
+<area shape="rect" id="node58" href="$classuvw_1_1prepare__handle.html" title="The prepare handle." alt="" coords="733,2007,871,2032"/>
+<area shape="rect" id="node60" href="$classuvw_1_1process__handle.html" title="The process handle." alt="" coords="731,2085,873,2111"/>
+<area shape="rect" id="node62" href="$classuvw_1_1signal__handle.html" title="The signal handle." alt="" coords="737,2164,867,2189"/>
+<area shape="rect" id="node65" href="$classuvw_1_1timer__handle.html" title="The timer handle." alt="" coords="739,2351,865,2376"/>
+<area shape="rect" id="node68" href="$classuvw_1_1udp__handle.html" title="The UDP handle." alt="" coords="743,2537,861,2563"/>
+<area shape="rect" id="node76" href="$classuvw_1_1fs__request.html" title="Base class for fs/file request." alt="" coords="731,1132,873,1157"/>
+<area shape="rect" id="node78" href="$classuvw_1_1get__addr__info__req.html" title="The getaddrinfo request." alt="" coords="725,1204,879,1229"/>
+<area shape="rect" id="node80" href="$classuvw_1_1get__name__info__req.html" title="The getnameinfo request." alt="" coords="722,1283,882,1308"/>
+<area shape="rect" id="node82" href="$classuvw_1_1work__req.html" title="The work request." alt="" coords="751,1361,853,1387"/>
+<area shape="rect" id="node83" href="$structuvw_1_1uv__type.html" title="Wrapper class for underlying types." alt="" coords="17,1016,145,1041"/>
 </map>

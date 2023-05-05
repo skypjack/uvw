@@ -1,11 +1,11 @@
 var searchData=
 [
-  ['data_49',['data',['../structuvw_1_1AddrInfoEvent.html#ad793de1372da5528a97e869e66648bc1',1,'uvw::AddrInfoEvent::data()'],['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1READ_01_4.html#a8188253040c4dd689df2b38721bf4862',1,'uvw::FsEvent&lt; details::UVFsType::READ &gt;::data()'],['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1READLINK_01_4.html#a432df89b9a83e69e693a2f791015189a',1,'uvw::FsEvent&lt; details::UVFsType::READLINK &gt;::data()'],['../structuvw_1_1DataEvent.html#a336769b51dd14d3af6bdac8e8ce50239',1,'uvw::DataEvent::data()'],['../structuvw_1_1UDPDataEvent.html#afbddb36089580c6bb5205dfc79fa9a8e',1,'uvw::UDPDataEvent::data()'],['../classuvw_1_1Loop.html#a07480967d95c0f9908fc75292b07c858',1,'uvw::Loop::data() const'],['../classuvw_1_1Loop.html#a8ab9a0c0d23b615c3f5de7b15d742aaf',1,'uvw::Loop::data(std::shared_ptr&lt; void &gt; uData)'],['../classuvw_1_1Resource.html#a0d6bb9bf4bcdf98afc37d3d267178813',1,'uvw::Resource::data() const'],['../classuvw_1_1Resource.html#a7f7b97267eb68d987d2f85b1161e55ee',1,'uvw::Resource::data(std::shared_ptr&lt; void &gt; uData)']]],
-  ['dataevent_50',['DataEvent',['../structuvw_1_1DataEvent.html',1,'uvw']]],
-  ['datasync_51',['datasync',['../classuvw_1_1FileReq.html#a23bc385a7ebdb6eb149b3311cb630ab3',1,'uvw::FileReq']]],
-  ['datasyncsync_52',['datasyncSync',['../classuvw_1_1FileReq.html#a99c13abb2aae436a94ce1d83affb7a6b',1,'uvw::FileReq']]],
-  ['descriptor_53',['descriptor',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1MKSTEMP_01_4.html#a73e5d6cd4e20337228b8fb5064ae95e7',1,'uvw::FsEvent&lt; details::UVFsType::MKSTEMP &gt;::descriptor()'],['../classuvw_1_1Loop.html#ac78ffc161590ea88902c867ef716d0a2',1,'uvw::Loop::descriptor()']]],
-  ['disablestdioinheritance_54',['disableStdIOInheritance',['../classuvw_1_1ProcessHandle.html#a99d3c33bcc1d564080874c3378e5a39d',1,'uvw::ProcessHandle']]],
-  ['disconnect_55',['disconnect',['../classuvw_1_1UDPHandle.html#aae0a9ec23746b395ec91b5e62b6b95d5',1,'uvw::UDPHandle']]],
-  ['duein_56',['dueIn',['../classuvw_1_1TimerHandle.html#a6917943888bb2e2a18804e537ab841c3',1,'uvw::TimerHandle']]]
+  ['data_0',['data',['../structuvw_1_1addr__info__event.html#a966355a006aad341e751e63339fbf5f3',1,'uvw::addr_info_event::data()'],['../structuvw_1_1fs__event.html#a875f46b4b423cf1a07d7b88fd47450b3',1,'uvw::fs_event::data()'],['../structuvw_1_1fs__event.html#ac9a38d48b4d30f3ad3c2b3d227182465',1,'uvw::fs_event::data()'],['../structuvw_1_1data__event.html#aeae8ed603ed22d292920d5d46ec88e43',1,'uvw::data_event::data()'],['../structuvw_1_1udp__data__event.html#ae91c5659f60b869496361219fd3ca105',1,'uvw::udp_data_event::data()'],['../classuvw_1_1loop.html#a1b1266e74e2a0edf9493394af3847bb3',1,'uvw::loop::data() const'],['../classuvw_1_1loop.html#a7b5f858b0de8daf348f89af2997063c7',1,'uvw::loop::data(std::shared_ptr&lt; void &gt; ud)'],['../classuvw_1_1resource.html#a7c05e988ebaa14d1dbbc781951dc3a88',1,'uvw::resource::data() const'],['../classuvw_1_1resource.html#a759079eb405e5d2fda795d199d8efa80',1,'uvw::resource::data(std::shared_ptr&lt; void &gt; udata)']]],
+  ['data_5fevent_1',['data_event',['../structuvw_1_1data__event.html',1,'uvw']]],
+  ['datasync_2',['datasync',['../classuvw_1_1file__req.html#a7a93bc8e3efd8a37aaa39e2e678f7640',1,'uvw::file_req']]],
+  ['datasync_5fsync_3',['datasync_sync',['../classuvw_1_1file__req.html#a290ee459502cfe95045d325cf2eb863f',1,'uvw::file_req']]],
+  ['descriptor_4',['descriptor',['../classuvw_1_1loop.html#addbc84b4d00e0e61cf68bff4b7560b1f',1,'uvw::loop']]],
+  ['disable_5fstdio_5finheritance_5',['disable_stdio_inheritance',['../classuvw_1_1process__handle.html#ae3fd05c0db61df98d4af122cb58c97af',1,'uvw::process_handle']]],
+  ['disconnect_6',['disconnect',['../classuvw_1_1udp__handle.html#a6cf1ce5b260081709167f3c21a7dfab8',1,'uvw::udp_handle']]],
+  ['due_5fin_7',['due_in',['../classuvw_1_1timer__handle.html#ac80f47c827c13e8bdeaf6ee9fd73c38e',1,'uvw::timer_handle']]]
 ];

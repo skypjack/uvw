@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['version_370',['version',['../structuvw_1_1UtsName.html#a22cd76f23cd9a67dfc8be6098c9e3368',1,'uvw::UtsName']]],
-  ['vtermstate_371',['vtermState',['../classuvw_1_1TTYHandle.html#a0a0d098ba1b88116e3679fd49a76f14f',1,'uvw::TTYHandle::vtermState(VTermState s) const noexcept'],['../classuvw_1_1TTYHandle.html#a02f304c96cc8858a489846d500a56df3',1,'uvw::TTYHandle::vtermState() const noexcept']]]
+  ['version_0',['version',['../structuvw_1_1uts__name.html#a808d9ddf9e1739aad43f1c07e6b0fba0',1,'uvw::uts_name']]],
+  ['vterm_5fstate_1',['vterm_state',['../classuvw_1_1tty__handle.html#a7bac42546f774bf99513537eea0fcd60',1,'uvw::tty_handle::vterm_state(tty_vtermstate s) const noexcept'],['../classuvw_1_1tty__handle.html#a3e8a2190f47b463ecfc3df7a3da46f23',1,'uvw::tty_handle::vterm_state() const noexcept']]]
 ];

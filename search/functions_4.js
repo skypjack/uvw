@@ -1,8 +1,6 @@
 var searchData=
 [
-  ['empty_551',['empty',['../classuvw_1_1Emitter.html#a2178cfdcc8b19baa6d7e1f950c7b65c4',1,'uvw::Emitter::empty() const noexcept'],['../classuvw_1_1Emitter.html#af15516ea3df907e5e27512d05f64a1cd',1,'uvw::Emitter::empty() const noexcept']]],
-  ['env_552',['env',['../structuvw_1_1Utilities_1_1OS.html#a973646ae5f6c0cd5b079bb8e201357f5',1,'uvw::Utilities::OS::env(const std::string &amp;name) noexcept'],['../structuvw_1_1Utilities_1_1OS.html#a4e8d62c5b6dd954003e324b75c76e9a7',1,'uvw::Utilities::OS::env(const std::string &amp;name, const std::string &amp;value) noexcept'],['../structuvw_1_1Utilities_1_1OS.html#a34e900dcf071f0a6aada453c97e300b7',1,'uvw::Utilities::OS::env(Func func) noexcept']]],
-  ['equal_553',['equal',['../classuvw_1_1Thread.html#a5a6d1d004cdb0130f90fbf3f5a83860d',1,'uvw::Thread']]],
-  ['erase_554',['erase',['../classuvw_1_1Emitter.html#a4c98ab223b4367073d96c51ee3d6a0d1',1,'uvw::Emitter']]],
-  ['error_555',['error',['../classuvw_1_1SharedLib.html#abeebf1af0f31f12c2900ce7d1e0bc761',1,'uvw::SharedLib']]]
+  ['env_0',['env',['../structuvw_1_1utilities_1_1os.html#aeb6462466bdfc1047dd617211a834d43',1,'uvw::utilities::os::env(const std::string &amp;name) noexcept'],['../structuvw_1_1utilities_1_1os.html#a2f4bd055208ac89468d23f2451a46bde',1,'uvw::utilities::os::env(const std::string &amp;name, const std::string &amp;value) noexcept'],['../structuvw_1_1utilities_1_1os.html#a155b88a1cad44b70b3f3860f2805c03e',1,'uvw::utilities::os::env(Func func) noexcept']]],
+  ['equal_1',['equal',['../classuvw_1_1thread.html#abc4cd4285f800475959668bb4f49201d',1,'uvw::thread']]],
+  ['error_2',['error',['../classuvw_1_1shared__lib.html#a5998e6c11cb976ecfdbd610be4ebac45',1,'uvw::shared_lib']]]
 ];

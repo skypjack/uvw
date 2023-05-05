@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['addr_386',['Addr',['../structuvw_1_1Addr.html',1,'uvw']]],
-  ['addrinfoevent_387',['AddrInfoEvent',['../structuvw_1_1AddrInfoEvent.html',1,'uvw']]],
-  ['asyncevent_388',['AsyncEvent',['../structuvw_1_1AsyncEvent.html',1,'uvw']]],
-  ['asynchandle_389',['AsyncHandle',['../classuvw_1_1AsyncHandle.html',1,'uvw']]]
+  ['addr_5finfo_5fevent_0',['addr_info_event',['../structuvw_1_1addr__info__event.html',1,'uvw']]],
+  ['async_5fevent_1',['async_event',['../structuvw_1_1async__event.html',1,'uvw']]],
+  ['async_5fhandle_2',['async_handle',['../classuvw_1_1async__handle.html',1,'uvw']]]
 ];

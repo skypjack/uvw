@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['data_544',['data',['../classuvw_1_1Loop.html#a07480967d95c0f9908fc75292b07c858',1,'uvw::Loop::data() const'],['../classuvw_1_1Loop.html#a8ab9a0c0d23b615c3f5de7b15d742aaf',1,'uvw::Loop::data(std::shared_ptr&lt; void &gt; uData)'],['../classuvw_1_1Resource.html#a0d6bb9bf4bcdf98afc37d3d267178813',1,'uvw::Resource::data() const'],['../classuvw_1_1Resource.html#a7f7b97267eb68d987d2f85b1161e55ee',1,'uvw::Resource::data(std::shared_ptr&lt; void &gt; uData)']]],
-  ['datasync_545',['datasync',['../classuvw_1_1FileReq.html#a23bc385a7ebdb6eb149b3311cb630ab3',1,'uvw::FileReq']]],
-  ['datasyncsync_546',['datasyncSync',['../classuvw_1_1FileReq.html#a99c13abb2aae436a94ce1d83affb7a6b',1,'uvw::FileReq']]],
-  ['descriptor_547',['descriptor',['../classuvw_1_1Loop.html#ac78ffc161590ea88902c867ef716d0a2',1,'uvw::Loop']]],
-  ['disablestdioinheritance_548',['disableStdIOInheritance',['../classuvw_1_1ProcessHandle.html#a99d3c33bcc1d564080874c3378e5a39d',1,'uvw::ProcessHandle']]],
-  ['disconnect_549',['disconnect',['../classuvw_1_1UDPHandle.html#aae0a9ec23746b395ec91b5e62b6b95d5',1,'uvw::UDPHandle']]],
-  ['duein_550',['dueIn',['../classuvw_1_1TimerHandle.html#a6917943888bb2e2a18804e537ab841c3',1,'uvw::TimerHandle']]]
+  ['data_0',['data',['../classuvw_1_1loop.html#a1b1266e74e2a0edf9493394af3847bb3',1,'uvw::loop::data() const'],['../classuvw_1_1loop.html#a7b5f858b0de8daf348f89af2997063c7',1,'uvw::loop::data(std::shared_ptr&lt; void &gt; ud)'],['../classuvw_1_1resource.html#a7c05e988ebaa14d1dbbc781951dc3a88',1,'uvw::resource::data() const'],['../classuvw_1_1resource.html#a759079eb405e5d2fda795d199d8efa80',1,'uvw::resource::data(std::shared_ptr&lt; void &gt; udata)']]],
+  ['datasync_1',['datasync',['../classuvw_1_1file__req.html#a7a93bc8e3efd8a37aaa39e2e678f7640',1,'uvw::file_req']]],
+  ['datasync_5fsync_2',['datasync_sync',['../classuvw_1_1file__req.html#a290ee459502cfe95045d325cf2eb863f',1,'uvw::file_req']]],
+  ['descriptor_3',['descriptor',['../classuvw_1_1loop.html#addbc84b4d00e0e61cf68bff4b7560b1f',1,'uvw::loop']]],
+  ['disable_5fstdio_5finheritance_4',['disable_stdio_inheritance',['../classuvw_1_1process__handle.html#ae3fd05c0db61df98d4af122cb58c97af',1,'uvw::process_handle']]],
+  ['disconnect_5',['disconnect',['../classuvw_1_1udp__handle.html#a6cf1ce5b260081709167f3c21a7dfab8',1,'uvw::udp_handle']]],
+  ['due_5fin_6',['due_in',['../classuvw_1_1timer__handle.html#ac80f47c827c13e8bdeaf6ee9fd73c38e',1,'uvw::timer_handle']]]
 ];

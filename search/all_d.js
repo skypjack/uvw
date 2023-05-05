@@ -1,12 +1,12 @@
 var searchData=
 [
-  ['name_173',['name',['../structuvw_1_1FsEvent_3_01details_1_1UVFsType_1_1READDIR_01_4.html#a09ca486c9a95b960be29f0ccd56633bd',1,'uvw::FsEvent&lt; details::UVFsType::READDIR &gt;::name()'],['../structuvw_1_1InterfaceAddress.html#abfec6ae9914c03ef90f9d08c0c82759e',1,'uvw::InterfaceAddress::name()'],['../structuvw_1_1ErrorEvent.html#a261276889f9db8882e7412f32808b372',1,'uvw::ErrorEvent::name()']]],
-  ['nameinfo_174',['nameInfo',['../classuvw_1_1GetNameInfoReq.html#abf7da3fe9c6fd98cbd8e2d0031f1f3dc',1,'uvw::GetNameInfoReq::nameInfo(const sockaddr &amp;addr, int flags=0)'],['../classuvw_1_1GetNameInfoReq.html#aeff2eb40a9160772f08b8051f561f023',1,'uvw::GetNameInfoReq::nameInfo(const std::string &amp;ip, unsigned int port, int flags=0)'],['../classuvw_1_1GetNameInfoReq.html#a6771dbaa2015337383ffe0b1a2b0d6af',1,'uvw::GetNameInfoReq::nameInfo(Addr addr, int flags=0)']]],
-  ['nameinfoevent_175',['NameInfoEvent',['../structuvw_1_1NameInfoEvent.html',1,'uvw']]],
-  ['nameinfosync_176',['nameInfoSync',['../classuvw_1_1GetNameInfoReq.html#aa10d4a54eeef5218cbc0c0f48ca2bbcf',1,'uvw::GetNameInfoReq::nameInfoSync(const sockaddr &amp;addr, int flags=0)'],['../classuvw_1_1GetNameInfoReq.html#af9db814769288311d3da94aed66fb8cf',1,'uvw::GetNameInfoReq::nameInfoSync(const std::string &amp;ip, unsigned int port, int flags=0)'],['../classuvw_1_1GetNameInfoReq.html#a12b389d3672d88d24c5c41a136e55394',1,'uvw::GetNameInfoReq::nameInfoSync(Addr addr, int flags=0)']]],
-  ['netmask_177',['netmask',['../structuvw_1_1InterfaceAddress.html#ae49c9d7b92ed40cfdf61d846e20eaefa',1,'uvw::InterfaceAddress']]],
-  ['nodeaddrinfo_178',['nodeAddrInfo',['../classuvw_1_1GetAddrInfoReq.html#abed379d57a003f6e9beb2bdb5d8ed216',1,'uvw::GetAddrInfoReq']]],
-  ['nodeaddrinfosync_179',['nodeAddrInfoSync',['../classuvw_1_1GetAddrInfoReq.html#a7eff7087866201b110007edffe2b37ea',1,'uvw::GetAddrInfoReq']]],
-  ['nodelay_180',['noDelay',['../classuvw_1_1TCPHandle.html#a3837999138b3450036f3631b009b2c71',1,'uvw::TCPHandle']]],
-  ['now_181',['now',['../classuvw_1_1Loop.html#abb1a1000e23e7d1e849a21fd79b86be9',1,'uvw::Loop']]]
+  ['name_0',['name',['../structuvw_1_1fs__event.html#a5d208a113e76c46fda4c6ed58bb9fb69',1,'uvw::fs_event::name()'],['../structuvw_1_1interface__address.html#a93a9f45b9617c89eff63340de36e2bef',1,'uvw::interface_address::name()'],['../structuvw_1_1error__event.html#aea5960a9b4f2e6069207bd803e3474d8',1,'uvw::error_event::name()']]],
+  ['name_5finfo_1',['name_info',['../classuvw_1_1get__name__info__req.html#aa482b48beaf67929b1120b29d0073388',1,'uvw::get_name_info_req::name_info(const sockaddr &amp;addr, int flags=0)'],['../classuvw_1_1get__name__info__req.html#a5ab9b570bc73e02117297b1f283312b3',1,'uvw::get_name_info_req::name_info(const std::string &amp;ip, unsigned int port, int flags=0)'],['../classuvw_1_1get__name__info__req.html#ae72b7f38ab14676900ee9f4565af3a8f',1,'uvw::get_name_info_req::name_info(socket_address addr, int flags=0)']]],
+  ['name_5finfo_5fevent_2',['name_info_event',['../structuvw_1_1name__info__event.html',1,'uvw']]],
+  ['name_5finfo_5fsync_3',['name_info_sync',['../classuvw_1_1get__name__info__req.html#a3f9a3212874280fc00a49932d126d2a5',1,'uvw::get_name_info_req::name_info_sync(const sockaddr &amp;addr, int flags=0)'],['../classuvw_1_1get__name__info__req.html#af584b52180b4610970e4bd7c2d94ea86',1,'uvw::get_name_info_req::name_info_sync(const std::string &amp;ip, unsigned int port, int flags=0)'],['../classuvw_1_1get__name__info__req.html#a6aea96348d76eaa7af0a574f7e31487f',1,'uvw::get_name_info_req::name_info_sync(socket_address addr, int flags=0)']]],
+  ['netmask_4',['netmask',['../structuvw_1_1interface__address.html#a172d65a5bd2964532179307ce5a2677b',1,'uvw::interface_address']]],
+  ['no_5fdelay_5',['no_delay',['../classuvw_1_1tcp__handle.html#ab6c83d92ee6ace5631592b361b14cfc0',1,'uvw::tcp_handle']]],
+  ['node_5faddr_5finfo_6',['node_addr_info',['../classuvw_1_1get__addr__info__req.html#a69de7c9d41231e2fb632c7a658a6dca9',1,'uvw::get_addr_info_req']]],
+  ['node_5faddr_5finfo_5fsync_7',['node_addr_info_sync',['../classuvw_1_1get__addr__info__req.html#a1e0cd316931dcfaa143ff6dd65b25208',1,'uvw::get_addr_info_req']]],
+  ['now_8',['now',['../classuvw_1_1loop.html#ab48abde5d862db1a856900b08ecc02dd',1,'uvw::loop']]]
 ];

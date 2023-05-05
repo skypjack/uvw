@@ -1,0 +1,4 @@
+<map id="uvw::udp_data_event" name="uvw::udp_data_event">
+<area shape="rect" id="node1" title="UDP data event." alt="" coords="6,93,147,119"/>
+<area shape="rect" id="node2" href="$structuvw_1_1socket__address.html" title="Address representation." alt="" coords="5,5,148,31"/>
+</map>

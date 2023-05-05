@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['address_735',['address',['../structuvw_1_1InterfaceAddress.html#a5dc17416f46b0e5e5255404c5858c85e',1,'uvw::InterfaceAddress']]]
+  ['address_0',['address',['../structuvw_1_1interface__address.html#a8f264b63a1d7c6c7f7211c4fe9a04dbb',1,'uvw::interface_address']]]
 ];

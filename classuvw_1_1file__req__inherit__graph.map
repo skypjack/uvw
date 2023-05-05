@@ -1,0 +1,8 @@
+<map id="uvw::file_req" name="uvw::file_req">
+<area shape="rect" id="node1" title="The file request." alt="" coords="105,328,197,353"/>
+<area shape="rect" id="node2" href="$classuvw_1_1fs__request.html" title=" " alt="" coords="81,240,220,280"/>
+<area shape="rect" id="node3" href="$classuvw_1_1request.html" title="Request base class." alt="" coords="71,167,230,192"/>
+<area shape="rect" id="node4" href="$classuvw_1_1resource.html" title=" " alt="" coords="80,79,221,119"/>
+<area shape="rect" id="node5" href="$structuvw_1_1uv__type.html" title="Wrapper class for underlying types." alt="" coords="5,5,133,31"/>
+<area shape="rect" id="node6" href="$classuvw_1_1emitter.html" title=" " alt="" coords="158,5,309,31"/>
+</map>

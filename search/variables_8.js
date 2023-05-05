@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['model_747',['model',['../structuvw_1_1CPUInfo.html#a83982b37fbb833b690f7d4a8de7e162c',1,'uvw::CPUInfo']]]
+  ['model_0',['model',['../structuvw_1_1cpu__info.html#a67cc1beefb0f74b2bdf38f3dca410867',1,'uvw::cpu_info']]]
 ];

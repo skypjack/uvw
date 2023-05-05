@@ -1,13 +1,12 @@
-<map id="uvw::Handle&lt; T, U &gt;" name="uvw::Handle&lt; T, U &gt;">
-<area shape="rect" id="node1" title="Handle base class." alt="" coords="396,111,535,138"/>
-<area shape="rect" id="node5" href="$classuvw_1_1StreamHandle.html" title=" " alt="" coords="589,5,743,47"/>
-<area shape="rect" id="node7" href="$classuvw_1_1StreamHandle.html" title=" " alt="" coords="587,71,745,112"/>
-<area shape="rect" id="node9" href="$classuvw_1_1StreamHandle.html" title=" " alt="" coords="583,136,749,177"/>
-<area shape="rect" id="node11" href="$classuvw_1_1StreamHandle.html" title="The StreamHandle handle." alt="" coords="595,201,737,243"/>
-<area shape="rect" id="node2" href="$classuvw_1_1Resource.html" title="Common class for almost all the resources available in uvw." alt="" coords="193,111,348,138"/>
-<area shape="rect" id="node3" href="$classuvw_1_1UnderlyingType.html" title="Wrapper class for underlying types." alt="" coords="5,75,145,116"/>
-<area shape="rect" id="node4" href="$classuvw_1_1Emitter.html" title="Event emitter base class." alt="" coords="13,141,137,167"/>
-<area shape="rect" id="node6" href="$classuvw_1_1TTYHandle.html" title="The TTYHandle handle." alt="" coords="799,13,913,39"/>
-<area shape="rect" id="node8" href="$classuvw_1_1TCPHandle.html" title="The TCPHandle handle." alt="" coords="798,78,914,105"/>
-<area shape="rect" id="node10" href="$classuvw_1_1PipeHandle.html" title="The PipeHandle handle." alt="" coords="797,143,915,170"/>
+<map id="uvw::handle&lt; T, U, E &gt;" name="uvw::handle&lt; T, U, E &gt;">
+<area shape="rect" id="node1" title="Handle base class." alt="" coords="393,77,548,102"/>
+<area shape="rect" id="node5" href="$classuvw_1_1stream__handle.html" title=" " alt="" coords="596,5,773,45"/>
+<area shape="rect" id="node7" href="$classuvw_1_1stream__handle.html" title=" " alt="" coords="602,69,767,109"/>
+<area shape="rect" id="node9" href="$classuvw_1_1stream__handle.html" title=" " alt="" coords="605,133,764,173"/>
+<area shape="rect" id="node2" href="$classuvw_1_1resource.html" title=" " alt="" coords="204,69,345,109"/>
+<area shape="rect" id="node3" href="$structuvw_1_1uv__type.html" title="Wrapper class for underlying types." alt="" coords="17,51,145,77"/>
+<area shape="rect" id="node4" href="$classuvw_1_1emitter.html" title=" " alt="" coords="5,101,156,126"/>
+<area shape="rect" id="node6" href="$classuvw_1_1pipe__handle.html" title="The pipe handle." alt="" coords="821,13,941,38"/>
+<area shape="rect" id="node8" href="$classuvw_1_1tcp__handle.html" title="The TCP handle." alt="" coords="824,77,939,102"/>
+<area shape="rect" id="node10" href="$classuvw_1_1tty__handle.html" title="The tty handle." alt="" coords="826,141,937,166"/>
 </map>

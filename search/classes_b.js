@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['nameinfoevent_452',['NameInfoEvent',['../structuvw_1_1NameInfoEvent.html',1,'uvw']]]
+  ['name_5finfo_5fevent_0',['name_info_event',['../structuvw_1_1name__info__event.html',1,'uvw']]]
 ];

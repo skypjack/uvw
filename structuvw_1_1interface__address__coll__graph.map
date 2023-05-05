@@ -1,0 +1,4 @@
+<map id="uvw::interface_address" name="uvw::interface_address">
+<area shape="rect" id="node1" title="Interface address." alt="" coords="5,108,159,133"/>
+<area shape="rect" id="node2" href="$structuvw_1_1socket__address.html" title="Address representation." alt="" coords="11,5,153,31"/>
+</map>

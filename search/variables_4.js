@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['filename_740',['filename',['../structuvw_1_1FsEventEvent.html#a01de69aeafe47e4d8660099283bcae0c',1,'uvw::FsEventEvent']]],
-  ['flags_741',['flags',['../structuvw_1_1FsEventEvent.html#a6202e6116d6b61d1323ab63b8d4cd0cb',1,'uvw::FsEventEvent::flags()'],['../structuvw_1_1PollEvent.html#ac3d9842783aeb5e923e1b3bc12d81611',1,'uvw::PollEvent::flags()']]]
+  ['filename_0',['filename',['../structuvw_1_1fs__event__event.html#ac461c2b25f9b9e54f623c169614599b0',1,'uvw::fs_event_event']]],
+  ['flags_1',['flags',['../structuvw_1_1fs__event__event.html#ab819b64d8343c6296ae0a50d8775f623',1,'uvw::fs_event_event::flags()'],['../structuvw_1_1poll__event.html#a71fcdcf9db6733661cc452e483692529',1,'uvw::poll_event::flags()']]]
 ];

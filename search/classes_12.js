@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['winsize_504',['WinSize',['../structuvw_1_1WinSize.html',1,'uvw']]],
-  ['workevent_505',['WorkEvent',['../structuvw_1_1WorkEvent.html',1,'uvw']]],
-  ['workreq_506',['WorkReq',['../classuvw_1_1WorkReq.html',1,'uvw']]],
-  ['writeevent_507',['WriteEvent',['../structuvw_1_1WriteEvent.html',1,'uvw']]]
+  ['win_5fsize_0',['win_size',['../structuvw_1_1win__size.html',1,'uvw']]],
+  ['work_5fevent_1',['work_event',['../structuvw_1_1work__event.html',1,'uvw']]],
+  ['work_5freq_2',['work_req',['../classuvw_1_1work__req.html',1,'uvw']]],
+  ['write_5fevent_3',['write_event',['../structuvw_1_1write__event.html',1,'uvw']]]
 ];

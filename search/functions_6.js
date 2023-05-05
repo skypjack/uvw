@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['get_563',['get',['../classuvw_1_1ThreadLocalStorage.html#a9a254fec9e362bdf91fbbae04dd07b0c',1,'uvw::ThreadLocalStorage']]],
-  ['getdefault_564',['getDefault',['../classuvw_1_1Loop.html#a284450b3ef37c62bd7a984c73552d7b8',1,'uvw::Loop']]],
-  ['getwinsize_565',['getWinSize',['../classuvw_1_1TTYHandle.html#a95fcfce3a8acc4ae1a3453b367c4adec',1,'uvw::TTYHandle']]],
-  ['gid_566',['gid',['../classuvw_1_1ProcessHandle.html#ac51f418fd84059dcea345dddd52ad5bd',1,'uvw::ProcessHandle::gid()'],['../structuvw_1_1Passwd.html#a8e5ebc93fbc036d8cd559ef6a80447ba',1,'uvw::Passwd::gid()']]],
-  ['guesshandle_567',['guessHandle',['../structuvw_1_1Utilities.html#a2a05286add192e595f5d7d5d3db682fb',1,'uvw::Utilities::guessHandle(HandleCategory category) noexcept'],['../structuvw_1_1Utilities.html#af90b525b2dc3d00af1ef1f160538a671',1,'uvw::Utilities::guessHandle(FileHandle file) noexcept']]]
+  ['get_0',['get',['../classuvw_1_1thread__local__storage.html#a26c56634e5d158b79a8fc2d408c745b7',1,'uvw::thread_local_storage']]],
+  ['get_5fdefault_1',['get_default',['../classuvw_1_1loop.html#a6392ce48b55f9b5644eeec2d6ce0e6d4',1,'uvw::loop']]],
+  ['get_5fwin_5fsize_2',['get_win_size',['../classuvw_1_1tty__handle.html#a9f9a002b2802f162f1afff50b9f1306d',1,'uvw::tty_handle']]],
+  ['gid_3',['gid',['../classuvw_1_1process__handle.html#a2bc10b8b4771f50df42daf23d71f24b1',1,'uvw::process_handle::gid()'],['../structuvw_1_1passwd__info.html#a2c6dd49e889b2f1e71b2310fba0f6f3d',1,'uvw::passwd_info::gid()']]],
+  ['guess_5fhandle_4',['guess_handle',['../structuvw_1_1utilities.html#ab234bae92058e009c344eaf6a190d7f2',1,'uvw::utilities::guess_handle(handle_category category) noexcept'],['../structuvw_1_1utilities.html#a739abc3af744580b9a9fb333afb49538',1,'uvw::utilities::guess_handle(file_handle file) noexcept']]]
 ];
