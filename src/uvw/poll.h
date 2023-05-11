@@ -56,11 +56,11 @@ struct poll_event {
  * [documentation](http://docs.libuv.org/en/v1.x/poll.html)
  * for further details.
  */
-class poll_handle final: public handle<poll_handle, uv_poll_t, details::uvw_poll_event> {
+class poll_handle final: public handle<poll_handle, uv_poll_t, poll_event> {
     static void start_callback(uv_poll_t *hndl, int status, int events);
 
 public:
-    using poll_event = details::uvw_poll_event;
+    using poll_event_flags = details::uvw_poll_event;
 
     explicit poll_handle(loop::token token, std::shared_ptr<loop> ref, int desc);
     explicit poll_handle(loop::token token, std::shared_ptr<loop> ref, os_socket_handle sock);
@@ -90,7 +90,7 @@ public:
      * @param flags The events to which the caller is interested.
      * @return Underlying return value.
      */
-    int start(poll_event flags);
+    int start(poll_event_flags flags);
 
     /**
      * @brief Stops polling the file descriptor.

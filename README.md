@@ -170,7 +170,7 @@ _v1.x_ of `libuv` (at least as long as it remains their _master_ branch).<br/>
 ## Documentation
 
 The documentation is based on
-[`doxygen`](http://www.stack.nl/~dimitri/doxygen/). To build it:
+[`doxygen`](https://www.doxygen.nl/). To build it:
 
 * `$ cd build`
 * `$ cmake ..`

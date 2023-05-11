@@ -59,11 +59,10 @@ UVW_INLINE int loop::close() {
         uv_loop.reset();
     }
 
-
     return ret;
 }
 
-int loop::run(run_mode mode) noexcept {
+UVW_INLINE int loop::run(run_mode mode) noexcept {
     return uv_run(uv_loop.get(), static_cast<uv_run_mode>(mode));
 }
 
