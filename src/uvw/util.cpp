@@ -306,6 +306,10 @@ UVW_INLINE uint64_t utilities::constrained_memory() noexcept {
     return uv_get_constrained_memory();
 }
 
+UVW_INLINE uint64_t utilities::available_memory() noexcept {
+    return uv_get_available_memory();
+}
+
 UVW_INLINE double utilities::uptime() noexcept {
     double ret;
 

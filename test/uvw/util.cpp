@@ -4,7 +4,9 @@
 #include <uvw.hpp>
 
 template<typename T>
-struct tag { using type = T; };
+struct tag {
+    using type = T;
+};
 
 TEST(Util, Utilities) {
     ASSERT_EQ(uvw::pid_type{}, uvw::pid_type{});
@@ -81,6 +83,8 @@ TEST(Util, Utilities) {
 
     ASSERT_NO_THROW(uvw::utilities::load_average());
     ASSERT_NE(uvw::utilities::total_memory(), decltype(uvw::utilities::total_memory()){0});
+    ASSERT_NE(uvw::utilities::constrained_memory(), decltype(uvw::utilities::constrained_memory()){0});
+    ASSERT_NE(uvw::utilities::available_memory(), decltype(uvw::utilities::available_memory()){0});
     ASSERT_NE(uvw::utilities::uptime(), decltype(uvw::utilities::uptime()){0});
     ASSERT_NO_THROW(uvw::utilities::rusage());
     ASSERT_NO_THROW(uvw::utilities::gettime(uvw::clock_id::MONOTONIC));
