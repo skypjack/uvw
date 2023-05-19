@@ -20,6 +20,10 @@ UVW_INLINE thread::type thread::self() noexcept {
     return uv_thread_self();
 }
 
+UVW_INLINE int thread::getcpu() noexcept {
+    return uv_thread_getcpu();
+}
+
 UVW_INLINE bool thread::equal(const thread &tl, const thread &tr) noexcept {
     return !(0 == uv_thread_equal(tl.raw(), tr.raw()));
 }

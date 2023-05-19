@@ -61,6 +61,12 @@ public:
     static type self() noexcept;
 
     /**
+     * @brief Gets the CPU number on which the calling thread is running.
+     * @return The CPU number on which the calling thread is running.
+     */
+    static int getcpu() noexcept;
+
+    /**
      * @brief Compares thread by means of their identifiers.
      * @param tl A valid instance of a thread.
      * @param tr A valid instance of a thread.
