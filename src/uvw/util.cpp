@@ -219,7 +219,7 @@ UVW_INLINE std::vector<cpu_info> utilities::cpu() noexcept {
     int count;
 
     if(0 == uv_cpu_info(&infos, &count)) {
-        for (int next = 0; next < count; ++next) {
+        for(int next = 0; next < count; ++next) {
             cpuinfos.push_back({infos[next].model, infos[next].speed, infos[next].cpu_times});
         }
 
