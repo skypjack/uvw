@@ -47,6 +47,8 @@ enum class uvw_run_mode : std::underlying_type_t<uv_run_mode> {
 
 } // namespace details
 
+using metrics_type = uv_metrics_t; /*!< Library equivalent for uv_metrics_t. */
+
 /**
  * @brief The loop class.
  *
@@ -235,6 +237,12 @@ public:
      * @return The accumulated time spent idle.
      */
     time idle_time() const noexcept;
+
+    /**
+     * @brief Tracks various internal operations of the event loop.
+     * @return Event loop metrics.
+     */
+    metrics_type metrics() const noexcept;
 
     /**
      * @brief Returns the current timestamp in milliseconds.

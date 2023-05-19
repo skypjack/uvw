@@ -124,6 +124,14 @@ TEST(Loop, IdleTime) {
     ASSERT_EQ(0, loop->close());
 }
 
+TEST(Loop, Metrics) {
+    auto loop = uvw::loop::create();
+    uvw::metrics_type metrics = loop->metrics();
+    ASSERT_EQ(0, metrics.loop_count);
+    ASSERT_EQ(0, metrics.events);
+    ASSERT_EQ(0, metrics.events_waiting);
+}
+
 TEST(Loop, Raw) {
     auto loop = uvw::loop::get_default();
     const auto &cloop = uvw::loop::get_default();

@@ -87,6 +87,12 @@ UVW_INLINE loop::time loop::idle_time() const noexcept {
     return time{uv_metrics_idle_time(uv_loop.get())};
 }
 
+UVW_INLINE metrics_type loop::metrics() const noexcept {
+    metrics_type res{};
+    uv_metrics_info(uv_loop.get(), &res);
+    return res;
+}
+
 UVW_INLINE loop::time loop::now() const noexcept {
     return time{uv_now(uv_loop.get())};
 }
