@@ -38,6 +38,11 @@ enum class uvw_handle_type : std::underlying_type_t<uv_handle_type> {
     FILE = UV_FILE
 };
 
+enum class uvw_clock_id : std::underlying_type_t<uv_clock_id> {
+    MONOTONIC = UV_CLOCK_MONOTONIC,
+    REALTIME = UV_CLOCK_REALTIME
+};
+
 template<typename T>
 struct uv_type_wrapper {
     using Type = T;
@@ -602,6 +607,13 @@ struct utilities {
      * @return Resource usage measures, zeroes-filled object in case of errors.
      */
     static resource_usage rusage() noexcept;
+
+    /**
+     * @brief Gets the current system time from a high-resolution clock source.
+     * @param source Clock source, either real-time or monotonic.
+     * @return Current system time from the given high-resolution clock source.
+     */
+    static timespec64 gettime(clock_id source) noexcept;
 
     /**
      * @brief Gets the current high-resolution real time.

@@ -322,6 +322,12 @@ UVW_INLINE resource_usage utilities::rusage() noexcept {
     return err ? resource_usage{} : ru;
 }
 
+UVW_INLINE timespec64 utilities::gettime(clock_id source) noexcept {
+    timespec64 ts;
+    auto err = uv_clock_gettime(static_cast<uv_clock_id>(source), &ts);
+    return err ? timespec64{} : ts;
+}
+
 UVW_INLINE uint64_t utilities::hrtime() noexcept {
     return uv_hrtime();
 }

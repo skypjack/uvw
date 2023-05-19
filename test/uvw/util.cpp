@@ -83,6 +83,7 @@ TEST(Util, Utilities) {
     ASSERT_NE(uvw::utilities::total_memory(), decltype(uvw::utilities::total_memory()){0});
     ASSERT_NE(uvw::utilities::uptime(), decltype(uvw::utilities::uptime()){0});
     ASSERT_NO_THROW(uvw::utilities::rusage());
+    ASSERT_NO_THROW(uvw::utilities::gettime(uvw::clock_id::MONOTONIC));
     ASSERT_NE(uvw::utilities::hrtime(), decltype(uvw::utilities::hrtime()){0});
     ASSERT_FALSE(uvw::utilities::path().empty());
     ASSERT_FALSE(uvw::utilities::cwd().empty());
