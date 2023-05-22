@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['os_5ffile_5fdescriptor_0',['os_file_descriptor',['../namespaceuvw.html#a1a4f79e341b89257a11403ee0739f2b4',1,'uvw']]],
-  ['os_5fsocket_5fhandle_1',['os_socket_handle',['../namespaceuvw.html#aa64a7948231fbdec46df43be0c24f806',1,'uvw']]]
+  ['handle_5fcategory_0',['handle_category',['../namespaceuvw.html#a9e28e1855691dd1af105626ed11f3ac4',1,'uvw']]],
+  ['handle_5ftype_1',['handle_type',['../namespaceuvw.html#a3954d5751b5b6ebb0c90c195e9b94edd',1,'uvw']]]
 ];

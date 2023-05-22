@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">uvw<span id="projectnumber">&#160;3.0.0</span>
+   <div id="projectname">uvw<span id="projectnumber">&#160;3.1.0</span>
    </div>
   </td>
  </tr>
@@ -139,6 +139,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aeae404d30c956b2c5fa15ec3997f47fc"><td class="memItemLeft" align="right" valign="top">time&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1loop.html#aeae404d30c956b2c5fa15ec3997f47fc">idle_time</a> () const noexcept</td></tr>
 <tr class="memdesc:aeae404d30c956b2c5fa15ec3997f47fc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the amount of time the event loop has been idle. The call is thread safe.  <br /></td></tr>
 <tr class="separator:aeae404d30c956b2c5fa15ec3997f47fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22d30bda64387cb70bd348f8e3b2932d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespaceuvw.html#af9dde6c7d8c096633c47b47962ba91e3">metrics_type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1loop.html#a22d30bda64387cb70bd348f8e3b2932d">metrics</a> () const noexcept</td></tr>
+<tr class="memdesc:a22d30bda64387cb70bd348f8e3b2932d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Tracks various internal operations of the event loop.  <br /></td></tr>
+<tr class="separator:a22d30bda64387cb70bd348f8e3b2932d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab48abde5d862db1a856900b08ecc02dd"><td class="memItemLeft" align="right" valign="top">time&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1loop.html#ab48abde5d862db1a856900b08ecc02dd">now</a> () const noexcept</td></tr>
 <tr class="memdesc:ab48abde5d862db1a856900b08ecc02dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the current timestamp in milliseconds.  <br /></td></tr>
 <tr class="separator:ab48abde5d862db1a856900b08ecc02dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -198,7 +201,7 @@ Static Public Member Functions</h2></td></tr>
 <p>The event loop is the central part of <code>uvw</code>'s functionalities, as well as <code>libuv</code>'s ones.<br  />
  It takes care of polling for I/O and scheduling callbacks to be run based on different sources of events. </p>
 
-<p class="definition">Definition at line <a class="el" href="loop_8h_source.html#l00058">58</a> of file <a class="el" href="loop_8h_source.html">loop.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8h_source.html#l00060">60</a> of file <a class="el" href="loop_8h_source.html">loop.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a5d56b835e022e812d4930367b0a4f210" name="a5d56b835e022e812d4930367b0a4f210"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5d56b835e022e812d4930367b0a4f210">&#9670;&#160;</a></span>alive()</h2>
@@ -295,7 +298,7 @@ template&lt;typename... Args&gt; </div>
 <p>See the official <a href="http://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_configure">documentation</a> for further details.</p>
 <dl class="section return"><dt>Returns</dt><dd>Underlying return value. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8h_source.html#l00137">137</a> of file <a class="el" href="loop_8h_source.html">loop.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8h_source.html#l00139">139</a> of file <a class="el" href="loop_8h_source.html">loop.h</a>.</p>
 
 </div>
 </div>
@@ -391,7 +394,7 @@ template&lt;typename R  = void&gt; </div>
 <p>Gets user-defined data. <code>uvw</code> won't use this field in any case. </p>
 <dl class="section return"><dt>Returns</dt><dd>User-defined data if any, an invalid pointer otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8h_source.html#l00367">367</a> of file <a class="el" href="loop_8h_source.html">loop.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8h_source.html#l00375">375</a> of file <a class="el" href="loop_8h_source.html">loop.h</a>.</p>
 
 </div>
 </div>
@@ -544,6 +547,34 @@ template&lt;typename R  = void&gt; </div>
 
 </div>
 </div>
+<a id="a22d30bda64387cb70bd348f8e3b2932d" name="a22d30bda64387cb70bd348f8e3b2932d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22d30bda64387cb70bd348f8e3b2932d">&#9670;&#160;</a></span>metrics()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespaceuvw.html#af9dde6c7d8c096633c47b47962ba91e3">metrics_type</a> uvw::loop::metrics </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Tracks various internal operations of the event loop. </p>
+<dl class="section return"><dt>Returns</dt><dd>Event loop metrics. </dd></dl>
+
+</div>
+</div>
 <a id="ab48abde5d862db1a856900b08ecc02dd" name="ab48abde5d862db1a856900b08ecc02dd"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab48abde5d862db1a856900b08ecc02dd">&#9670;&#160;</a></span>now()</h2>
 
@@ -669,7 +700,7 @@ template&lt;typename R , typename... Args&gt; </div>
 <p>Use it as <code>loop-&gt;resource&lt;<a class="el" href="classuvw_1_1timer__handle.html" title="The timer handle.">uvw::timer_handle</a>&gt;()</code>.</p>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the newly created resource. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8h_source.html#l00152">152</a> of file <a class="el" href="loop_8h_source.html">loop.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8h_source.html#l00154">154</a> of file <a class="el" href="loop_8h_source.html">loop.h</a>.</p>
 
 </div>
 </div>
@@ -800,7 +831,7 @@ template&lt;typename R , typename... Args&gt; </div>
 <p>Creates uninitialized resources of any type. </p>
 <dl class="section return"><dt>Returns</dt><dd>A pointer to the newly created resource. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8h_source.html#l00163">163</a> of file <a class="el" href="loop_8h_source.html">loop.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8h_source.html#l00165">165</a> of file <a class="el" href="loop_8h_source.html">loop.h</a>.</p>
 
 </div>
 </div>
@@ -868,7 +899,7 @@ template&lt;typename Func &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="loop_8h_source.html#l00272">272</a> of file <a class="el" href="loop_8h_source.html">loop.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="loop_8h_source.html#l00280">280</a> of file <a class="el" href="loop_8h_source.html">loop.h</a>.</p>
 
 </div>
 </div>

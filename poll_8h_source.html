@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">uvw<span id="projectnumber">&#160;3.0.0</span>
+   <div id="projectname">uvw<span id="projectnumber">&#160;3.1.0</span>
    </div>
   </td>
  </tr>
@@ -107,18 +107,18 @@ $(function() {
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno"><a class="line" href="structuvw_1_1poll__event.html#a71fcdcf9db6733661cc452e483692529">   40</a></span>    details::uvw_poll_event <a class="code hl_variable" href="structuvw_1_1poll__event.html#a71fcdcf9db6733661cc452e483692529">flags</a>;</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>};</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span> </div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="classuvw_1_1poll__handle.html">   59</a></span><span class="keyword">class </span><a class="code hl_class" href="classuvw_1_1poll__handle.html">poll_handle</a> final: <span class="keyword">public</span> <a class="code hl_class" href="classuvw_1_1handle.html">handle</a>&lt;poll_handle, uv_poll_t, details::uvw_poll_event&gt; {</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno"><a class="line" href="classuvw_1_1poll__handle.html">   59</a></span><span class="keyword">class </span><a class="code hl_class" href="classuvw_1_1poll__handle.html">poll_handle</a> final: <span class="keyword">public</span> <a class="code hl_class" href="classuvw_1_1handle.html">handle</a>&lt;poll_handle, uv_poll_t, poll_event&gt; {</div>
 <div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>    <span class="keyword">static</span> <span class="keywordtype">void</span> start_callback(uv_poll_t *hndl, <span class="keywordtype">int</span> status, <span class="keywordtype">int</span> events);</div>
 <div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span> </div>
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span><span class="keyword">public</span>:</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    <span class="keyword">using </span>poll_event = details::uvw_poll_event;</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>    <span class="keyword">using </span>poll_event_flags = details::uvw_poll_event;</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span> </div>
 <div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>    <span class="keyword">explicit</span> <a class="code hl_class" href="classuvw_1_1poll__handle.html">poll_handle</a>(loop::token token, std::shared_ptr&lt;loop&gt; ref, <span class="keywordtype">int</span> desc);</div>
 <div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>    <span class="keyword">explicit</span> <a class="code hl_class" href="classuvw_1_1poll__handle.html">poll_handle</a>(loop::token token, std::shared_ptr&lt;loop&gt; ref, <a class="code hl_typedef" href="namespaceuvw.html#aa64a7948231fbdec46df43be0c24f806">os_socket_handle</a> sock);</div>
 <div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
 <div class="line"><a id="l00072" name="l00072"></a><span class="lineno"><a class="line" href="classuvw_1_1poll__handle.html#a893b729e6123d24f8ac8bb24670a3b64">   72</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classuvw_1_1poll__handle.html#a893b729e6123d24f8ac8bb24670a3b64">init</a>() final;</div>
 <div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span> </div>
-<div class="line"><a id="l00093" name="l00093"></a><span class="lineno"><a class="line" href="classuvw_1_1poll__handle.html#a0461d144159bc80284b0a8fe03f91379">   93</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classuvw_1_1poll__handle.html#a0461d144159bc80284b0a8fe03f91379">start</a>(poll_event flags);</div>
+<div class="line"><a id="l00093" name="l00093"></a><span class="lineno"><a class="line" href="classuvw_1_1poll__handle.html#a33d1a81a148e1728c28d6fe59fd4a276">   93</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classuvw_1_1poll__handle.html#a33d1a81a148e1728c28d6fe59fd4a276">start</a>(poll_event_flags flags);</div>
 <div class="line"><a id="l00094" name="l00094"></a><span class="lineno">   94</span> </div>
 <div class="line"><a id="l00099" name="l00099"></a><span class="lineno"><a class="line" href="classuvw_1_1poll__handle.html#a917f6bc19f8e50fb2bf62ce5e28b80f7">   99</a></span>    <span class="keywordtype">int</span> <a class="code hl_function" href="classuvw_1_1poll__handle.html#a917f6bc19f8e50fb2bf62ce5e28b80f7">stop</a>();</div>
 <div class="line"><a id="l00100" name="l00100"></a><span class="lineno">  100</span> </div>
@@ -143,11 +143,11 @@ $(function() {
 <div class="line"><a id="l00119" name="l00119"></a><span class="lineno">  119</span><span class="preprocessor">#endif </span><span class="comment">// UVW_POLL_INCLUDE_H</span></div>
 <div class="ttc" id="aclassuvw_1_1handle_html"><div class="ttname"><a href="classuvw_1_1handle.html">uvw::handle</a></div><div class="ttdoc">Handle base class.</div><div class="ttdef"><b>Definition:</b> <a href="handle_8hpp_source.html#l00023">handle.hpp:23</a></div></div>
 <div class="ttc" id="aclassuvw_1_1poll__handle_html"><div class="ttname"><a href="classuvw_1_1poll__handle.html">uvw::poll_handle</a></div><div class="ttdoc">The poll handle.</div><div class="ttdef"><b>Definition:</b> <a href="poll_8h_source.html#l00059">poll.h:59</a></div></div>
-<div class="ttc" id="aclassuvw_1_1poll__handle_html_a0461d144159bc80284b0a8fe03f91379"><div class="ttname"><a href="classuvw_1_1poll__handle.html#a0461d144159bc80284b0a8fe03f91379">uvw::poll_handle::start</a></div><div class="ttdeci">int start(poll_event flags)</div><div class="ttdoc">Starts polling the file descriptor.</div></div>
+<div class="ttc" id="aclassuvw_1_1poll__handle_html_a33d1a81a148e1728c28d6fe59fd4a276"><div class="ttname"><a href="classuvw_1_1poll__handle.html#a33d1a81a148e1728c28d6fe59fd4a276">uvw::poll_handle::start</a></div><div class="ttdeci">int start(poll_event_flags flags)</div><div class="ttdoc">Starts polling the file descriptor.</div></div>
 <div class="ttc" id="aclassuvw_1_1poll__handle_html_a893b729e6123d24f8ac8bb24670a3b64"><div class="ttname"><a href="classuvw_1_1poll__handle.html#a893b729e6123d24f8ac8bb24670a3b64">uvw::poll_handle::init</a></div><div class="ttdeci">int init() final</div><div class="ttdoc">Initializes the handle.</div></div>
 <div class="ttc" id="aclassuvw_1_1poll__handle_html_a917f6bc19f8e50fb2bf62ce5e28b80f7"><div class="ttname"><a href="classuvw_1_1poll__handle.html#a917f6bc19f8e50fb2bf62ce5e28b80f7">uvw::poll_handle::stop</a></div><div class="ttdeci">int stop()</div><div class="ttdoc">Stops polling the file descriptor.</div></div>
 <div class="ttc" id="anamespaceuvw_html"><div class="ttname"><a href="namespaceuvw.html">uvw</a></div><div class="ttdoc">uvw default namespace.</div><div class="ttdef"><b>Definition:</b> <a href="async_8h_source.html#l00008">async.h:8</a></div></div>
-<div class="ttc" id="anamespaceuvw_html_aa64a7948231fbdec46df43be0c24f806"><div class="ttname"><a href="namespaceuvw.html#aa64a7948231fbdec46df43be0c24f806">uvw::os_socket_handle</a></div><div class="ttdeci">details::uv_type_wrapper&lt; uv_os_sock_t &gt; os_socket_handle</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00081">util.h:81</a></div></div>
+<div class="ttc" id="anamespaceuvw_html_aa64a7948231fbdec46df43be0c24f806"><div class="ttname"><a href="namespaceuvw.html#aa64a7948231fbdec46df43be0c24f806">uvw::os_socket_handle</a></div><div class="ttdeci">details::uv_type_wrapper&lt; uv_os_sock_t &gt; os_socket_handle</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00086">util.h:86</a></div></div>
 <div class="ttc" id="astructuvw_1_1poll__event_html"><div class="ttname"><a href="structuvw_1_1poll__event.html">uvw::poll_event</a></div><div class="ttdoc">Poll event.</div><div class="ttdef"><b>Definition:</b> <a href="poll_8h_source.html#l00027">poll.h:27</a></div></div>
 <div class="ttc" id="astructuvw_1_1poll__event_html_a71fcdcf9db6733661cc452e483692529"><div class="ttname"><a href="structuvw_1_1poll__event.html#a71fcdcf9db6733661cc452e483692529">uvw::poll_event::flags</a></div><div class="ttdeci">details::uvw_poll_event flags</div><div class="ttdoc">Detected events all in one.</div><div class="ttdef"><b>Definition:</b> <a href="poll_8h_source.html#l00040">poll.h:40</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

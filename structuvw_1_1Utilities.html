@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">uvw<span id="projectnumber">&#160;3.0.0</span>
+   <div id="projectname">uvw<span id="projectnumber">&#160;3.1.0</span>
    </div>
   </td>
  </tr>
@@ -133,12 +133,18 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:aab97685b6e566289194d1b8c2b0bc3fa"><td class="memItemLeft" align="right" valign="top">static uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1utilities.html#aab97685b6e566289194d1b8c2b0bc3fa">constrained_memory</a> () noexcept</td></tr>
 <tr class="memdesc:aab97685b6e566289194d1b8c2b0bc3fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the amount of memory available to the process (in bytes).  <br /></td></tr>
 <tr class="separator:aab97685b6e566289194d1b8c2b0bc3fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab17305bbb49d505ab06796d1de50335f"><td class="memItemLeft" align="right" valign="top">static uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1utilities.html#ab17305bbb49d505ab06796d1de50335f">available_memory</a> () noexcept</td></tr>
+<tr class="memdesc:ab17305bbb49d505ab06796d1de50335f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the amount of free memory still available to the process.  <br /></td></tr>
+<tr class="separator:ab17305bbb49d505ab06796d1de50335f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acaf26accecf5d896fac21953c49bf77d"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1utilities.html#acaf26accecf5d896fac21953c49bf77d">uptime</a> () noexcept</td></tr>
 <tr class="memdesc:acaf26accecf5d896fac21953c49bf77d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current system uptime.  <br /></td></tr>
 <tr class="separator:acaf26accecf5d896fac21953c49bf77d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abcd87fab2e4727cb6b9a7ad7c4353b19"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespaceuvw.html#aab1e2e7f501f4ddb737c4a127d898dd1">resource_usage</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1utilities.html#abcd87fab2e4727cb6b9a7ad7c4353b19">rusage</a> () noexcept</td></tr>
 <tr class="memdesc:abcd87fab2e4727cb6b9a7ad7c4353b19"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the resource usage measures for the current process.  <br /></td></tr>
 <tr class="separator:abcd87fab2e4727cb6b9a7ad7c4353b19"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af670af2d3c469a3b43f1fa0d4a8f2251"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespaceuvw.html#a9ede2b9dae02dbb38659d21c36a51d5e">timespec64</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1utilities.html#af670af2d3c469a3b43f1fa0d4a8f2251">gettime</a> (<a class="el" href="namespaceuvw.html#a583fc1ea7bcbb46b9d8cf8cd83f534d0">clock_id</a> source) noexcept</td></tr>
+<tr class="memdesc:af670af2d3c469a3b43f1fa0d4a8f2251"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current system time from a high-resolution clock source.  <br /></td></tr>
+<tr class="separator:af670af2d3c469a3b43f1fa0d4a8f2251"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a795550d5bceddd69e9b4cb81b525a4ee"><td class="memItemLeft" align="right" valign="top">static uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structuvw_1_1utilities.html#a795550d5bceddd69e9b4cb81b525a4ee">hrtime</a> () noexcept</td></tr>
 <tr class="memdesc:a795550d5bceddd69e9b4cb81b525a4ee"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the current high-resolution real time.  <br /></td></tr>
 <tr class="separator:a795550d5bceddd69e9b4cb81b525a4ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -165,8 +171,36 @@ Static Public Member Functions</h2></td></tr>
 <div class="textblock"><p>Miscellaneous utilities. </p>
 <p>Miscellaneous functions that don’t really belong to any other class. </p>
 
-<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00281">281</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="util_8h_source.html#l00288">288</a> of file <a class="el" href="util_8h_source.html">util.h</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
+<a id="ab17305bbb49d505ab06796d1de50335f" name="ab17305bbb49d505ab06796d1de50335f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab17305bbb49d505ab06796d1de50335f">&#9670;&#160;</a></span>available_memory()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static uint64_t uvw::utilities::available_memory </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the amount of free memory still available to the process. </p>
+<dl class="section return"><dt>Returns</dt><dd>Amount of free memory still available to the process (in bytes). </dd></dl>
+
+</div>
+</div>
 <a id="abea71dca400539052c2f4e20a882b9b4" name="abea71dca400539052c2f4e20a882b9b4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#abea71dca400539052c2f4e20a882b9b4">&#9670;&#160;</a></span>available_parallelism()</h2>
 
@@ -314,6 +348,41 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Gets the current working directory. </p>
 <dl class="section return"><dt>Returns</dt><dd>The current working directory, an empty string in case of errors. </dd></dl>
+
+</div>
+</div>
+<a id="af670af2d3c469a3b43f1fa0d4a8f2251" name="af670af2d3c469a3b43f1fa0d4a8f2251"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af670af2d3c469a3b43f1fa0d4a8f2251">&#9670;&#160;</a></span>gettime()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="namespaceuvw.html#a9ede2b9dae02dbb38659d21c36a51d5e">timespec64</a> uvw::utilities::gettime </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespaceuvw.html#a583fc1ea7bcbb46b9d8cf8cd83f534d0">clock_id</a>&#160;</td>
+          <td class="paramname"><em>source</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the current system time from a high-resolution clock source. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">source</td><td>Clock source, either real-time or monotonic. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Current system time from the given high-resolution clock source. </dd></dl>
 
 </div>
 </div>

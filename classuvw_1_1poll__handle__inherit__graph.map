@@ -1,6 +1,6 @@
 <map id="uvw::poll_handle" name="uvw::poll_handle">
-<area shape="rect" id="node1" title="The poll handle." alt="" coords="93,255,209,280"/>
-<area shape="rect" id="node2" href="$classuvw_1_1handle.html" title=" " alt="" coords="65,152,236,207"/>
+<area shape="rect" id="node1" title="The poll handle." alt="" coords="93,240,209,265"/>
+<area shape="rect" id="node2" href="$classuvw_1_1handle.html" title=" " alt="" coords="65,152,236,192"/>
 <area shape="rect" id="node3" href="$classuvw_1_1resource.html" title="Common class for almost all the resources available in uvw." alt="" coords="67,79,234,104"/>
 <area shape="rect" id="node4" href="$structuvw_1_1uv__type.html" title="Wrapper class for underlying types." alt="" coords="5,5,133,31"/>
 <area shape="rect" id="node5" href="$classuvw_1_1emitter.html" title=" " alt="" coords="158,5,309,31"/>

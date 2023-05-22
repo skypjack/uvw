@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">uvw<span id="projectnumber">&#160;3.0.0</span>
+   <div id="projectname">uvw<span id="projectnumber">&#160;3.1.0</span>
    </div>
   </td>
  </tr>
@@ -88,7 +88,7 @@ Code Example</h2>
 <div class="line"><span class="keywordtype">void</span> listen(<a class="code hl_class" href="classuvw_1_1loop.html">uvw::loop</a> &amp;loop) {</div>
 <div class="line">    std::shared_ptr&lt;uvw::tcp_handle&gt; tcp = loop.<a class="code hl_function" href="classuvw_1_1loop.html#a36e1eb17d55ab7b8d089e55823015618">resource</a>&lt;<a class="code hl_class" href="classuvw_1_1tcp__handle.html">uvw::tcp_handle</a>&gt;();</div>
 <div class="line"> </div>
-<div class="line">    tcp-&gt;once&lt;<a class="code hl_struct" href="structuvw_1_1listen__event.html">uvw::listen_event</a>&gt;([](<span class="keyword">const</span> <a class="code hl_struct" href="structuvw_1_1listen__event.html">uvw::listen_event</a> &amp;, <a class="code hl_class" href="classuvw_1_1tcp__handle.html">uvw::tcp_handle</a> &amp;srv) {</div>
+<div class="line">    tcp-&gt;<a class="code hl_function" href="classuvw_1_1emitter.html#ab913fa1c005a33c73b2eb2b0d1051b1f">on</a>&lt;<a class="code hl_struct" href="structuvw_1_1listen__event.html">uvw::listen_event</a>&gt;([](<span class="keyword">const</span> <a class="code hl_struct" href="structuvw_1_1listen__event.html">uvw::listen_event</a> &amp;, <a class="code hl_class" href="classuvw_1_1tcp__handle.html">uvw::tcp_handle</a> &amp;srv) {</div>
 <div class="line">        std::shared_ptr&lt;uvw::tcp_handle&gt; client = srv.parent().resource&lt;<a class="code hl_class" href="classuvw_1_1tcp__handle.html">uvw::tcp_handle</a>&gt;();</div>
 <div class="line"> </div>
 <div class="line">        client-&gt;<a class="code hl_function" href="classuvw_1_1emitter.html#ab913fa1c005a33c73b2eb2b0d1051b1f">on</a>&lt;<a class="code hl_struct" href="structuvw_1_1close__event.html">uvw::close_event</a>&gt;([ptr = srv.shared_from_this()](<span class="keyword">const</span> <a class="code hl_struct" href="structuvw_1_1close__event.html">uvw::close_event</a> &amp;, <a class="code hl_class" href="classuvw_1_1tcp__handle.html">uvw::tcp_handle</a> &amp;) { ptr-&gt;close(); });</div>
@@ -107,7 +107,7 @@ Code Example</h2>
 <div class="line"> </div>
 <div class="line">    tcp-&gt;<a class="code hl_function" href="classuvw_1_1emitter.html#ab913fa1c005a33c73b2eb2b0d1051b1f">on</a>&lt;<a class="code hl_struct" href="structuvw_1_1error__event.html">uvw::error_event</a>&gt;([](<span class="keyword">const</span> <a class="code hl_struct" href="structuvw_1_1error__event.html">uvw::error_event</a> &amp;, <a class="code hl_class" href="classuvw_1_1tcp__handle.html">uvw::tcp_handle</a> &amp;) { <span class="comment">/* handle errors */</span> });</div>
 <div class="line"> </div>
-<div class="line">    tcp-&gt;once&lt;<a class="code hl_struct" href="structuvw_1_1connect__event.html">uvw::connect_event</a>&gt;([](<span class="keyword">const</span> <a class="code hl_struct" href="structuvw_1_1connect__event.html">uvw::connect_event</a> &amp;, <a class="code hl_class" href="classuvw_1_1tcp__handle.html">uvw::tcp_handle</a> &amp;tcp) {</div>
+<div class="line">    tcp-&gt;on&lt;<a class="code hl_struct" href="structuvw_1_1connect__event.html">uvw::connect_event</a>&gt;([](<span class="keyword">const</span> <a class="code hl_struct" href="structuvw_1_1connect__event.html">uvw::connect_event</a> &amp;, <a class="code hl_class" href="classuvw_1_1tcp__handle.html">uvw::tcp_handle</a> &amp;tcp) {</div>
 <div class="line">        <span class="keyword">auto</span> dataWrite = std::unique_ptr&lt;char[]&gt;(<span class="keyword">new</span> <span class="keywordtype">char</span>[2]{ <span class="charliteral">&#39;b&#39;</span>, <span class="charliteral">&#39;c&#39;</span> });</div>
 <div class="line">        tcp.write(std::move(dataWrite), 2);</div>
 <div class="line">        tcp.close();</div>
@@ -123,9 +123,9 @@ Code Example</h2>
 <div class="line">    loop-&gt;<a class="code hl_function" href="classuvw_1_1loop.html#a199e23bce642f5618e3d0c2b1e8d0cdf">run</a>();</div>
 <div class="line">}</div>
 <div class="ttc" id="aclassuvw_1_1emitter_html_ab913fa1c005a33c73b2eb2b0d1051b1f"><div class="ttname"><a href="classuvw_1_1emitter.html#ab913fa1c005a33c73b2eb2b0d1051b1f">uvw::emitter::on</a></div><div class="ttdeci">void on(listener_t&lt; U &gt; f)</div><div class="ttdoc">Registers a long-lived listener with the event emitter.</div><div class="ttdef"><b>Definition:</b> <a href="emitter_8h_source.html#l00123">emitter.h:123</a></div></div>
-<div class="ttc" id="aclassuvw_1_1loop_html"><div class="ttname"><a href="classuvw_1_1loop.html">uvw::loop</a></div><div class="ttdoc">The loop class.</div><div class="ttdef"><b>Definition:</b> <a href="loop_8h_source.html#l00058">loop.h:58</a></div></div>
+<div class="ttc" id="aclassuvw_1_1loop_html"><div class="ttname"><a href="classuvw_1_1loop.html">uvw::loop</a></div><div class="ttdoc">The loop class.</div><div class="ttdef"><b>Definition:</b> <a href="loop_8h_source.html#l00060">loop.h:60</a></div></div>
 <div class="ttc" id="aclassuvw_1_1loop_html_a199e23bce642f5618e3d0c2b1e8d0cdf"><div class="ttname"><a href="classuvw_1_1loop.html#a199e23bce642f5618e3d0c2b1e8d0cdf">uvw::loop::run</a></div><div class="ttdeci">int run(run_mode mode=run_mode::DEFAULT) noexcept</div><div class="ttdoc">Runs the event loop.</div></div>
-<div class="ttc" id="aclassuvw_1_1loop_html_a36e1eb17d55ab7b8d089e55823015618"><div class="ttname"><a href="classuvw_1_1loop.html#a36e1eb17d55ab7b8d089e55823015618">uvw::loop::resource</a></div><div class="ttdeci">std::shared_ptr&lt; R &gt; resource(Args &amp;&amp;...args)</div><div class="ttdoc">Creates resources of any type.</div><div class="ttdef"><b>Definition:</b> <a href="loop_8h_source.html#l00152">loop.h:152</a></div></div>
+<div class="ttc" id="aclassuvw_1_1loop_html_a36e1eb17d55ab7b8d089e55823015618"><div class="ttname"><a href="classuvw_1_1loop.html#a36e1eb17d55ab7b8d089e55823015618">uvw::loop::resource</a></div><div class="ttdeci">std::shared_ptr&lt; R &gt; resource(Args &amp;&amp;...args)</div><div class="ttdoc">Creates resources of any type.</div><div class="ttdef"><b>Definition:</b> <a href="loop_8h_source.html#l00154">loop.h:154</a></div></div>
 <div class="ttc" id="aclassuvw_1_1loop_html_a6392ce48b55f9b5644eeec2d6ce0e6d4"><div class="ttname"><a href="classuvw_1_1loop.html#a6392ce48b55f9b5644eeec2d6ce0e6d4">uvw::loop::get_default</a></div><div class="ttdeci">static std::shared_ptr&lt; loop &gt; get_default()</div><div class="ttdoc">Gets the initialized default loop.</div></div>
 <div class="ttc" id="aclassuvw_1_1tcp__handle_html"><div class="ttname"><a href="classuvw_1_1tcp__handle.html">uvw::tcp_handle</a></div><div class="ttdoc">The TCP handle.</div><div class="ttdef"><b>Definition:</b> <a href="tcp_8h_source.html#l00043">tcp.h:43</a></div></div>
 <div class="ttc" id="astructuvw_1_1close__event_html"><div class="ttname"><a href="structuvw_1_1close__event.html">uvw::close_event</a></div><div class="ttdoc">Close event.</div><div class="ttdef"><b>Definition:</b> <a href="handle_8hpp_source.html#l00015">handle.hpp:15</a></div></div>
@@ -184,7 +184,7 @@ Versioning</h2>
 </p>
 <h2><a class="anchor" id="autotoc_md9"></a>
 Documentation</h2>
-<p>The documentation is based on <a href="http://www.stack.nl/~dimitri/doxygen/"><code>doxygen</code></a>. To build it:</p>
+<p>The documentation is based on <a href="https://www.doxygen.nl/"><code>doxygen</code></a>. To build it:</p>
 <ul>
 <li><code>$ cd build</code></li>
 <li><code>$ cmake ..</code></li>
@@ -248,7 +248,7 @@ The Loop and the Resource</h2>
  It also is possible to create uninitialized resources to init later on as:</p>
 <div class="fragment"><div class="line"><span class="keyword">auto</span> tcp = loop-&gt;<a class="code hl_function" href="classuvw_1_1loop.html#aef0dbe4d1e82e43a8df3df1c7386efca">uninitialized_resource</a>&lt;<a class="code hl_class" href="classuvw_1_1tcp__handle.html">uvw::tcp_handle</a>&gt;();</div>
 <div class="line">tcp-&gt;<a class="code hl_function" href="classuvw_1_1tcp__handle.html#a0cb5490996adb8ae112927a036aee85d">init</a>();</div>
-<div class="ttc" id="aclassuvw_1_1loop_html_aef0dbe4d1e82e43a8df3df1c7386efca"><div class="ttname"><a href="classuvw_1_1loop.html#aef0dbe4d1e82e43a8df3df1c7386efca">uvw::loop::uninitialized_resource</a></div><div class="ttdeci">std::shared_ptr&lt; R &gt; uninitialized_resource(Args &amp;&amp;...args)</div><div class="ttdoc">Creates uninitialized resources of any type.</div><div class="ttdef"><b>Definition:</b> <a href="loop_8h_source.html#l00163">loop.h:163</a></div></div>
+<div class="ttc" id="aclassuvw_1_1loop_html_aef0dbe4d1e82e43a8df3df1c7386efca"><div class="ttname"><a href="classuvw_1_1loop.html#aef0dbe4d1e82e43a8df3df1c7386efca">uvw::loop::uninitialized_resource</a></div><div class="ttdeci">std::shared_ptr&lt; R &gt; uninitialized_resource(Args &amp;&amp;...args)</div><div class="ttdoc">Creates uninitialized resources of any type.</div><div class="ttdef"><b>Definition:</b> <a href="loop_8h_source.html#l00165">loop.h:165</a></div></div>
 <div class="ttc" id="aclassuvw_1_1tcp__handle_html_a0cb5490996adb8ae112927a036aee85d"><div class="ttname"><a href="classuvw_1_1tcp__handle.html#a0cb5490996adb8ae112927a036aee85d">uvw::tcp_handle::init</a></div><div class="ttdeci">int init() final</div><div class="ttdoc">Initializes the handle. No socket is created as of yet.</div></div>
 </div><!-- fragment --><p>All resources also accept arbitrary user-data that won't be touched in any case.<br  />
  Users can set and get them through the <code>data</code> member function as it follows:</p>
@@ -264,10 +264,10 @@ The Loop and the Resource</h2>
 <div class="line">    [](<span class="keyword">auto</span> &amp;&amp;){ <span class="comment">/* ignore all other types */</span> }</div>
 <div class="line">});</div>
 <div class="ttc" id="aclassuvw_1_1timer__handle_html"><div class="ttname"><a href="classuvw_1_1timer__handle.html">uvw::timer_handle</a></div><div class="ttdoc">The timer handle.</div><div class="ttdef"><b>Definition:</b> <a href="timer_8h_source.html#l00022">timer.h:22</a></div></div>
-<div class="ttc" id="astructuvw_1_1overloaded_html"><div class="ttname"><a href="structuvw_1_1overloaded.html">uvw::overloaded</a></div><div class="ttdoc">Helper type for visitors.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00663">util.h:663</a></div></div>
+<div class="ttc" id="astructuvw_1_1overloaded_html"><div class="ttname"><a href="structuvw_1_1overloaded.html">uvw::overloaded</a></div><div class="ttdoc">Helper type for visitors.</div><div class="ttdef"><b>Definition:</b> <a href="util_8h_source.html#l00683">util.h:683</a></div></div>
 </div><!-- fragment --><p>This function can also be used for a completely generic approach. For example, all the pending handles can be closed easily as it follows:</p>
 <div class="fragment"><div class="line">loop-&gt;<a class="code hl_function" href="classuvw_1_1loop.html#aa46a050e186935c0be4eca7815cd9207">walk</a>([](<span class="keyword">auto</span> &amp;&amp;h){ h.close(); });</div>
-<div class="ttc" id="aclassuvw_1_1loop_html_aa46a050e186935c0be4eca7815cd9207"><div class="ttname"><a href="classuvw_1_1loop.html#aa46a050e186935c0be4eca7815cd9207">uvw::loop::walk</a></div><div class="ttdeci">void walk(Func callback)</div><div class="ttdoc">Walks the list of handles.</div><div class="ttdef"><b>Definition:</b> <a href="loop_8h_source.html#l00272">loop.h:272</a></div></div>
+<div class="ttc" id="aclassuvw_1_1loop_html_aa46a050e186935c0be4eca7815cd9207"><div class="ttname"><a href="classuvw_1_1loop.html#aa46a050e186935c0be4eca7815cd9207">uvw::loop::walk</a></div><div class="ttdeci">void walk(Func callback)</div><div class="ttdoc">Walks the list of handles.</div><div class="ttdef"><b>Definition:</b> <a href="loop_8h_source.html#l00280">loop.h:280</a></div></div>
 </div><!-- fragment --><p>No need to keep track of them.</p>
 <h2><a class="anchor" id="autotoc_md17"></a>
 The event-based approach</h2>

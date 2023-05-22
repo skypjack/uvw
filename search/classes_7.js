@@ -7,7 +7,7 @@ var searchData=
   ['handle_3c_20fs_5fpoll_5fhandle_2c_20uv_5ffs_5fpoll_5ft_2c_20fs_5fpoll_5fevent_20_3e_4',['handle&lt; fs_poll_handle, uv_fs_poll_t, fs_poll_event &gt;',['../classuvw_1_1handle.html',1,'uvw']]],
   ['handle_3c_20idle_5fhandle_2c_20uv_5fidle_5ft_2c_20idle_5fevent_20_3e_5',['handle&lt; idle_handle, uv_idle_t, idle_event &gt;',['../classuvw_1_1handle.html',1,'uvw']]],
   ['handle_3c_20pipe_5fhandle_2c_20uv_5fpipe_5ft_2c_20listen_5fevent_2c_20end_5fevent_2c_20connect_5fevent_2c_20shutdown_5fevent_2c_20data_5fevent_2c_20write_5fevent_2c_20e_2e_2e_2e_20_3e_6',['handle&lt; pipe_handle, uv_pipe_t, listen_event, end_event, connect_event, shutdown_event, data_event, write_event, E... &gt;',['../classuvw_1_1handle.html',1,'uvw']]],
-  ['handle_3c_20poll_5fhandle_2c_20uv_5fpoll_5ft_2c_20details_3a_3auvw_5fpoll_5fevent_20_3e_7',['handle&lt; poll_handle, uv_poll_t, details::uvw_poll_event &gt;',['../classuvw_1_1handle.html',1,'uvw']]],
+  ['handle_3c_20poll_5fhandle_2c_20uv_5fpoll_5ft_2c_20poll_5fevent_20_3e_7',['handle&lt; poll_handle, uv_poll_t, poll_event &gt;',['../classuvw_1_1handle.html',1,'uvw']]],
   ['handle_3c_20prepare_5fhandle_2c_20uv_5fprepare_5ft_2c_20prepare_5fevent_20_3e_8',['handle&lt; prepare_handle, uv_prepare_t, prepare_event &gt;',['../classuvw_1_1handle.html',1,'uvw']]],
   ['handle_3c_20process_5fhandle_2c_20uv_5fprocess_5ft_2c_20exit_5fevent_20_3e_9',['handle&lt; process_handle, uv_process_t, exit_event &gt;',['../classuvw_1_1handle.html',1,'uvw']]],
   ['handle_3c_20signal_5fhandle_2c_20uv_5fsignal_5ft_2c_20signal_5fevent_20_3e_10',['handle&lt; signal_handle, uv_signal_t, signal_event &gt;',['../classuvw_1_1handle.html',1,'uvw']]],

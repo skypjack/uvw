@@ -21,7 +21,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">uvw<span id="projectnumber">&#160;3.0.0</span>
+   <div id="projectname">uvw<span id="projectnumber">&#160;3.1.0</span>
    </div>
   </td>
  </tr>
@@ -134,6 +134,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="memitem:a148dc9a339fe0f610a57dabf17b4f420"><td class="memItemLeft" align="right" valign="top">static type&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1thread.html#a148dc9a339fe0f610a57dabf17b4f420">self</a> () noexcept</td></tr>
 <tr class="memdesc:a148dc9a339fe0f610a57dabf17b4f420"><td class="mdescLeft">&#160;</td><td class="mdescRight">Obtains the identifier of the calling thread.  <br /></td></tr>
 <tr class="separator:a148dc9a339fe0f610a57dabf17b4f420"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9cf983df5ed1950322e1194a110c1df5"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1thread.html#a9cf983df5ed1950322e1194a110c1df5">getcpu</a> () noexcept</td></tr>
+<tr class="memdesc:a9cf983df5ed1950322e1194a110c1df5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gets the CPU number on which the calling thread is running.  <br /></td></tr>
+<tr class="separator:a9cf983df5ed1950322e1194a110c1df5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abc4cd4285f800475959668bb4f49201d"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classuvw_1_1thread.html#abc4cd4285f800475959668bb4f49201d">equal</a> (const <a class="el" href="classuvw_1_1thread.html">thread</a> &amp;tl, const <a class="el" href="classuvw_1_1thread.html">thread</a> &amp;tr) noexcept</td></tr>
 <tr class="memdesc:abc4cd4285f800475959668bb4f49201d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Compares thread by means of their identifiers.  <br /></td></tr>
 <tr class="separator:abc4cd4285f800475959668bb4f49201d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -191,6 +194,34 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>True if the two threads are the same thread, false otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="a9cf983df5ed1950322e1194a110c1df5" name="a9cf983df5ed1950322e1194a110c1df5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9cf983df5ed1950322e1194a110c1df5">&#9670;&#160;</a></span>getcpu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int uvw::thread::getcpu </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span><span class="mlabel">noexcept</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Gets the CPU number on which the calling thread is running. </p>
+<dl class="section return"><dt>Returns</dt><dd>The CPU number on which the calling thread is running. </dd></dl>
 
 </div>
 </div>

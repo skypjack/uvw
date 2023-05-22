@@ -12,5 +12,6 @@ var searchData=
   ['alive_9',['alive',['../classuvw_1_1loop.html#a5d56b835e022e812d4930367b0a4f210',1,'uvw::loop']]],
   ['async_5fevent_10',['async_event',['../structuvw_1_1async__event.html',1,'uvw']]],
   ['async_5fhandle_11',['async_handle',['../classuvw_1_1async__handle.html',1,'uvw']]],
-  ['available_5fparallelism_12',['available_parallelism',['../structuvw_1_1utilities.html#abea71dca400539052c2f4e20a882b9b4',1,'uvw::utilities']]]
+  ['available_5fmemory_12',['available_memory',['../structuvw_1_1utilities.html#ab17305bbb49d505ab06796d1de50335f',1,'uvw::utilities']]],
+  ['available_5fparallelism_13',['available_parallelism',['../structuvw_1_1utilities.html#abea71dca400539052c2f4e20a882b9b4',1,'uvw::utilities']]]
 ];
