@@ -148,3 +148,56 @@ TEST(TCP, WriteError) {
     ASSERT_LT(handle->try_write(std::unique_ptr<char[]>{}, 0), 0);
     ASSERT_LT(handle->try_write(nullptr, 0), 0);
 }
+
+TEST(TCP, CustomAllocator) {
+    const std::string address = std::string{"127.0.0.1"};
+    const unsigned int port = 4242;
+
+    auto loop = uvw::loop::get_default();
+    auto server = loop->resource<uvw::tcp_handle>();
+    auto client = loop->resource<uvw::tcp_handle>();
+
+    auto *ptr = new char[5];
+
+    server->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
+    client->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
+
+    server->on<uvw::listen_event>([ptr](const uvw::listen_event &, uvw::tcp_handle &handle) {
+        std::shared_ptr<uvw::tcp_handle> socket = handle.parent().resource<uvw::tcp_handle>();
+
+        socket->on<uvw::error_event>([](const uvw::error_event &, uvw::tcp_handle &) { FAIL(); });
+        socket->on<uvw::close_event>([&handle](const uvw::close_event &, uvw::tcp_handle &) { handle.close(); });
+        socket->on<uvw::end_event>([](const uvw::end_event &, uvw::tcp_handle &sock) { sock.close(); });
+        socket->on<uvw::data_event>([ptr](const uvw::data_event &evt, uvw::tcp_handle &sock) {
+            auto &d = const_cast<uvw::data_event &>(evt);
+            auto *data = d.data.release();
+            ASSERT_LE(evt.length, 5);
+            ASSERT_EQ(data, ptr);
+            sock.close();
+        });
+        socket->allocator = [ptr](uv_buf_t *b, size_t suggested, uvw::tcp_handle &h) {
+            *b = uv_buf_init(ptr, 5);
+        };
+        ASSERT_EQ(0, handle.accept(*socket));
+        ASSERT_EQ(0, socket->read());
+    });
+
+    client->on<uvw::write_event>([](const uvw::write_event &, uvw::tcp_handle &handle) {
+        handle.close();
+    });
+
+    client->on<uvw::connect_event>([](const uvw::connect_event &, uvw::tcp_handle &handle) {
+        ASSERT_TRUE(handle.writable());
+        ASSERT_TRUE(handle.readable());
+
+        auto dataTryWrite = std::unique_ptr<char[]>(new char[1]{'a'});
+
+        ASSERT_EQ(1, handle.try_write(std::move(dataTryWrite), 1));
+    });
+
+    ASSERT_EQ(0, (server->bind(address, port)));
+    ASSERT_EQ(0, server->listen());
+    ASSERT_EQ(0, (client->connect(address, port)));
+
+    loop->run();
+}

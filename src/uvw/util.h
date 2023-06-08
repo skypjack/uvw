@@ -270,7 +270,17 @@ std::string try_read(F &&f, Args &&...args) noexcept {
     return str;
 }
 
-void common_alloc_callback(uv_handle_t *, std::size_t suggested, uv_buf_t *buf);
+template<class T>
+void default_allocator(uv_buf_t *buf, std::size_t suggested, T &) {
+    auto size = static_cast<unsigned int>(suggested);
+    *buf = uv_buf_init(new char[size], size);
+}
+
+template<class T>
+void alloc_callback(uv_handle_t *hndl, std::size_t suggested, uv_buf_t *buf) {
+    T &ref = *(static_cast<T *>(hndl->data));
+    ref.allocator(buf, suggested, ref);
+}
 
 sockaddr ip_addr(const char *addr, unsigned int port);
 socket_address sock_addr(const sockaddr_in &addr);

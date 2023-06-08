@@ -243,6 +243,8 @@ public:
         uv_fileno(as_uv_handle(), &fd);
         return fd;
     }
+
+    std::function<void(uv_buf_t *, std::size_t, T &)> allocator = details::default_allocator<T>;
 };
 
 } // namespace uvw

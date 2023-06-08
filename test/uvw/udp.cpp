@@ -120,3 +120,45 @@ TEST(UDP, Sock) {
     handle->close();
     loop->run();
 }
+
+TEST(UDP, CustomAllocator) {
+    const std::string address = std::string{"127.0.0.1"};
+    const unsigned int port = 4242;
+
+    auto loop = uvw::loop::get_default();
+    auto server = loop->resource<uvw::udp_handle>();
+    auto client = loop->resource<uvw::udp_handle>();
+
+    server->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
+    client->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
+
+    auto *ptr = new char[5];
+
+    server->on<uvw::udp_data_event>([ptr](const uvw::udp_data_event &dataEvt, uvw::udp_handle &handle) {
+        auto &d = const_cast<uvw::udp_data_event &>(dataEvt);
+        auto *data = d.data.release();
+        ASSERT_LE(dataEvt.length, 5);
+        ASSERT_EQ(data, ptr);
+        handle.close();
+    });
+    server->allocator = [ptr](uv_buf_t *b, size_t suggested, uvw::udp_handle &h) {
+        *b = uv_buf_init(ptr, 5);
+    };
+
+    client->on<uvw::send_event>([](const uvw::send_event &, uvw::udp_handle &handle) {
+        handle.close();
+    });
+
+    ASSERT_EQ(0, (server->bind(address, port)));
+    ASSERT_EQ(0, server->recv());
+
+    auto dataSend = std::unique_ptr<char[]>(new char[2]{'b', 'c'});
+
+    client->send(uvw::socket_address{address, port}, dataSend.get(), 2);
+    client->send(address, port, nullptr, 0);
+
+    client->send(uvw::socket_address{address, port}, std::move(dataSend), 2);
+    client->send(address, port, std::unique_ptr<char[]>{}, 0);
+
+    loop->run();
+}

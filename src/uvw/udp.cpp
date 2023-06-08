@@ -198,7 +198,7 @@ UVW_INLINE int udp_handle::try_send(socket_address addr, char *data, unsigned in
 }
 
 UVW_INLINE int udp_handle::recv() {
-    return uv_udp_recv_start(raw(), &details::common_alloc_callback, &recv_callback);
+    return uv_udp_recv_start(raw(), &details::alloc_callback<udp_handle>, &recv_callback);
 }
 
 UVW_INLINE int udp_handle::stop() {

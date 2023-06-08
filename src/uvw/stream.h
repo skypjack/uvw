@@ -228,7 +228,7 @@ public:
      * @return Underlying return value.
      */
     int read() {
-        return uv_read_start(as_uv_stream(), &details::common_alloc_callback, &read_callback);
+        return uv_read_start(as_uv_stream(), &details::alloc_callback<T>, &read_callback);
     }
 
     /**

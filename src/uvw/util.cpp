@@ -54,11 +54,6 @@ UVW_INLINE std::string uts_name::machine() const noexcept {
 
 namespace details {
 
-UVW_INLINE void common_alloc_callback(uv_handle_t *, std::size_t suggested, uv_buf_t *buf) {
-    auto size = static_cast<unsigned int>(suggested);
-    *buf = uv_buf_init(new char[size], size);
-}
-
 UVW_INLINE sockaddr ip_addr(const char *addr, unsigned int port) {
     if(sockaddr_in addr_in; uv_ip4_addr(addr, port, &addr_in) == 0) {
         return reinterpret_cast<const sockaddr &>(addr_in);
