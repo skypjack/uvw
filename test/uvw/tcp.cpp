@@ -175,9 +175,9 @@ TEST(TCP, CustomAllocator) {
             ASSERT_EQ(data, ptr);
             sock.close();
         });
-        socket->allocator = [ptr](uv_buf_t *b, size_t suggested, uvw::tcp_handle &h) {
+        socket->set_allocator([ptr](uv_buf_t *b, size_t suggested, uvw::tcp_handle &h) {
             *b = uv_buf_init(ptr, 5);
-        };
+        });
         ASSERT_EQ(0, handle.accept(*socket));
         ASSERT_EQ(0, socket->read());
     });

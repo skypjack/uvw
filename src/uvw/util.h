@@ -279,7 +279,7 @@ void default_allocator(uv_buf_t *buf, std::size_t suggested, T &) {
 template<class T>
 void alloc_callback(uv_handle_t *hndl, std::size_t suggested, uv_buf_t *buf) {
     T &ref = *(static_cast<T *>(hndl->data));
-    ref.allocator(buf, suggested, ref);
+    (ref.get_allocator())(buf, suggested, ref);
 }
 
 sockaddr ip_addr(const char *addr, unsigned int port);

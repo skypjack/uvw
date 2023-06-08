@@ -157,7 +157,7 @@ public:
 #else
     using base::base;
 #endif
-
+    using allocator = std::function<void(uv_buf_t *, std::size_t, T &)>;
     /**
      * @brief Shutdowns the outgoing (write) side of a duplex stream.
      *
@@ -459,6 +459,24 @@ public:
     size_t write_queue_size() const noexcept {
         return uv_stream_get_write_queue_size(as_uv_stream());
     }
+
+    /**
+     * @return Allocator for data_event buffers
+     */
+    allocator &get_allocator() {
+        return readBufferAllocator;
+    }
+
+    /**
+     * Sets allocator for data_event buffers or resets to default
+     * @param alloc allocator for data_event buffers
+     */
+    void set_allocator(const allocator &alloc = details::default_allocator<T>) {
+        readBufferAllocator = alloc;
+    }
+
+private:
+    allocator readBufferAllocator = details::default_allocator<T>;
 };
 
 } // namespace uvw

@@ -87,6 +87,7 @@ public:
     using udp_flags = details::uvw_udp_flags;
     using ipv4 = uvw::ipv4;
     using ipv6 = uvw::ipv6;
+    using allocator = std::function<void(uv_buf_t *, std::size_t, udp_handle &)>;
 
     explicit udp_handle(loop::token token, std::shared_ptr<loop> ref, unsigned int f = {});
 
@@ -533,6 +534,17 @@ public:
      */
     size_t send_queue_count() const noexcept;
 
+    /**
+     * @return Allocator for data_event buffers
+     */
+    allocator &get_allocator();
+
+    /**
+     * Sets allocator for data_event buffers or resets to default
+     * @param alloc allocator for data_event buffers
+     */
+    void set_allocator(const allocator &alloc = details::default_allocator<udp_handle>);
+
 private:
     enum {
         DEFAULT,
@@ -540,6 +552,8 @@ private:
     } tag{DEFAULT};
 
     unsigned int flags{};
+
+    allocator readBufferAllocator = details::default_allocator<udp_handle>;
 };
 
 } // namespace uvw

@@ -213,4 +213,10 @@ UVW_INLINE size_t udp_handle::send_queue_count() const noexcept {
     return uv_udp_get_send_queue_count(raw());
 }
 
+UVW_INLINE udp_handle::allocator &udp_handle::get_allocator() {
+    return readBufferAllocator;
+}
+UVW_INLINE void udp_handle::set_allocator(const udp_handle::allocator &alloc) {
+    readBufferAllocator = alloc;
+}
 } // namespace uvw

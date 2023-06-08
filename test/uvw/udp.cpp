@@ -141,9 +141,9 @@ TEST(UDP, CustomAllocator) {
         ASSERT_EQ(data, ptr);
         handle.close();
     });
-    server->allocator = [ptr](uv_buf_t *b, size_t suggested, uvw::udp_handle &h) {
+    server->set_allocator([ptr](uv_buf_t *b, size_t suggested, uvw::udp_handle &h) {
         *b = uv_buf_init(ptr, 5);
-    };
+    });
 
     client->on<uvw::send_event>([](const uvw::send_event &, uvw::udp_handle &handle) {
         handle.close();
