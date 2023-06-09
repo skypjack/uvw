@@ -21,8 +21,8 @@ namespace uvw {
  * Custom wrapper around error constants of `libuv`.
  */
 struct error_event {
-    template<typename U, typename = std::enable_if_t<std::is_integral_v<U>>>
-    explicit error_event(U val) noexcept
+    template<typename Type, typename = std::enable_if_t<std::is_integral_v<Type>>>
+    explicit error_event(Type val) noexcept
         : ec{static_cast<int>(val)} {}
 
     /**
@@ -79,34 +79,34 @@ private:
  * Almost everything in `uvw` is an event emitter.<br/>
  * This is the base class from which resources and loops inherit.
  */
-template<typename T, typename... E>
+template<typename Elem, typename... Event>
 class emitter {
 public:
-    template<typename U>
-    using listener_t = std::function<void(U &, T &)>;
+    template<typename Type>
+    using listener_t = std::function<void(Type &, Elem &)>;
 
 private:
-    template<typename U>
+    template<typename Type>
     const auto &handler() const noexcept {
-        return std::get<listener_t<U>>(handlers);
+        return std::get<listener_t<Type>>(handlers);
     }
 
-    template<typename U>
+    template<typename Type>
     auto &handler() noexcept {
-        return std::get<listener_t<U>>(handlers);
+        return std::get<listener_t<Type>>(handlers);
     }
 
 protected:
-    template<typename U>
-    void publish(U event) {
-        if(auto &listener = handler<U>(); listener) {
-            listener(event, *static_cast<T *>(this));
+    template<typename Type>
+    void publish(Type event) {
+        if(auto &listener = handler<Type>(); listener) {
+            listener(event, *static_cast<Elem *>(this));
         }
     }
 
 public:
     virtual ~emitter() noexcept {
-        static_assert(std::is_base_of_v<emitter<T, E...>, T>);
+        static_assert(std::is_base_of_v<emitter<Elem, Event...>, Elem>);
     }
 
     /**
@@ -114,26 +114,26 @@ public:
      *
      * This method is used to register a listener with the emitter.<br/>
      * A listener is usually defined as a callable object assignable to a
-     * `std::function<void(const E &, T &)`, where `E` is the type of the event
-     * and `T` is the type of the resource.
+     * `std::function<void(const Event &, Elem &)`, where `Event` is the type of
+     * the event and `Elem` is the type of the resource.
      *
      * @param f A valid listener to be registered.
      */
-    template<typename U>
-    void on(listener_t<U> f) {
-        handler<U>() = std::move(f);
+    template<typename Type>
+    void on(listener_t<Type> f) {
+        handler<Type>() = std::move(f);
     }
 
     /*! @brief Disconnects the listener for the given event type. */
-    template<typename U>
+    template<typename Type>
     void reset() noexcept {
-        handler<U>() = nullptr;
+        handler<Type>() = nullptr;
     }
 
     /*! @brief Disconnects all listeners. */
     void reset() noexcept {
         reset<error_event>();
-        (reset<E>(), ...);
+        (reset<Event>(), ...);
     }
 
     /**
@@ -141,13 +141,13 @@ public:
      * @return True if there is a listener registered for the specific event,
      * false otherwise.
      */
-    template<typename U>
+    template<typename Type>
     bool has() const noexcept {
-        return static_cast<bool>(handler<U>());
+        return static_cast<bool>(handler<Type>());
     }
 
 private:
-    std::tuple<listener_t<error_event>, listener_t<E>...> handlers{};
+    std::tuple<listener_t<error_event>, listener_t<Event>...> handlers{};
 };
 
 } // namespace uvw
