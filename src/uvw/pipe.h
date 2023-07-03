@@ -64,9 +64,10 @@ public:
      * Paths on Unix get truncated typically between 92 and 108 bytes.
      *
      * @param name A valid file path.
+     * @param no_truncate Force an error rather than allow truncating a path.
      * @return Underlying return value.
      */
-    int bind(const std::string &name);
+    int bind(const std::string &name, const bool no_truncate = false);
 
     /**
      * @brief Connects to the Unix domain socket or the named pipe.
@@ -76,9 +77,10 @@ public:
      * established.
      *
      * @param name A valid domain socket or named pipe.
+     * @param no_truncate Force an error rather than allow truncating a path.
      * @return Underlying return value.
      */
-    int connect(const std::string &name);
+    int connect(const std::string &name, const bool no_truncate = false);
 
     /**
      * @brief Gets the name of the Unix domain socket or the named pipe.

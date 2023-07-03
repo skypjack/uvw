@@ -18,11 +18,11 @@ UVW_INLINE int pipe_handle::open(file_handle file) {
     return uv_pipe_open(raw(), file);
 }
 
-UVW_INLINE int pipe_handle::bind(const std::string &name) {
-    return uv_pipe_bind(raw(), name.data());
+UVW_INLINE int pipe_handle::bind(const std::string &name, const bool no_truncate) {
+    return uv_pipe_bind2(raw(), name.data(), name.size(), no_truncate * UV_PIPE_NO_TRUNCATE);
 }
 
-UVW_INLINE int pipe_handle::connect(const std::string &name) {
+UVW_INLINE int pipe_handle::connect(const std::string &name, const bool no_truncate) {
     auto listener = [ptr = shared_from_this()](const auto &event, const auto &) {
         ptr->publish(event);
     };
@@ -31,7 +31,7 @@ UVW_INLINE int pipe_handle::connect(const std::string &name) {
     connect->on<error_event>(listener);
     connect->on<connect_event>(listener);
 
-    return connect->connect(&uv_pipe_connect, raw(), name.data());
+    return connect->connect(&uv_pipe_connect2, raw(), name.data(), name.size(), no_truncate * UV_PIPE_NO_TRUNCATE);
 }
 
 UVW_INLINE std::string pipe_handle::sock() const noexcept {
