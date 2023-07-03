@@ -1,6 +1,10 @@
 #include <gtest/gtest.h>
 #include <uvw/tcp.h>
 
+static auto custom_alloc_callback(const uvw::tcp_handle &, std::size_t suggested) {
+    return std::make_pair(new char[suggested], suggested);
+}
+
 TEST(TCP, Functionalities) {
     auto loop = uvw::loop::get_default();
     auto handle = loop->resource<uvw::tcp_handle>();
@@ -33,6 +37,51 @@ TEST(TCP, ReadWrite) {
 
         ASSERT_EQ(0, handle.accept(*socket));
         ASSERT_EQ(0, socket->read());
+    });
+
+    client->on<uvw::write_event>([](const uvw::write_event &, uvw::tcp_handle &handle) {
+        handle.close();
+    });
+
+    client->on<uvw::connect_event>([](const uvw::connect_event &, uvw::tcp_handle &handle) {
+        ASSERT_TRUE(handle.writable());
+        ASSERT_TRUE(handle.readable());
+
+        auto dataTryWrite = std::unique_ptr<char[]>(new char[1]{'a'});
+
+        ASSERT_EQ(1, handle.try_write(std::move(dataTryWrite), 1));
+
+        auto dataWrite = std::unique_ptr<char[]>(new char[2]{'b', 'c'});
+        handle.write(std::move(dataWrite), 2);
+    });
+
+    ASSERT_EQ(0, (server->bind(address, port)));
+    ASSERT_EQ(0, server->listen());
+    ASSERT_EQ(0, (client->connect(address, port)));
+
+    loop->run();
+}
+
+TEST(TCP, ReadWriteCustomAlloc) {
+    const std::string address = std::string{"127.0.0.1"};
+    const unsigned int port = 4242;
+
+    auto loop = uvw::loop::get_default();
+    auto server = loop->resource<uvw::tcp_handle>();
+    auto client = loop->resource<uvw::tcp_handle>();
+
+    server->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
+    client->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
+
+    server->on<uvw::listen_event>([](const uvw::listen_event &, uvw::tcp_handle &handle) {
+        std::shared_ptr<uvw::tcp_handle> socket = handle.parent().resource<uvw::tcp_handle>();
+
+        socket->on<uvw::error_event>([](const uvw::error_event &, uvw::tcp_handle &) { FAIL(); });
+        socket->on<uvw::close_event>([&handle](const uvw::close_event &, uvw::tcp_handle &) { handle.close(); });
+        socket->on<uvw::end_event>([](const uvw::end_event &, uvw::tcp_handle &sock) { sock.close(); });
+
+        ASSERT_EQ(0, handle.accept(*socket));
+        ASSERT_EQ(0, socket->read<&custom_alloc_callback>());
     });
 
     client->on<uvw::write_event>([](const uvw::write_event &, uvw::tcp_handle &handle) {

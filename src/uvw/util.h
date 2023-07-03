@@ -272,6 +272,12 @@ std::string try_read(F &&f, Args &&...args) noexcept {
 
 void common_alloc_callback(uv_handle_t *, std::size_t suggested, uv_buf_t *buf);
 
+template<typename Type, auto Alloc>
+void common_alloc_callback(uv_handle_t *handle, std::size_t suggested, uv_buf_t *buf) {
+    auto [alloc, size] = Alloc(*static_cast<const Type *>(handle->data), suggested);
+    *buf = uv_buf_init(alloc, static_cast<unsigned int>(size));
+}
+
 sockaddr ip_addr(const char *addr, unsigned int port);
 socket_address sock_addr(const sockaddr_in &addr);
 socket_address sock_addr(const sockaddr_in6 &addr);

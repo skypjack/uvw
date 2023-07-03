@@ -232,6 +232,17 @@ public:
     }
 
     /**
+     * @brief Starts reading data from an incoming stream.
+     * @sa read
+     * @tparam Alloc Custom allocation function.
+     * @return Underlying return value.
+     */
+    template<auto Alloc>
+    int read() {
+        return uv_read_start(as_uv_stream(), &details::common_alloc_callback<T, Alloc>, &read_callback);
+    }
+
+    /**
      * @brief Stops reading data from the stream.
      *
      * This function is idempotent and may be safely called on a stopped stream.

@@ -1,6 +1,10 @@
 #include <gtest/gtest.h>
 #include <uvw/udp.h>
 
+static auto custom_alloc_callback(const uvw::udp_handle &, std::size_t suggested) {
+    return std::make_pair(new char[suggested], suggested);
+}
+
 TEST(UDP, Functionalities) {
     auto loop = uvw::loop::get_default();
     auto handle = loop->resource<uvw::udp_handle>();
@@ -90,6 +94,39 @@ TEST(UDP, ReadSend) {
     ASSERT_EQ(0, server->recv());
 
     auto dataSend = std::unique_ptr<char[]>(new char[2]{'b', 'c'});
+
+    client->send(uvw::socket_address{address, port}, dataSend.get(), 2);
+    client->send(address, port, nullptr, 0);
+
+    client->send(uvw::socket_address{address, port}, std::move(dataSend), 2);
+    client->send(address, port, std::unique_ptr<char[]>{}, 0);
+
+    loop->run();
+}
+
+TEST(UDP, ReadSendCustomAlloc) {
+    const std::string address = std::string{"127.0.0.1"};
+    const unsigned int port = 4242;
+
+    auto loop = uvw::loop::get_default();
+    auto server = loop->resource<uvw::udp_handle>();
+    auto client = loop->resource<uvw::udp_handle>();
+
+    server->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
+    client->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
+
+    server->on<uvw::udp_data_event>([](const uvw::udp_data_event &, uvw::udp_handle &handle) {
+        handle.close();
+    });
+
+    client->on<uvw::send_event>([](const uvw::send_event &, uvw::udp_handle &handle) {
+        handle.close();
+    });
+
+    ASSERT_EQ(0, (server->bind(address, port)));
+    ASSERT_EQ(0, server->recv<&custom_alloc_callback>());
+
+    auto dataSend = std::unique_ptr<char[]>(new char[5]{'b', 'c'});
 
     client->send(uvw::socket_address{address, port}, dataSend.get(), 2);
     client->send(address, port, nullptr, 0);

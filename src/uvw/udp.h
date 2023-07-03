@@ -512,6 +512,17 @@ public:
     int recv();
 
     /**
+     * @brief Prepares for receiving data.
+     * @sa recv
+     * @tparam Alloc Custom allocation function.
+     * @return Underlying return value.
+     */
+    template<auto Alloc>
+    int recv() {
+        return uv_udp_recv_start(raw(), &details::common_alloc_callback<udp_handle, Alloc>, &recv_callback);
+    }
+
+    /**
      * @brief Stops listening for incoming datagrams.
      * @return Underlying return value.
      */
