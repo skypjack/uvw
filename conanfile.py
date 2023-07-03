@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 from conans import ConanFile
 
-
 class UVWConan(ConanFile):
     name = "uvw"
     description = "Header-only, event based, tiny and easy to use libuv wrapper in modern C++"
@@ -14,7 +13,7 @@ class UVWConan(ConanFile):
     exports = "LICENSE"
     exports_sources = "src/*"
     no_copy_source = True
-    requires = "libuv/1.45.0@bincrafters/stable"
+    requires = "libuv/1.46.0@bincrafters/stable"
 
     def package(self):
         self.copy(pattern="LICENSE", dst="licenses")
