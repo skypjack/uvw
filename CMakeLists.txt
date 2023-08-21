@@ -31,7 +31,7 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
-option(USE_LIBCPP "Use libc++ by adding -stdlib=libc++ flag if availbale." ON)
+option(USE_LIBCPP "Use libc++ by adding -stdlib=libc++ flag if available." ON)
 option(USE_ASAN "Use address sanitizer by adding -fsanitize=address -fno-omit-frame-pointer flags" OFF)
 option(USE_UBSAN "Use address sanitizer by adding -fsanitize=undefined -fno-sanitize-recover=all -fno-omit-frame-pointer flags" OFF)
 option(BUILD_UVW_LIBS "Prepare targets for static library rather than for a header-only library." OFF)
