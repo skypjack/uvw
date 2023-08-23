@@ -20,7 +20,8 @@ namespace internal {
     auto value = offset;
 
     while(*curr != 0) {
-        value = (value ^ static_cast<std::uint32_t>(*(curr++))) * prime;
+        auto curr_val_int = static_cast<std::uint32_t>(*(curr++));
+        value = (value ^ curr_val_int) * prime;
     }
 
     return value;
