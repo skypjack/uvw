@@ -107,7 +107,7 @@ TEST(FsReq, Stat) {
     fsReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
+    fsReq->on<uvw::fs_event>([&](const auto &event, auto &) {
         if(event.type == uvw::fs_req::fs_type::STAT) {
             ASSERT_FALSE(checkFsStatEvent);
             checkFsStatEvent = true;
@@ -160,7 +160,7 @@ TEST(FsReq, Lstat) {
     fsReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
+    fsReq->on<uvw::fs_event>([&](const auto &event, auto &) {
         if(event.type == uvw::fs_req::fs_type::LSTAT) {
             ASSERT_FALSE(checkFsLstatEvent);
             checkFsLstatEvent = true;
@@ -214,7 +214,7 @@ TEST(FsReq, Rename) {
     fsReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
+    fsReq->on<uvw::fs_event>([&](const auto &event, auto &) {
         if(event.type == uvw::fs_req::fs_type::RENAME) {
             ASSERT_FALSE(checkFsRenameEvent);
             checkFsRenameEvent = true;
@@ -265,7 +265,7 @@ TEST(FsReq, Access) {
     fsReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
+    fsReq->on<uvw::fs_event>([&](const auto &event, auto &) {
         if(event.type == uvw::fs_req::fs_type::ACCESS) {
             ASSERT_FALSE(checkFsAccessEvent);
             checkFsAccessEvent = true;
@@ -315,7 +315,7 @@ TEST(FsReq, Chmod) {
     fsReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
+    fsReq->on<uvw::fs_event>([&](const auto &event, auto &) {
         if(event.type == uvw::fs_req::fs_type::CHMOD) {
             ASSERT_FALSE(checkFsChmodEvent);
             checkFsChmodEvent = true;
@@ -365,7 +365,7 @@ TEST(FsReq, Utime) {
     fsReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
+    fsReq->on<uvw::fs_event>([&](const auto &event, auto &) {
         if(event.type == uvw::fs_req::fs_type::UTIME) {
             ASSERT_FALSE(checkFsUtimeEvent);
             checkFsUtimeEvent = true;
@@ -600,7 +600,7 @@ TEST(FsReq, Realpath) {
     fsReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
     fileReq->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
-    fsReq->on<uvw::fs_event>([&](const auto &event, auto &req) {
+    fsReq->on<uvw::fs_event>([&](const auto &event, auto &) {
         if(event.type == uvw::fs_req::fs_type::REALPATH) {
             ASSERT_FALSE(checkFsRealpathEvent);
             ASSERT_NE(event.path, nullptr);
