@@ -60,9 +60,12 @@ UVW_INLINE void common_alloc_callback(uv_handle_t *, std::size_t suggested, uv_b
 }
 
 UVW_INLINE sockaddr ip_addr(const char *addr, unsigned int port) {
-    if(sockaddr_in addr_in; uv_ip4_addr(addr, port, &addr_in) == 0) {
+    // explicitly cast to avoid `-Wsign-conversion` warnings
+    // libuv internally just casts to an `unsigned short` anyway
+    auto signed_port = static_cast<int>(port);
+    if(sockaddr_in addr_in; uv_ip4_addr(addr, signed_port, &addr_in) == 0) {
         return reinterpret_cast<const sockaddr &>(addr_in);
-    } else if(sockaddr_in6 addr_in6; uv_ip6_addr(addr, port, &addr_in6) == 0) {
+    } else if(sockaddr_in6 addr_in6; uv_ip6_addr(addr, signed_port, &addr_in6) == 0) {
         return reinterpret_cast<const sockaddr &>(addr_in6);
     }
 
