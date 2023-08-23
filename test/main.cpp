@@ -65,7 +65,7 @@ void conn(uvw::loop &loop) {
 
         auto dataTryWrite = std::unique_ptr<char[]>(new char[1]{'a'});
         int bw = handle.try_write(std::move(dataTryWrite), 1);
-        std::cout << "written: " << ((int)bw) << std::endl;
+        std::cout << "written: " << static_cast<int>(bw) << std::endl;
 
         auto dataWrite = std::unique_ptr<char[]>(new char[2]{'b', 'c'});
         handle.write(std::move(dataWrite), 2);
