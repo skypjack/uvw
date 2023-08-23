@@ -22,7 +22,7 @@ UVW_INLINE std::shared_ptr<details::reset_mode_memo> tty_handle::mode_memo_handl
     auto shared = weak.lock();
     if(!shared) { weak = shared = std::make_shared<details::reset_mode_memo>(); }
     return shared;
-};
+}
 
 UVW_INLINE int tty_handle::init() {
     return leak_if(uv_tty_init(parent().raw(), raw(), fd, rw));
