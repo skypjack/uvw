@@ -31,7 +31,8 @@ UVW_INLINE int pipe_handle::connect(const std::string &name, const bool no_trunc
     connect->on<error_event>(listener);
     connect->on<connect_event>(listener);
 
-    return connect->connect(&uv_pipe_connect2, raw(), name.data(), name.size(), no_truncate * UV_PIPE_NO_TRUNCATE);
+    unsigned int flags = no_truncate * UV_PIPE_NO_TRUNCATE;
+    return connect->connect(&uv_pipe_connect2, raw(), name.data(), name.size(), flags);
 }
 
 UVW_INLINE std::string pipe_handle::sock() const noexcept {
