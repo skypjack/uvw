@@ -278,9 +278,9 @@ public:
      */
     template<typename Func>
     void walk(Func callback) {
-        auto func = [](uv_handle_t *hndl, void *func) {
+        auto func = [](uv_handle_t *hndl, void *callback_func) {
             if(hndl->data) {
-                auto &cb = *static_cast<Func *>(func);
+                auto &cb = *static_cast<Func *>(callback_func);
 
                 switch(utilities::guess_handle(handle_category{hndl->type})) {
                 case handle_type::ASYNC:
