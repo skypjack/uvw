@@ -94,7 +94,7 @@ public:
      * @brief Initializes the handle. The actual socket is created lazily.
      * @return Underlying return value.
      */
-    int init() final;
+    int init();
 
     /**
      * @brief Opens an existing file descriptor or SOCKET as a UDP handle.

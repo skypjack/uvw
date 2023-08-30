@@ -53,7 +53,7 @@ public:
      * @brief Initializes the handle. No socket is created as of yet.
      * @return Underlying return value.
      */
-    int init() final;
+    int init();
 
     /**
      * @brief Opens an existing file descriptor or SOCKET as a TCP handle.

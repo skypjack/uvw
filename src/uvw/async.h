@@ -32,7 +32,7 @@ public:
      *
      * @return Underlying return value.
      */
-    int init() final;
+    int init();
 
     /**
      * @brief Wakeups the event loop and emits the async event.

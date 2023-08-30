@@ -92,7 +92,7 @@ public:
      * @brief Initializes the handle.
      * @return Underlying return value.
      */
-    int init() final;
+    int init();
 
     /**
      * @brief spawn Starts the process.

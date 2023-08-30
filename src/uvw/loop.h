@@ -68,6 +68,16 @@ class loop final: public emitter<loop>, public std::enable_shared_from_this<loop
         explicit uv_token(int) {}
     };
 
+    template<typename Type>
+    auto init(int, Type &value) -> decltype(value.init()) {
+        return value.init();
+    }
+
+    template<typename Type>
+    int init(char, Type &) {
+        return 0;
+    }
+
     loop(std::unique_ptr<uv_loop_t, deleter> ptr) noexcept;
 
 public:
@@ -153,8 +163,7 @@ public:
     template<typename R, typename... Args>
     std::shared_ptr<R> resource(Args &&...args) {
         auto ptr = uninitialized_resource<R>(std::forward<Args>(args)...);
-        ptr = (ptr->init() == 0) ? ptr : nullptr;
-        return ptr;
+        return (init(0, *ptr) == 0) ? ptr : nullptr;
     }
 
     /**

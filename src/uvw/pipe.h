@@ -45,7 +45,7 @@ public:
      * @brief Initializes the handle.
      * @return Underlying return value.
      */
-    int init() final;
+    int init();
 
     /**
      * @brief Opens an existing file descriptor or HANDLE as a pipe.

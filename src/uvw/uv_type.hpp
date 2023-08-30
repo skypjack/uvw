@@ -26,14 +26,6 @@ struct uv_type {
     uv_type &operator=(uv_type &&) = delete;
 
     /**
-     * @brief Initializes the handle.
-     * @return Underlying return value.
-     */
-    virtual int init() {
-        return 0;
-    }
-
-    /**
      * @brief Gets the loop from which the resource was originated.
      * @return A reference to a loop instance.
      */

@@ -60,7 +60,7 @@ public:
      * @brief Initializes the handle.
      * @return Underlying return value.
      */
-    int init() final;
+    int init();
 
     /**
      * @brief Sets the TTY using the specified terminal mode.

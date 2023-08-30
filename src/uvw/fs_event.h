@@ -77,7 +77,7 @@ public:
      * @brief Initializes the handle.
      * @return Underlying return value.
      */
-    int init() final;
+    int init();
 
     /**
      * @brief Starts watching the specified path.
