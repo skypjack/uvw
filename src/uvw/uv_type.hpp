@@ -71,6 +71,9 @@ struct uv_type {
         return &resource;
     }
 
+protected:
+    ~uv_type() = default;
+
 private:
     std::shared_ptr<loop> owner;
     U resource;
