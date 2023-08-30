@@ -8,6 +8,10 @@ struct fake_handle_t {
 
 struct fake_handle: uvw::handle<fake_handle, fake_handle_t> {
     using handle::handle;
+
+    int init() {
+        return 1;
+    }
 };
 
 TEST(Handle, Functionalities) {
