@@ -88,7 +88,7 @@ TEST(Loop, Walk) {
     ASSERT_EQ(count, 12u);
 
     loop->run();
-    loop->walk([&count](auto &handle) { --count; });
+    loop->walk([&count](auto &) { --count; });
 
     ASSERT_EQ(count, 12u);
 

@@ -5,8 +5,8 @@ TEST(Thread, Run) {
     auto loop = uvw::loop::get_default();
     auto has_run = std::make_shared<bool>();
     auto cb = [](std::shared_ptr<void> data) {
-        if(auto has_run = std::static_pointer_cast<bool>(data); has_run) {
-            *has_run = true;
+        if(auto has_run_ptr = std::static_pointer_cast<bool>(data); has_run_ptr) {
+            *has_run_ptr = true;
         }
     };
 
