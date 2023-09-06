@@ -27,12 +27,11 @@ jobs:
         sudo apt-get update --fix-missing
         sudo apt install -y ${{ matrix.compiler.pkg }}-${{ matrix.compiler.version }}
     - name: Compile tests
-      working-directory: build
       env:
         CXX: ${{ matrix.compiler.exe }}-${{ matrix.compiler.version }}
       run: |
-        cmake ${{ matrix.mode }} -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF ..
-        make -j2
+        cmake ${{ matrix.mode }} --preset ci-ubuntu
+        cmake --build build/ --parallel 2
     - name: Run tests
       working-directory: build
       env:

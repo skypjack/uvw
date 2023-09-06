@@ -1,0 +1,59 @@
+{
+  "version": 2,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 13,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "cmake-pedantic",
+      "description": "Enables all CMake warnings.`",
+      "hidden": true,
+      "warnings": {
+        "dev": true,
+        "deprecated": true,
+        "uninitialized": true,
+        "unusedCli": true,
+        "systemVars": false
+      }
+    },
+    {
+      "name": "dev-mode",
+      "hidden": true,
+      "description": "Common (non-OS specific) mode for development",
+      "inherits": "cmake-pedantic",
+      "cacheVariables": {
+        "BUILD_TESTING": true,
+        "libuv_buildtests": false
+      }
+    },
+    {
+      "name": "flags-linux",
+      "hidden": true,
+      "description": "Compiler flags for GNU and Clang compilers. When compiling in DEBUG mode, all warnings will be converted into errors.",
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wcast-qual -Wformat=2 -Wundef -Wshadow -Wcast-align -Wunused -Wnull-dereference -Wimplicit-fallthrough -Woverloaded-virtual -Wnon-virtual-dtor -Wold-style-cast",
+        "CMAKE_CXX_FLAGS_DEBUG": "-Werror"
+      }
+    },
+    {
+      "name": "ci-linux",
+      "generator": "Unix Makefiles",
+      "hidden": true,
+      "inherits": ["flags-linux"],
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "ci-build",
+      "binaryDir": "${sourceDir}/build",
+      "hidden": true
+    },
+    {
+      "name": "ci-ubuntu",
+      "inherits": ["ci-build", "ci-linux", "dev-mode"]
+    }
+  ]
+}
