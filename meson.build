@@ -1,6 +1,6 @@
 project(
   'uvw',
-  ['c', 'cpp'],
+  'cpp',
   version: '3.3.0',
   license: 'MIT',
   default_options: ['cpp_std=c++17'],
@@ -34,10 +34,6 @@ sources = [
   'src/uvw/work.cpp',
 ]
 
-uvw_header_only_dep = declare_dependency(
-  include_directories: 'src',
-)
-
 uvw_lib = library(
   'uvw', sources,
   include_directories: 'src',
@@ -55,9 +51,3 @@ uvw_dep = declare_dependency(
 if meson.version().version_compare('>=0.54.0')
   meson.override_dependency('uvw', uvw_dep)
 endif
-
-pkg_mod = import('pkgconfig')
-pkg_mod.generate(uvw_lib,
-  name: 'uvw',
-  filebase: 'uvw',
-)
