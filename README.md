@@ -93,7 +93,8 @@ exist a valid `libuv` wrapper in C++. That's all.
 To be able to use `uvw`, users must provide the following system-wide tools:
 
 * A full-featured compiler that supports at least C++17.
-* `libuv` (which version depends on the tag of `uvw` in use).
+* `libuv` (which version depends on the tag of `uvw` in use)
+  *  If you use `meson`, libuv will be downloaded for you
 
 The requirements below are mandatory to compile the tests and to extract the
 documentation:
@@ -105,6 +106,17 @@ Note that `libuv` is part of the dependencies of the project and may be cloned
 by `CMake` in some cases (see below for further details).<br/>
 Because of that, users don't have to install it to run the tests or when `uvw`
 libraries are compiled through `CMake`.
+
+## Meson
+
+You can use `uvw` with [meson](https://mesonbuild.com/) by simply adding it to your `subprojects` directory in your project. Currently, `uvw` is not available with `meson wrap`, but this will change with the release of `uvw` 3.2.1.
+
+To compile `uvw` from source without using it as a subproject, in the `uvw` source directory, run:
+
+* `$ meson setup build`
+  * If you want a static library, add `--default-library=static`
+* `$ cd build`
+* `$ meson compile`
 
 ## Library
 
