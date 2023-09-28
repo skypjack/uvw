@@ -111,7 +111,7 @@ libraries are compiled through `CMake`.
 
 You can use `uvw` with [meson](https://mesonbuild.com/) by simply adding it to
 your `subprojects` directory in your project. Currently, `uvw` is not available
-with `meson wrap`, but this will change with the release of `uvw` 3.2.1.
+with `meson wrap`, but this will change with the release of `uvw` 3.3.x.
 
 To compile `uvw` from source without using it as a subproject, in the `uvw`
 source directory, run:
