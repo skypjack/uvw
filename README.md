@@ -109,9 +109,12 @@ libraries are compiled through `CMake`.
 
 ## Meson
 
-You can use `uvw` with [meson](https://mesonbuild.com/) by simply adding it to your `subprojects` directory in your project. Currently, `uvw` is not available with `meson wrap`, but this will change with the release of `uvw` 3.2.1.
+You can use `uvw` with [meson](https://mesonbuild.com/) by simply adding it to
+your `subprojects` directory in your project. Currently, `uvw` is not available
+with `meson wrap`, but this will change with the release of `uvw` 3.2.1.
 
-To compile `uvw` from source without using it as a subproject, in the `uvw` source directory, run:
+To compile `uvw` from source without using it as a subproject, in the `uvw`
+source directory, run:
 
 * `$ meson setup build`
   * If you want a static library, add `--default-library=static`
