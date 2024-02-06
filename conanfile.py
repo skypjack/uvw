@@ -13,7 +13,7 @@ class UVWConan(ConanFile):
     exports = "LICENSE"
     exports_sources = "src/*"
     no_copy_source = True
-    requires = "libuv/1.46.0@bincrafters/stable"
+    requires = "libuv/1.47.0@bincrafters/stable"
 
     def package(self):
         self.copy(pattern="LICENSE", dst="licenses")

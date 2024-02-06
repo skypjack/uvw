@@ -68,7 +68,7 @@ endif()
 
 
 # Required minimal libuv version
-set(LIBUV_VERSION 1.46.0)
+set(LIBUV_VERSION 1.47.0)
 
 function(fetch_libuv)
     if (FETCH_LIBUV)
@@ -129,7 +129,6 @@ endfunction()
 
 include(GNUInstallDirs)
 
-
 if(BUILD_UVW_LIBS)
     use_libuv()
 
@@ -186,6 +185,7 @@ install(
 #
 # Install targets
 #
+
 if (BUILD_UVW_LIBS)
     set_target_properties(
         uvw PROPERTIES
@@ -193,11 +193,13 @@ if (BUILD_UVW_LIBS)
         SOVERSION ${UVW_VERSION_MAJOR}
     )
 endif()
+
 install(
     EXPORT uvwConfig 
     NAMESPACE uvw:: 
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/uvw
 )
+
 install(
     TARGETS uvw 
     EXPORT uvwConfig
@@ -205,6 +207,7 @@ install(
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
+
 if(FETCH_LIBUV AND BUILD_UVW_LIBS)
     # libuv is only fetched when both above conditions are true
     install(DIRECTORY ${libuv_SOURCE_DIR}/include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/uvw/uv/include)
@@ -213,8 +216,8 @@ if(FETCH_LIBUV AND BUILD_UVW_LIBS)
     else()
         install(TARGETS uv_a EXPORT uvwConfig ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}/uvw)
     endif()
-    
 endif(FETCH_LIBUV AND BUILD_UVW_LIBS)
+
 export(EXPORT uvwConfig)
 
 ### Testing
@@ -245,23 +248,3 @@ if(BUILD_DOCS)
         add_subdirectory(docs)
     endif()
 endif()
-
-#
-# AOB
-#
-
-add_custom_target(
-    uvw_aob
-    SOURCES
-        .github/workflows/build-macos.yml
-        .github/workflows/build-ubuntu-20.04.yml
-        .github/workflows/build-ubuntu-latest.yml
-        .github/workflows/build-win.yml
-        .github/workflows/coverage.yml
-        .github/workflows/deploy.yml
-        .github/FUNDING.yml
-        AUTHORS
-        LICENSE
-        README.md
-        TODO
-)
