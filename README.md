@@ -419,6 +419,18 @@ uv_tcp_t *handle = tcp->raw();
 
 Go the raw way at your own risk, but do not expect any support in case of bugs.
 
+
+# Related projects
+
+Interested in additional tools and libraries that build upon `uwv`? You might
+find the following useful then:
+
+- [`uvw_net`](https://github.com/mincequi/uvw_net): a networking library with a
+  collection of clients (HTTP/Modbus/SunSpec) that also includes discovery
+  impementations like dns-sd/mdns.
+
+Feel free to add your tool to the list if you like.
+
 # Contributors
 
 If you want to contribute, please send patches as pull requests against the
