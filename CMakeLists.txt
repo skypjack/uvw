@@ -68,7 +68,7 @@ endif()
 
 
 # Required minimal libuv version
-set(LIBUV_VERSION 1.47.0)
+set(LIBUV_VERSION 1.48.0)
 
 function(fetch_libuv)
     if (FETCH_LIBUV)
