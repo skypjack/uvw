@@ -25,6 +25,7 @@ enum class uvw_process_flags : std::underlying_type_t<uv_process_flags> {
     WINDOWS_HIDE = UV_PROCESS_WINDOWS_HIDE,
     WINDOWS_HIDE_CONSOLE = UV_PROCESS_WINDOWS_HIDE_CONSOLE,
     WINDOWS_HIDE_GUI = UV_PROCESS_WINDOWS_HIDE_GUI,
+    WINDOWS_FILE_PATH_EXACT_NAME = UV_PROCESS_WINDOWS_FILE_PATH_EXACT_NAME,
     _UVW_ENUM = 0
 };
 
@@ -143,6 +144,7 @@ public:
      * * `process_handle::process_flags::WINDOWS_HIDE`
      * * `process_handle::process_flags::WINDOWS_HIDE_CONSOLE`
      * * `process_handle::process_flags::WINDOWS_HIDE_GUI`
+     * * `process_handle::process_flags::WINDOWS_FILE_PATH_EXACT_NAME`
      *
      * See the official
      * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_process_flags)
