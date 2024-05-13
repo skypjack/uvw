@@ -242,7 +242,7 @@ endif()
 option(BUILD_DOCS "Enable building with documentation." OFF)
 
 if(BUILD_DOCS)
-    find_package(Doxygen 1.8)
+    find_package(Doxygen 1.10)
 
     if(DOXYGEN_FOUND)
         add_subdirectory(docs)

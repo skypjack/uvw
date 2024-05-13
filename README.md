@@ -1,8 +1,5 @@
 ![uvw - libuv wrapper in modern C++](https://user-images.githubusercontent.com/1812216/46069406-c977a600-c17b-11e8-9a47-9bba6f412c57.png)
 
-<!--
-@cond TURN_OFF_DOXYGEN
--->
 [![Build Status](https://github.com/skypjack/uvw/workflows/build/badge.svg)](https://github.com/skypjack/uvw/actions)
 [![Coverage](https://codecov.io/gh/skypjack/uvw/branch/master/graph/badge.svg)](https://codecov.io/gh/skypjack/uvw)
 [![Documentation](https://img.shields.io/badge/docs-doxygen-blue)](https://skypjack.github.io/uvw/)
@@ -18,9 +15,6 @@ If you use `uvw` and you want to say thanks or support the project, please
 You can help me make the difference.
 [Many thanks](https://skypjack.github.io/sponsorship/) to those who supported me
 and still support me today.
-<!--
-@endcond TURN_OFF_DOXYGEN
--->
 
 # Introduction
 
@@ -443,15 +437,9 @@ Code and documentation released under
 Logo released under
 [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
-<!--
-@cond TURN_OFF_DOXYGEN
--->
 # Support
 
 If you want to support this project, you can
 [offer me](https://github.com/users/skypjack/sponsorship) an espresso.<br/>
 If you find that it's not enough, feel free to
 [help me](https://www.paypal.me/skypjack) the way you prefer.
-<!--
-@endcond TURN_OFF_DOXYGEN
--->
