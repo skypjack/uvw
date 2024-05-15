@@ -6,7 +6,7 @@ project(
   default_options: ['cpp_std=c++17'],
 )
 
-libuv_dep = dependency('libuv', version: '1.46.0')
+libuv_dep = dependency('libuv', version: '1.48.0', required: true)
 
 sources = [
   'src/uvw/async.cpp',
@@ -35,7 +35,8 @@ sources = [
 ]
 
 uvw_lib = library(
-  'uvw', sources,
+  'uvw',
+  sources,
   include_directories: 'src',
   dependencies: [libuv_dep],
   cpp_args: ['-DUVW_AS_LIB'],
