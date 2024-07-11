@@ -1,12 +1,12 @@
 project(
   'uvw',
   'cpp',
-  version: '3.3.0',
+  version: '3.4.0',
   license: 'MIT',
   default_options: ['cpp_std=c++17'],
 )
 
-libuv_dep = dependency('libuv', version: '1.46.0')
+libuv_dep = dependency('libuv', version: '1.48.0')
 
 sources = [
   'src/uvw/async.cpp',
