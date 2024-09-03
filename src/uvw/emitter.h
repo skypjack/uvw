@@ -70,7 +70,7 @@ struct error_event {
     explicit operator bool() const noexcept;
 
 private:
-    const int ec;
+    int ec;
 };
 
 /**
