@@ -313,6 +313,12 @@ UVW_INLINE uint64_t utilities::available_memory() noexcept {
     return uv_get_available_memory();
 }
 
+UVW_INLINE int64_t utilities::resident_set_memory() noexcept {
+    size_t res{};
+    const auto err = uv_resident_set_memory(&res);
+    return (err == 0) ? static_cast<int64_t>(res) : static_cast<int64_t>(err);
+}
+
 UVW_INLINE double utilities::uptime() noexcept {
     double ret;
 

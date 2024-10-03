@@ -611,6 +611,13 @@ struct utilities {
     static uint64_t available_memory() noexcept;
 
     /**
+     * @brief Gets the resident set size (RSS) for the current process.
+     * @return The resident set size (RSS) for the current process or a negative
+     * value in case of errors.
+     */
+    static int64_t resident_set_memory() noexcept;
+
+    /**
      * @brief Gets the current system uptime.
      * @return The current system uptime or 0 in case of errors.
      */
