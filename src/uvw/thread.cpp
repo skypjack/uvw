@@ -28,6 +28,16 @@ UVW_INLINE bool thread::equal(const thread &tl, const thread &tr) noexcept {
     return !(0 == uv_thread_equal(tl.raw(), tr.raw()));
 }
 
+UVW_INLINE bool thread::priority(const thread &tl, thread_priority val) noexcept {
+    return (uv_thread_setpriority(*tl.raw(), static_cast<std::underlying_type_t<thread_priority>>(val)) == 0);
+}
+
+UVW_INLINE std::pair<bool, thread::thread_priority> thread::priority(const thread &tl) noexcept {
+    int prio{};
+    const bool res = (uv_thread_getpriority(*tl.raw(), &prio) == 0);
+    return {res, thread_priority{static_cast<std::underlying_type_t<thread_priority>>(prio)}};
+}
+
 UVW_INLINE thread::~thread() noexcept {
     join();
 }

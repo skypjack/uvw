@@ -22,7 +22,15 @@ enum class uvw_thread_create_flags : std::underlying_type_t<uv_thread_create_fla
     THREAD_HAS_STACK_SIZE = UV_THREAD_HAS_STACK_SIZE
 };
 
-}
+enum class uvw_thread_priority : int {
+    THREAD_PRIO_HIGHEST = UV_THREAD_PRIORITY_HIGHEST,
+    THREAD_PRIO_ABOVE_NORMAL = UV_THREAD_PRIORITY_ABOVE_NORMAL,
+    THREAD_PRIO_NORMAL = UV_THREAD_PRIORITY_NORMAL,
+    THREAD_PRIO_BELOW_NORMAL = UV_THREAD_PRIORITY_BELOW_NORMAL,
+    THREAD_PRIO_LOWEST = UV_THREAD_PRIORITY_LOWEST
+};
+
+} // namespace details
 
 class thread;
 class thread_local_storage;
@@ -49,6 +57,7 @@ class thread final: public uv_type<uv_thread_t> {
 
 public:
     using create_flags = details::uvw_thread_create_flags;
+    using thread_priority = details::uvw_thread_priority;
     using task = internal_task;
     using type = uv_thread_t;
 
@@ -73,6 +82,23 @@ public:
      * @return True if the two threads are the same thread, false otherwise.
      */
     static bool equal(const thread &tl, const thread &tr) noexcept;
+
+    /**
+     * @brief Sets the scheduling priority of a given thread.
+     * @param tl A valid instance of a thread.
+     * @param val Thread priority to set.
+     * @return True in case of success, false otherwise.
+     */
+    static bool priority(const thread &tl, thread_priority val) noexcept;
+
+    /**
+     * @brief Retrieves the scheduling priority of a given thread.
+     * @param tl A valid instance of a thread.
+     * @return A `std::pair` composed as it follows:
+     * * A boolean value that is true in case of success, false otherwise.
+     * * The scheduled priority for the given thread.
+     */
+    static std::pair<bool, thread_priority> priority(const thread &tl) noexcept;
 
     ~thread() noexcept;
 
