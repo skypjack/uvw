@@ -34,6 +34,7 @@ endif()
 option(USE_LIBCPP "Use libc++ by adding -stdlib=libc++ flag if available." ON)
 option(USE_ASAN "Use address sanitizer by adding -fsanitize=address -fno-omit-frame-pointer flags" OFF)
 option(USE_UBSAN "Use address sanitizer by adding -fsanitize=undefined -fno-sanitize-recover=all -fno-omit-frame-pointer flags" OFF)
+option(USE_CLANG_TIDY "Enable static analysis with clang-tidy" OFF)
 option(BUILD_UVW_LIBS "Prepare targets for static library rather than for a header-only library." OFF)
 option(BUILD_UVW_SHARED_LIB "Prepare targets for shared library rather than for a header-only library." OFF)
 option(FIND_LIBUV "Try finding libuv library development files in the system" OFF)
@@ -66,6 +67,13 @@ if(NOT WIN32 AND USE_LIBCPP)
     cmake_pop_check_state()
 endif()
 
+if(USE_CLANG_TIDY)
+    find_program(CLANG_TIDY_EXECUTABLE "clang-tidy")
+
+    if(NOT CLANG_TIDY_EXECUTABLE)
+        message(VERBOSE "The option USE_CLANG_TIDY is set but clang-tidy executable is not available.")
+    endif()
+endif()
 
 # Required minimal libuv version
 set(LIBUV_VERSION 1.49.0)
@@ -155,6 +163,10 @@ else()
     if(USE_UBSAN)
         target_compile_options(uvw INTERFACE $<$<CONFIG:Debug>:-fsanitize=undefined -fno-sanitize-recover=all -fno-omit-frame-pointer>)
         target_link_libraries(uvw INTERFACE $<$<CONFIG:Debug>:-fsanitize=undefined>)
+    endif()
+
+    if(CLANG_TIDY_EXECUTABLE)
+        set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE};--config-file=${uwv_SOURCE_DIR}/.clang-tidy;--header-filter=${uwv_SOURCE_DIR}/src/uvw/.*")
     endif()
 
     if(HAS_LIBCPP)

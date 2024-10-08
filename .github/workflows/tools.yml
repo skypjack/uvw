@@ -1,0 +1,78 @@
+name: tools
+
+on:
+  push:
+    branches:
+      - tools
+
+jobs:
+
+  iwyu:
+    timeout-minutes: 60
+
+    env:
+      IWYU: "0.22"
+      LLVM: "18"
+
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install llvm/clang
+      # see: https://apt.llvm.org/
+      run: |
+        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | sudo apt-key add -
+        sudo add-apt-repository "deb http://apt.llvm.org/focal/ llvm-toolchain-focal-$LLVM main"
+        sudo apt update
+        sudo apt remove -y "llvm*"
+        sudo apt remove -y "libclang-dev*"
+        sudo apt remove -y "clang*"
+        sudo apt install -y llvm-$LLVM-dev
+        sudo apt install -y libclang-$LLVM-dev
+        sudo apt install -y clang-$LLVM
+    - name: Compile iwyu
+      # see: https://github.com/include-what-you-use/include-what-you-use
+      working-directory: build
+      run: |
+        git clone https://github.com/include-what-you-use/include-what-you-use.git --branch $IWYU --depth 1
+        mkdir include-what-you-use/build
+        cd include-what-you-use/build
+        cmake -DCMAKE_C_COMPILER=clang-$LLVM \
+              -DCMAKE_CXX_COMPILER=clang++-$LLVM \
+              -DCMAKE_INSTALL_PREFIX=./ \
+              ..
+        make -j4
+        bin/include-what-you-use --version
+    - name: Compile tests
+      working-directory: build
+      run: |
+        export PATH=$PATH:${GITHUB_WORKSPACE}/build/include-what-you-use/build/bin
+        cmake -DBUILD_TESTING=ON
+              -Dlibuv_buildtests=OFF
+              -DCMAKE_C_COMPILER=clang-$LLVM \
+              -DCMAKE_CXX_COMPILER=clang++-$LLVM \
+              -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="include-what-you-use;-Xiwyu;--mapping_file=${GITHUB_WORKSPACE}/uwv.imp;-Xiwyu;--no_fwd_decls;-Xiwyu;--verbose=1" \
+              ..
+        make -j4
+
+  clang-tidy:
+    timeout-minutes: 60
+
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Compile tests
+      working-directory: build
+      env:
+        CXX: clang++
+      run: |
+        cmake -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF -DUSE_CLANG_TIDY=ON ..
+        make -j4
+    - name: Run tests
+      working-directory: build
+      env:
+        CTEST_OUTPUT_ON_FAILURE: 1
+      run: ctest -C Debug -j4
