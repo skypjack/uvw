@@ -181,7 +181,7 @@ public:
         uv_stdio_container_t container;
         container.flags = static_cast<uv_stdio_flags>(flags);
         container.data.stream = reinterpret_cast<uv_stream_t *>(stream.raw());
-        po_stream_stdio.push_back(std::move(container));
+        po_stdio.push_back(std::move(container));
         return *this;
     }
 
@@ -230,8 +230,7 @@ public:
 private:
     std::string po_cwd;
     process_flags po_flags;
-    std::vector<uv_stdio_container_t> po_fd_stdio;
-    std::vector<uv_stdio_container_t> po_stream_stdio;
+    std::vector<uv_stdio_container_t> po_stdio;
     uid_type po_uid;
     gid_type po_gid;
 };
