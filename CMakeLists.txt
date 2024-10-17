@@ -166,7 +166,7 @@ else()
     endif()
 
     if(CLANG_TIDY_EXECUTABLE)
-        set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE};--config-file=${uwv_SOURCE_DIR}/.clang-tidy;--header-filter=${uwv_SOURCE_DIR}/src/uvw/.*")
+        set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE};--config-file=${uvw_SOURCE_DIR}/.clang-tidy;--header-filter=${uvw_SOURCE_DIR}/src/uvw/.*")
     endif()
 
     if(HAS_LIBCPP)

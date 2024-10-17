@@ -52,7 +52,7 @@ jobs:
               -Dlibuv_buildtests=OFF
               -DCMAKE_C_COMPILER=clang-$LLVM \
               -DCMAKE_CXX_COMPILER=clang++-$LLVM \
-              -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="include-what-you-use;-Xiwyu;--mapping_file=${GITHUB_WORKSPACE}/uwv.imp;-Xiwyu;--no_fwd_decls;-Xiwyu;--verbose=1" \
+              -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE="include-what-you-use;-Xiwyu;--mapping_file=${GITHUB_WORKSPACE}/uvw.imp;-Xiwyu;--no_fwd_decls;-Xiwyu;--verbose=1" \
               ..
         make -j4
 
