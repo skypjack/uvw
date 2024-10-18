@@ -10,12 +10,12 @@ jobs:
 
     strategy:
       matrix:
-        mode: [-DBUILD_UVW_SHARED_LIB=ON, -DBUILD_UVW_LIBS=ON, -DBUILD_UVW_LIBS=OFF]
+        mode: [-DUVW_BUILD_SHARED_LIB=ON, -DUVW_BUILD_LIBS=ON, -DUVW_BUILD_LIBS=OFF]
 
     steps:
     - uses: actions/checkout@v3
     - name: Compile tests
       working-directory: build
       run: |
-        cmake ${{ matrix.mode }} -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF ..
+        cmake ${{ matrix.mode }} -DUVW_BUILD_TESTING=ON -Dlibuv_buildtests=OFF ..
         make -j2

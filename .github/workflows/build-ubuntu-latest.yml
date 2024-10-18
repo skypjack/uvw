@@ -15,7 +15,7 @@ jobs:
           - { pkg: clang, exe: 'clang++', version: 12 }
           - { pkg: clang, exe: 'clang++', version: 13 }
           - { pkg: clang, exe: 'clang++', version: 14 }
-        mode: [-DBUILD_UVW_SHARED_LIB=ON, -DBUILD_UVW_LIBS=ON, -DBUILD_UVW_LIBS=OFF]
+        mode: [-DUVW_BUILD_SHARED_LIB=ON, -DUVW_BUILD_LIBS=ON, -DUVW_BUILD_LIBS=OFF]
 
     runs-on: ubuntu-latest
 

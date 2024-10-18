@@ -140,7 +140,7 @@ When used through `CMake`, the `uvw::uvw` target is exported for convenience.
 
 ### Static
 
-To use `uvw` as a compiled library, set the `BUILD_UVW_LIBS` options in cmake
+To use `uvw` as a compiled library, set the `UVW_BUILD_LIBS` options in cmake
 before including the project.<br/>
 This option triggers the generation of a targets named
 `uvw::uvw-static`. The matching version of `libuv` is also
@@ -209,7 +209,7 @@ else.
 To build the tests:
 
 * `$ cd build`
-* `$ cmake .. -DBUILD_TESTING=ON`
+* `$ cmake .. -DUVW_BUILD_TESTING=ON`
 * `$ make`
 * `$ ctest -j4 -R uvw`
 

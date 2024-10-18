@@ -24,7 +24,7 @@
       "description": "Common (non-OS specific) mode for development",
       "inherits": "cmake-pedantic",
       "cacheVariables": {
-        "BUILD_TESTING": true,
+        "UVW_BUILD_TESTING": true,
         "libuv_buildtests": false
       }
     },

@@ -21,7 +21,7 @@ jobs:
       env:
         CXX: ${{ matrix.compiler }}
       run: |
-        cmake ${{ matrix.mode }} -DBUILD_TESTING=ON -Dlibuv_buildtests=OFF -DUSE_${{ matrix.sanitizer }}=ON ..
+        cmake ${{ matrix.mode }} -DUVW_BUILD_TESTING=ON -DUVW_USE_${{ matrix.sanitizer }}=ON -Dlibuv_buildtests=OFF ..
         make -j2
     - name: Run tests
       working-directory: build
