@@ -44,13 +44,8 @@ UVW_INLINE int process_handle::spawn(const char *file, char **args, char **env) 
     po.uid = po_uid;
     po.gid = po_gid;
 
-    std::vector<uv_stdio_container_t> poStdio;
-    poStdio.reserve(po_fd_stdio.size() + po_stream_stdio.size());
-    poStdio.insert(poStdio.begin(), po_fd_stdio.cbegin(), po_fd_stdio.cend());
-    poStdio.insert(poStdio.end(), po_stream_stdio.cbegin(), po_stream_stdio.cend());
-
-    po.stdio_count = static_cast<decltype(po.stdio_count)>(poStdio.size());
-    po.stdio = poStdio.data();
+    po.stdio_count = static_cast<decltype(po.stdio_count)>(po_stdio.size());
+    po.stdio = po_stdio.data();
 
     // see init member function for more details
     leak_if(0);
@@ -77,24 +72,10 @@ UVW_INLINE process_handle &process_handle::flags(process_flags flags) noexcept {
 }
 
 UVW_INLINE process_handle &process_handle::stdio(file_handle fd, stdio_flags flags) {
-    auto fgs = static_cast<uv_stdio_flags>(flags);
-
-    auto actual = uvw::file_handle{fd};
-
-    auto it = std::find_if(po_fd_stdio.begin(), po_fd_stdio.end(), [actual](auto &&container) {
-        return static_cast<const uvw::details::uv_type_wrapper<int>>(container.data.fd) == static_cast<const uvw::details::uv_type_wrapper<int>>(actual);
-    });
-
-    if(it == po_fd_stdio.cend()) {
-        uv_stdio_container_t container;
-        container.flags = fgs;
-        container.data.fd = actual;
-        po_fd_stdio.push_back(std::move(container));
-    } else {
-        it->flags = fgs;
-        it->data.fd = actual;
-    }
-
+    uv_stdio_container_t container;
+    container.flags = static_cast<uv_stdio_flags>(flags);
+    container.data.fd = fd;
+    po_stdio.push_back(std::move(container));
     return *this;
 }
 
