@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - uses: docker://conanio/gcc8
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Setup Python
       uses: actions/setup-python@master
       with:

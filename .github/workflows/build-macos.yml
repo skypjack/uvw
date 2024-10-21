@@ -13,7 +13,7 @@ jobs:
         mode: [-DUVW_BUILD_SHARED_LIB=ON, -DUVW_BUILD_LIBS=ON, -DUVW_BUILD_LIBS=OFF]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Compile tests
       working-directory: build
       run: |
