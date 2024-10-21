@@ -381,7 +381,7 @@ public:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "thread.cpp"
+#    include "thread.ipp"
 #endif
 
 #endif // UVW_THREAD_INCLUDE_H

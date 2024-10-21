@@ -50,7 +50,7 @@ public:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "check.cpp"
+#    include "check.ipp"
 #endif
 
 #endif // UVW_CHECK_INCLUDE_H

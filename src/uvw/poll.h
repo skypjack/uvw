@@ -113,7 +113,7 @@ private:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "poll.cpp"
+#    include "poll.ipp"
 #endif
 
 #endif // UVW_POLL_INCLUDE_H

@@ -1,8 +1,8 @@
 #ifndef UVW_TIMER_INCLUDE_H
 #define UVW_TIMER_INCLUDE_H
 
-#include <cstdint>
 #include <chrono>
+#include <cstdint>
 #include <uv.h>
 #include "handle.hpp"
 #include "loop.h"
@@ -105,7 +105,7 @@ public:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "timer.cpp"
+#    include "timer.ipp"
 #endif
 
 #endif // UVW_TIMER_INCLUDE_H

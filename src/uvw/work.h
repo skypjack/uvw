@@ -53,7 +53,7 @@ private:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "work.cpp"
+#    include "work.ipp"
 #endif
 
 #endif // UVW_WORK_INCLUDE_H

@@ -1,2 +1,5 @@
 Checks: >
     bugprone-*,
+CheckOptions:
+    - key: bugprone-suspicious-include.HeaderFileExtensions
+      value: ";h;hpp;ipp"

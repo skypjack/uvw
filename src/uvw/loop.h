@@ -433,7 +433,7 @@ private:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "loop.cpp"
+#    include "loop.ipp"
 #endif
 
 #endif // UVW_LOOP_INCLUDE_H

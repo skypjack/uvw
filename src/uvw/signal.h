@@ -77,7 +77,7 @@ public:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "signal.cpp"
+#    include "signal.ipp"
 #endif
 
 #endif // UVW_SIGNAL_INCLUDE_H

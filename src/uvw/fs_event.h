@@ -114,7 +114,7 @@ public:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "fs_event.cpp"
+#    include "fs_event.ipp"
 #endif
 
 #endif // UVW_FS_EVENT_INCLUDE_H

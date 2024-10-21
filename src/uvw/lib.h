@@ -43,7 +43,9 @@ public:
         static_assert(std::is_function_v<F>);
         F *func;
         auto err = uv_dlsym(raw(), name.data(), reinterpret_cast<void **>(&func));
-        if(err) { func = nullptr; }
+        if(err) {
+            func = nullptr;
+        }
         return func;
     }
 
@@ -60,7 +62,7 @@ private:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "lib.cpp"
+#    include "lib.ipp"
 #endif
 
 #endif // UVW_LIB_INCLUDE_H

@@ -707,7 +707,7 @@ overloaded(Func...) -> overloaded<Func...>;
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "util.cpp"
+#    include "util.ipp"
 #endif
 
 #endif // UVW_UTIL_INCLUDE_H

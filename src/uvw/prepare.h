@@ -52,7 +52,7 @@ public:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "prepare.cpp"
+#    include "prepare.ipp"
 #endif
 
 #endif // UVW_PREPARE_INCLUDE_H

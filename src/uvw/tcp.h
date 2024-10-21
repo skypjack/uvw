@@ -227,7 +227,7 @@ private:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "tcp.cpp"
+#    include "tcp.ipp"
 #endif
 
 #endif // UVW_TCP_INCLUDE_H

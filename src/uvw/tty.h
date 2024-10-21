@@ -140,7 +140,7 @@ private:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "tty.cpp"
+#    include "tty.ipp"
 #endif
 
 #endif // UVW_TTY_INCLUDE_H

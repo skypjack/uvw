@@ -59,7 +59,7 @@ public:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "idle.cpp"
+#    include "idle.ipp"
 #endif
 
 #endif // UVW_IDLE_INCLUDE_H

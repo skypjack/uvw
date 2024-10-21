@@ -52,7 +52,7 @@ public:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "async.cpp"
+#    include "async.ipp"
 #endif
 
 #endif // UVW_ASYNC_INCLUDE_H

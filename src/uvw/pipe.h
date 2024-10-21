@@ -158,7 +158,7 @@ private:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "pipe.cpp"
+#    include "pipe.ipp"
 #endif
 
 #endif // UVW_PIPE_INCLUDE_H

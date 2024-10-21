@@ -153,7 +153,7 @@ private:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "emitter.cpp"
+#    include "emitter.ipp"
 #endif
 
 #endif // UVW_EMITTER_INCLUDE_H

@@ -1229,7 +1229,7 @@ struct fs_helper {
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "fs.cpp"
+#    include "fs.ipp"
 #endif
 
 #endif // UVW_FS_INCLUDE_H

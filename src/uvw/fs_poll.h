@@ -70,7 +70,7 @@ public:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "fs_poll.cpp"
+#    include "fs_poll.ipp"
 #endif
 
 #endif // UVW_FS_POLL_INCLUDE_H

@@ -556,7 +556,7 @@ private:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "udp.cpp"
+#    include "udp.ipp"
 #endif
 
 #endif // UVW_UDP_INCLUDE_H

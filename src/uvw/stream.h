@@ -475,7 +475,7 @@ public:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "stream.cpp"
+#    include "stream.ipp"
 #endif
 
 #endif // UVW_STREAM_INCLUDE_H

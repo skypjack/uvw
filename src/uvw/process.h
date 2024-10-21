@@ -239,7 +239,7 @@ private:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "process.cpp"
+#    include "process.ipp"
 #endif
 
 #endif // UVW_PROCESS_INCLUDE_H

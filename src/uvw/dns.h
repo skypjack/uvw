@@ -220,7 +220,7 @@ public:
 } // namespace uvw
 
 #ifndef UVW_AS_LIB
-#    include "dns.cpp"
+#    include "dns.ipp"
 #endif
 
 #endif // UVW_DNS_INCLUDE_H
