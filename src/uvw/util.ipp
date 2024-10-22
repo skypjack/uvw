@@ -140,7 +140,7 @@ UVW_INLINE uts_name utilities::os::uname() noexcept {
     return ptr;
 }
 
-UVW_INLINE passwd_info utilities::os::passwd() noexcept {
+UVW_INLINE passwd_info utilities::os::passwd() {
     auto deleter = [](uv_passwd_t *passwd) {
         uv_os_free_passwd(passwd);
         delete passwd;
