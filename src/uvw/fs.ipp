@@ -69,7 +69,7 @@ UVW_INLINE bool file_req::open_sync(const std::string &path, file_open_flags fla
 }
 
 UVW_INLINE void file_req::read(int64_t offset, unsigned int len) {
-    current = std::unique_ptr<char[]>{new char[len]};
+    current = std::make_unique<char[]>(len);
     buffer = uv_buf_init(current.get(), len);
     uv_buf_t bufs[] = {buffer};
     uv_fs_req_cleanup(this->raw());
@@ -77,7 +77,7 @@ UVW_INLINE void file_req::read(int64_t offset, unsigned int len) {
 }
 
 UVW_INLINE std::pair<bool, std::pair<std::unique_ptr<const char[]>, std::size_t>> file_req::read_sync(int64_t offset, unsigned int len) {
-    current = std::unique_ptr<char[]>{new char[len]};
+    current = std::make_unique<char[]>(len);
     buffer = uv_buf_init(current.get(), len);
     uv_buf_t bufs[] = {buffer};
     auto req = raw();
