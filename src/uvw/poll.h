@@ -18,7 +18,7 @@ enum class uvw_poll_event : std::underlying_type_t<uv_poll_event> {
     WRITABLE = UV_WRITABLE,
     DISCONNECT = UV_DISCONNECT,
     PRIORITIZED = UV_PRIORITIZED,
-    _UVW_ENUM = 0
+    UVW_ENUM = 0
 };
 
 }

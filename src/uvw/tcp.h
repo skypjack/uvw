@@ -19,7 +19,7 @@ namespace details {
 
 enum class uvw_tcp_flags : std::underlying_type_t<uv_tcp_flags> {
     IPV6ONLY = UV_TCP_IPV6ONLY,
-    _UVW_ENUM = 0
+    UVW_ENUM = 0
 };
 
 }
@@ -115,7 +115,7 @@ public:
      * @param opts Optional additional flags.
      * @return Underlying return value.
      */
-    int bind(const sockaddr &addr, tcp_flags opts = tcp_flags::_UVW_ENUM);
+    int bind(const sockaddr &addr, tcp_flags opts = tcp_flags::UVW_ENUM);
 
     /**
      * @brief Binds the handle to an address and port.
@@ -133,7 +133,7 @@ public:
      * @param opts Optional additional flags.
      * @return Underlying return value.
      */
-    int bind(const std::string &ip, unsigned int port, tcp_flags opts = tcp_flags::_UVW_ENUM);
+    int bind(const std::string &ip, unsigned int port, tcp_flags opts = tcp_flags::UVW_ENUM);
 
     /**
      * @brief Binds the handle to an address and port.
@@ -150,7 +150,7 @@ public:
      * @param opts Optional additional flags.
      * @return Underlying return value.
      */
-    int bind(socket_address addr, tcp_flags opts = tcp_flags::_UVW_ENUM);
+    int bind(socket_address addr, tcp_flags opts = tcp_flags::UVW_ENUM);
 
     /**
      * @brief Gets the current address to which the handle is bound.

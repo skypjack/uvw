@@ -26,7 +26,7 @@ enum class uvw_process_flags : std::underlying_type_t<uv_process_flags> {
     WINDOWS_HIDE_CONSOLE = UV_PROCESS_WINDOWS_HIDE_CONSOLE,
     WINDOWS_HIDE_GUI = UV_PROCESS_WINDOWS_HIDE_GUI,
     WINDOWS_FILE_PATH_EXACT_NAME = UV_PROCESS_WINDOWS_FILE_PATH_EXACT_NAME,
-    _UVW_ENUM = 0
+    UVW_ENUM = 0
 };
 
 enum class uvw_stdio_flags : std::underlying_type_t<uv_stdio_flags> {
@@ -37,7 +37,7 @@ enum class uvw_stdio_flags : std::underlying_type_t<uv_stdio_flags> {
     READABLE_PIPE = UV_READABLE_PIPE,
     WRITABLE_PIPE = UV_WRITABLE_PIPE,
     OVERLAPPED_PIPE = UV_OVERLAPPED_PIPE,
-    _UVW_ENUM = 0
+    UVW_ENUM = 0
 };
 
 } // namespace details

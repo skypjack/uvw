@@ -13,21 +13,21 @@
  * two values provided.
  */
 template<typename Type>
-[[nodiscard]] constexpr std::enable_if_t<std::is_enum_v<Type>, decltype(Type::_UVW_ENUM)>
+[[nodiscard]] constexpr std::enable_if_t<std::is_enum_v<Type>, decltype(Type::UVW_ENUM)>
 operator|(const Type lhs, const Type rhs) noexcept {
     return static_cast<Type>(static_cast<std::underlying_type_t<Type>>(lhs) | static_cast<std::underlying_type_t<Type>>(rhs));
 }
 
 /*! @copydoc operator| */
 template<typename Type>
-[[nodiscard]] constexpr std::enable_if_t<std::is_enum_v<Type>, decltype(Type::_UVW_ENUM)>
+[[nodiscard]] constexpr std::enable_if_t<std::is_enum_v<Type>, decltype(Type::UVW_ENUM)>
 operator&(const Type lhs, const Type rhs) noexcept {
     return static_cast<Type>(static_cast<std::underlying_type_t<Type>>(lhs) & static_cast<std::underlying_type_t<Type>>(rhs));
 }
 
 /*! @copydoc operator| */
 template<typename Type>
-[[nodiscard]] constexpr std::enable_if_t<std::is_enum_v<Type>, decltype(Type::_UVW_ENUM)>
+[[nodiscard]] constexpr std::enable_if_t<std::is_enum_v<Type>, decltype(Type::UVW_ENUM)>
 operator^(const Type lhs, const Type rhs) noexcept {
     return static_cast<Type>(static_cast<std::underlying_type_t<Type>>(lhs) ^ static_cast<std::underlying_type_t<Type>>(rhs));
 }
@@ -40,35 +40,35 @@ operator^(const Type lhs, const Type rhs) noexcept {
  * value provided.
  */
 template<typename Type>
-[[nodiscard]] constexpr std::enable_if_t<std::is_enum_v<Type>, decltype(Type::_UVW_ENUM)>
+[[nodiscard]] constexpr std::enable_if_t<std::is_enum_v<Type>, decltype(Type::UVW_ENUM)>
 operator~(const Type value) noexcept {
     return static_cast<Type>(~static_cast<std::underlying_type_t<Type>>(value));
 }
 
 /*! @copydoc operator~ */
 template<typename Type>
-[[nodiscard]] constexpr std::enable_if_t<std::is_enum_v<Type>, decltype(Type::_UVW_ENUM, bool{})>
+[[nodiscard]] constexpr std::enable_if_t<std::is_enum_v<Type>, decltype(Type::UVW_ENUM, bool{})>
 operator!(const Type value) noexcept {
     return !static_cast<std::underlying_type_t<Type>>(value);
 }
 
 /*! @copydoc operator| */
 template<typename Type>
-constexpr std::enable_if_t<std::is_enum_v<Type>, decltype(Type::_UVW_ENUM) &>
+constexpr std::enable_if_t<std::is_enum_v<Type>, decltype(Type::UVW_ENUM) &>
 operator|=(Type &lhs, const Type rhs) noexcept {
     return (lhs = (lhs | rhs));
 }
 
 /*! @copydoc operator| */
 template<typename Type>
-constexpr std::enable_if_t<std::is_enum_v<Type>, decltype(Type::_UVW_ENUM) &>
+constexpr std::enable_if_t<std::is_enum_v<Type>, decltype(Type::UVW_ENUM) &>
 operator&=(Type &lhs, const Type rhs) noexcept {
     return (lhs = (lhs & rhs));
 }
 
 /*! @copydoc operator| */
 template<typename Type>
-constexpr std::enable_if_t<std::is_enum_v<Type>, decltype(Type::_UVW_ENUM) &>
+constexpr std::enable_if_t<std::is_enum_v<Type>, decltype(Type::UVW_ENUM) &>
 operator^=(Type &lhs, const Type rhs) noexcept {
     return (lhs = (lhs ^ rhs));
 }

@@ -19,7 +19,7 @@ namespace details {
 enum class uvw_chmod_flags : std::underlying_type_t<uv_poll_event> {
     READABLE = UV_READABLE,
     WRITABLE = UV_WRITABLE,
-    _UVW_ENUM = 0
+    UVW_ENUM = 0
 };
 
 }

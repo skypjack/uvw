@@ -38,7 +38,7 @@ enum class uvw_udp_flags : std::underlying_type_t<uv_udp_flags> {
     UDP_MMSG_FREE = UV_UDP_MMSG_FREE,
     UDP_LINUX_RECVERR = UV_UDP_LINUX_RECVERR,
     UDP_RECVMMSG = UV_UDP_RECVMMSG,
-    _UVW_ENUM = 0
+    UVW_ENUM = 0
 };
 
 enum class uvw_membership : std::underlying_type_t<uv_membership> {
@@ -193,7 +193,7 @@ public:
      * @param opts Optional additional flags.
      * @return Underlying return value.
      */
-    int bind(const sockaddr &addr, udp_flags opts = udp_flags::_UVW_ENUM);
+    int bind(const sockaddr &addr, udp_flags opts = udp_flags::UVW_ENUM);
 
     /**
      * @brief Binds the UDP handle to an IP address and port.
@@ -217,7 +217,7 @@ public:
      * @param opts Optional additional flags.
      * @return Underlying return value.
      */
-    int bind(const std::string &ip, unsigned int port, udp_flags opts = udp_flags::_UVW_ENUM);
+    int bind(const std::string &ip, unsigned int port, udp_flags opts = udp_flags::UVW_ENUM);
 
     /**
      * @brief Binds the UDP handle to an IP address and port.
@@ -240,7 +240,7 @@ public:
      * @param opts Optional additional flags.
      * @return Underlying return value.
      */
-    int bind(socket_address addr, udp_flags opts = udp_flags::_UVW_ENUM);
+    int bind(socket_address addr, udp_flags opts = udp_flags::UVW_ENUM);
 
     /**
      * @brief Get the local IP and port of the UDP handle.

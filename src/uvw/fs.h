@@ -91,20 +91,20 @@ enum class uvw_file_open_flags : int {
     TEMPORARY = UV_FS_O_TEMPORARY,
     TRUNC = UV_FS_O_TRUNC,
     WRONLY = UV_FS_O_WRONLY,
-    _UVW_ENUM = 0
+    UVW_ENUM = 0
 };
 
 enum class uvw_copy_file_flags : int {
     EXCL = UV_FS_COPYFILE_EXCL,
     FICLONE = UV_FS_COPYFILE_FICLONE,
     FICLONE_FORCE = UV_FS_COPYFILE_FICLONE_FORCE,
-    _UVW_ENUM = 0
+    UVW_ENUM = 0
 };
 
 enum class uvw_symlink_flags : int {
     DIR = UV_FS_SYMLINK_DIR,
     JUNCTION = UV_FS_SYMLINK_JUNCTION,
-    _UVW_ENUM = 0
+    UVW_ENUM = 0
 };
 
 } // namespace details
@@ -886,7 +886,7 @@ public:
      * @param path New path, as described in the official documentation.
      * @param flags Optional additional flags.
      */
-    void copyfile(const std::string &old, const std::string &path, copy_file_flags flags = copy_file_flags::_UVW_ENUM);
+    void copyfile(const std::string &old, const std::string &path, copy_file_flags flags = copy_file_flags::UVW_ENUM);
 
     /**
      * @brief Copies a file synchronously from a path to a new one.
@@ -907,7 +907,7 @@ public:
      * @param flags Optional additional flags.
      * @return True in case of success, false otherwise.
      */
-    bool copyfile_sync(const std::string &old, const std::string &path, copy_file_flags flags = copy_file_flags::_UVW_ENUM);
+    bool copyfile_sync(const std::string &old, const std::string &path, copy_file_flags flags = copy_file_flags::UVW_ENUM);
 
     /**
      * @brief Async [access](http://linux.die.net/man/2/access).
@@ -1003,7 +1003,7 @@ public:
      * @param path New path, as described in the official documentation.
      * @param flags Optional additional flags.
      */
-    void symlink(const std::string &old, const std::string &path, symlink_flags flags = symlink_flags::_UVW_ENUM);
+    void symlink(const std::string &old, const std::string &path, symlink_flags flags = symlink_flags::UVW_ENUM);
 
     /**
      * @brief Sync [symlink](http://linux.die.net/man/2/symlink).
@@ -1020,7 +1020,7 @@ public:
      * @param flags Flags, as described in the official documentation.
      * @return True in case of success, false otherwise.
      */
-    bool symlink_sync(const std::string &old, const std::string &path, symlink_flags flags = symlink_flags::_UVW_ENUM);
+    bool symlink_sync(const std::string &old, const std::string &path, symlink_flags flags = symlink_flags::UVW_ENUM);
 
     /**
      * @brief Async [readlink](http://linux.die.net/man/2/readlink).

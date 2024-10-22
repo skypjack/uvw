@@ -18,7 +18,7 @@ enum class uvw_fs_event_flags : std::underlying_type_t<uv_fs_event_flags> {
     WATCH_ENTRY = UV_FS_EVENT_WATCH_ENTRY,
     STAT = UV_FS_EVENT_STAT,
     RECURSIVE = UV_FS_EVENT_RECURSIVE,
-    _UVW_ENUM = 0
+    UVW_ENUM = 0
 };
 
 enum class uvw_fs_event : std::underlying_type_t<uv_fs_event> {
@@ -96,7 +96,7 @@ public:
      * @param flags Additional flags to control the behavior.
      * @return Underlying return value.
      */
-    int start(const std::string &path, event_flags flags = event_flags::_UVW_ENUM);
+    int start(const std::string &path, event_flags flags = event_flags::UVW_ENUM);
 
     /**
      * @brief Stops polling the file descriptor.
