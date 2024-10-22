@@ -2,6 +2,7 @@
 #define UVW_TYPE_INFO_INCLUDE_HPP
 
 #include <cstdint>
+#include <string_view>
 #include "config.h"
 
 namespace uvw {
@@ -14,14 +15,13 @@ namespace uvw {
 namespace internal {
 
 // Fowler-Noll-Vo hash function v. 1a - the good
-[[nodiscard]] static constexpr std::uint32_t fnv1a(const char *curr) noexcept {
+[[nodiscard]] static constexpr std::uint32_t fnv1a(const std::string_view view) noexcept {
     constexpr std::uint32_t offset = 2166136261;
     constexpr std::uint32_t prime = 16777619;
     auto value = offset;
 
-    while(*curr != 0) {
-        auto curr_val_int = static_cast<std::uint32_t>(*(curr++));
-        value = (value ^ curr_val_int) * prime;
+    for(auto &&curr: view) {
+        value = (value ^ static_cast<std::uint32_t>(curr)) * prime;
     }
 
     return value;
