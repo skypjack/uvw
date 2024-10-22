@@ -78,6 +78,7 @@ TEST(Util, Utilities) {
     ASSERT_TRUE(uvw::utilities::replace_allocator(
         [](size_t size) { return malloc(size); },
         [](void *ptr, size_t size) { return realloc(ptr, size); },
+        // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
         [](size_t num, size_t size) { return calloc(num, size); },
         [](void *ptr) { return free(ptr); }));
 
