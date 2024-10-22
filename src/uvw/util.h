@@ -250,14 +250,14 @@ namespace details {
 static constexpr std::size_t DEFAULT_SIZE = 128;
 
 template<typename F, typename... Args>
-std::string try_read(F &&f, Args &&...args) noexcept {
+std::string try_read(F &&f, Args &&...args) {
     std::size_t size = DEFAULT_SIZE;
     char buf[DEFAULT_SIZE];
     std::string str{};
     auto err = std::forward<F>(f)(args..., buf, &size);
 
     if(UV_ENOBUFS == err) {
-        std::unique_ptr<char[]> data{new char[size]};
+        auto data = std::make_unique<char[]>(size);
         err = std::forward<F>(f)(args..., data.get(), &size);
 
         if(0 == err) {
@@ -424,7 +424,7 @@ struct utilities {
          *
          * @return The accessible subset of the password file entry.
          */
-        static passwd_info passwd() noexcept;
+        static passwd_info passwd();
 
         /**
          * @brief Retrieves the scheduling priority of a process.
