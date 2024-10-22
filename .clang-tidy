@@ -1,5 +1,10 @@
 Checks: >
     bugprone-*,
+    concurrency-*,
+    modernize-*,
+    -modernize-use-trailing-return-type,
+    performance-*,
+    portability-*,
 CheckOptions:
     - key: bugprone-suspicious-include.HeaderFileExtensions
       value: ";h;hpp;ipp"
