@@ -263,7 +263,7 @@ public:
 
     using fs_request::fs_request;
 
-    ~file_req() noexcept;
+    ~file_req() noexcept override;
 
     /**
      * @brief Async [close](http://linux.die.net/man/2/close).
@@ -595,7 +595,7 @@ public:
 
     using fs_request::fs_request;
 
-    ~fs_req() noexcept;
+    ~fs_req() noexcept override;
 
     /**
      * @brief Async [unlink](http://linux.die.net/man/2/unlink).
