@@ -21,7 +21,7 @@ namespace internal {
     auto value = offset;
 
     for(auto &&curr: view) {
-        value = (value ^ static_cast<std::uint32_t>(curr)) * prime;
+        value = (value ^ static_cast<std::uint32_t>(static_cast<unsigned char>(curr))) * prime;
     }
 
     return value;
