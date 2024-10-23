@@ -37,7 +37,7 @@ struct error_event {
      * @param sys A platform dependent error code.
      * @return The `libuv` error code equivalent to the given platform dependent error code.
      */
-    static int translate(int sys) noexcept;
+    [[nodiscard]] static int translate(int sys) noexcept;
 
     /**
      * @brief Returns the error message for the given error code.
@@ -46,7 +46,7 @@ struct error_event {
      *
      * @return The error message for the given error code.
      */
-    const char *what() const noexcept;
+    [[nodiscard]] const char *what() const noexcept;
 
     /**
      * @brief Returns the error name for the given error code.
@@ -55,13 +55,13 @@ struct error_event {
      *
      * @return The error name for the given error code.
      */
-    const char *name() const noexcept;
+    [[nodiscard]] const char *name() const noexcept;
 
     /**
      * @brief Gets the underlying error code, that is an error constant of `libuv`.
      * @return The underlying error code.
      */
-    int code() const noexcept;
+    [[nodiscard]] int code() const noexcept;
 
     /**
      * @brief Checks if the event contains a valid error code.
@@ -87,12 +87,12 @@ public:
 
 private:
     template<typename Type>
-    const auto &handler() const noexcept {
+    [[nodiscard]] const auto &handler() const noexcept {
         return std::get<listener_t<Type>>(handlers);
     }
 
     template<typename Type>
-    auto &handler() noexcept {
+    [[nodiscard]] auto &handler() noexcept {
         return std::get<listener_t<Type>>(handlers);
     }
 
@@ -142,7 +142,7 @@ public:
      * false otherwise.
      */
     template<typename Type>
-    bool has() const noexcept {
+    [[nodiscard]] bool has() const noexcept {
         return static_cast<bool>(handler<Type>());
     }
 
