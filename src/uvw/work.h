@@ -20,7 +20,7 @@ struct work_event {};
  *
  * To create a `work_req` through a `loop`, arguments follow:
  *
- * * A valid instance of a `Task`, that is of type `std::function<void(void)>`.
+ * * A valid instance of a `Task`, that is of type `std::function<void()>`.
  *
  * See the official
  * [documentation](http://docs.libuv.org/en/v1.x/threadpool.html)
@@ -31,7 +31,7 @@ class work_req final: public request<work_req, uv_work_t, work_event> {
     static void after_work_callback(uv_work_t *req, int status);
 
 public:
-    using task = std::function<void(void)>;
+    using task = std::function<void()>;
 
     explicit work_req(loop::token token, std::shared_ptr<loop> ref, task t);
 
