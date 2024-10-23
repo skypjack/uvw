@@ -313,11 +313,11 @@ UVW_INLINE std::pair<bool, std::pair<fs_req::entry_type, const char *>> fs_req::
     std::pair<bool, std::pair<entry_type, const char *>> ret{false, {entry_type::UNKNOWN, nullptr}};
 
     uv_fs_req_cleanup(raw());
-    auto res = uv_fs_scandir_next(raw(), dirents);
+    auto res = uv_fs_scandir_next(raw(), &dirents);
 
     if(UV_EOF != res) {
-        ret.second.first = static_cast<entry_type>(dirents[0].type);
-        ret.second.second = dirents[0].name;
+        ret.second.first = static_cast<entry_type>(dirents.type);
+        ret.second.second = dirents.name;
         ret.first = true;
     }
 
@@ -523,7 +523,7 @@ UVW_INLINE bool fs_req::closedir_sync() {
 UVW_INLINE void fs_req::readdir() {
     auto req = raw();
     auto *dir = static_cast<uv_dir_t *>(req->ptr);
-    dir->dirents = dirents;
+    dir->dirents = &dirents;
     dir->nentries = 1;
     uv_fs_req_cleanup(this->raw());
     uv_fs_readdir(parent().raw(), req, dir, &fs_request_callback);
@@ -532,11 +532,11 @@ UVW_INLINE void fs_req::readdir() {
 UVW_INLINE std::pair<bool, std::pair<fs_req::entry_type, const char *>> fs_req::readdir_sync() {
     auto req = raw();
     auto *dir = static_cast<uv_dir_t *>(req->ptr);
-    dir->dirents = dirents;
+    dir->dirents = &dirents;
     dir->nentries = 1;
     uv_fs_req_cleanup(this->raw());
     uv_fs_readdir(parent().raw(), req, dir, nullptr);
-    return {req->result != 0, {static_cast<entry_type>(dirents[0].type), dirents[0].name}};
+    return {req->result != 0, {static_cast<entry_type>(dirents.type), dirents.name}};
 }
 
 UVW_INLINE os_file_descriptor fs_helper::handle(file_handle file) noexcept {

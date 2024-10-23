@@ -1196,7 +1196,7 @@ public:
     std::pair<bool, std::pair<entry_type, const char *>> readdir_sync();
 
 private:
-    uv_dirent_t dirents[1];
+    uv_dirent_t dirents;
 };
 
 /*! @brief Helper functions. */
