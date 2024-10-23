@@ -238,11 +238,11 @@ struct cpu_info {
  * \brief Interface address.
  */
 struct interface_address {
-    std::string name;       /*!< The name of the interface (as an example _eth0_). */
-    char physical[6];       /*!< The physical address. */
-    bool internal;          /*!< True if it is an internal interface (as an example _loopback_), false otherwise. */
-    socket_address address; /*!< The address of the given interface. */
-    socket_address netmask; /*!< The netmask of the given interface. */
+    std::string name;              /*!< The name of the interface (as an example _eth0_). */
+    std::array<char, 6u> physical; /*!< The physical address. */
+    bool internal;                 /*!< True if it is an internal interface (as an example _loopback_), false otherwise. */
+    socket_address address;        /*!< The address of the given interface. */
+    socket_address netmask;        /*!< The netmask of the given interface. */
 };
 
 namespace details {

@@ -239,7 +239,7 @@ UVW_INLINE std::vector<interface_address> utilities::interface_addresses() noexc
             interface_address iface_addr;
 
             iface_addr.name = ifaces[next].name;
-            std::copy(ifaces[next].phys_addr, (ifaces[next].phys_addr + 6), iface_addr.physical);
+            std::copy(ifaces[next].phys_addr, (ifaces[next].phys_addr + 6), iface_addr.physical.data());
             iface_addr.internal = ifaces[next].is_internal == 0 ? false : true;
 
             if(ifaces[next].address.address4.sin_family == AF_INET) {
