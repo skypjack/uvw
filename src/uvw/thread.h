@@ -183,7 +183,7 @@ public:
     /**
      * @brief Runs a function once and only once.
      *
-     * The callback must be such that it's convertible to `void(*)(void)`. Free
+     * The callback must be such that it's convertible to `void(*)()`. Free
      * functions and non-capturing lambdas are both viable solutions.
      *
      * @tparam F Type of the callback.
@@ -191,7 +191,7 @@ public:
      */
     template<typename F>
     static void run(F &&f) noexcept {
-        using callback_type = void (*)(void);
+        using callback_type = void (*)();
         static_assert(std::is_convertible_v<F, callback_type>);
         callback_type cb = f;
         uv_once(guard(), cb);
