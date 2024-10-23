@@ -17,7 +17,7 @@ namespace uvw {
 template<typename U>
 struct uv_type {
     explicit uv_type(loop::token, std::shared_ptr<loop> ref) noexcept
-        : owner{std::move(ref)}, resource{} {}
+        : owner{std::move(ref)} {}
 
     uv_type(const uv_type &) = delete;
     uv_type(uv_type &&) = delete;
@@ -76,7 +76,7 @@ protected:
 
 private:
     std::shared_ptr<loop> owner;
-    U resource;
+    U resource{};
 };
 
 } // namespace uvw
