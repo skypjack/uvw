@@ -3,7 +3,7 @@
 namespace uvw {
 
 UVW_INLINE passwd_info::passwd_info(std::shared_ptr<uv_passwd_t> pwd)
-    : value{pwd} {}
+    : value{std::move(pwd)} {}
 
 UVW_INLINE std::string passwd_info::username() const noexcept {
     return ((value && value->username) ? value->username : "");
@@ -30,7 +30,7 @@ UVW_INLINE passwd_info::operator bool() const noexcept {
 }
 
 UVW_INLINE uts_name::uts_name(std::shared_ptr<uv_utsname_t> init)
-    : uname{init} {}
+    : uname{std::move(init)} {}
 
 UVW_INLINE std::string uts_name::sysname() const noexcept {
     return uname ? uname->sysname : "";
