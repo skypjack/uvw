@@ -310,7 +310,7 @@ struct utilities {
          *
          * @return The current process id.
          */
-        static [[nodiscard]] pid_type pid() noexcept;
+        [[nodiscard]] static pid_type pid() noexcept;
 
         /**
          * @brief Returns the parent process id.
@@ -321,7 +321,7 @@ struct utilities {
          *
          * @return The parent process id.
          */
-        static [[nodiscard]] pid_type ppid() noexcept;
+        [[nodiscard]] static pid_type ppid() noexcept;
 
         /**
          * @brief Gets the current user's home directory.
@@ -333,7 +333,7 @@ struct utilities {
          * @return The current user's home directory, an empty string in case of
          * errors.
          */
-        static [[nodiscard]] std::string homedir() noexcept;
+        [[nodiscard]] static std::string homedir() noexcept;
 
         /**
          * @brief Gets the temp directory.
@@ -344,7 +344,7 @@ struct utilities {
          *
          * @return The temp directory, an empty string in case of errors.
          */
-        static [[nodiscard]] std::string tmpdir() noexcept;
+        [[nodiscard]] static std::string tmpdir() noexcept;
 
         /**
          * @brief Retrieves an environment variable.
@@ -352,7 +352,7 @@ struct utilities {
          * @return The value of the environment variable, an empty string in
          * case of errors.
          */
-        static [[nodiscard]] std::string env(const std::string &name) noexcept;
+        [[nodiscard]] static std::string env(const std::string &name) noexcept;
 
         /**
          * @brief Creates, updates or deletes an environment variable.
@@ -377,7 +377,7 @@ struct utilities {
          * @return True in case of success, false otherwise.
          */
         template<typename Func>
-        static [[nodiscard]] std::enable_if_t<std::is_invocable_v<Func, std::string_view, std::string_view>, bool>
+        [[nodiscard]] static std::enable_if_t<std::is_invocable_v<Func, std::string_view, std::string_view>, bool>
         env(Func func) noexcept {
             uv_env_item_t *items = nullptr;
             int count{};
@@ -399,7 +399,7 @@ struct utilities {
          * @brief Returns the hostname.
          * @return The hostname, an empty string in case of errors.
          */
-        static [[nodiscard]] std::string hostname() noexcept;
+        [[nodiscard]] static std::string hostname() noexcept;
 
         /**
          * @brief Gets name and information about the current kernel.
@@ -410,7 +410,7 @@ struct utilities {
          *
          * @return Name and information about the current kernel.
          */
-        static [[nodiscard]] uts_name uname() noexcept;
+        [[nodiscard]] static uts_name uname() noexcept;
 
         /**
          * @brief Gets a subset of the password file entry.
@@ -424,7 +424,7 @@ struct utilities {
          *
          * @return The accessible subset of the password file entry.
          */
-        static [[nodiscard]] passwd_info passwd();
+        [[nodiscard]] static passwd_info passwd();
 
         /**
          * @brief Retrieves the scheduling priority of a process.
@@ -464,7 +464,7 @@ struct utilities {
      * @param category A properly initialized handle category.
      * @return The actual type of the handle as defined by handle_type
      */
-    static [[nodiscard]] handle_type guess_handle(handle_category category) noexcept;
+    [[nodiscard]] static handle_type guess_handle(handle_category category) noexcept;
 
     /**
      * @brief Gets the type of the stream to be used with the given descriptor.
@@ -484,7 +484,7 @@ struct utilities {
      * * `handle_type::UDP`
      * * `handle_type::FILE`
      */
-    static [[nodiscard]] handle_type guess_handle(file_handle file) noexcept;
+    [[nodiscard]] static handle_type guess_handle(file_handle file) noexcept;
 
     /** @brief Gets information about the CPUs on the system.
      *
@@ -493,7 +493,7 @@ struct utilities {
      *
      * @return A set of descriptors of all the available CPUs.
      */
-    static [[nodiscard]] std::vector<cpu_info> cpu() noexcept;
+    [[nodiscard]] static std::vector<cpu_info> cpu() noexcept;
 
     /**
      * @brief Gets a set of descriptors of all the available interfaces.
@@ -503,7 +503,7 @@ struct utilities {
      *
      * @return A set of descriptors of all the available interfaces.
      */
-    static [[nodiscard]] std::vector<interface_address> interface_addresses() noexcept;
+    [[nodiscard]] static std::vector<interface_address> interface_addresses() noexcept;
 
     /**
      * @brief IPv6-capable implementation of
@@ -518,7 +518,7 @@ struct utilities {
      * @param index Network interface index.
      * @return Network interface name.
      */
-    static [[nodiscard]] std::string index_to_name(unsigned int index) noexcept;
+    [[nodiscard]] static std::string index_to_name(unsigned int index) noexcept;
 
     /**
      * @brief Retrieves a network interface identifier.
@@ -530,7 +530,7 @@ struct utilities {
      * @param index Network interface index.
      * @return Network interface identifier.
      */
-    static [[nodiscard]] std::string index_to_iid(unsigned int index) noexcept;
+    [[nodiscard]] static std::string index_to_iid(unsigned int index) noexcept;
 
     /**
      * @brief Override the use of some standard library’s functions.
@@ -561,7 +561,7 @@ struct utilities {
      * @brief Gets the load average.
      * @return `[0,0,0]` on Windows (not available), the load average otherwise.
      */
-    static [[nodiscard]] std::array<double, 3> load_average() noexcept;
+    [[nodiscard]] static std::array<double, 3> load_average() noexcept;
 
     /**
      * @brief Store the program arguments.
@@ -576,7 +576,7 @@ struct utilities {
      * @brief Gets the title of the current process.
      * @return The process title.
      */
-    static [[nodiscard]] std::string process_title();
+    [[nodiscard]] static std::string process_title();
 
     /**
      * @brief Sets the current process title.
@@ -589,7 +589,7 @@ struct utilities {
      * @brief Gets memory information (in bytes).
      * @return Memory information.
      */
-    static [[nodiscard]] uint64_t total_memory() noexcept;
+    [[nodiscard]] static uint64_t total_memory() noexcept;
 
     /**
      * @brief Gets the amount of memory available to the process (in bytes).
@@ -602,39 +602,39 @@ struct utilities {
      *
      * @return Amount of memory available to the process.
      */
-    static [[nodiscard]] uint64_t constrained_memory() noexcept;
+    [[nodiscard]] static uint64_t constrained_memory() noexcept;
 
     /**
      * @brief Gets the amount of free memory still available to the process.
      * @return Amount of free memory still available to the process (in bytes).
      */
-    static [[nodiscard]] uint64_t available_memory() noexcept;
+    [[nodiscard]] static uint64_t available_memory() noexcept;
 
     /**
      * @brief Gets the resident set size (RSS) for the current process.
      * @return The resident set size (RSS) for the current process or a negative
      * value in case of errors.
      */
-    static [[nodiscard]] int64_t resident_set_memory() noexcept;
+    [[nodiscard]] static int64_t resident_set_memory() noexcept;
 
     /**
      * @brief Gets the current system uptime.
      * @return The current system uptime or 0 in case of errors.
      */
-    static [[nodiscard]] double uptime() noexcept;
+    [[nodiscard]] static double uptime() noexcept;
 
     /**
      * @brief Gets the resource usage measures for the current process.
      * @return Resource usage measures, zeroes-filled object in case of errors.
      */
-    static [[nodiscard]] resource_usage rusage() noexcept;
+    [[nodiscard]] static resource_usage rusage() noexcept;
 
     /**
      * @brief Gets the current system time from a high-resolution clock source.
      * @param source Clock source, either real-time or monotonic.
      * @return Current system time from the given high-resolution clock source.
      */
-    static [[nodiscard]] timespec64 gettime(clock_id source) noexcept;
+    [[nodiscard]] static timespec64 gettime(clock_id source) noexcept;
 
     /**
      * @brief Gets the current high-resolution real time.
@@ -646,7 +646,7 @@ struct utilities {
      *
      * @return The current high-resolution real time.
      */
-    static [[nodiscard]] uint64_t hrtime() noexcept;
+    [[nodiscard]] static uint64_t hrtime() noexcept;
 
     /**
      * @brief Gets the executable path.
@@ -658,7 +658,7 @@ struct utilities {
      * @brief Gets the current working directory.
      * @return The current working directory, an empty string in case of errors.
      */
-    static [[nodiscard]] std::string cwd() noexcept;
+    [[nodiscard]] static std::string cwd() noexcept;
 
     /**
      * @brief Changes the current working directory.
@@ -672,7 +672,7 @@ struct utilities {
      * [`gettimeofday`](https://linux.die.net/man/2/gettimeofday)
      * @return The current time.
      */
-    static [[nodiscard]] timeval64 time_of_day() noexcept;
+    [[nodiscard]] static timeval64 time_of_day() noexcept;
 
     /**
      * @brief Causes the calling thread to sleep for a while.
@@ -685,7 +685,7 @@ struct utilities {
      * use (always a non-zero value).
      * @return Estimate of the amount of parallelism a program should use.
      */
-    static [[nodiscard]] unsigned int available_parallelism() noexcept;
+    [[nodiscard]] static unsigned int available_parallelism() noexcept;
 };
 
 /**
