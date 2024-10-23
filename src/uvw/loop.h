@@ -124,7 +124,7 @@ public:
     loop &operator=(const loop &) = delete;
     loop &operator=(loop &&other) = delete;
 
-    ~loop() noexcept;
+    ~loop() noexcept override;
 
     /**
      * @brief Sets additional loop options.
