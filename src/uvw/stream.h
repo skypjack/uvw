@@ -2,6 +2,7 @@
 #define UVW_STREAM_INCLUDE_H
 
 #include <algorithm>
+#include <array>
 #include <cstddef>
 #include <iterator>
 #include <memory>
@@ -377,8 +378,8 @@ public:
      * @return Underlying return value.
      */
     int try_write(std::unique_ptr<char[]> data, unsigned int len) {
-        uv_buf_t bufs[] = {uv_buf_init(data.get(), len)};
-        return uv_try_write(as_uv_stream(), bufs, 1);
+        std::array bufs{uv_buf_init(data.get(), len)};
+        return uv_try_write(as_uv_stream(), bufs.data(), 1);
     }
 
     /**
@@ -393,8 +394,8 @@ public:
      */
     template<typename V, typename W>
     int try_write(std::unique_ptr<char[]> data, unsigned int len, stream_handle<V, W> &send) {
-        uv_buf_t bufs[] = {uv_buf_init(data.get(), len)};
-        return uv_try_write2(as_uv_stream(), bufs, 1, send.raw());
+        std::array bufs{uv_buf_init(data.get(), len)};
+        return uv_try_write2(as_uv_stream(), bufs.data(), 1, send.raw());
     }
 
     /**
@@ -408,8 +409,8 @@ public:
      * @return Underlying return value.
      */
     int try_write(char *data, unsigned int len) {
-        uv_buf_t bufs[] = {uv_buf_init(data, len)};
-        return uv_try_write(as_uv_stream(), bufs, 1);
+        std::array bufs{uv_buf_init(data, len)};
+        return uv_try_write(as_uv_stream(), bufs.data(), 1);
     }
 
     /**
@@ -424,8 +425,8 @@ public:
      */
     template<typename V, typename W>
     int try_write(char *data, unsigned int len, stream_handle<V, W> &send) {
-        uv_buf_t bufs[] = {uv_buf_init(data, len)};
-        return uv_try_write2(as_uv_stream(), bufs, 1, send.raw());
+        std::array bufs{uv_buf_init(data, len)};
+        return uv_try_write2(as_uv_stream(), bufs.data(), 1, send.raw());
     }
 
     /**
