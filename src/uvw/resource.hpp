@@ -17,7 +17,7 @@ namespace uvw {
 template<typename T, typename U, typename... E>
 class resource: public uv_type<U>, public emitter<T, E...>, public std::enable_shared_from_this<T> {
 protected:
-    int leak_if(int err) noexcept {
+    [[nodiscard]] int leak_if(int err) noexcept {
         if(err == 0) {
             self_ptr = this->shared_from_this();
         }
@@ -29,7 +29,7 @@ protected:
         self_ptr.reset();
     }
 
-    bool has_self() const noexcept {
+    [[nodiscard]] bool has_self() const noexcept {
         return static_cast<bool>(self_ptr);
     }
 
@@ -44,7 +44,7 @@ public:
      * @return User-defined data if any, an invalid pointer otherwise.
      */
     template<typename R = void>
-    std::shared_ptr<R> data() const {
+    [[nodiscard]] std::shared_ptr<R> data() const {
         return std::static_pointer_cast<R>(user_data);
     }
 
