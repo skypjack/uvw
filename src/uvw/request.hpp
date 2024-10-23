@@ -18,7 +18,7 @@ namespace uvw {
 template<typename T, typename U, typename... E>
 class request: public resource<T, U, E...> {
 protected:
-    static auto reserve(U *req) {
+    [[nodiscard]] static auto reserve(U *req) {
         auto ptr = static_cast<T *>(req->data)->shared_from_this();
         ptr->self_reset();
         return ptr;
@@ -47,7 +47,7 @@ public:
      * @brief Returns the size of the underlying request type.
      * @return The size of the underlying request type.
      */
-    std::size_t size() const noexcept {
+    [[nodiscard]] std::size_t size() const noexcept {
         return uv_req_size(reinterpret_cast<const uv_req_t *>(this->raw())->type);
     }
 };
