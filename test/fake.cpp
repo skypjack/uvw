@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <cstdio>
 
 extern "C" int fake_func(double *);
 
