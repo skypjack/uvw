@@ -53,7 +53,7 @@ public:
      * @brief Returns the last error message, if any.
      * @return The last error message, if any.
      */
-    const char *error() const noexcept;
+    [[nodiscard]] const char *error() const noexcept;
 
 private:
     bool opened;
