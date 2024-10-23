@@ -4,7 +4,7 @@
 namespace uvw {
 
 UVW_INLINE work_req::work_req(loop::token token, std::shared_ptr<loop> ref, task t)
-    : request{token, std::move(ref)}, func{t} {}
+    : request{token, std::move(ref)}, func{std::move(t)} {}
 
 UVW_INLINE void work_req::work_callback(uv_work_t *req) {
     static_cast<work_req *>(req->data)->func();

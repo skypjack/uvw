@@ -154,7 +154,7 @@ public:
      * @param addr A valid instance of socket_address.
      * @return Underlying return value.
      */
-    int connect(socket_address addr);
+    int connect(const socket_address &addr);
 
     /**
      * @brief Disconnects the handle.
@@ -240,7 +240,7 @@ public:
      * @param opts Optional additional flags.
      * @return Underlying return value.
      */
-    int bind(socket_address addr, udp_flags opts = udp_flags::UVW_ENUM);
+    int bind(const socket_address &addr, udp_flags opts = udp_flags::UVW_ENUM);
 
     /**
      * @brief Get the local IP and port of the UDP handle.
@@ -358,7 +358,7 @@ public:
      * @param len The lenght of the submitted data.
      * @return Underlying return value.
      */
-    int send(socket_address addr, std::unique_ptr<char[]> data, unsigned int len);
+    int send(const socket_address &addr, std::unique_ptr<char[]> data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -416,7 +416,7 @@ public:
      * @param len The lenght of the submitted data.
      * @return Underlying return value.
      */
-    int send(socket_address addr, char *data, unsigned int len);
+    int send(const socket_address &addr, char *data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -456,7 +456,7 @@ public:
      * @param len The lenght of the submitted data.
      * @return Underlying return value.
      */
-    int try_send(socket_address addr, std::unique_ptr<char[]> data, unsigned int len);
+    int try_send(const socket_address &addr, std::unique_ptr<char[]> data, unsigned int len);
 
     /**
      * @brief Sends data over the UDP socket.
@@ -496,7 +496,7 @@ public:
      * @param len The lenght of the submitted data.
      * @return Underlying return value.
      */
-    int try_send(socket_address addr, char *data, unsigned int len);
+    int try_send(const socket_address &addr, char *data, unsigned int len);
 
     /**
      * @brief Prepares for receiving data.

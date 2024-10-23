@@ -67,7 +67,7 @@ UVW_INLINE int udp_handle::connect(const std::string &ip, unsigned int port) {
     return connect(details::ip_addr(ip.data(), port));
 }
 
-UVW_INLINE int udp_handle::connect(socket_address addr) {
+UVW_INLINE int udp_handle::connect(const socket_address &addr) {
     return connect(addr.ip, addr.port);
 }
 
@@ -90,7 +90,7 @@ UVW_INLINE int udp_handle::bind(const std::string &ip, unsigned int port, udp_fl
     return bind(details::ip_addr(ip.data(), port), opts);
 }
 
-UVW_INLINE int udp_handle::bind(socket_address addr, udp_flags opts) {
+UVW_INLINE int udp_handle::bind(const socket_address &addr, udp_flags opts) {
     return bind(addr.ip, addr.port, opts);
 }
 
@@ -142,7 +142,7 @@ UVW_INLINE int udp_handle::send(const std::string &ip, unsigned int port, std::u
     return send(details::ip_addr(ip.data(), port), std::move(data), len);
 }
 
-UVW_INLINE int udp_handle::send(socket_address addr, std::unique_ptr<char[]> data, unsigned int len) {
+UVW_INLINE int udp_handle::send(const socket_address &addr, std::unique_ptr<char[]> data, unsigned int len) {
     return send(addr.ip, addr.port, std::move(data), len);
 }
 
@@ -163,7 +163,7 @@ UVW_INLINE int udp_handle::send(const std::string &ip, unsigned int port, char *
     return send(details::ip_addr(ip.data(), port), data, len);
 }
 
-UVW_INLINE int udp_handle::send(socket_address addr, char *data, unsigned int len) {
+UVW_INLINE int udp_handle::send(const socket_address &addr, char *data, unsigned int len) {
     return send(addr.ip, addr.port, data, len);
 }
 
@@ -176,7 +176,7 @@ UVW_INLINE int udp_handle::try_send(const std::string &ip, unsigned int port, st
     return try_send(details::ip_addr(ip.data(), port), std::move(data), len);
 }
 
-UVW_INLINE int udp_handle::try_send(socket_address addr, std::unique_ptr<char[]> data, unsigned int len) {
+UVW_INLINE int udp_handle::try_send(const socket_address &addr, std::unique_ptr<char[]> data, unsigned int len) {
     return try_send(addr.ip, addr.port, std::move(data), len);
 }
 
@@ -189,7 +189,7 @@ UVW_INLINE int udp_handle::try_send(const std::string &ip, unsigned int port, ch
     return try_send(details::ip_addr(ip.data(), port), data, len);
 }
 
-UVW_INLINE int udp_handle::try_send(socket_address addr, char *data, unsigned int len) {
+UVW_INLINE int udp_handle::try_send(const socket_address &addr, char *data, unsigned int len) {
     return try_send(addr.ip, addr.port, data, len);
 }
 

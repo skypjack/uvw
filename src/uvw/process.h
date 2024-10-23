@@ -181,7 +181,7 @@ public:
         uv_stdio_container_t container;
         container.flags = static_cast<uv_stdio_flags>(flags);
         container.data.stream = reinterpret_cast<uv_stream_t *>(stream.raw());
-        po_stream_stdio.push_back(std::move(container));
+        po_stream_stdio.push_back(container);
         return *this;
     }
 

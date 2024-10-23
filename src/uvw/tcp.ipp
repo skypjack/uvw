@@ -37,7 +37,7 @@ UVW_INLINE int tcp_handle::bind(const std::string &ip, unsigned int port, tcp_fl
     return bind(details::ip_addr(ip.data(), port), opts);
 }
 
-UVW_INLINE int tcp_handle::bind(socket_address addr, tcp_flags opts) {
+UVW_INLINE int tcp_handle::bind(const socket_address &addr, tcp_flags opts) {
     return bind(addr.ip, addr.port, opts);
 }
 
@@ -59,7 +59,7 @@ UVW_INLINE int tcp_handle::connect(const std::string &ip, unsigned int port) {
     return connect(details::ip_addr(ip.data(), port));
 }
 
-UVW_INLINE int tcp_handle::connect(socket_address addr) {
+UVW_INLINE int tcp_handle::connect(const socket_address &addr) {
     return connect(addr.ip, addr.port);
 }
 

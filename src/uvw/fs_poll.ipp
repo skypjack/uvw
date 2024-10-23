@@ -1,10 +1,9 @@
-#include <utility>
 #include "config.h"
 
 namespace uvw {
 
 UVW_INLINE fs_poll_event::fs_poll_event(file_info previous, file_info current) noexcept
-    : prev{std::move(previous)}, curr{std::move(current)} {}
+    : prev{previous}, curr{current} {}
 
 UVW_INLINE void fs_poll_handle::start_callback(uv_fs_poll_t *hndl, int status, const uv_stat_t *prev, const uv_stat_t *curr) {
     if(fs_poll_handle &fsPoll = *(static_cast<fs_poll_handle *>(hndl->data)); status) {

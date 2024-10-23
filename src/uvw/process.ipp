@@ -85,7 +85,7 @@ UVW_INLINE process_handle &process_handle::stdio(file_handle fd, stdio_flags fla
         uv_stdio_container_t container;
         container.flags = fgs;
         container.data.fd = actual;
-        po_fd_stdio.push_back(std::move(container));
+        po_fd_stdio.push_back(container);
     } else {
         it->flags = fgs;
         it->data.fd = actual;

@@ -171,7 +171,7 @@ public:
      * @param flags Optional flags that modify the behavior of `getnameinfo`.
      * @return Underlying return value.
      */
-    int name_info(socket_address addr, int flags = 0);
+    int name_info(const socket_address &addr, int flags = 0);
 
     /**
      * @brief Sync [getnameinfo](http://linux.die.net/man/3/getnameinfo).
@@ -214,7 +214,7 @@ public:
      *   * A `const char *` containing a valid hostname.
      *   * A `const char *` containing a valid service name.
      */
-    std::pair<bool, std::pair<const char *, const char *>> name_info_sync(socket_address addr, int flags = 0);
+    std::pair<bool, std::pair<const char *, const char *>> name_info_sync(const socket_address &addr, int flags = 0);
 };
 
 } // namespace uvw

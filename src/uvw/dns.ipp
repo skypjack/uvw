@@ -68,8 +68,8 @@ UVW_INLINE int get_name_info_req::name_info(const std::string &ip, unsigned int 
     return name_info(details::ip_addr(ip.data(), port), flags);
 }
 
-UVW_INLINE int get_name_info_req::name_info(socket_address addr, int flags) {
-    return name_info(std::move(addr.ip), addr.port, flags);
+UVW_INLINE int get_name_info_req::name_info(const socket_address &addr, int flags) {
+    return name_info(addr.ip, addr.port, flags);
 }
 
 UVW_INLINE std::pair<bool, std::pair<const char *, const char *>> get_name_info_req::name_info_sync(const sockaddr &addr, int flags) {
@@ -82,7 +82,7 @@ UVW_INLINE std::pair<bool, std::pair<const char *, const char *>> get_name_info_
     return name_info_sync(details::ip_addr(ip.data(), port), flags);
 }
 
-UVW_INLINE std::pair<bool, std::pair<const char *, const char *>> get_name_info_req::name_info_sync(socket_address addr, int flags) {
+UVW_INLINE std::pair<bool, std::pair<const char *, const char *>> get_name_info_req::name_info_sync(const socket_address &addr, int flags) {
     return name_info_sync(addr.ip, addr.port, flags);
 }
 

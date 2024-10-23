@@ -150,7 +150,7 @@ public:
      * @param opts Optional additional flags.
      * @return Underlying return value.
      */
-    int bind(socket_address addr, tcp_flags opts = tcp_flags::UVW_ENUM);
+    int bind(const socket_address &addr, tcp_flags opts = tcp_flags::UVW_ENUM);
 
     /**
      * @brief Gets the current address to which the handle is bound.
@@ -199,7 +199,7 @@ public:
      * @param addr A valid instance of socket_address.
      * @return Underlying return value.
      */
-    int connect(socket_address addr);
+    int connect(const socket_address &addr);
 
     /**
      * @brief Resets a TCP connection by sending a RST packet.

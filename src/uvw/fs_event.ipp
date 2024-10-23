@@ -1,10 +1,9 @@
-#include <utility>
 #include "config.h"
 
 namespace uvw {
 
 UVW_INLINE fs_event_event::fs_event_event(const char *pathname, details::uvw_fs_event events)
-    : filename{pathname}, flags{std::move(events)} {}
+    : filename{pathname}, flags{events} {}
 
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 UVW_INLINE void fs_event_handle::start_callback(uv_fs_event_t *hndl, const char *filename, int events, int status) {

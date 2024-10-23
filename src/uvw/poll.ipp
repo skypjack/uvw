@@ -4,7 +4,7 @@
 namespace uvw {
 
 UVW_INLINE poll_event::poll_event(details::uvw_poll_event events) noexcept
-    : flags{std::move(events)} {}
+    : flags{events} {}
 
 UVW_INLINE poll_handle::poll_handle(loop::token token, std::shared_ptr<loop> ref, int desc)
     : handle{token, std::move(ref)}, tag{FD}, file_desc{desc} {}
