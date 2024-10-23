@@ -43,7 +43,7 @@ TEST(Handle, Functionalities) {
     ASSERT_LT(handle->recv_buffer_size(), 0);
     ASSERT_NE(0, handle->recv_buffer_size(0));
 
-    ASSERT_NO_THROW([[maybe_unused]] auto fd = handle->fd());
+    ASSERT_NO_THROW([[maybe_unused]] const auto fd = handle->fd());
 }
 
 TEST(Handle, InitializationFailure) {

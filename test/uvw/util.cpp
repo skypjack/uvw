@@ -27,8 +27,8 @@ TEST(Util, Utilities) {
     ASSERT_TRUE(static_cast<bool>(passwd));
     ASSERT_FALSE(passwd.username().empty());
     ASSERT_FALSE(passwd.homedir().empty());
-    ASSERT_NO_THROW([[maybe_unused]] auto uid = passwd.uid());
-    ASSERT_NO_THROW([[maybe_unused]] auto gid = passwd.gid());
+    ASSERT_NO_THROW([[maybe_unused]] const auto uid = passwd.uid());
+    ASSERT_NO_THROW([[maybe_unused]] const auto gid = passwd.gid());
 
 #ifndef _MSC_VER
     // libuv returns a null string for the shell on Windows
@@ -72,8 +72,8 @@ TEST(Util, Utilities) {
     ASSERT_FALSE(interfaceAddresses[0].address.ip.empty());
     ASSERT_FALSE(interfaceAddresses[0].netmask.ip.empty());
 
-    ASSERT_NO_THROW(uvw::utilities::index_to_name(0));
-    ASSERT_NO_THROW(uvw::utilities::index_to_iid(0));
+    ASSERT_NO_THROW([[maybe_unused]] const auto name = uvw::utilities::index_to_name(0));
+    ASSERT_NO_THROW([[maybe_unused]] const auto iid = uvw::utilities::index_to_iid(0));
 
     ASSERT_TRUE(uvw::utilities::replace_allocator(
         [](size_t size) { return malloc(size); },
@@ -82,12 +82,12 @@ TEST(Util, Utilities) {
         [](size_t num, size_t size) { return calloc(num, size); },
         [](void *ptr) { return free(ptr); }));
 
-    ASSERT_NO_THROW(uvw::utilities::load_average());
+    ASSERT_NO_THROW([[maybe_unused]] const auto load_average = uvw::utilities::load_average());
     ASSERT_NE(uvw::utilities::total_memory(), decltype(uvw::utilities::total_memory()){0});
     ASSERT_NE(uvw::utilities::available_memory(), decltype(uvw::utilities::available_memory()){0});
     ASSERT_NE(uvw::utilities::uptime(), decltype(uvw::utilities::uptime()){0});
-    ASSERT_NO_THROW(uvw::utilities::rusage());
-    ASSERT_NO_THROW(uvw::utilities::gettime(uvw::clock_id::MONOTONIC));
+    ASSERT_NO_THROW([[maybe_unused]] const auto rusage = uvw::utilities::rusage());
+    ASSERT_NO_THROW([[maybe_unused]] const auto time = uvw::utilities::gettime(uvw::clock_id::MONOTONIC));
     ASSERT_NE(uvw::utilities::hrtime(), decltype(uvw::utilities::hrtime()){0});
     ASSERT_FALSE(uvw::utilities::path().empty());
     ASSERT_FALSE(uvw::utilities::cwd().empty());
