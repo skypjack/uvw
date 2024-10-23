@@ -118,31 +118,31 @@ struct passwd_info {
      * @brief Gets the username.
      * @return The username of the current effective uid (not the real uid).
      */
-    std::string username() const noexcept;
+    [[nodiscard]] std::string username() const noexcept;
 
     /**
      * @brief Gets the uid.
      * @return The current effective uid (not the real uid).
      */
-    decltype(uv_passwd_t::uid) uid() const noexcept;
+    [[nodiscard]] decltype(uv_passwd_t::uid) uid() const noexcept;
 
     /**
      * @brief Gets the gid.
      * @return The gid of the current effective uid (not the real uid).
      */
-    decltype(uv_passwd_t::gid) gid() const noexcept;
+    [[nodiscard]] decltype(uv_passwd_t::gid) gid() const noexcept;
 
     /**
      * @brief Gets the shell.
      * @return The shell of the current effective uid (not the real uid).
      */
-    std::string shell() const noexcept;
+    [[nodiscard]] std::string shell() const noexcept;
 
     /**
      * @brief Gets the homedir.
      * @return The homedir of the current effective uid (not the real uid).
      */
-    std::string homedir() const noexcept;
+    [[nodiscard]] std::string homedir() const noexcept;
 
     /**
      * @brief Checks if the instance contains valid data.
@@ -170,25 +170,25 @@ struct uts_name {
      * @brief Gets the operating system name (like "Linux").
      * @return The operating system name.
      */
-    std::string sysname() const noexcept;
+    [[nodiscard]] std::string sysname() const noexcept;
 
     /**
      * @brief Gets the operating system release (like "2.6.28").
      * @return The operating system release.
      */
-    std::string release() const noexcept;
+    [[nodiscard]] std::string release() const noexcept;
 
     /**
      * @brief Gets the operating system version.
      * @return The operating system version
      */
-    std::string version() const noexcept;
+    [[nodiscard]] std::string version() const noexcept;
 
     /**
      * @brief Gets the hardware identifier.
      * @return The hardware identifier.
      */
-    std::string machine() const noexcept;
+    [[nodiscard]] std::string machine() const noexcept;
 
 private:
     std::shared_ptr<uv_utsname_t> uname;
@@ -250,7 +250,7 @@ namespace details {
 static constexpr std::size_t DEFAULT_SIZE = 128;
 
 template<typename F, typename... Args>
-std::string try_read(F &&f, Args &&...args) {
+[[nodiscard]] std::string try_read(F &&f, Args &&...args) {
     std::size_t size = DEFAULT_SIZE;
     char buf[DEFAULT_SIZE];
     std::string str{};
@@ -310,7 +310,7 @@ struct utilities {
          *
          * @return The current process id.
          */
-        static pid_type pid() noexcept;
+        static [[nodiscard]] pid_type pid() noexcept;
 
         /**
          * @brief Returns the parent process id.
@@ -321,7 +321,7 @@ struct utilities {
          *
          * @return The parent process id.
          */
-        static pid_type ppid() noexcept;
+        static [[nodiscard]] pid_type ppid() noexcept;
 
         /**
          * @brief Gets the current user's home directory.
@@ -333,7 +333,7 @@ struct utilities {
          * @return The current user's home directory, an empty string in case of
          * errors.
          */
-        static std::string homedir() noexcept;
+        static [[nodiscard]] std::string homedir() noexcept;
 
         /**
          * @brief Gets the temp directory.
@@ -344,7 +344,7 @@ struct utilities {
          *
          * @return The temp directory, an empty string in case of errors.
          */
-        static std::string tmpdir() noexcept;
+        static [[nodiscard]] std::string tmpdir() noexcept;
 
         /**
          * @brief Retrieves an environment variable.
@@ -352,7 +352,7 @@ struct utilities {
          * @return The value of the environment variable, an empty string in
          * case of errors.
          */
-        static std::string env(const std::string &name) noexcept;
+        static [[nodiscard]] std::string env(const std::string &name) noexcept;
 
         /**
          * @brief Creates, updates or deletes an environment variable.
@@ -377,7 +377,7 @@ struct utilities {
          * @return True in case of success, false otherwise.
          */
         template<typename Func>
-        static std::enable_if_t<std::is_invocable_v<Func, std::string_view, std::string_view>, bool>
+        static [[nodiscard]] std::enable_if_t<std::is_invocable_v<Func, std::string_view, std::string_view>, bool>
         env(Func func) noexcept {
             uv_env_item_t *items = nullptr;
             int count{};
@@ -399,7 +399,7 @@ struct utilities {
          * @brief Returns the hostname.
          * @return The hostname, an empty string in case of errors.
          */
-        static std::string hostname() noexcept;
+        static [[nodiscard]] std::string hostname() noexcept;
 
         /**
          * @brief Gets name and information about the current kernel.
@@ -410,7 +410,7 @@ struct utilities {
          *
          * @return Name and information about the current kernel.
          */
-        static uts_name uname() noexcept;
+        static [[nodiscard]] uts_name uname() noexcept;
 
         /**
          * @brief Gets a subset of the password file entry.
@@ -424,7 +424,7 @@ struct utilities {
          *
          * @return The accessible subset of the password file entry.
          */
-        static passwd_info passwd();
+        static [[nodiscard]] passwd_info passwd();
 
         /**
          * @brief Retrieves the scheduling priority of a process.
@@ -464,7 +464,7 @@ struct utilities {
      * @param category A properly initialized handle category.
      * @return The actual type of the handle as defined by handle_type
      */
-    static handle_type guess_handle(handle_category category) noexcept;
+    static [[nodiscard]] handle_type guess_handle(handle_category category) noexcept;
 
     /**
      * @brief Gets the type of the stream to be used with the given descriptor.
@@ -484,7 +484,7 @@ struct utilities {
      * * `handle_type::UDP`
      * * `handle_type::FILE`
      */
-    static handle_type guess_handle(file_handle file) noexcept;
+    static [[nodiscard]] handle_type guess_handle(file_handle file) noexcept;
 
     /** @brief Gets information about the CPUs on the system.
      *
@@ -493,7 +493,7 @@ struct utilities {
      *
      * @return A set of descriptors of all the available CPUs.
      */
-    static std::vector<cpu_info> cpu() noexcept;
+    static [[nodiscard]] std::vector<cpu_info> cpu() noexcept;
 
     /**
      * @brief Gets a set of descriptors of all the available interfaces.
@@ -503,7 +503,7 @@ struct utilities {
      *
      * @return A set of descriptors of all the available interfaces.
      */
-    static std::vector<interface_address> interface_addresses() noexcept;
+    static [[nodiscard]] std::vector<interface_address> interface_addresses() noexcept;
 
     /**
      * @brief IPv6-capable implementation of
@@ -518,7 +518,7 @@ struct utilities {
      * @param index Network interface index.
      * @return Network interface name.
      */
-    static std::string index_to_name(unsigned int index) noexcept;
+    static [[nodiscard]] std::string index_to_name(unsigned int index) noexcept;
 
     /**
      * @brief Retrieves a network interface identifier.
@@ -530,7 +530,7 @@ struct utilities {
      * @param index Network interface index.
      * @return Network interface identifier.
      */
-    static std::string index_to_iid(unsigned int index) noexcept;
+    static [[nodiscard]] std::string index_to_iid(unsigned int index) noexcept;
 
     /**
      * @brief Override the use of some standard library’s functions.
@@ -561,7 +561,7 @@ struct utilities {
      * @brief Gets the load average.
      * @return `[0,0,0]` on Windows (not available), the load average otherwise.
      */
-    static std::array<double, 3> load_average() noexcept;
+    static [[nodiscard]] std::array<double, 3> load_average() noexcept;
 
     /**
      * @brief Store the program arguments.
@@ -576,7 +576,7 @@ struct utilities {
      * @brief Gets the title of the current process.
      * @return The process title.
      */
-    static std::string process_title();
+    static [[nodiscard]] std::string process_title();
 
     /**
      * @brief Sets the current process title.
@@ -589,7 +589,7 @@ struct utilities {
      * @brief Gets memory information (in bytes).
      * @return Memory information.
      */
-    static uint64_t total_memory() noexcept;
+    static [[nodiscard]] uint64_t total_memory() noexcept;
 
     /**
      * @brief Gets the amount of memory available to the process (in bytes).
@@ -602,39 +602,39 @@ struct utilities {
      *
      * @return Amount of memory available to the process.
      */
-    static uint64_t constrained_memory() noexcept;
+    static [[nodiscard]] uint64_t constrained_memory() noexcept;
 
     /**
      * @brief Gets the amount of free memory still available to the process.
      * @return Amount of free memory still available to the process (in bytes).
      */
-    static uint64_t available_memory() noexcept;
+    static [[nodiscard]] uint64_t available_memory() noexcept;
 
     /**
      * @brief Gets the resident set size (RSS) for the current process.
      * @return The resident set size (RSS) for the current process or a negative
      * value in case of errors.
      */
-    static int64_t resident_set_memory() noexcept;
+    static [[nodiscard]] int64_t resident_set_memory() noexcept;
 
     /**
      * @brief Gets the current system uptime.
      * @return The current system uptime or 0 in case of errors.
      */
-    static double uptime() noexcept;
+    static [[nodiscard]] double uptime() noexcept;
 
     /**
      * @brief Gets the resource usage measures for the current process.
      * @return Resource usage measures, zeroes-filled object in case of errors.
      */
-    static resource_usage rusage() noexcept;
+    static [[nodiscard]] resource_usage rusage() noexcept;
 
     /**
      * @brief Gets the current system time from a high-resolution clock source.
      * @param source Clock source, either real-time or monotonic.
      * @return Current system time from the given high-resolution clock source.
      */
-    static timespec64 gettime(clock_id source) noexcept;
+    static [[nodiscard]] timespec64 gettime(clock_id source) noexcept;
 
     /**
      * @brief Gets the current high-resolution real time.
@@ -646,7 +646,7 @@ struct utilities {
      *
      * @return The current high-resolution real time.
      */
-    static uint64_t hrtime() noexcept;
+    static [[nodiscard]] uint64_t hrtime() noexcept;
 
     /**
      * @brief Gets the executable path.
@@ -658,7 +658,7 @@ struct utilities {
      * @brief Gets the current working directory.
      * @return The current working directory, an empty string in case of errors.
      */
-    static std::string cwd() noexcept;
+    static [[nodiscard]] std::string cwd() noexcept;
 
     /**
      * @brief Changes the current working directory.
@@ -672,7 +672,7 @@ struct utilities {
      * [`gettimeofday`](https://linux.die.net/man/2/gettimeofday)
      * @return The current time.
      */
-    static timeval64 time_of_day() noexcept;
+    static [[nodiscard]] timeval64 time_of_day() noexcept;
 
     /**
      * @brief Causes the calling thread to sleep for a while.
@@ -685,7 +685,7 @@ struct utilities {
      * use (always a non-zero value).
      * @return Estimate of the amount of parallelism a program should use.
      */
-    static unsigned int available_parallelism() noexcept;
+    static [[nodiscard]] unsigned int available_parallelism() noexcept;
 };
 
 /**
