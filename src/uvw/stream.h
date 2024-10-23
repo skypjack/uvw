@@ -142,11 +142,11 @@ class stream_handle: public handle<T, U, listen_event, end_event, connect_event,
         }
     }
 
-    uv_stream_t *as_uv_stream() {
+    [[nodiscard]] uv_stream_t *as_uv_stream() {
         return reinterpret_cast<uv_stream_t *>(this->raw());
     }
 
-    const uv_stream_t *as_uv_stream() const {
+    [[nodiscard]] const uv_stream_t *as_uv_stream() const {
         return reinterpret_cast<const uv_stream_t *>(this->raw());
     }
 
@@ -432,7 +432,7 @@ public:
      * @brief Checks if the stream is readable.
      * @return True if the stream is readable, false otherwise.
      */
-    bool readable() const noexcept {
+    [[nodiscard]] bool readable() const noexcept {
         return (uv_is_readable(as_uv_stream()) == 1);
     }
 
@@ -440,7 +440,7 @@ public:
      * @brief Checks if the stream is writable.
      * @return True if the stream is writable, false otherwise.
      */
-    bool writable() const noexcept {
+    [[nodiscard]] bool writable() const noexcept {
         return (uv_is_writable(as_uv_stream()) == 1);
     }
 
@@ -467,7 +467,7 @@ public:
      * @brief Gets the amount of queued bytes waiting to be sent.
      * @return Amount of queued bytes waiting to be sent.
      */
-    size_t write_queue_size() const noexcept {
+    [[nodiscard]] size_t write_queue_size() const noexcept {
         return uv_stream_get_write_queue_size(as_uv_stream());
     }
 };
