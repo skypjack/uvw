@@ -29,11 +29,11 @@ protected:
         ref.publish(close_event{});
     }
 
-    uv_handle_t *as_uv_handle() {
+    [[nodiscard]] uv_handle_t *as_uv_handle() {
         return reinterpret_cast<uv_handle_t *>(this->raw());
     }
 
-    const uv_handle_t *as_uv_handle() const {
+    [[nodiscard]] const uv_handle_t *as_uv_handle() const {
         return reinterpret_cast<const uv_handle_t *>(this->raw());
     }
 
@@ -49,7 +49,7 @@ public:
      *
      * @return The actual category of the handle.
      */
-    handle_category category() const noexcept {
+    [[nodiscard]] handle_category category() const noexcept {
         return handle_category{as_uv_handle()->type};
     }
 
@@ -62,7 +62,7 @@ public:
      *
      * @return The actual type of the handle.
      */
-    handle_type type() const noexcept {
+    [[nodiscard]] handle_type type() const noexcept {
         return utilities::guess_handle(category());
     }
 
@@ -85,7 +85,7 @@ public:
      *
      * @return True if the handle is active, false otherwise.
      */
-    bool active() const noexcept {
+    [[nodiscard]] bool active() const noexcept {
         return !!uv_is_active(as_uv_handle());
     }
 
@@ -97,7 +97,7 @@ public:
      *
      * @return True if the handle is closing or closed, false otherwise.
      */
-    bool closing() const noexcept {
+    [[nodiscard]] bool closing() const noexcept {
         return !!uv_is_closing(as_uv_handle());
     }
 
@@ -139,7 +139,7 @@ public:
      * @brief Checks if the given handle referenced.
      * @return True if the handle referenced, false otherwise.
      */
-    bool referenced() const noexcept {
+    [[nodiscard]] bool referenced() const noexcept {
         return !!uv_has_ref(as_uv_handle());
     }
 
@@ -147,7 +147,7 @@ public:
      * @brief Returns the size of the underlying handle type.
      * @return The size of the underlying handle type.
      */
-    std::size_t size() const noexcept {
+    [[nodiscard]] std::size_t size() const noexcept {
         return uv_handle_size(as_uv_handle()->type);
     }
 
@@ -163,7 +163,7 @@ public:
      * @return The size of the send buffer, the underlying return value in case
      * of errors.
      */
-    int send_buffer_size() {
+    [[nodiscard]] int send_buffer_size() {
         int value = 0;
         auto err = uv_send_buffer_size(as_uv_handle(), &value);
         return err ? err : value;
@@ -180,7 +180,7 @@ public:
      *
      * @return Underlying return value.
      */
-    int send_buffer_size(int value) {
+    [[nodiscard]] int send_buffer_size(int value) {
         return uv_send_buffer_size(as_uv_handle(), &value);
     }
 
@@ -196,7 +196,7 @@ public:
      * @return The size of the receive buffer, the underlying return value in
      * case of errors.
      */
-    int recv_buffer_size() {
+    [[nodiscard]] int recv_buffer_size() {
         int value = 0;
         auto err = uv_recv_buffer_size(as_uv_handle(), &value);
         return err ? err : value;
@@ -213,7 +213,7 @@ public:
      *
      * @return Underlying return value.
      */
-    int recv_buffer_size(int value) {
+    [[nodiscard]] int recv_buffer_size(int value) {
         return uv_recv_buffer_size(as_uv_handle(), &value);
     }
 
@@ -238,7 +238,7 @@ public:
      * @return The file descriptor attached to the hande or a negative value in
      * case of errors.
      */
-    os_file_descriptor fd() const {
+    [[nodiscard]] os_file_descriptor fd() const {
         uv_os_fd_t fd;
         uv_fileno(as_uv_handle(), &fd);
         return fd;
