@@ -69,16 +69,16 @@ UVW_INLINE sockaddr ip_addr(const char *addr, unsigned int port) {
 }
 
 UVW_INLINE socket_address sock_addr(const sockaddr_in &addr) {
-    if(char name[details::DEFAULT_SIZE]; uv_ip4_name(&addr, name, details::DEFAULT_SIZE) == 0) {
-        return socket_address{std::string{name}, ntohs(addr.sin_port)};
+    if(std::array<char, details::DEFAULT_SIZE> name{}; uv_ip4_name(&addr, name.data(), details::DEFAULT_SIZE) == 0) {
+        return socket_address{std::string{name.data()}, ntohs(addr.sin_port)};
     }
 
     return socket_address{};
 }
 
 UVW_INLINE socket_address sock_addr(const sockaddr_in6 &addr) {
-    if(char name[details::DEFAULT_SIZE]; uv_ip6_name(&addr, name, details::DEFAULT_SIZE) == 0) {
-        return socket_address{std::string{name}, ntohs(addr.sin6_port)};
+    if(std::array<char, details::DEFAULT_SIZE> name{}; uv_ip6_name(&addr, name.data(), details::DEFAULT_SIZE) == 0) {
+        return socket_address{std::string{name.data()}, ntohs(addr.sin6_port)};
     }
 
     return socket_address{};
@@ -282,12 +282,11 @@ UVW_INLINE char **utilities::setup_args(int argc, char **argv) {
 }
 
 UVW_INLINE std::string utilities::process_title() {
-    std::size_t size = details::DEFAULT_SIZE;
-    char buf[details::DEFAULT_SIZE];
+    std::array<char, details::DEFAULT_SIZE> buf{};
     std::string str{};
 
-    if(0 == uv_get_process_title(buf, size)) {
-        str.assign(buf, size);
+    if(0 == uv_get_process_title(buf.data(), details::DEFAULT_SIZE)) {
+        str.assign(buf.data(), details::DEFAULT_SIZE);
     }
 
     return str;

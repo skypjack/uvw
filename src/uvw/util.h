@@ -252,9 +252,9 @@ static constexpr std::size_t DEFAULT_SIZE = 128;
 template<typename F, typename... Args>
 [[nodiscard]] std::string try_read(F &&f, Args &&...args) {
     std::size_t size = DEFAULT_SIZE;
-    char buf[DEFAULT_SIZE];
+    std::array<char, DEFAULT_SIZE> buf{};
     std::string str{};
-    auto err = std::forward<F>(f)(args..., buf, &size);
+    auto err = std::forward<F>(f)(args..., buf.data(), &size);
 
     if(UV_ENOBUFS == err) {
         auto data = std::make_unique<char[]>(size);
@@ -264,7 +264,7 @@ template<typename F, typename... Args>
             str = data.get();
         }
     } else if(0 == err) {
-        str.assign(buf, size);
+        str.assign(buf.data(), size);
     }
 
     return str;
