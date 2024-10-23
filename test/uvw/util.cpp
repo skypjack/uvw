@@ -27,8 +27,8 @@ TEST(Util, Utilities) {
     ASSERT_TRUE(static_cast<bool>(passwd));
     ASSERT_FALSE(passwd.username().empty());
     ASSERT_FALSE(passwd.homedir().empty());
-    ASSERT_NO_THROW(passwd.uid());
-    ASSERT_NO_THROW(passwd.gid());
+    ASSERT_NO_THROW([[maybe_unused]] auto uid = passwd.uid());
+    ASSERT_NO_THROW([[maybe_unused]] auto gid = passwd.gid());
 
 #ifndef _MSC_VER
     // libuv returns a null string for the shell on Windows
