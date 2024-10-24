@@ -1,5 +1,3 @@
-#include <cstdio>
-
 extern "C" int fake_func(double *);
 
 int fake_func(double *d) {
