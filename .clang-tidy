@@ -1,5 +1,6 @@
 Checks: >
     bugprone-*,
+    -bugprone-easily-swappable-parameters,
     concurrency-*,
     modernize-*,
     -modernize-use-trailing-return-type,
