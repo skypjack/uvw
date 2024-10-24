@@ -1,3 +1,4 @@
+#include <array>
 #include "config.h"
 
 namespace uvw {
@@ -168,8 +169,8 @@ UVW_INLINE int udp_handle::send(const socket_address &addr, char *data, unsigned
 }
 
 UVW_INLINE int udp_handle::try_send(const sockaddr &addr, std::unique_ptr<char[]> data, unsigned int len) {
-    uv_buf_t bufs[] = {uv_buf_init(data.get(), len)};
-    return uv_udp_try_send(raw(), bufs, 1, &addr);
+    std::array bufs{uv_buf_init(data.get(), len)};
+    return uv_udp_try_send(raw(), bufs.data(), 1, &addr);
 }
 
 UVW_INLINE int udp_handle::try_send(const std::string &ip, unsigned int port, std::unique_ptr<char[]> data, unsigned int len) {
@@ -181,8 +182,8 @@ UVW_INLINE int udp_handle::try_send(const socket_address &addr, std::unique_ptr<
 }
 
 UVW_INLINE int udp_handle::try_send(const sockaddr &addr, char *data, unsigned int len) {
-    uv_buf_t bufs[] = {uv_buf_init(data, len)};
-    return uv_udp_try_send(raw(), bufs, 1, &addr);
+    std::array bufs{uv_buf_init(data, len)};
+    return uv_udp_try_send(raw(), bufs.data(), 1, &addr);
 }
 
 UVW_INLINE int udp_handle::try_send(const std::string &ip, unsigned int port, char *data, unsigned int len) {
