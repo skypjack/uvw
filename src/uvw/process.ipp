@@ -12,7 +12,7 @@ UVW_INLINE void process_handle::exit_callback(uv_process_t *hndl, int64_t exit_s
 }
 
 UVW_INLINE process_handle::process_handle(loop::token token, std::shared_ptr<loop> ref)
-    : handle{token, std::move(ref)} {}
+    : handle{token, std::move(ref)}, po_flags{}, po_uid{}, po_gid{} {}
 
 UVW_INLINE void process_handle::disable_stdio_inheritance() noexcept {
     uv_disable_stdio_inheritance();
