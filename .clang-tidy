@@ -3,6 +3,7 @@ Checks: >
     -bugprone-easily-swappable-parameters,
     concurrency-*,
     modernize-*,
+    -modernize-avoid-c-arrays,
     -modernize-use-trailing-return-type,
     performance-*,
     portability-*,
