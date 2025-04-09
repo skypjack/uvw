@@ -24,6 +24,16 @@ UVW_INLINE bool thread::equal(const thread &tl, const thread &tr) noexcept {
     return !(0 == uv_thread_equal(tl.raw(), tr.raw()));
 }
 
+UVW_INLINE bool thread::name(const std::string &value) noexcept {
+    return (uv_thread_setname(value.data()) == 0);
+}
+
+UVW_INLINE std::string thread::name(thread &tl) noexcept {
+    char buf[details::DEFAULT_SIZE];
+    uv_thread_getname(tl.raw(), buf, details::DEFAULT_SIZE);
+    return std::string{buf};
+}
+
 UVW_INLINE bool thread::priority(const thread &tl, thread_priority val) noexcept {
     return (uv_thread_setpriority(*tl.raw(), static_cast<std::underlying_type_t<thread_priority>>(val)) == 0);
 }

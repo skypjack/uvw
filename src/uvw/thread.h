@@ -84,6 +84,20 @@ public:
     static bool equal(const thread &tl, const thread &tr) noexcept;
 
     /**
+     * @brief Sets the name of the current thread.
+     * @param value A name to set for the current thread.
+     * @return True in case of success, false otherwise.
+     */
+    static bool name(const std::string &value) noexcept;
+
+    /**
+     * @brief Gets the name of a given thread.
+     * @param tl A valid instance of a thread.
+     * @return The thread name in case of success, an empty string otherwise.
+     */
+    static std::string name(thread &tl) noexcept;
+
+    /**
      * @brief Sets the scheduling priority of a given thread.
      * @param tl A valid instance of a thread.
      * @param val Thread priority to set.
