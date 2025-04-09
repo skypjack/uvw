@@ -9,12 +9,12 @@ jobs:
     strategy:
       matrix:
         compiler:
-          - { pkg: g++, exe: 'g++', version: 10 }
-          - { pkg: g++, exe: 'g++', version: 11 }
           - { pkg: g++, exe: 'g++', version: 12 }
-          - { pkg: clang, exe: 'clang++', version: 12 }
-          - { pkg: clang, exe: 'clang++', version: 13 }
-          - { pkg: clang, exe: 'clang++', version: 14 }
+          - { pkg: g++, exe: 'g++', version: 13 }
+          - { pkg: g++, exe: 'g++', version: 14 }
+          - { pkg: clang, exe: 'clang++', version: 16 }
+          - { pkg: clang, exe: 'clang++', version: 17 }
+          - { pkg: clang, exe: 'clang++', version: 18 }
         mode: [-DUVW_BUILD_SHARED_LIB=ON, -DUVW_BUILD_LIBS=ON, -DUVW_BUILD_LIBS=OFF]
 
     runs-on: ubuntu-latest
