@@ -68,7 +68,7 @@ if(UVW_USE_CLANG_TIDY)
 endif()
 
 # Required minimal libuv version
-set(UVW_LIBUV_VERSION 1.50.0)
+set(UVW_LIBUV_VERSION 1.51.0)
 
 function(fetch_libuv)
     if (UVW_FETCH_LIBUV)
