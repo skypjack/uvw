@@ -1,12 +1,63 @@
 Checks: >
     bugprone-*,
     -bugprone-easily-swappable-parameters,
+    clang-analyzer-*,
+    -clang-analyzer-optin.core.EnumCastOutOfRange,
     concurrency-*,
+    cppcoreguidelines-*,
+    -cppcoreguidelines-avoid-c-arrays,
+    -cppcoreguidelines-owning-memory,
+    -cppcoreguidelines-pro-bounds-constant-array-index,
+    -cppcoreguidelines-pro-type-const-cast,
+    -cppcoreguidelines-pro-type-member-init,
+    -cppcoreguidelines-pro-type-reinterpret-cast,
+    -cppcoreguidelines-pro-type-union-access,
+    misc-*,
+    -misc-include-cleaner,
+    -misc-no-recursion,
     modernize-*,
     -modernize-avoid-c-arrays,
     -modernize-use-trailing-return-type,
     performance-*,
     portability-*,
+    readability-*,
+    -readability-else-after-return,
+    -readability-function-cognitive-complexity,
+    -readability-named-parameter,
+    -readability-redundant-member-init,
+    -readability-uppercase-literal-suffix,
 CheckOptions:
     - key: bugprone-suspicious-include.HeaderFileExtensions
       value: ";h;hpp;ipp"
+    - key: cppcoreguidelines-avoid-magic-numbers.IgnoreAllFloatingPointValues
+      value: true
+    - key: cppcoreguidelines-avoid-magic-numbers.IgnorePowersOf2IntegerValues
+      value: true
+    - key: cppcoreguidelines-rvalue-reference-param-not-moved.AllowPartialMove
+      value: true
+    - key: cppcoreguidelines-rvalue-reference-param-not-moved.IgnoreUnnamedParams
+      value: true
+    - key: cppcoreguidelines-special-member-functions.AllowMissingMoveFunctions
+      value: true
+    - key: cppcoreguidelines-special-member-functions.AllowMissingMoveFunctionsWhenCopyIsDeleted
+      value: true
+    - key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
+      value: true
+    - key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic
+      value: true
+    - key: misc-non-private-member-variables-in-classes.IgnorePublicMemberVariables
+      value: true
+    - key: modernize-avoid-c-arrays.AllowStringArrays
+      value: true
+    - key: performance-enum-size.EnumIgnoreList
+      value: meta_traits
+    - key: readability-function-cognitive-complexity.IgnoreMacros
+      value: true
+    - key: readability-identifier-length.MinimumParameterNameLength
+      value: 2
+    - key: readability-identifier-length.MinimumVariableNameLength
+      value: 2
+    - key: readability-magic-numbers.IgnoreAllFloatingPointValues
+      value: true
+    - key: readability-magic-numbers.IgnorePowersOf2IntegerValues
+      value: true
