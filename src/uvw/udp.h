@@ -37,6 +37,7 @@ enum class uvw_udp_flags : std::underlying_type_t<uv_udp_flags> {
     UDP_MMSG_CHUNK = UV_UDP_MMSG_CHUNK,
     UDP_MMSG_FREE = UV_UDP_MMSG_FREE,
     UDP_LINUX_RECVERR = UV_UDP_LINUX_RECVERR,
+    UDP_REUSEPORT = UV_UDP_REUSEPORT,
     UDP_RECVMMSG = UV_UDP_RECVMMSG,
     UVW_ENUM = 0
 };
