@@ -5,21 +5,21 @@
 #include <uvw/request.hpp>
 
 TEST(Resource, Functionalities) {
-    ASSERT_FALSE(std::is_copy_constructible<uvw::async_handle>::value);
-    ASSERT_FALSE(std::is_copy_assignable<uvw::async_handle>::value);
+    ASSERT_FALSE(std::is_copy_constructible_v<uvw::async_handle>);
+    ASSERT_FALSE(std::is_copy_assignable_v<uvw::async_handle>);
 
-    ASSERT_FALSE(std::is_move_constructible<uvw::async_handle>::value);
-    ASSERT_FALSE(std::is_move_assignable<uvw::async_handle>::value);
+    ASSERT_FALSE(std::is_move_constructible_v<uvw::async_handle>);
+    ASSERT_FALSE(std::is_move_assignable_v<uvw::async_handle>);
 
     auto loop = uvw::loop::get_default();
     auto resource = loop->resource<uvw::async_handle>();
 
     ASSERT_EQ(&resource->parent(), loop.get());
 
-    resource->data(std::make_shared<int>(42));
+    resource->data(std::make_shared<int>(2));
 
-    ASSERT_EQ(*std::static_pointer_cast<int>(resource->data()), 42);
-    ASSERT_EQ(*resource->data<int>(), 42);
+    ASSERT_EQ(*std::static_pointer_cast<int>(resource->data()), 2);
+    ASSERT_EQ(*resource->data<int>(), 2);
 
     resource->close();
     loop->run();
