@@ -130,9 +130,9 @@ TEST(Timer, BaseHandleWalk) {
     auto timer = loop->resource<uvw::timer_handle>();
 
     timer->on<uvw::timer_event>([](const auto &, uvw::timer_handle &handle) {
-        handle.parent().walk(uvw::overloaded{[](uvw::timer_handle &h) { h.close(); }, [](auto &&) {}});
+        handle.parent().walk(uvw::overloaded{[](uvw::timer_handle &elem) { elem.close(); }, [](auto &&) {}});
     });
 
-    timer->start(uvw::timer_handle::time{100}, uvw::timer_handle::time{100});
+    timer->start(uvw::timer_handle::time{3}, uvw::timer_handle::time{3});
     loop->run();
 }

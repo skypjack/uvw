@@ -13,7 +13,7 @@ struct TestEmitter: uvw::emitter<TestEmitter, FakeEvent> {
 TEST(ErrorEvent, Functionalities) {
     auto ecode = static_cast<std::underlying_type_t<uv_errno_t>>(UV_EADDRINUSE);
 
-    uvw::error_event event{ecode};
+    const uvw::error_event event{ecode};
 
     ASSERT_EQ(ecode, uvw::error_event::translate(ecode));
     ASSERT_NE(event.what(), nullptr);
