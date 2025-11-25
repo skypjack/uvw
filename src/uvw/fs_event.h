@@ -23,7 +23,8 @@ enum class uvw_fs_event_flags : std::underlying_type_t<uv_fs_event_flags> {
 
 enum class uvw_fs_event : std::underlying_type_t<uv_fs_event> {
     RENAME = UV_RENAME,
-    CHANGE = UV_CHANGE
+    CHANGE = UV_CHANGE,
+    UVW_ENUM = 0
 };
 
 } // namespace details
