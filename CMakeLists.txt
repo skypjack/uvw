@@ -2,15 +2,7 @@
 # uvw
 #
 
-cmake_minimum_required(VERSION 3.13)
-
-#
-# Building in-tree is not allowed (we take care of your craziness).
-#
-
-if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
-    message(FATAL_ERROR "Prevented in-tree built. Please create a build directory outside of the source code and call cmake from there. Thank you.")
-endif()
+cmake_minimum_required(VERSION 3.15.7)
 
 #
 # Project configuration
