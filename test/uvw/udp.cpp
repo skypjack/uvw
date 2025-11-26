@@ -1,9 +1,13 @@
 #include <gtest/gtest.h>
 #include <uvw/udp.h>
 
-static auto custom_alloc_callback(const uvw::udp_handle &, std::size_t suggested) {
+namespace {
+
+auto custom_alloc_callback(const uvw::udp_handle &, std::size_t suggested) {
     return std::make_pair(new char[suggested], suggested);
 }
+
+} // namespace
 
 TEST(UDP, Functionalities) {
     auto loop = uvw::loop::get_default();

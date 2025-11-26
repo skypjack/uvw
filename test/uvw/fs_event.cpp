@@ -31,7 +31,7 @@ TEST(FsEvent, Functionalities) {
         if(event.type == uvw::fs_req::fs_type::WRITE) {
             req.close();
         } else if(event.type == uvw::fs_req::fs_type::OPEN) {
-            req.write(std::unique_ptr<char[]>{new char[1]{42}}, 1, 0);
+            req.write(std::unique_ptr<char[]>{new char[1]{2}}, 1, 0);
         }
     });
 
