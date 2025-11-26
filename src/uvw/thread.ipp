@@ -5,7 +5,8 @@ namespace uvw {
 UVW_INLINE thread::thread(loop::token token, std::shared_ptr<loop> ref, task t, std::shared_ptr<void> d) noexcept
     : uv_type{token, std::move(ref)},
       data{std::move(d)},
-      func{std::move(t)} {}
+      func{std::move(t)},
+      active{false} {}
 
 UVW_INLINE void thread::create_callback(void *arg) {
     thread &curr = *(static_cast<thread *>(arg));
@@ -49,16 +50,37 @@ UVW_INLINE thread::~thread() noexcept {
 }
 
 UVW_INLINE bool thread::run() noexcept {
-    return (0 == uv_thread_create(raw(), &create_callback, this));
+    if(active) {
+        return false;
+    }
+    if(0 != uv_thread_create(raw(), &create_callback, this)) {
+        return false;
+    }
+    active = true;
+    return true;
 }
 
 UVW_INLINE bool thread::run(create_flags opts, std::size_t stack) noexcept {
+    if(active) {
+        return false;
+    }
     uv_thread_options_t params{static_cast<unsigned int>(opts), stack};
-    return (0 == uv_thread_create_ex(raw(), &params, &create_callback, this));
+    if(0 != uv_thread_create_ex(raw(), &params, &create_callback, this)) {
+        return false;
+    }
+    active = true;
+    return true;
 }
 
 UVW_INLINE bool thread::join() noexcept {
-    return (0 == uv_thread_join(raw()));
+    if(!active) {
+        return false;
+    }
+    if(0 != uv_thread_join(raw())) {
+        return false;
+    }
+    active = false;
+    return true;
 }
 
 UVW_INLINE thread_local_storage::thread_local_storage(loop::token token, std::shared_ptr<loop> ref) noexcept

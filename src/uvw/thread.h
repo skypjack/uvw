@@ -146,6 +146,7 @@ public:
 private:
     std::shared_ptr<void> data;
     task func;
+    bool active;
 };
 
 /**
