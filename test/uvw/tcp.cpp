@@ -1,9 +1,13 @@
 #include <gtest/gtest.h>
 #include <uvw/tcp.h>
 
-static auto custom_alloc_callback(const uvw::tcp_handle &, std::size_t suggested) {
+namespace {
+
+auto custom_alloc_callback(const uvw::tcp_handle &, std::size_t suggested) {
     return std::make_pair(new char[suggested], suggested);
 }
+
+} // namespace
 
 TEST(TCP, Functionalities) {
     auto loop = uvw::loop::get_default();
@@ -29,7 +33,7 @@ TEST(TCP, ReadWrite) {
     client->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     server->on<uvw::listen_event>([](const uvw::listen_event &, uvw::tcp_handle &handle) {
-        std::shared_ptr<uvw::tcp_handle> socket = handle.parent().resource<uvw::tcp_handle>();
+        const std::shared_ptr<uvw::tcp_handle> socket = handle.parent().resource<uvw::tcp_handle>();
 
         socket->on<uvw::error_event>([](const uvw::error_event &, uvw::tcp_handle &) { FAIL(); });
         socket->on<uvw::close_event>([&handle](const uvw::close_event &, uvw::tcp_handle &) { handle.close(); });
@@ -74,7 +78,7 @@ TEST(TCP, ReadWriteCustomAlloc) {
     client->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     server->on<uvw::listen_event>([](const uvw::listen_event &, uvw::tcp_handle &handle) {
-        std::shared_ptr<uvw::tcp_handle> socket = handle.parent().resource<uvw::tcp_handle>();
+        const std::shared_ptr<uvw::tcp_handle> socket = handle.parent().resource<uvw::tcp_handle>();
 
         socket->on<uvw::error_event>([](const uvw::error_event &, uvw::tcp_handle &) { FAIL(); });
         socket->on<uvw::close_event>([&handle](const uvw::close_event &, uvw::tcp_handle &) { handle.close(); });
@@ -119,7 +123,7 @@ TEST(TCP, SockPeer) {
     client->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     server->on<uvw::listen_event>([&address](const uvw::listen_event &, uvw::tcp_handle &handle) {
-        std::shared_ptr<uvw::tcp_handle> socket = handle.parent().resource<uvw::tcp_handle>();
+        const std::shared_ptr<uvw::tcp_handle> socket = handle.parent().resource<uvw::tcp_handle>();
 
         socket->on<uvw::error_event>([](const uvw::error_event &, uvw::tcp_handle &) { FAIL(); });
         socket->on<uvw::close_event>([&handle](const uvw::close_event &, uvw::tcp_handle &) { handle.close(); });
@@ -128,13 +132,13 @@ TEST(TCP, SockPeer) {
         ASSERT_EQ(0, handle.accept(*socket));
         ASSERT_EQ(0, socket->read());
 
-        uvw::socket_address addr = handle.sock();
+        const uvw::socket_address addr = handle.sock();
 
         ASSERT_EQ(addr.ip, address);
     });
 
     client->on<uvw::connect_event>([&address](const uvw::connect_event &, uvw::tcp_handle &handle) {
-        uvw::socket_address addr = handle.peer();
+        const uvw::socket_address addr = handle.peer();
 
         ASSERT_EQ(addr.ip, address);
 
@@ -160,7 +164,7 @@ TEST(TCP, Shutdown) {
     client->on<uvw::error_event>([](const auto &, auto &) { FAIL(); });
 
     server->on<uvw::listen_event>([](const uvw::listen_event &, uvw::tcp_handle &handle) {
-        std::shared_ptr<uvw::tcp_handle> socket = handle.parent().resource<uvw::tcp_handle>();
+        const std::shared_ptr<uvw::tcp_handle> socket = handle.parent().resource<uvw::tcp_handle>();
 
         socket->on<uvw::error_event>([](const uvw::error_event &, uvw::tcp_handle &) { FAIL(); });
         socket->on<uvw::close_event>([&handle](const uvw::close_event &, uvw::tcp_handle &) { handle.close(); });
