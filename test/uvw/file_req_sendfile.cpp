@@ -7,6 +7,8 @@
 #endif
 
 TEST(FileReq, SendFile) {
+    static constexpr auto mode_0644 = 0644;
+
     const std::string srcFilename = std::string{TARGET_FILE_REQ_SENDFILE_DIR} + std::string{"/src.file"};
     const std::string dstFilename = std::string{TARGET_FILE_REQ_SENDFILE_DIR} + std::string{"/dst.file"};
 
@@ -32,12 +34,12 @@ TEST(FileReq, SendFile) {
             dstReq->close();
             req.close();
         } else if(event.type == uvw::fs_req::fs_type::OPEN) {
-            dstReq->open(dstFilename, uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::WRONLY | uvw::file_req::file_open_flags::TRUNC, 0644);
+            dstReq->open(dstFilename, uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::WRONLY | uvw::file_req::file_open_flags::TRUNC, mode_0644);
         }
     });
 
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDONLY | uvw::file_req::file_open_flags::TRUNC;
-    srcReq->open(srcFilename, flags, 0644);
+    srcReq->open(srcFilename, flags, mode_0644);
 
     loop->run();
 
@@ -45,6 +47,8 @@ TEST(FileReq, SendFile) {
 }
 
 TEST(FileReq, SendFileSync) {
+    static constexpr auto mode_0644 = 0644;
+
     const std::string srcFilename = std::string{TARGET_FILE_REQ_SENDFILE_DIR} + std::string{"/src.file"};
     const std::string dstFilename = std::string{TARGET_FILE_REQ_SENDFILE_DIR} + std::string{"/dst.file"};
 
@@ -52,8 +56,8 @@ TEST(FileReq, SendFileSync) {
     auto srcReq = loop->resource<uvw::file_req>();
     auto dstReq = loop->resource<uvw::file_req>();
 
-    ASSERT_TRUE(srcReq->open_sync(srcFilename, uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDONLY | uvw::file_req::file_open_flags::TRUNC, 0644));
-    ASSERT_TRUE(dstReq->open_sync(dstFilename, uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::WRONLY | uvw::file_req::file_open_flags::TRUNC, 0644));
+    ASSERT_TRUE(srcReq->open_sync(srcFilename, uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDONLY | uvw::file_req::file_open_flags::TRUNC, mode_0644));
+    ASSERT_TRUE(dstReq->open_sync(dstFilename, uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::WRONLY | uvw::file_req::file_open_flags::TRUNC, mode_0644));
 
     auto sendfileR = srcReq->sendfile_sync(static_cast<uvw::file_handle>(*dstReq), 0, 0);
 

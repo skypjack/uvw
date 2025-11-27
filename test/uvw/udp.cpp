@@ -153,7 +153,7 @@ TEST(UDP, Sock) {
     handle->bind(address, port);
     handle->recv();
 
-    uvw::socket_address sock = handle->sock();
+    const uvw::socket_address sock = handle->sock();
 
     ASSERT_EQ(sock.ip, address);
     ASSERT_EQ(sock.port, decltype(sock.port){port});

@@ -8,6 +8,7 @@
 #endif
 
 TEST(FileReq, OpenAndCloseErr) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/err.file"};
 
     auto loop = uvw::loop::get_default();
@@ -28,7 +29,7 @@ TEST(FileReq, OpenAndCloseErr) {
     });
 
     auto flags = uvw::file_req::file_open_flags::RDONLY;
-    openReq->open(filename, flags, 0644);
+    openReq->open(filename, flags, mode_0644);
     closeReq->close();
 
     loop->run();
@@ -38,19 +39,21 @@ TEST(FileReq, OpenAndCloseErr) {
 }
 
 TEST(FileReq, OpenAndCloseErrSync) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/err.file"};
 
     auto loop = uvw::loop::get_default();
     auto request = loop->resource<uvw::file_req>();
     auto flags = uvw::file_req::file_open_flags::RDONLY;
 
-    ASSERT_FALSE(request->open_sync(filename, flags, 0644));
+    ASSERT_FALSE(request->open_sync(filename, flags, mode_0644));
     ASSERT_FALSE(request->close_sync());
 
     loop->run();
 }
 
 TEST(FileReq, OpenAndClose) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
@@ -73,7 +76,7 @@ TEST(FileReq, OpenAndClose) {
     });
 
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::WRONLY;
-    request->open(filename, flags, 0644);
+    request->open(filename, flags, mode_0644);
 
     loop->run();
 
@@ -82,19 +85,21 @@ TEST(FileReq, OpenAndClose) {
 }
 
 TEST(FileReq, OpenAndCloseSync) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
     auto request = loop->resource<uvw::file_req>();
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::WRONLY;
 
-    ASSERT_TRUE(request->open_sync(filename, flags, 0644));
+    ASSERT_TRUE(request->open_sync(filename, flags, mode_0644));
     ASSERT_TRUE(request->close_sync());
 
     loop->run();
 }
 
 TEST(FileReq, RWChecked) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
@@ -121,7 +126,7 @@ TEST(FileReq, RWChecked) {
     });
 
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
-    request->open(filename, flags, 0644);
+    request->open(filename, flags, mode_0644);
 
     loop->run();
 
@@ -130,6 +135,7 @@ TEST(FileReq, RWChecked) {
 }
 
 TEST(FileReq, RWUnchecked) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
     std::unique_ptr<char[]> data{new char[1]{42}};
 
@@ -157,7 +163,7 @@ TEST(FileReq, RWUnchecked) {
     });
 
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
-    request->open(filename, flags, 0644);
+    request->open(filename, flags, mode_0644);
 
     loop->run();
 
@@ -166,13 +172,14 @@ TEST(FileReq, RWUnchecked) {
 }
 
 TEST(FileReq, RWSync) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
     auto request = loop->resource<uvw::file_req>();
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
 
-    ASSERT_TRUE(request->open_sync(filename, flags, 0644));
+    ASSERT_TRUE(request->open_sync(filename, flags, mode_0644));
 
     auto writeR = request->write_sync(std::unique_ptr<char[]>{new char[1]{42}}, 1, 0);
 
@@ -190,6 +197,7 @@ TEST(FileReq, RWSync) {
 }
 
 TEST(FileReq, Stat) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
@@ -210,7 +218,7 @@ TEST(FileReq, Stat) {
     });
 
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
-    request->open(filename, flags, 0644);
+    request->open(filename, flags, mode_0644);
 
     loop->run();
 
@@ -218,13 +226,14 @@ TEST(FileReq, Stat) {
 }
 
 TEST(FileReq, StatSync) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
     auto request = loop->resource<uvw::file_req>();
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
 
-    ASSERT_TRUE(request->open_sync(filename, flags, 0644));
+    ASSERT_TRUE(request->open_sync(filename, flags, mode_0644));
 
     auto statR = request->stat_sync();
 
@@ -235,6 +244,7 @@ TEST(FileReq, StatSync) {
 }
 
 TEST(FileReq, Sync) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
@@ -255,7 +265,7 @@ TEST(FileReq, Sync) {
     });
 
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
-    request->open(filename, flags, 0644);
+    request->open(filename, flags, mode_0644);
 
     loop->run();
 
@@ -263,13 +273,14 @@ TEST(FileReq, Sync) {
 }
 
 TEST(FileReq, SyncSync) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
     auto request = loop->resource<uvw::file_req>();
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
 
-    ASSERT_TRUE(request->open_sync(filename, flags, 0644));
+    ASSERT_TRUE(request->open_sync(filename, flags, mode_0644));
     ASSERT_TRUE(request->sync_sync());
     ASSERT_TRUE(request->close_sync());
 
@@ -277,6 +288,7 @@ TEST(FileReq, SyncSync) {
 }
 
 TEST(FileReq, Datasync) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
@@ -297,7 +309,7 @@ TEST(FileReq, Datasync) {
     });
 
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
-    request->open(filename, flags, 0644);
+    request->open(filename, flags, mode_0644);
 
     loop->run();
 
@@ -305,13 +317,14 @@ TEST(FileReq, Datasync) {
 }
 
 TEST(FileReq, DatasyncSync) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
     auto request = loop->resource<uvw::file_req>();
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
 
-    ASSERT_TRUE(request->open_sync(filename, flags, 0644));
+    ASSERT_TRUE(request->open_sync(filename, flags, mode_0644));
     ASSERT_TRUE(request->datasync_sync());
     ASSERT_TRUE(request->close_sync());
 
@@ -319,6 +332,7 @@ TEST(FileReq, DatasyncSync) {
 }
 
 TEST(FileReq, Truncate) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
@@ -339,7 +353,7 @@ TEST(FileReq, Truncate) {
     });
 
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
-    request->open(filename, flags, 0644);
+    request->open(filename, flags, mode_0644);
 
     loop->run();
 
@@ -347,13 +361,14 @@ TEST(FileReq, Truncate) {
 }
 
 TEST(FileReq, TruncateSync) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
     auto request = loop->resource<uvw::file_req>();
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
 
-    ASSERT_TRUE(request->open_sync(filename, flags, 0644));
+    ASSERT_TRUE(request->open_sync(filename, flags, mode_0644));
     ASSERT_TRUE(request->truncate_sync(0));
     ASSERT_TRUE(request->close_sync());
 
@@ -361,6 +376,7 @@ TEST(FileReq, TruncateSync) {
 }
 
 TEST(FileReq, Chmod) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
@@ -376,12 +392,12 @@ TEST(FileReq, Chmod) {
             checkFileChmodEvent = true;
             req.close();
         } else if(event.type == uvw::fs_req::fs_type::OPEN) {
-            req.chmod(0644);
+            req.chmod(mode_0644);
         };
     });
 
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
-    request->open(filename, flags, 0644);
+    request->open(filename, flags, mode_0644);
 
     loop->run();
 
@@ -389,20 +405,22 @@ TEST(FileReq, Chmod) {
 }
 
 TEST(FileReq, ChmodSync) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
     auto request = loop->resource<uvw::file_req>();
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
 
-    ASSERT_TRUE(request->open_sync(filename, flags, 0644));
-    ASSERT_TRUE(request->chmod_sync(0644));
+    ASSERT_TRUE(request->open_sync(filename, flags, mode_0644));
+    ASSERT_TRUE(request->chmod_sync(mode_0644));
     ASSERT_TRUE(request->close_sync());
 
     loop->run();
 }
 
 TEST(FileReq, Futime) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
@@ -425,7 +443,7 @@ TEST(FileReq, Futime) {
     });
 
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
-    request->open(filename, flags, 0644);
+    request->open(filename, flags, mode_0644);
 
     loop->run();
 
@@ -433,13 +451,14 @@ TEST(FileReq, Futime) {
 }
 
 TEST(FileReq, FutimeSync) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
     auto request = loop->resource<uvw::file_req>();
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
 
-    ASSERT_TRUE(request->open_sync(filename, flags, 0644));
+    ASSERT_TRUE(request->open_sync(filename, flags, mode_0644));
 
     auto now = std::chrono::system_clock::now();
     auto epoch = now.time_since_epoch();
@@ -453,6 +472,7 @@ TEST(FileReq, FutimeSync) {
 }
 
 TEST(FileReq, Chown) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
@@ -475,7 +495,7 @@ TEST(FileReq, Chown) {
     });
 
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
-    request->open(filename, flags, 0644);
+    request->open(filename, flags, mode_0644);
 
     loop->run();
 
@@ -483,13 +503,14 @@ TEST(FileReq, Chown) {
 }
 
 TEST(FileReq, ChownSync) {
+    static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
 
     auto loop = uvw::loop::get_default();
     auto request = loop->resource<uvw::file_req>();
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
 
-    ASSERT_TRUE(request->open_sync(filename, flags, 0644));
+    ASSERT_TRUE(request->open_sync(filename, flags, mode_0644));
 
     auto statR = request->stat_sync();
 

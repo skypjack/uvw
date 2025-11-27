@@ -17,13 +17,13 @@ TEST(FsEvent, Functionalities) {
     handle->on<uvw::fs_event_event>([&checkFsEventEvent](const auto &event, auto &hndl) {
         ASSERT_FALSE(checkFsEventEvent);
         ASSERT_EQ(std::string{event.filename}, std::string{"test.file"});
-        
+
         checkFsEventEvent = true;
-        
+
         ASSERT_EQ(0, hndl.stop());
-        
+
         hndl.close();
-        
+
         ASSERT_TRUE(hndl.closing());
     });
 
@@ -36,9 +36,10 @@ TEST(FsEvent, Functionalities) {
     });
 
     ASSERT_EQ(0, handle->start(std::string{TARGET_FS_EVENT_DIR}, uvw::fs_event_handle::event_flags::RECURSIVE));
-    
+
     auto flags = uvw::file_req::file_open_flags::CREAT | uvw::file_req::file_open_flags::RDWR | uvw::file_req::file_open_flags::TRUNC;
-    request->open(filename, flags, 0644);
+    static constexpr auto mode_0644 = 0644;
+    request->open(filename, flags, mode_0644);
 
     ASSERT_EQ(handle->path(), std::string{TARGET_FS_EVENT_DIR});
     ASSERT_TRUE(handle->active());
