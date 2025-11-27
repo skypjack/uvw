@@ -3,7 +3,7 @@
 
 TEST(Pipe, ReadWrite) {
 #ifdef _MSC_VER
-    const std::string sockname{"\\\\.\\pipe\\test.sock"};
+    const std::string sockname{R"(\\.\pipe\test.sock)"};
 #else
     const std::string sockname = std::string{TARGET_PIPE_DIR} + std::string{"/test.sock"};
 #endif
@@ -48,8 +48,8 @@ TEST(Pipe, ReadWrite) {
 
 TEST(Pipe, SockPeer) {
 #ifdef _MSC_VER
-    const std::string sockname{"\\\\.\\pipe\\test.sock"};
-    const std::string peername{"\\\\?\\pipe\\test.sock"};
+    const std::string sockname{R"(\\.\pipe\test.sock)"};
+    const std::string peername{R"(\\?\pipe\test.sock)"};
 #else
     const std::string sockname = std::string{TARGET_PIPE_DIR} + std::string{"/test.sock"};
     const auto peername = sockname;
@@ -90,7 +90,7 @@ TEST(Pipe, SockPeer) {
 
 TEST(Pipe, Shutdown) {
 #ifdef _MSC_VER
-    const std::string sockname{"\\\\.\\pipe\\test.sock"};
+    const std::string sockname{R"(\\.\pipe\test.sock)"};
 #else
     const std::string sockname = std::string{TARGET_PIPE_DIR} + std::string{"/test.sock"};
 #endif
