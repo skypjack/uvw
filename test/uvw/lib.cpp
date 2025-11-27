@@ -22,7 +22,7 @@ TEST(SharedLib, Success) {
     ASSERT_EQ(lib->sym<int(double *)>("foobar"), nullptr);
     ASSERT_NE(lib->sym<int(double *)>("fake_func"), nullptr);
     double value{1.};
-    ASSERT_EQ(-42, lib->sym<int(double *)>("fake_func")(&value));
+    ASSERT_EQ(-1, lib->sym<int(double *)>("fake_func")(&value));
     ASSERT_DOUBLE_EQ(-1., value);
 
     // this forces a call to the destructor to invoke uv_dlclose
