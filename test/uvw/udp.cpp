@@ -130,7 +130,7 @@ TEST(UDP, ReadSendCustomAlloc) {
     ASSERT_EQ(0, (server->bind(address, port)));
     ASSERT_EQ(0, server->recv<&custom_alloc_callback>());
 
-    auto dataSend = std::unique_ptr<char[]>(new char[5]{'b', 'c'});
+    auto dataSend = std::unique_ptr<char[]>(new char[3]{'b', 'c'});
 
     client->send(uvw::socket_address{address, port}, dataSend.get(), 2);
     client->send(address, port, nullptr, 0);

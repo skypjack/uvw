@@ -3,6 +3,7 @@
 #include <uvw/fs.h>
 
 #ifdef _WIN32
+// NOLINTNEXTLINE(bugprone-reserved-identifier,cppcoreguidelines-macro-usage)
 #    define _CRT_DECLARE_NONSTDC_NAMES 1
 #    include <fcntl.h>
 #endif
@@ -112,10 +113,10 @@ TEST(FileReq, RWChecked) {
 
     request->on<uvw::fs_event>([&](const auto &event, auto &req) {
         if(event.type == uvw::fs_req::fs_type::OPEN) {
-            req.write(std::unique_ptr<char[]>{new char[1]{42}}, 1, 0);
+            req.write(std::unique_ptr<char[]>{new char[1]{3}}, 1, 0);
         } else if(event.type == uvw::fs_req::fs_type::READ) {
             ASSERT_FALSE(checkFileReadEvent);
-            ASSERT_EQ(event.read.data[0], 42);
+            ASSERT_EQ(event.read.data[0], 3);
             checkFileReadEvent = true;
             req.close();
         } else if(event.type == uvw::fs_req::fs_type::WRITE) {
@@ -137,7 +138,7 @@ TEST(FileReq, RWChecked) {
 TEST(FileReq, RWUnchecked) {
     static constexpr auto mode_0644 = 0644;
     const std::string filename = std::string{TARGET_FILE_REQ_DIR} + std::string{"/test.file"};
-    std::unique_ptr<char[]> data{new char[1]{42}};
+    std::unique_ptr<char[]> data{new char[1]{3}};
 
     auto loop = uvw::loop::get_default();
     auto request = loop->resource<uvw::file_req>();
@@ -152,7 +153,7 @@ TEST(FileReq, RWUnchecked) {
             req.write(data.get(), 1, 0);
         } else if(event.type == uvw::fs_req::fs_type::READ) {
             ASSERT_FALSE(checkFileReadEvent);
-            ASSERT_EQ(event.read.data[0], 42);
+            ASSERT_EQ(event.read.data[0], 3);
             checkFileReadEvent = true;
             req.close();
         } else if(event.type == uvw::fs_req::fs_type::WRITE) {
@@ -181,7 +182,7 @@ TEST(FileReq, RWSync) {
 
     ASSERT_TRUE(request->open_sync(filename, flags, mode_0644));
 
-    auto writeR = request->write_sync(std::unique_ptr<char[]>{new char[1]{42}}, 1, 0);
+    auto writeR = request->write_sync(std::unique_ptr<char[]>{new char[1]{3}}, 1, 0);
 
     ASSERT_TRUE(writeR.first);
     ASSERT_EQ(writeR.second, std::size_t{1});
@@ -189,7 +190,7 @@ TEST(FileReq, RWSync) {
     auto readR = request->read_sync(0, 1);
 
     ASSERT_TRUE(readR.first);
-    ASSERT_EQ(readR.second.first[0], 42);
+    ASSERT_EQ(readR.second.first[0], 3);
     ASSERT_EQ(readR.second.second, std::size_t{1});
     ASSERT_TRUE(request->close_sync());
 

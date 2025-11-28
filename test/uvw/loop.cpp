@@ -97,15 +97,15 @@ TEST(Loop, Walk) {
 
 TEST(Loop, UserData) {
     auto loop = uvw::loop::create();
-    loop->data(std::make_shared<int>(42));
+    loop->data(std::make_shared<int>(2));
 
-    ASSERT_EQ(*std::static_pointer_cast<int>(loop->data()), 42);
-    ASSERT_EQ(*loop->data<int>(), 42);
+    ASSERT_EQ(*std::static_pointer_cast<int>(loop->data()), 2);
+    ASSERT_EQ(*loop->data<int>(), 2);
 
     loop->run();
 
-    ASSERT_EQ(*std::static_pointer_cast<int>(loop->data()), 42);
-    ASSERT_EQ(*loop->data<int>(), 42);
+    ASSERT_EQ(*std::static_pointer_cast<int>(loop->data()), 2);
+    ASSERT_EQ(*loop->data<int>(), 2);
 
     ASSERT_EQ(0, loop->close());
 }
@@ -126,7 +126,7 @@ TEST(Loop, IdleTime) {
 
 TEST(Loop, Metrics) {
     auto loop = uvw::loop::create();
-    uvw::metrics_type metrics = loop->metrics();
+    const uvw::metrics_type metrics = loop->metrics();
     ASSERT_EQ(0, metrics.loop_count);
     ASSERT_EQ(0, metrics.events);
     ASSERT_EQ(0, metrics.events_waiting);

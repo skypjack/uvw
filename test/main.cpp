@@ -49,7 +49,8 @@ void listen(uvw::loop &loop) {
         std::cout << "close\n";
     });
 
-    tcp->bind("127.0.0.1", 4242);
+    static constexpr auto TCP_PORT = 4242;
+    tcp->bind("127.0.0.1", TCP_PORT);
     tcp->listen();
 }
 
@@ -77,7 +78,8 @@ void conn(uvw::loop &loop) {
         std::cout << "close\n";
     });
 
-    tcp->connect("127.0.0.1", 4242);
+    static constexpr auto TCP_PORT = 4242;
+    tcp->connect("127.0.0.1", TCP_PORT);
 }
 
 } // namespace

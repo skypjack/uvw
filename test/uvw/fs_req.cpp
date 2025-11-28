@@ -3,6 +3,7 @@
 #include <uvw/fs.h>
 
 #ifdef _WIN32
+// NOLINTNEXTLINE(bugprone-reserved-identifier,cppcoreguidelines-macro-usage)
 #    define _CRT_DECLARE_NONSTDC_NAMES 1
 #    include <fcntl.h>
 #endif

@@ -75,12 +75,14 @@ TEST(Util, Utilities) {
     ASSERT_NO_THROW([[maybe_unused]] const auto name = uvw::utilities::index_to_name(0));
     ASSERT_NO_THROW([[maybe_unused]] const auto iid = uvw::utilities::index_to_iid(0));
 
+    // NOLINTBEGIN(cppcoreguidelines-no-malloc)
     ASSERT_TRUE(uvw::utilities::replace_allocator(
         [](size_t size) { return malloc(size); },
         [](void *ptr, size_t size) { return realloc(ptr, size); },
         // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
         [](size_t num, size_t size) { return calloc(num, size); },
         [](void *ptr) { return free(ptr); }));
+    // NOLINTEND(cppcoreguidelines-no-malloc)
 
     ASSERT_NO_THROW([[maybe_unused]] const auto load_average = uvw::utilities::load_average());
     ASSERT_NE(uvw::utilities::total_memory(), decltype(uvw::utilities::total_memory()){0});
@@ -93,7 +95,7 @@ TEST(Util, Utilities) {
     ASSERT_FALSE(uvw::utilities::cwd().empty());
     ASSERT_TRUE(uvw::utilities::chdir(uvw::utilities::cwd()));
 
-    std::unique_ptr<char[], void (*)(void *)> fake{new char[1], [](void *ptr) { delete[] static_cast<char *>(ptr); }};
+    const std::unique_ptr<char[], void (*)(void *)> fake{new char[1], [](void *ptr) { delete[] static_cast<char *>(ptr); }};
     char *argv = fake.get();
     argv[0] = '\0';
 
