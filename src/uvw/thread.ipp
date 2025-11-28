@@ -59,12 +59,8 @@ UVW_INLINE bool thread::run(create_flags opts, std::size_t stack) noexcept {
 }
 
 UVW_INLINE bool thread::join() noexcept {
-    if(joinable) {
-        joinable = false;
-        return (0 == uv_thread_join(raw()));
-    }
-
-    return true;
+    const auto was_joinable = std::exchange(joinable, false);
+    return was_joinable ? (0 == uv_thread_join(raw())) : true;
 }
 
 UVW_INLINE thread_local_storage::thread_local_storage(loop::token token, std::shared_ptr<loop> ref) noexcept
