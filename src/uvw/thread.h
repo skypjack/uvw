@@ -145,6 +145,7 @@ public:
 
 private:
     std::shared_ptr<void> data;
+    bool joinable;
     task func;
 };
 

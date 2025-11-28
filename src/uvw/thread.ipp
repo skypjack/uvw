@@ -5,6 +5,7 @@ namespace uvw {
 UVW_INLINE thread::thread(loop::token token, std::shared_ptr<loop> ref, task t, std::shared_ptr<void> d) noexcept
     : uv_type{token, std::move(ref)},
       data{std::move(d)},
+      joinable{true},
       func{std::move(t)} {}
 
 UVW_INLINE void thread::create_callback(void *arg) {
@@ -58,7 +59,12 @@ UVW_INLINE bool thread::run(create_flags opts, std::size_t stack) noexcept {
 }
 
 UVW_INLINE bool thread::join() noexcept {
-    return (0 == uv_thread_join(raw()));
+    if(joinable) {
+        joinable = false;
+        return (0 == uv_thread_join(raw()));
+    }
+
+    return true;
 }
 
 UVW_INLINE thread_local_storage::thread_local_storage(loop::token token, std::shared_ptr<loop> ref) noexcept
