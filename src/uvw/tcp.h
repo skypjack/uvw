@@ -19,6 +19,7 @@ namespace details {
 
 enum class uvw_tcp_flags : std::underlying_type_t<uv_tcp_flags> {
     IPV6ONLY = UV_TCP_IPV6ONLY,
+    TCP_REUSEPORT = UV_TCP_REUSEPORT,
     UVW_ENUM = 0
 };
 
