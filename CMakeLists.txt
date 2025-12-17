@@ -102,7 +102,7 @@ function(use_libuv)
     set(UVW_FETCH_LIBUV_DEFAULT ON)
 
     if (UVW_FIND_LIBUV)
-        find_package(libuv ${LIBUV_VERSION} QUIET)
+        find_package(libuv ${UVW_LIBUV_VERSION} QUIET)
         if (libuv_FOUND)
             add_library(uv::uv-shared ALIAS uv)
             set(UVW_FETCH_LIBUV_DEFAULT OFF)
