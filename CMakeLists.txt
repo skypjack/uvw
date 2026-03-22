@@ -68,7 +68,7 @@ if(UVW_USE_CLANG_TIDY)
 endif()
 
 # Required minimal libuv version
-set(UVW_LIBUV_VERSION 1.50.0)
+set(UVW_LIBUV_VERSION 1.52.1)
 
 function(fetch_libuv)
     if (UVW_FETCH_LIBUV)
@@ -91,9 +91,19 @@ function(fetch_libuv)
         if(UVW_BUILD_SHARED_LIB)
             add_library(uv::uv-shared ALIAS uv)
             set_target_properties(uv PROPERTIES POSITION_INDEPENDENT_CODE 1)
+            target_include_directories(
+                uv
+                INTERFACE
+                    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/uvw/uv/include>
+            )
         else()
             add_library(uv::uv-static ALIAS uv_a)
             set_target_properties(uv_a PROPERTIES POSITION_INDEPENDENT_CODE 1)
+            target_include_directories(
+                uv_a
+                INTERFACE
+                    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}/uvw/uv/include>
+            )
         endif()
     endif(UVW_FETCH_LIBUV)
 endfunction()
@@ -208,7 +218,7 @@ endif()
 
 install(
     EXPORT uvwConfig 
-    NAMESPACE uvw:: 
+    NAMESPACE uvw::
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/uvw
 )
 

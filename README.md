@@ -144,7 +144,7 @@ To use `uvw` as a compiled library, set the `UVW_BUILD_LIBS` options in cmake
 before including the project.<br/>
 This option triggers the generation of a targets named
 `uvw::uvw-static`. The matching version of `libuv` is also
-compiled and exported as `uv::uv-static` for convenience.
+compiled and exported as `uvw::uv-a` for convenience.
 
 In case you don't use or don't want to use `CMake`, you can still compile all
 `.cpp` files and include all `.h` files to get the job done. In this case, users
