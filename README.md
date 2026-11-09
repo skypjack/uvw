@@ -197,7 +197,7 @@ for the latest release, that is the last stable tag.
 ### Note
 
 The documentation is mostly inspired by the official
-[libuv API documentation](http://docs.libuv.org/en/v1.x/) for obvious
+[libuv API documentation](https://docs.libuv.org/en/v1.x/) for obvious
 reasons.
 
 ## Tests
