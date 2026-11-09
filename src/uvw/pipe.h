@@ -143,7 +143,7 @@ public:
      * * `pipe_handle::chmod_flags::WRITABLE`
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/pipe.html#c.uv_pipe_chmod)
+     * [documentation](https://docs.libuv.org/en/v1.x/pipe.html#c.uv_pipe_chmod)
      * for further details.
      *
      * @param flags A valid set of flags.

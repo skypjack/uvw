@@ -119,7 +119,7 @@ class stream_handle: public handle<T, U, listen_event, end_event, connect_event,
         // data will be destroyed no matter of what the value of nread is
         std::unique_ptr<char[]> data{buf->base};
 
-        // nread == 0 is ignored (see http://docs.libuv.org/en/v1.x/stream.html)
+        // nread == 0 is ignored (see https://docs.libuv.org/en/v1.x/stream.html)
         // equivalent to EAGAIN/EWOULDBLOCK, it shouldn't be treated as an error
         // for we don't have data to emit though, it's fine to suppress it
 
@@ -454,7 +454,7 @@ public:
      * asynchronously.
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/stream.html#c.uv_stream_set_blocking)
+     * [documentation](https://docs.libuv.org/en/v1.x/stream.html#c.uv_stream_set_blocking)
      * for further details.
      *
      * @param enable True to enable blocking mode, false otherwise.

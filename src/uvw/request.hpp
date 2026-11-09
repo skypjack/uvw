@@ -34,7 +34,7 @@ public:
      * executing.
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/request.html#c.uv_cancel)
+     * [documentation](https://docs.libuv.org/en/v1.x/request.html#c.uv_cancel)
      * for further details.
      *
      * @return Underlying return value.

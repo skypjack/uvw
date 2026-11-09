@@ -76,7 +76,7 @@ private:
  * the socket.
  *
  * See the official
- * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_init_ex)
+ * [documentation](https://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_init_ex)
  * for further details.
  */
 class udp_handle final: public handle<udp_handle, uv_udp_t, send_event, udp_data_event> {
@@ -103,7 +103,7 @@ public:
      * it’s required that it represents a valid datagram socket.
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_open)
+     * [documentation](https://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_open)
      * for further details.
      *
      * @param socket A valid socket handle (either a file descriptor or a
@@ -186,7 +186,7 @@ public:
      * * `udp_handle::udp_flags::UDP_RECVMMSG`
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
+     * [documentation](https://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
      * for further details.
      *
      * @param addr Initialized `sockaddr_in` or `sockaddr_in6` data structure.
@@ -209,7 +209,7 @@ public:
      * * `udp_handle::udp_flags::UDP_RECVMMSG`
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
+     * [documentation](https://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
      * for further details.
      *
      * @param ip The IP address to which to bind.
@@ -233,7 +233,7 @@ public:
      * * `udp_handle::udp_flags::UDP_RECVMMSG`
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
+     * [documentation](https://docs.libuv.org/en/v1.x/udp.html#c.uv_udp_flags)
      * for further details.
      *
      * @param addr A valid instance of socket_address.

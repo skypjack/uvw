@@ -232,7 +232,7 @@ public:
      * descriptor yet or one which was closed, an invalid value is returned.
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/handle.html#c.uv_fileno)
+     * [documentation](https://docs.libuv.org/en/v1.x/handle.html#c.uv_fileno)
      * for further details.
      *
      * @return The file descriptor attached to the hande or a negative value in

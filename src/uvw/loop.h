@@ -140,7 +140,7 @@ public:
      * `idle_time()`.
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_configure)
+     * [documentation](https://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_configure)
      * for further details.
      *
      * @return Underlying return value.
@@ -198,7 +198,7 @@ public:
      * are no pending callbacks.
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/loop.html#c.uv_run)
+     * [documentation](https://docs.libuv.org/en/v1.x/loop.html#c.uv_run)
      * for further details.
      *
      * @return Underlying return value.
@@ -369,7 +369,7 @@ public:
      * guaranteed.
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_fork)
+     * [documentation](https://docs.libuv.org/en/v1.x/loop.html#c.uv_loop_fork)
      * for further details.
      *
      * @return Underlying return value.

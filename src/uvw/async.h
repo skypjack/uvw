@@ -41,7 +41,7 @@ public:
      * An async event is emitted on the loop thread.
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/async.html#c.uv_async_send)
+     * [documentation](https://docs.libuv.org/en/v1.x/async.html#c.uv_async_send)
      * for further details.
      *
      * @return Underlying return value.

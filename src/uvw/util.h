@@ -305,7 +305,7 @@ struct utilities {
          * @brief Returns the current process id.
          *
          * See the official
-         * [documentation](http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_getpid)
+         * [documentation](https://docs.libuv.org/en/v1.x/misc.html#c.uv_os_getpid)
          * for further details.
          *
          * @return The current process id.
@@ -316,7 +316,7 @@ struct utilities {
          * @brief Returns the parent process id.
          *
          * See the official
-         * [documentation](http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_getppid)
+         * [documentation](https://docs.libuv.org/en/v1.x/misc.html#c.uv_os_getppid)
          * for further details.
          *
          * @return The parent process id.
@@ -327,7 +327,7 @@ struct utilities {
          * @brief Gets the current user's home directory.
          *
          * See the official
-         * [documentation](http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_homedir)
+         * [documentation](https://docs.libuv.org/en/v1.x/misc.html#c.uv_os_homedir)
          * for further details.
          *
          * @return The current user's home directory, an empty string in case of
@@ -339,7 +339,7 @@ struct utilities {
          * @brief Gets the temp directory.
          *
          * See the official
-         * [documentation](http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_tmpdir)
+         * [documentation](https://docs.libuv.org/en/v1.x/misc.html#c.uv_os_tmpdir)
          * for further details.
          *
          * @return The temp directory, an empty string in case of errors.
@@ -419,7 +419,7 @@ struct utilities {
          * entry for the current effective uid (not the real uid).
          *
          * See the official
-         * [documentation](http://docs.libuv.org/en/v1.x/misc.html#c.uv_os_get_passwd)
+         * [documentation](https://docs.libuv.org/en/v1.x/misc.html#c.uv_os_get_passwd)
          * for further details.
          *
          * @return The accessible subset of the password file entry.
@@ -512,7 +512,7 @@ struct utilities {
      * Mapping between network interface names and indexes.
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/misc.html#c.uv_if_indextoname)
+     * [documentation](https://docs.libuv.org/en/v1.x/misc.html#c.uv_if_indextoname)
      * for further details.
      *
      * @param index Network interface index.
@@ -524,7 +524,7 @@ struct utilities {
      * @brief Retrieves a network interface identifier.
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/misc.html#c.uv_if_indextoiid)
+     * [documentation](https://docs.libuv.org/en/v1.x/misc.html#c.uv_if_indextoiid)
      * for further details.
      *
      * @param index Network interface index.

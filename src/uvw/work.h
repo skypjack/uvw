@@ -23,7 +23,7 @@ struct work_event {};
  * * A valid instance of a `Task`, that is of type `std::function<void()>`.
  *
  * See the official
- * [documentation](http://docs.libuv.org/en/v1.x/threadpool.html)
+ * [documentation](https://docs.libuv.org/en/v1.x/threadpool.html)
  * for further details.
  */
 class work_req final: public request<work_req, uv_work_t, work_event> {

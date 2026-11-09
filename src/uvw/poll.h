@@ -53,7 +53,7 @@ struct poll_event {
  *     * or a `os_socket_handle` socket descriptor
  *
  * See the official
- * [documentation](http://docs.libuv.org/en/v1.x/poll.html)
+ * [documentation](https://docs.libuv.org/en/v1.x/poll.html)
  * for further details.
  */
 class poll_handle final: public handle<poll_handle, uv_poll_t, poll_event> {

@@ -25,7 +25,7 @@ struct signal_event {
  * To create a `signal_handle` through a `loop`, no arguments are required.
  *
  * See the official
- * [documentation](http://docs.libuv.org/en/v1.x/signal.html)
+ * [documentation](https://docs.libuv.org/en/v1.x/signal.html)
  * for further details.
  */
 class signal_handle final: public handle<signal_handle, uv_signal_t, signal_event> {

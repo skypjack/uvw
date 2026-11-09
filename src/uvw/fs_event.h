@@ -62,7 +62,7 @@ struct fs_event_event {
  * To create a `fs_event_handle` through a `loop`, no arguments are required.
  *
  * See the official
- * [documentation](http://docs.libuv.org/en/v1.x/fs_event.html)
+ * [documentation](https://docs.libuv.org/en/v1.x/fs_event.html)
  * for further details.
  */
 class fs_event_handle final: public handle<fs_event_handle, uv_fs_event_t, fs_event_event> {

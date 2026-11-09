@@ -154,7 +154,7 @@ enum class uvw_symlink_flags : int {
  * * `fs_request::fs_type::LUTIME`
  *
  * See the official
- * [documentation](http://docs.libuv.org/en/v1.x/fs.html#c.uv_fs_type)
+ * [documentation](https://docs.libuv.org/en/v1.x/fs.html#c.uv_fs_type)
  * for further details.
  */
 struct fs_event {
@@ -248,7 +248,7 @@ public:
  * To create a `file_req` through a `loop`, no arguments are required.
  *
  * See the official
- * [documentation](http://docs.libuv.org/en/v1.x/fs.html)
+ * [documentation](https://docs.libuv.org/en/v1.x/fs.html)
  * for further details.
  */
 class file_req final: public fs_request<file_req> {
@@ -309,7 +309,7 @@ public:
      * * `file_req::file_open_flags::WRONLY`
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/fs.html#file-open-constants)
+     * [documentation](https://docs.libuv.org/en/v1.x/fs.html#file-open-constants)
      * for further details.
      *
      * @param path A valid path name for a file.
@@ -347,7 +347,7 @@ public:
      * * `file_req::file_open_flags::WRONLY`
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/fs.html#file-open-constants)
+     * [documentation](https://docs.libuv.org/en/v1.x/fs.html#file-open-constants)
      * for further details.
      *
      * @param path A valid path name for a file.
@@ -585,7 +585,7 @@ private:
  * To create a `fs_req` through a `loop`, no arguments are required.
  *
  * See the official
- * [documentation](http://docs.libuv.org/en/v1.x/fs.html)
+ * [documentation](https://docs.libuv.org/en/v1.x/fs.html)
  * for further details.
  */
 class fs_req final: public fs_request<fs_req> {
@@ -669,7 +669,7 @@ public:
      * * The second parameter is the file descriptor as an integer.
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/fs.html#c.uv_fs_mkstemp)
+     * [documentation](https://docs.libuv.org/en/v1.x/fs.html#c.uv_fs_mkstemp)
      * for further details.
      *
      * @param tpl Template, as described in the official documentation.
@@ -764,7 +764,7 @@ public:
      * * `fs_req::entry_type::BLOCK`
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/fs.html#c.uv_dirent_t)
+     * [documentation](https://docs.libuv.org/en/v1.x/fs.html#c.uv_dirent_t)
      * for further details.
      *
      * @return A pair where:
@@ -1181,7 +1181,7 @@ public:
      * * `fs_req::entry_type::BLOCK`
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/fs.html#c.uv_dirent_t)
+     * [documentation](https://docs.libuv.org/en/v1.x/fs.html#c.uv_dirent_t)
      * for further details.
      *
      * This function isn't thread safe. Moreover, it doesn't return the `.` and

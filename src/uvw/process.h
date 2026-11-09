@@ -76,7 +76,7 @@ public:
      * duplicated.
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_disable_stdio_inheritance)
+     * [documentation](https://docs.libuv.org/en/v1.x/process.html#c.uv_disable_stdio_inheritance)
      * for further details.
      */
     static void disable_stdio_inheritance() noexcept;
@@ -99,7 +99,7 @@ public:
      * @brief spawn Starts the process.
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/process.html)
+     * [documentation](https://docs.libuv.org/en/v1.x/process.html)
      * for further details.
      *
      * @param file Path pointing to the program to be executed.
@@ -147,7 +147,7 @@ public:
      * * `process_handle::process_flags::WINDOWS_FILE_PATH_EXACT_NAME`
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_process_flags)
+     * [documentation](https://docs.libuv.org/en/v1.x/process.html#c.uv_process_flags)
      * for further details.
      *
      * @param flags A valid set of flags.
@@ -169,7 +169,7 @@ public:
      * * `process_handle::stdio_flags::OVERLAPPED_PIPE`
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_stdio_flags)
+     * [documentation](https://docs.libuv.org/en/v1.x/process.html#c.uv_stdio_flags)
      * for further details.
      *
      * @param stream A valid `stdio` handle.
@@ -204,7 +204,7 @@ public:
      *     * `uvw::std_err` for `stderr`
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/process.html#c.uv_stdio_flags)
+     * [documentation](https://docs.libuv.org/en/v1.x/process.html#c.uv_stdio_flags)
      * for further details.
      *
      * @param fd A valid file descriptor.

@@ -44,7 +44,7 @@ enum class uvw_tty_vtermstate_t : std::underlying_type_t<uv_tty_vtermstate_t> {
  * stream. Remember that `stdin` is readable, `stdout` is not.
  *
  * See the official
- * [documentation](http://docs.libuv.org/en/v1.x/tty.html#c.uv_tty_init)
+ * [documentation](https://docs.libuv.org/en/v1.x/tty.html#c.uv_tty_init)
  * for further details.
  */
 class tty_handle final: public stream_handle<tty_handle, uv_tty_t> {
@@ -72,7 +72,7 @@ public:
      * * `TTY::tty_mode::IO`
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/tty.html#c.uv_tty_mode_t)
+     * [documentation](https://docs.libuv.org/en/v1.x/tty.html#c.uv_tty_mode_t)
      * for further details.
      *
      * @param m The mode to be set.
@@ -105,7 +105,7 @@ public:
      * * `TTY::tty_vtermstate::UNSUPPORTED`
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/tty.html#c.uv_tty_vtermstate_t)
+     * [documentation](https://docs.libuv.org/en/v1.x/tty.html#c.uv_tty_vtermstate_t)
      * for further details.
      *
      * @param s The state to be set.
@@ -124,7 +124,7 @@ public:
      * * `TTY::tty_vtermstate::UNSUPPORTED`
      *
      * See the official
-     * [documentation](http://docs.libuv.org/en/v1.x/tty.html#c.uv_tty_vtermstate_t)
+     * [documentation](https://docs.libuv.org/en/v1.x/tty.html#c.uv_tty_vtermstate_t)
      * for further details.
      *
      * @return The current state.
